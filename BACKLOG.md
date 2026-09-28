@@ -110,7 +110,7 @@ Exit gate: a full 2v2 match plays start to finish with humans or bots, at 60 fps
 
 The slice specs are Warblade Carnage (melee, rage), Arcanist Rime (casting, interrupts, roots) and Oracle Grace (healing, dispels).
 
-### Combat core
+**Combat core**
 
 ### M1-01 Data-driven ability system `[todo]`
 - [ ] Ability fields: id, school, cast type (instant, cast, channel), cast time, cooldown, charges, triggers GCD, cost, range, needs line of sight, target type, effect list.
@@ -152,7 +152,7 @@ The slice specs are Warblade Carnage (melee, rage), Arcanist Rime (casting, inte
 - [ ] Dampening from 3:00: healing reduced 1% every 10 s. Draw at 20:00. Win when a team is fully dead.
 - [ ] Tests run the rules with sim time sped up.
 
-### Specs and bots
+**Specs and bots**
 
 ### M1-10 Warblade Carnage kit `[todo]`
 - [ ] 14 to 18 abilities that fill the ability kit template, defined in data with original names.
@@ -172,7 +172,7 @@ The slice specs are Warblade Carnage (melee, rage), Arcanist Rime (casting, inte
 - [ ] Bots interrupt enemy casts, use defensives below 35% health, heal the lowest ally (healer), and break line of sight when losing.
 - [ ] In 100 simulated 2v2 matches, at least 90% end in a kill rather than a draw, and no match crashes.
 
-### Arena
+**Arena**
 
 ### M1-14 Arena greybox: Gallows Courtyard `[todo]`
 - [ ] About 40 m across, 4 pillars, two starting rooms with gates, spawn points, `los_blocker` collision on pillars and walls.
@@ -184,7 +184,7 @@ The slice specs are Warblade Carnage (melee, rage), Arcanist Rime (casting, inte
 - [ ] Baked lighting, volumetric fog, bloom, filmic tonemapping and a map color grade matching the art bible.
 - [ ] Under 1.5 million visible triangles; screenshots reviewed against the art bible.
 
-### Characters
+**Characters**
 
 ### M1-16 Standard skeleton and parametric body `[todo]`
 - [ ] One humanoid skeleton with fixed bone names, written to `docs/ART_BIBLE.md`.
@@ -218,7 +218,7 @@ The slice specs are Warblade Carnage (melee, rage), Arcanist Rime (casting, inte
 - [ ] Grayscale test: each class is identifiable by silhouette at 30 m.
 - [ ] Decide the "character art source" and "animation source" open decisions and record them in DECISIONS.md. If the result falls short, ask the human before switching to CC0 or artist-made bases.
 
-### Client and feel
+**Client and feel**
 
 ### M1-23 Camera, controls and targeting UI `[todo]`
 - [ ] Third-person camera with zoom, mouse steering and strafe; click-to-target and tab targeting.
@@ -242,7 +242,7 @@ The slice specs are Warblade Carnage (melee, rage), Arcanist Rime (casting, inte
 - [ ] Buffs and debuffs with CC shown larger; floating combat text; match timer and dampening percentage; loss-of-control alert.
 - [ ] Screenshots at 1280×720, 1920×1080 and 2560×1440 reviewed.
 
-### Match flow and verification
+**Match flow and verification**
 
 ### M1-28 Match flow `[todo]`
 - [ ] Menu → "Play 2v2 vs bots" → preparation room → gates open → fight → end screen with damage and healing scoreboard → back to menu.
