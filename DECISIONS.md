@@ -4,6 +4,8 @@ Every choice not specified in docs/DESIGN.md, newest first. One line of reasonin
 
 | Date | Decision | Reason | Approved by |
 | --- | --- | --- | --- |
+| 2026-09-28 | Sound source: effects are synthesized by `tools/audio/synth.py` by default; CC0 sample libraries are allowed for sounds synthesis handles poorly (voices, footsteps on varied surfaces, cloth) | Synthesis is reproducible and editable as text, fits the loop, and has no licensing risk; the model reviews spectrograms because it cannot listen, so the human should spot-check by ear at each milestone gate | Model; human to confirm by ear |
+| 2026-09-28 | Sound files are Ogg Vorbis, 48 kHz mono; the generator measures the encoded peak and corrects it | Vorbis encoding raised peaks by up to 1.3 dB, which could break the "nothing louder than the CC warning" rule | Model |
 | 2026-09-28 | Stylized materials keep metallic at or below 0.3; metal is painted dark with bright worn edges | Higher metallic values mirror the brown ground and warm key light, so iron read as wood in the test crate | Model |
 | 2026-09-28 | Until the texture bake (M1-17), exports carry flat base colors | glTF cannot store procedural shader networks; they exported as white | Model |
 | 2026-09-28 | Starting resource values: mana 50,000 (400/s), rage 100 (decays 2/s out of combat), energy 100 (10/s), combo points 5, focus 100 (5/s), runes 6 (10 s recharge), runic power 100, fury 100, essence 5 (5 s recharge) | The design names the resources but not their numbers; these are tuning placeholders for balance simulations to adjust | Model |

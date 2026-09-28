@@ -93,10 +93,10 @@ Exit gate: two bots join a server, move, target and auto-attack for 5 minutes wi
 - [x] `tools/validate_asset.py`: triangle budget, scale, origin, centring, texture sizes, non-manifold check. Facing is checked for characters once the standard skeleton exists (M1-16).
 - [ ] A test prop builds, exports to `.glb`, and its contact sheet is reviewed (done). It imports into Godot without warnings (waiting on M0-02).
 
-### M0-16 Sound approach decision and synth prototype `[todo]`
-- [ ] `tools/audio/synth.py` generates 3 test sounds (weapon impact, frost cast loop, holy heal) as `.ogg`.
+### M0-16 Sound approach decision and synth prototype `[doing]`
+- [x] `tools/audio/synth.py` generates 3 test sounds (weapon impact, frost cast loop, holy heal) as `.ogg`.
 - [ ] The sounds import and play in Godot through the correct audio buses.
-- [ ] Sound source decision recorded in DECISIONS.md (DESIGN.md says decide at the start of M0).
+- [x] Sound source decision recorded in DECISIONS.md (DESIGN.md says decide at the start of M0).
 
 ### M0-17 Review pass 1 `[todo]`
 - [ ] Run the review pass from DESIGN.md (minus balance simulations, which need specs).
