@@ -1,0 +1,8 @@
+{
+  "description": "keybind conflict",
+  "file": "keybinds/default.json",
+  "expect": "key conflict",
+  "set": {
+    "/binds/1/key": "KEY_W"
+  }
+}

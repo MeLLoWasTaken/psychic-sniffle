@@ -1,0 +1,8 @@
+{
+  "description": "talent unknown modify target",
+  "file": "talents/warblade_carnage.json",
+  "expect": "'ghost_ability' is not an ability, aura or 'self'",
+  "set": {
+    "/nodes/0/effects/0/modify": "ghost_ability.base"
+  }
+}

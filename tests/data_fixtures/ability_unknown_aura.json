@@ -1,0 +1,8 @@
+{
+  "description": "ability unknown aura",
+  "file": "abilities/ruin_strike.json",
+  "expect": "aura 'no_such_bleed' not found",
+  "set": {
+    "/effects/1/aura": "no_such_bleed"
+  }
+}

@@ -1,0 +1,16 @@
+{
+  "tree_id": "warblade_carnage_pvp",
+  "kind": "pvp",
+  "owner": "warblade_carnage",
+  "points": 3,
+  "status": "draft",
+  "nodes": [
+    {
+      "id": "festering_cut",
+      "name": "Festering Cut",
+      "description": "Ruin Strike's bleed also reduces healing taken by 25%.",
+      "type": "passive",
+      "effects": [{"modify": "ruin_bleed.modifiers", "set": [{"stat": "healing_taken", "op": "multiply", "value": 0.75}]}]
+    }
+  ]
+}

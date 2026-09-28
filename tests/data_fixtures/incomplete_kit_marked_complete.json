@@ -1,0 +1,8 @@
+{
+  "description": "incomplete kit marked complete",
+  "file": "specs/warblade_carnage.json",
+  "expect": "abilities on the bars; template needs 14 to 18",
+  "set": {
+    "/kit_status": "complete"
+  }
+}

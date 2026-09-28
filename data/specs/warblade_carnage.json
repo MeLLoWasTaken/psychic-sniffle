@@ -1,0 +1,14 @@
+{
+  "id": "warblade_carnage",
+  "name": "Carnage",
+  "class": "warblade",
+  "description": "Two-handed weapon, huge single hits, execute on low-health targets.",
+  "role": "dps",
+  "range": "melee",
+  "primary_resource": "rage",
+  "abilities": ["ruin_strike"],
+  "spec_tree": "warblade_carnage",
+  "pvp_talents": "warblade_carnage_pvp",
+  "kit_status": "draft",
+  "asset": "test_crate"
+}

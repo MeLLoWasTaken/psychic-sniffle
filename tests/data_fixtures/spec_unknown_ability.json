@@ -1,0 +1,11 @@
+{
+  "description": "spec unknown ability",
+  "file": "specs/warblade_carnage.json",
+  "expect": "ability 'no_such_ability' not found",
+  "set": {
+    "/abilities": [
+      "ruin_strike",
+      "no_such_ability"
+    ]
+  }
+}

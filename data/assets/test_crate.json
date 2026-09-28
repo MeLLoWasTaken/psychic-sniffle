@@ -1,0 +1,12 @@
+{
+  "id": "test_crate",
+  "kind": "test",
+  "builder": "build_test_prop.py",
+  "seed": 1,
+  "tri_budget": {"min": 200, "max": 5000},
+  "texture_size": 512,
+  "palette": {"wood": "#5a3b24", "iron": "#3b3f44", "rust": "#7a3a1c"},
+  "params": {"size_m": 1.0},
+  "out": "game/assets/props/test_crate.glb",
+  "status": "draft"
+}

@@ -1,0 +1,26 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "keybind_profile.schema.json",
+  "title": "Keybind profile",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["id", "name", "binds"],
+  "properties": {
+    "id": {"$ref": "common.schema.json#/$defs/id"},
+    "name": {"type": "string"},
+    "binds": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["action", "key"],
+        "properties": {
+          "action": {"type": "string", "description": "e.g. bar1_slot1, move_forward, target_nearest_enemy, toggle_edit_mode"},
+          "key": {"type": "string", "description": "Godot key or mouse button name, e.g. KEY_1, KEY_W, MOUSE_BUTTON_4"},
+          "modifiers": {"type": "array", "items": {"enum": ["shift", "ctrl", "alt"]}, "uniqueItems": true},
+          "target_mode": {"enum": ["default", "target", "focus", "mouseover", "self", "arena1", "arena2", "arena3", "party1", "party2", "party3", "party4"]}
+        }
+      }
+    }
+  }
+}

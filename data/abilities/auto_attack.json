@@ -1,0 +1,19 @@
+{
+  "id": "auto_attack",
+  "name": "Auto Attack",
+  "description": "Swings at the current target while in melee range. Timing and damage come from tuning.json.",
+  "owner": "shared",
+  "kit_slot": "shared",
+  "school": "physical",
+  "cast_type": "instant",
+  "cooldown_s": 0,
+  "triggers_gcd": false,
+  "range_m": 5,
+  "requires_los": true,
+  "target": "enemy",
+  "castable_while_moving": true,
+  "effects": [
+    {"type": "damage", "base": 1200, "power_coefficient": 0.0, "school": "physical"}
+  ],
+  "icon": {"symbol": "crossed_swords", "school": "physical"}
+}

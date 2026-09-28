@@ -40,15 +40,15 @@ Exit gate: two bots join a server, move, target and auto-attack for 5 minutes wi
 - [ ] Produces a correct, non-black 1920×1080 PNG of a test scene with a lit mesh, fog and bloom enabled.
 - [ ] Time per screenshot recorded in DECISIONS.md. If Forward+ fails on lavapipe, fall back to the Compatibility renderer for screenshots only and log it in KNOWN_ISSUES.md.
 
-### M0-05 Data schemas `[todo]`
-- [ ] JSON Schema files in `/data/schemas` for: class, spec, ability, aura, talent tree, tuning, map, asset spec, keybind profile.
-- [ ] One valid example file per schema in `/data`.
-- [ ] `/data/tuning.json` holds every starting number from DESIGN.md "Core combat system" (GCD, queue window, run speed, health, armor reductions, DR, dampening, arena timers).
+### M0-05 Data schemas `[done]`
+- [x] JSON Schema files in `/data/schemas` for: class, spec, ability, aura, talent tree, tuning, map, asset spec, keybind profile.
+- [x] One valid example file per schema in `/data`.
+- [x] `/data/tuning.json` holds every starting number from DESIGN.md "Core combat system" (GCD, queue window, run speed, health, armor reductions, DR, dampening, arena timers).
 
-### M0-06 Data validator `[todo]`
-- [ ] `tools/validate_data.py` checks every file against its schema and resolves all cross-references (spec → abilities, talent → ability, ability → aura, asset → spec).
-- [ ] Talent tree checks: no unreachable nodes, gate values valid, point totals match the design.
-- [ ] Passes on the real data; fails with a clear message on each of at least 6 broken fixtures in `tests/data_fixtures/`.
+### M0-06 Data validator `[done]`
+- [x] `tools/validate_data.py` checks every file against its schema and resolves all cross-references (spec → abilities, talent → ability, ability → aura, asset → spec).
+- [x] Talent tree checks: no unreachable nodes, gate values valid, point totals match the design.
+- [x] Passes on the real data; fails with a clear message on each of at least 6 broken fixtures in `tests/data_fixtures/`.
 
 ### M0-07 Test framework `[todo]`
 - [ ] GdUnit4 installed in `game/addons` (cloned from its Git repository at a tagged version compatible with Godot 4.7).
@@ -88,10 +88,10 @@ Exit gate: two bots join a server, move, target and auto-attack for 5 minutes wi
 - [ ] `tools/sim/run_match.py --bots 2 --minutes 5` starts a server and bots and writes a match summary JSON.
 - [ ] **Gate:** 5 minutes with 2 bots, zero errors or warnings in server and client logs.
 
-### M0-15 Blender pipeline smoke test `[todo]`
-- [ ] `tools/blender/common.py`: reset scene, metric units, glTF export, preview camera rig, contact-sheet renderer (front, side, back, three-quarter).
-- [ ] `tools/validate_asset.py`: triangle budget, scale, origin, facing, texture sizes, non-manifold check.
-- [ ] A test prop builds, exports to `.glb`, imports into Godot without warnings, and its contact sheet is reviewed.
+### M0-15 Blender pipeline smoke test `[doing]`
+- [x] `tools/blender/common.py`: reset scene, metric units, glTF export, preview camera rig, contact-sheet renderer (front, side, back, three-quarter).
+- [x] `tools/validate_asset.py`: triangle budget, scale, origin, centring, texture sizes, non-manifold check. Facing is checked for characters once the standard skeleton exists (M1-16).
+- [ ] A test prop builds, exports to `.glb`, and its contact sheet is reviewed (done). It imports into Godot without warnings (waiting on M0-02).
 
 ### M0-16 Sound approach decision and synth prototype `[todo]`
 - [ ] `tools/audio/synth.py` generates 3 test sounds (weapon impact, frost cast loop, holy heal) as `.ogg`.
@@ -194,6 +194,8 @@ The slice specs are Warblade Carnage (melee, rage), Arcanist Rime (casting, inte
 ### M1-17 Hand-painted texture bake `[todo]`
 - [ ] Bake pipeline producing 2048 px base color (light from above, darkened crevices, lightened edges), plus normal and roughness maps.
 - [ ] Before-and-after contact sheets show the painted look; no photo textures and no fine noise.
+- [ ] Edge highlights read as worn paint on the edges, not as thin outlines (found in the M0-15 test crate).
+- [ ] The `dusk_grim` preview lighting keeps the back of a model readable, not near-black (found in the M0-15 test crate).
 
 ### M1-18 Warblade plate armor kit and two-handed weapon `[todo]`
 - [ ] Angular plate with spikes, rivets, dents and wear; oversized two-handed weapon.

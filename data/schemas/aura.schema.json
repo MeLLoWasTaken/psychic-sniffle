@@ -1,0 +1,63 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "aura.schema.json",
+  "title": "Aura (buff or debuff)",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["id", "name", "kind", "duration_s", "dispel_type", "cc_category", "hud_priority"],
+  "properties": {
+    "id": {"$ref": "common.schema.json#/$defs/id"},
+    "name": {"type": "string", "minLength": 1},
+    "description": {"type": "string"},
+    "kind": {"enum": ["buff", "debuff"]},
+    "duration_s": {"type": "number", "minimum": 0, "description": "0 means until removed."},
+    "max_stacks": {"type": "integer", "minimum": 1, "default": 1},
+    "refresh": {"enum": ["refresh", "extend", "ignore", "add_stack"], "default": "refresh"},
+    "dispel_type": {"$ref": "common.schema.json#/$defs/dispel_type"},
+    "cc_category": {"$ref": "common.schema.json#/$defs/cc_category"},
+    "breaks_on_damage": {"enum": ["never", "any", "threshold"], "default": "never"},
+    "damage_threshold_pct": {"type": "number", "minimum": 0, "maximum": 100},
+    "periodic": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["interval_s", "effect"],
+      "properties": {
+        "interval_s": {"type": "number", "exclusiveMinimum": 0},
+        "effect": {"$ref": "ability.schema.json#/$defs/effect"}
+      }
+    },
+    "modifiers": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["stat", "op", "value"],
+        "properties": {
+          "stat": {"enum": ["damage_taken", "damage_done", "healing_taken", "healing_done", "move_speed", "haste", "crit_chance", "armor"]},
+          "op": {"enum": ["add", "multiply"]},
+          "value": {"type": "number"}
+        }
+      }
+    },
+    "hud_priority": {
+      "enum": ["cc", "major_defensive", "major_offensive", "normal", "hidden"],
+      "description": "cc and major_defensive auras are drawn larger on unit frames and nameplates."
+    },
+    "vfx": {"type": "string"},
+    "icon": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["symbol"],
+      "properties": {
+        "symbol": {"type": "string"},
+        "school": {"$ref": "common.schema.json#/$defs/school"}
+      }
+    }
+  },
+  "allOf": [
+    {
+      "if": {"properties": {"breaks_on_damage": {"const": "threshold"}}, "required": ["breaks_on_damage"]},
+      "then": {"required": ["damage_threshold_pct"]}
+    }
+  ]
+}

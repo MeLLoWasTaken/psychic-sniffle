@@ -1,0 +1,44 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "common.schema.json",
+  "title": "Shared definitions",
+  "$defs": {
+    "id": {
+      "type": "string",
+      "pattern": "^[a-z][a-z0-9_]*$",
+      "description": "Lowercase snake_case identifier, unique within its data type."
+    },
+    "school": {
+      "enum": ["physical", "fire", "frost", "shadow", "holy", "nature", "storm", "blood", "fel", "time"]
+    },
+    "resource": {
+      "enum": ["mana", "rage", "energy", "combo_points", "focus", "runes", "runic_power", "fury", "essence"]
+    },
+    "armor": {
+      "enum": ["cloth", "leather", "mail", "plate"]
+    },
+    "role": {
+      "enum": ["dps", "healer", "tank", "support_dps"]
+    },
+    "cc_category": {
+      "enum": ["none", "stun", "incapacitate", "disorient", "silence", "root", "disarm", "knockback"]
+    },
+    "dispel_type": {
+      "enum": ["none", "magic", "curse", "poison", "disease"]
+    },
+    "status": {
+      "enum": ["draft", "complete"],
+      "description": "Draft content gets structural checks only; complete content also gets design-rule checks (kit template, talent point totals)."
+    },
+    "hex_color": {
+      "type": "string",
+      "pattern": "^#[0-9a-fA-F]{6}$"
+    },
+    "vec3": {
+      "type": "array",
+      "items": {"type": "number"},
+      "minItems": 3,
+      "maxItems": 3
+    }
+  }
+}

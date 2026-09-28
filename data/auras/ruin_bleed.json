@@ -1,0 +1,16 @@
+{
+  "id": "ruin_bleed",
+  "name": "Ruinous Wound",
+  "description": "Bleeding from a Ruin Strike.",
+  "kind": "debuff",
+  "duration_s": 12,
+  "refresh": "refresh",
+  "dispel_type": "none",
+  "cc_category": "none",
+  "periodic": {
+    "interval_s": 3,
+    "effect": {"type": "damage", "base": 600, "can_crit": false, "school": "physical"}
+  },
+  "hud_priority": "normal",
+  "icon": {"symbol": "blood_drop", "school": "physical"}
+}

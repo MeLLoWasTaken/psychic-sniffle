@@ -1,0 +1,16 @@
+{
+  "id": "gallows_courtyard",
+  "name": "Gallows Courtyard",
+  "description": "A walled execution yard at dusk. Four stone pillars and a central gallows block line of sight.",
+  "mode": "arena",
+  "brackets": ["2v2", "3v3"],
+  "size_m": 40,
+  "scene": "res://scenes/maps/gallows_courtyard.tscn",
+  "lighting_preset": "dusk_grim",
+  "twist": "The gallows platform collapses at 5:00, opening the center.",
+  "spawns": {
+    "team_a": [[-18, 0, -2], [-18, 0, 2], [-18, 0, 0]],
+    "team_b": [[18, 0, -2], [18, 0, 2], [18, 0, 0]]
+  },
+  "status": "draft"
+}

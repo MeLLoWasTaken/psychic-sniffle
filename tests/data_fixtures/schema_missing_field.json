@@ -1,0 +1,8 @@
+{
+  "description": "schema missing field",
+  "file": "abilities/ruin_strike.json",
+  "expect": "schema: at (root): 'school' is a required property",
+  "delete": [
+    "/school"
+  ]
+}

@@ -1,0 +1,8 @@
+{
+  "description": "talent bad gate",
+  "file": "talents/warblade_carnage.json",
+  "expect": "gate 5 is not 0 or one of the tree's gates",
+  "set": {
+    "/nodes/0/gate": 5
+  }
+}

@@ -1,0 +1,14 @@
+# Godot
+game/.godot/
+game/**/*.import.tmp
+*.translation
+
+# Python
+__pycache__/
+.pytest_cache/
+
+# Preview render intermediates (final contact sheets are kept for before/after review)
+previews/**/_*.png
+
+# Local tool builds
+tools/env/cache/

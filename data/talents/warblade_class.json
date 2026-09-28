@@ -1,0 +1,29 @@
+{
+  "tree_id": "warblade_class",
+  "kind": "class",
+  "owner": "warblade",
+  "points": 30,
+  "gates": [8, 20],
+  "status": "draft",
+  "nodes": [
+    {
+      "id": "iron_hide",
+      "name": "Iron Hide",
+      "description": "Reduces physical damage taken.",
+      "type": "passive",
+      "ranks": 2,
+      "pos": [3, 0],
+      "effects": [{"modify": "self.damage_taken_physical", "per_rank": -0.02}]
+    },
+    {
+      "id": "grim_resolve",
+      "name": "Grim Resolve",
+      "description": "Break Free recharges faster.",
+      "type": "passive",
+      "ranks": 1,
+      "pos": [3, 1],
+      "requires_any": ["iron_hide"],
+      "effects": [{"modify": "break_free.cooldown_s", "per_rank": -15}]
+    }
+  ]
+}

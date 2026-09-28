@@ -1,0 +1,9 @@
+{
+  "description": "talent wrong points",
+  "file": "talents/warblade_class.json",
+  "expect": "class trees spend 30 points, found 25",
+  "set": {
+    "/status": "complete",
+    "/points": 25
+  }
+}

@@ -1,0 +1,24 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "spec.schema.json",
+  "title": "Specialization",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["id", "name", "class", "role", "range", "primary_resource", "abilities", "spec_tree", "pvp_talents", "kit_status"],
+  "properties": {
+    "id": {"$ref": "common.schema.json#/$defs/id"},
+    "name": {"type": "string", "minLength": 1},
+    "class": {"type": "string"},
+    "description": {"type": "string"},
+    "role": {"$ref": "common.schema.json#/$defs/role"},
+    "range": {"enum": ["melee", "ranged"]},
+    "primary_resource": {"$ref": "common.schema.json#/$defs/resource"},
+    "secondary_resource": {"$ref": "common.schema.json#/$defs/resource"},
+    "health_override": {"type": "integer", "minimum": 1, "description": "Omit to use the role default from tuning.json."},
+    "abilities": {"type": "array", "items": {"type": "string"}},
+    "spec_tree": {"type": "string"},
+    "pvp_talents": {"type": "string"},
+    "kit_status": {"$ref": "common.schema.json#/$defs/status"},
+    "asset": {"type": "string", "description": "Asset spec id for this spec's character model."}
+  }
+}

@@ -1,0 +1,8 @@
+{
+  "description": "id does not match file",
+  "file": "auras/ruin_bleed.json",
+  "expect": "does not match file name",
+  "set": {
+    "/id": "ruin_bleeding"
+  }
+}

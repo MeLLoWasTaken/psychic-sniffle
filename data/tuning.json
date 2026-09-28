@@ -1,0 +1,99 @@
+{
+  "simulation": {
+    "tick_rate_hz": 60,
+    "snapshot_rate_hz": 60,
+    "interpolation_delay_ticks": 3,
+    "lag_compensation_max_ms": 200
+  },
+  "pacing": {
+    "gcd_s": 1.5,
+    "gcd_min_s": 0.75,
+    "gcd_energy_s": 1.0,
+    "spell_queue_window_ms": 400,
+    "spell_queue_window_max_ms": 400
+  },
+  "movement": {
+    "run_speed_mps": 7.0,
+    "jump_velocity_mps": 8.0,
+    "gravity_mps2": 20.0,
+    "backpedal_speed_mult": 0.6
+  },
+  "health": {
+    "dps": 60000,
+    "healer": 60000,
+    "tank": 72000,
+    "support_dps": 60000
+  },
+  "damage": {
+    "crit_multiplier": 1.5,
+    "base_crit_chance": 0.10,
+    "armor_reduction": {
+      "cloth": 0.10,
+      "leather": 0.20,
+      "mail": 0.25,
+      "plate": 0.30
+    },
+    "auto_attack": {
+      "range_m": 5.0,
+      "swing_interval_s": 2.0,
+      "base_damage": 1200
+    }
+  },
+  "resources": {
+    "mana": {"max": 50000, "regen_per_s": 400},
+    "rage": {"max": 100, "decay_per_s_out_of_combat": 2, "gain_per_damage_dealt_pct": 0.05, "gain_per_damage_taken_pct": 0.08},
+    "energy": {"max": 100, "regen_per_s": 10},
+    "combo_points": {"max": 5},
+    "focus": {"max": 100, "regen_per_s": 5},
+    "runes": {"max": 6, "recharge_s": 10},
+    "runic_power": {"max": 100, "decay_per_s_out_of_combat": 2},
+    "fury": {"max": 100, "decay_per_s_out_of_combat": 2},
+    "essence": {"max": 5, "recharge_s": 5}
+  },
+  "crowd_control": {
+    "dr_multipliers": [1.0, 0.5, 0.25, 0.0],
+    "dr_reset_s": 18,
+    "max_cc_duration_s": 8,
+    "break_free_cooldown_s": 90,
+    "disorient_break_threshold_pct": 10
+  },
+  "ranges": {
+    "melee_m": 5,
+    "ranged_m": 40,
+    "heal_m": 40
+  },
+  "arena": {
+    "prep_phase_s": 60,
+    "dampening_start_s": 180,
+    "dampening_start_1v1_s": 60,
+    "dampening_step_pct": 1,
+    "dampening_interval_s": 10,
+    "time_limit_s": 1200,
+    "time_limit_1v1_s": 720,
+    "pickup_spawn_s": 90
+  },
+  "battleground": {
+    "respawn_wave_s": 30,
+    "flag_carrier_damage_step_pct": 10,
+    "flag_carrier_step_s": 45,
+    "ctf_captures_to_win": 3,
+    "ctf_time_limit_s": 1200,
+    "rc_points_to_win": 1500,
+    "rc_nodes": 5,
+    "rc_time_limit_s": 1500
+  },
+  "rating": {
+    "system": "glicko2",
+    "start_rating": 1500,
+    "queue_widen_points": 50,
+    "queue_widen_interval_s": 30
+  },
+  "talents": {
+    "class_tree_points": 30,
+    "spec_tree_points": 30,
+    "spec_tree_gates": [8, 20],
+    "pvp_slots": 3,
+    "pvp_talents_per_spec": 12,
+    "loadouts_per_spec": 10
+  }
+}

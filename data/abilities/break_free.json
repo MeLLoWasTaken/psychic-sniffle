@@ -1,0 +1,20 @@
+{
+  "id": "break_free",
+  "name": "Break Free",
+  "description": "Removes all crowd control effects. Every player has it.",
+  "owner": "shared",
+  "kit_slot": "shared",
+  "school": "physical",
+  "cast_type": "instant",
+  "cooldown_s": 90,
+  "triggers_gcd": false,
+  "range_m": 0,
+  "requires_los": false,
+  "target": "self",
+  "castable_while_moving": true,
+  "usable_while_cc": ["stun", "incapacitate", "disorient", "silence", "root", "disarm"],
+  "effects": [
+    {"type": "remove_cc"}
+  ],
+  "icon": {"symbol": "broken_chain"}
+}

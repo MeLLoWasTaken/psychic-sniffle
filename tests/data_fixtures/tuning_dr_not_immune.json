@@ -1,0 +1,12 @@
+{
+  "description": "tuning dr not immune",
+  "file": "tuning.json",
+  "expect": "must decrease and end at 0",
+  "set": {
+    "/crowd_control/dr_multipliers": [
+      1.0,
+      0.5,
+      0.25
+    ]
+  }
+}

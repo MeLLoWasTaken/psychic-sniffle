@@ -1,0 +1,20 @@
+{
+  "tree_id": "warblade_carnage",
+  "kind": "spec",
+  "owner": "warblade_carnage",
+  "points": 30,
+  "gates": [8, 20],
+  "status": "draft",
+  "nodes": [
+    {
+      "id": "lingering_gash",
+      "name": "Lingering Gash",
+      "description": "Ruin Strike's bleed deals more damage.",
+      "type": "passive",
+      "ranks": 2,
+      "pos": [3, 1],
+      "requires_any": ["ruin_strike"],
+      "effects": [{"modify": "ruin_bleed.periodic.effect.base", "per_rank": 90}]
+    }
+  ]
+}

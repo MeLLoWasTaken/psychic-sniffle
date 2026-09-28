@@ -1,0 +1,14 @@
+{
+  "description": "map too few spawns",
+  "file": "maps/gallows_courtyard.json",
+  "expect": "team_b has 1 spawns; bracket needs 3",
+  "set": {
+    "/spawns/team_b": [
+      [
+        18,
+        0,
+        0
+      ]
+    ]
+  }
+}

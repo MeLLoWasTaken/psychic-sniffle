@@ -1,0 +1,10 @@
+{
+  "description": "talent unreachable cycle",
+  "file": "talents/warblade_class.json",
+  "expect": "node 'iron_hide' is unreachable",
+  "set": {
+    "/nodes/0/requires_any": [
+      "grim_resolve"
+    ]
+  }
+}
