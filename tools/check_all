@@ -1,0 +1,67 @@
+#!/usr/bin/env python3
+"""Run every automated check and print one PASS/FAIL line per check.
+
+  tools/check_all            # all checks
+  tools/check_all --quick    # skip slow checks (asset re-validation)
+
+Exit code 0 only if every check that ran passed. Checks that cannot run in this environment
+(for example Godot not installed yet) are reported as SKIP, and SKIP never counts as a pass
+for a milestone gate.
+"""
+from __future__ import annotations
+
+import argparse
+import shutil
+import subprocess
+import sys
+import time
+from pathlib import Path
+
+REPO = Path(__file__).resolve().parent.parent
+
+
+def run(name: str, cmd: list[str], cwd: Path = REPO) -> tuple[str, str, float]:
+    start = time.time()
+    proc = subprocess.run(cmd, cwd=cwd, capture_output=True, text=True)
+    took = time.time() - start
+    out = (proc.stdout + proc.stderr).strip()
+    if proc.returncode == 0:
+        return "PASS", "", took
+    tail = "\n".join(out.splitlines()[-25:])
+    return "FAIL", tail, took
+
+
+def main() -> int:
+    parser = argparse.ArgumentParser()
+    parser.add_argument("--quick", action="store_true")
+    args = parser.parse_args()
+
+    checks: list[tuple[str, list[str] | None, str]] = [
+        ("data validation", [sys.executable, "tools/validate_data.py"], ""),
+        ("python tests", [sys.executable, "-m", "pytest", "-q", "tests"], ""),
+    ]
+    if not args.quick:
+        checks.append(("asset validation", [sys.executable, "tools/validate_asset.py"], ""))
+    if shutil.which("godot"):
+        checks.append(("godot project loads", ["tools/godot_smoke.sh"], ""))
+        checks.append(("godot unit tests", ["tools/run_tests.sh"], ""))
+    else:
+        checks.append(("godot project loads", None, "godot not installed (see tools/env/setup_cloud.sh)"))
+        checks.append(("godot unit tests", None, "godot not installed"))
+
+    failed = 0
+    for name, cmd, skip_reason in checks:
+        if cmd is None:
+            print(f"SKIP  {name}: {skip_reason}")
+            continue
+        status, detail, took = run(name, cmd)
+        print(f"{status}  {name} ({took:.1f} s)")
+        if status == "FAIL":
+            failed += 1
+            print("      " + detail.replace("\n", "\n      "))
+    print("ALL CHECKS PASSED" if not failed else f"{failed} CHECK(S) FAILED")
+    return 1 if failed else 0
+
+
+if __name__ == "__main__":
+    sys.exit(main())
