@@ -39,8 +39,21 @@ pip install -q --break-system-packages \
 
 log "Godot $GODOT_TAG"
 mkdir -p "$CACHE_DIR"
+PARTS=("$REPO"/tools/env/bin/godot-4.7.2-linux-x86_64.xz.part*)
 if [[ -x "$GODOT_BIN" ]] && "$GODOT_BIN" --version 2>/dev/null | grep -q "^4.7.2.stable"; then
   echo "cached binary found: $("$GODOT_BIN" --version)"
+elif [[ -f "${PARTS[0]}" ]]; then
+  # Binary committed to the repo as split xz parts (Git LFS uploads are blocked in the cloud
+  # workspace). Reassemble, check against the recorded SHA-256, and install.
+  echo "restoring binary from tools/env/bin ..."
+  cat "${PARTS[@]}" | xz -dc > "$GODOT_BIN.tmp"
+  expected="$(cat "$REPO/tools/env/bin/godot-4.7.2-linux-x86_64.sha256")"
+  actual="$(sha256sum "$GODOT_BIN.tmp" | cut -c1-64)"
+  if [[ "$expected" != "$actual" ]]; then
+    echo "checksum mismatch for restored Godot binary"; rm -f "$GODOT_BIN.tmp"; exit 1
+  fi
+  mv "$GODOT_BIN.tmp" "$GODOT_BIN"
+  chmod +x "$GODOT_BIN"
 else
   mkdir -p "$TOOLS_DIR"
   if [[ ! -d "$TOOLS_DIR/godot-src" ]]; then

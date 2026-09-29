@@ -10,7 +10,7 @@ Acceptance criteria are written before work starts. Refine them during step 2 of
 - 2 CPU cores, 7 GB RAM, no GPU. Software rendering through Mesa: llvmpipe for OpenGL, lavapipe for Vulkan (`mesa-vulkan-drivers`). Virtual display through `xvfb-run`.
 - Blender 4.5 LTS works as the `bpy` Python module (`pip install bpy==4.5.4 --break-system-packages`). Measured on a test scene at 640×480: Cycles CPU 14 s, Workbench 2 s, Eevee 104 s.
 - Network: PyPI, npm, Ubuntu apt and `git clone` from GitHub work. GitHub release downloads, download.blender.org and tuxfamily.org are blocked by policy. Do not try to route around blocks.
-- Godot cannot be downloaded as a binary here, so it is compiled from source (`git clone --branch 4.7.2-stable`, `scons platform=linuxbsd target=editor`). This takes 1 to 2 hours on 2 cores. Cache the binary: see M0-02.
+- Godot cannot be downloaded as a binary here, so it is compiled from source (`git clone --branch 4.7.2-stable`, `scons platform=linuxbsd target=editor`). This takes 1 to 2 hours on 2 cores. The binary is committed in `tools/env/bin/`; `tools/env/setup_cloud.sh` restores it (no compile needed).
 - The container is temporary. Work that is not pushed to a remote repository or delivered as files is lost when the session ends.
 - Absolute frame-rate targets can only be checked on a GPU machine. Here, record relative numbers and flag GPU checks as pending in KNOWN_ISSUES.md.
 
@@ -24,10 +24,11 @@ Exit gate: two bots join a server, move, target and auto-attack for 5 minutes wi
 - [x] `docs/DESIGN.md`, `BACKLOG.md`, `DECISIONS.md`, `CHANGELOG.md`, `KNOWN_ISSUES.md`, `CLAUDE.md` and `README.md` exist.
 - [x] Git repository initialized on branch `main` with a first commit.
 
-### M0-02 Reproducible tool setup `[doing]`
+### M0-02 Reproducible tool setup `[done]`
 - [x] `tools/env/setup_cloud.sh` installs apt packages, `bpy`, `scons` and GdUnit4 prerequisites, and builds or restores Godot 4.7.2, from a clean container.
-- [ ] (blocked: needs the project's GitHub repository) The compiled Godot editor binary is stored where it survives the session (a release asset or LFS file in the project's own remote repository), and the script restores it instead of recompiling when it is available.
+- [x] The compiled Godot editor binary is stored where it survives the session (a release asset or LFS file in the project's own remote repository), and the script restores it instead of recompiling when it is available.
 - [x] `godot --version` prints `4.7.2.stable`; `godot --headless --quit` exits with code 0.
+- [x] Stored as split xz parts in `tools/env/bin/` (Git LFS uploads are blocked in the cloud workspace); setup restores it in seconds after checking its SHA-256.
 
 ### M0-03 Godot project skeleton `[done]`
 - [x] `/game/project.godot` uses the Forward+ renderer, with the folder layout from DESIGN.md (`core`, `net`, `ui`, `assets`, `scenes`).
