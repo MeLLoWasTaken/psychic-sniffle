@@ -5,61 +5,185 @@
   "description": "Every starting number from docs/DESIGN.md 'Core combat system' and 'Game modes'. Change numbers here, never in code.",
   "type": "object",
   "additionalProperties": false,
-  "required": ["simulation", "pacing", "movement", "health", "damage", "resources", "crowd_control", "ranges", "arena", "battleground", "rating", "talents"],
+  "required": [
+    "simulation",
+    "pacing",
+    "movement",
+    "health",
+    "damage",
+    "resources",
+    "crowd_control",
+    "ranges",
+    "arena",
+    "battleground",
+    "rating",
+    "talents",
+    "audio"
+  ],
   "properties": {
     "simulation": {
-      "type": "object", "additionalProperties": false,
-      "required": ["tick_rate_hz", "snapshot_rate_hz", "interpolation_delay_ticks", "lag_compensation_max_ms"],
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "tick_rate_hz",
+        "snapshot_rate_hz",
+        "interpolation_delay_ticks",
+        "lag_compensation_max_ms"
+      ],
       "properties": {
-        "tick_rate_hz": {"type": "integer", "minimum": 1},
-        "snapshot_rate_hz": {"type": "integer", "minimum": 1},
-        "interpolation_delay_ticks": {"type": "integer", "minimum": 0},
-        "lag_compensation_max_ms": {"type": "integer", "minimum": 0}
+        "tick_rate_hz": {
+          "type": "integer",
+          "minimum": 1
+        },
+        "snapshot_rate_hz": {
+          "type": "integer",
+          "minimum": 1
+        },
+        "interpolation_delay_ticks": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "lag_compensation_max_ms": {
+          "type": "integer",
+          "minimum": 0
+        }
       }
     },
     "pacing": {
-      "type": "object", "additionalProperties": false,
-      "required": ["gcd_s", "gcd_min_s", "gcd_energy_s", "spell_queue_window_ms", "spell_queue_window_max_ms"],
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "gcd_s",
+        "gcd_min_s",
+        "gcd_energy_s",
+        "spell_queue_window_ms",
+        "spell_queue_window_max_ms"
+      ],
       "properties": {
-        "gcd_s": {"type": "number"},
-        "gcd_min_s": {"type": "number"},
-        "gcd_energy_s": {"type": "number"},
-        "spell_queue_window_ms": {"type": "integer"},
-        "spell_queue_window_max_ms": {"type": "integer"}
+        "gcd_s": {
+          "type": "number"
+        },
+        "gcd_min_s": {
+          "type": "number"
+        },
+        "gcd_energy_s": {
+          "type": "number"
+        },
+        "spell_queue_window_ms": {
+          "type": "integer"
+        },
+        "spell_queue_window_max_ms": {
+          "type": "integer"
+        }
       }
     },
     "movement": {
-      "type": "object", "additionalProperties": false,
-      "required": ["run_speed_mps", "jump_velocity_mps", "gravity_mps2", "backpedal_speed_mult"],
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "run_speed_mps",
+        "jump_velocity_mps",
+        "gravity_mps2",
+        "backpedal_speed_mult"
+      ],
       "properties": {
-        "run_speed_mps": {"type": "number"},
-        "jump_velocity_mps": {"type": "number"},
-        "gravity_mps2": {"type": "number"},
-        "backpedal_speed_mult": {"type": "number"}
+        "run_speed_mps": {
+          "type": "number"
+        },
+        "jump_velocity_mps": {
+          "type": "number"
+        },
+        "gravity_mps2": {
+          "type": "number"
+        },
+        "backpedal_speed_mult": {
+          "type": "number"
+        }
       }
     },
     "health": {
-      "type": "object", "additionalProperties": false,
-      "required": ["dps", "healer", "tank", "support_dps"],
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "dps",
+        "healer",
+        "tank",
+        "support_dps"
+      ],
       "properties": {
-        "dps": {"type": "integer"}, "healer": {"type": "integer"}, "tank": {"type": "integer"}, "support_dps": {"type": "integer"}
+        "dps": {
+          "type": "integer"
+        },
+        "healer": {
+          "type": "integer"
+        },
+        "tank": {
+          "type": "integer"
+        },
+        "support_dps": {
+          "type": "integer"
+        }
       }
     },
     "damage": {
-      "type": "object", "additionalProperties": false,
-      "required": ["crit_multiplier", "base_crit_chance", "armor_reduction", "auto_attack"],
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "crit_multiplier",
+        "base_crit_chance",
+        "armor_reduction",
+        "auto_attack"
+      ],
       "properties": {
-        "crit_multiplier": {"type": "number"},
-        "base_crit_chance": {"type": "number"},
+        "crit_multiplier": {
+          "type": "number"
+        },
+        "base_crit_chance": {
+          "type": "number"
+        },
         "armor_reduction": {
-          "type": "object", "additionalProperties": false,
-          "required": ["cloth", "leather", "mail", "plate"],
-          "properties": {"cloth": {"type": "number"}, "leather": {"type": "number"}, "mail": {"type": "number"}, "plate": {"type": "number"}}
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "cloth",
+            "leather",
+            "mail",
+            "plate"
+          ],
+          "properties": {
+            "cloth": {
+              "type": "number"
+            },
+            "leather": {
+              "type": "number"
+            },
+            "mail": {
+              "type": "number"
+            },
+            "plate": {
+              "type": "number"
+            }
+          }
         },
         "auto_attack": {
-          "type": "object", "additionalProperties": false,
-          "required": ["range_m", "swing_interval_s", "base_damage"],
-          "properties": {"range_m": {"type": "number"}, "swing_interval_s": {"type": "number"}, "base_damage": {"type": "number"}}
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "range_m",
+            "swing_interval_s",
+            "base_damage"
+          ],
+          "properties": {
+            "range_m": {
+              "type": "number"
+            },
+            "swing_interval_s": {
+              "type": "number"
+            },
+            "base_damage": {
+              "type": "number"
+            }
+          }
         }
       }
     },
@@ -68,81 +192,242 @@
       "description": "Per-resource pool and regeneration settings, keyed by resource name.",
       "additionalProperties": {
         "type": "object",
-        "required": ["max"],
+        "required": [
+          "max"
+        ],
         "properties": {
-          "max": {"type": "number"},
-          "regen_per_s": {"type": "number"},
-          "decay_per_s_out_of_combat": {"type": "number"},
-          "gain_per_damage_dealt_pct": {"type": "number"},
-          "gain_per_damage_taken_pct": {"type": "number"},
-          "recharge_s": {"type": "number"}
+          "max": {
+            "type": "number"
+          },
+          "regen_per_s": {
+            "type": "number"
+          },
+          "decay_per_s_out_of_combat": {
+            "type": "number"
+          },
+          "gain_per_damage_dealt_pct": {
+            "type": "number"
+          },
+          "gain_per_damage_taken_pct": {
+            "type": "number"
+          },
+          "recharge_s": {
+            "type": "number"
+          }
         }
       }
     },
     "crowd_control": {
-      "type": "object", "additionalProperties": false,
-      "required": ["dr_multipliers", "dr_reset_s", "max_cc_duration_s", "break_free_cooldown_s", "disorient_break_threshold_pct"],
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "dr_multipliers",
+        "dr_reset_s",
+        "max_cc_duration_s",
+        "break_free_cooldown_s",
+        "disorient_break_threshold_pct"
+      ],
       "properties": {
-        "dr_multipliers": {"type": "array", "items": {"type": "number"}},
-        "dr_reset_s": {"type": "number"},
-        "max_cc_duration_s": {"type": "number"},
-        "break_free_cooldown_s": {"type": "number"},
-        "disorient_break_threshold_pct": {"type": "number"}
+        "dr_multipliers": {
+          "type": "array",
+          "items": {
+            "type": "number"
+          }
+        },
+        "dr_reset_s": {
+          "type": "number"
+        },
+        "max_cc_duration_s": {
+          "type": "number"
+        },
+        "break_free_cooldown_s": {
+          "type": "number"
+        },
+        "disorient_break_threshold_pct": {
+          "type": "number"
+        }
       }
     },
     "ranges": {
-      "type": "object", "additionalProperties": false,
-      "required": ["melee_m", "ranged_m", "heal_m"],
-      "properties": {"melee_m": {"type": "number"}, "ranged_m": {"type": "number"}, "heal_m": {"type": "number"}}
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "melee_m",
+        "ranged_m",
+        "heal_m"
+      ],
+      "properties": {
+        "melee_m": {
+          "type": "number"
+        },
+        "ranged_m": {
+          "type": "number"
+        },
+        "heal_m": {
+          "type": "number"
+        }
+      }
     },
     "arena": {
-      "type": "object", "additionalProperties": false,
-      "required": ["prep_phase_s", "dampening_start_s", "dampening_start_1v1_s", "dampening_step_pct", "dampening_interval_s", "time_limit_s", "time_limit_1v1_s", "pickup_spawn_s"],
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "prep_phase_s",
+        "dampening_start_s",
+        "dampening_start_1v1_s",
+        "dampening_step_pct",
+        "dampening_interval_s",
+        "time_limit_s",
+        "time_limit_1v1_s",
+        "pickup_spawn_s"
+      ],
       "properties": {
-        "prep_phase_s": {"type": "number"},
-        "dampening_start_s": {"type": "number"},
-        "dampening_start_1v1_s": {"type": "number"},
-        "dampening_step_pct": {"type": "number"},
-        "dampening_interval_s": {"type": "number"},
-        "time_limit_s": {"type": "number"},
-        "time_limit_1v1_s": {"type": "number"},
-        "pickup_spawn_s": {"type": "number"}
+        "prep_phase_s": {
+          "type": "number"
+        },
+        "dampening_start_s": {
+          "type": "number"
+        },
+        "dampening_start_1v1_s": {
+          "type": "number"
+        },
+        "dampening_step_pct": {
+          "type": "number"
+        },
+        "dampening_interval_s": {
+          "type": "number"
+        },
+        "time_limit_s": {
+          "type": "number"
+        },
+        "time_limit_1v1_s": {
+          "type": "number"
+        },
+        "pickup_spawn_s": {
+          "type": "number"
+        }
       }
     },
     "battleground": {
-      "type": "object", "additionalProperties": false,
-      "required": ["respawn_wave_s", "flag_carrier_damage_step_pct", "flag_carrier_step_s", "ctf_captures_to_win", "ctf_time_limit_s", "rc_points_to_win", "rc_nodes", "rc_time_limit_s"],
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "respawn_wave_s",
+        "flag_carrier_damage_step_pct",
+        "flag_carrier_step_s",
+        "ctf_captures_to_win",
+        "ctf_time_limit_s",
+        "rc_points_to_win",
+        "rc_nodes",
+        "rc_time_limit_s"
+      ],
       "properties": {
-        "respawn_wave_s": {"type": "number"},
-        "flag_carrier_damage_step_pct": {"type": "number"},
-        "flag_carrier_step_s": {"type": "number"},
-        "ctf_captures_to_win": {"type": "integer"},
-        "ctf_time_limit_s": {"type": "number"},
-        "rc_points_to_win": {"type": "integer"},
-        "rc_nodes": {"type": "integer"},
-        "rc_time_limit_s": {"type": "number"}
+        "respawn_wave_s": {
+          "type": "number"
+        },
+        "flag_carrier_damage_step_pct": {
+          "type": "number"
+        },
+        "flag_carrier_step_s": {
+          "type": "number"
+        },
+        "ctf_captures_to_win": {
+          "type": "integer"
+        },
+        "ctf_time_limit_s": {
+          "type": "number"
+        },
+        "rc_points_to_win": {
+          "type": "integer"
+        },
+        "rc_nodes": {
+          "type": "integer"
+        },
+        "rc_time_limit_s": {
+          "type": "number"
+        }
       }
     },
     "rating": {
-      "type": "object", "additionalProperties": false,
-      "required": ["system", "start_rating", "queue_widen_points", "queue_widen_interval_s"],
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "system",
+        "start_rating",
+        "queue_widen_points",
+        "queue_widen_interval_s"
+      ],
       "properties": {
-        "system": {"const": "glicko2"},
-        "start_rating": {"type": "number"},
-        "queue_widen_points": {"type": "number"},
-        "queue_widen_interval_s": {"type": "number"}
+        "system": {
+          "const": "glicko2"
+        },
+        "start_rating": {
+          "type": "number"
+        },
+        "queue_widen_points": {
+          "type": "number"
+        },
+        "queue_widen_interval_s": {
+          "type": "number"
+        }
       }
     },
     "talents": {
-      "type": "object", "additionalProperties": false,
-      "required": ["class_tree_points", "spec_tree_points", "spec_tree_gates", "pvp_slots", "pvp_talents_per_spec", "loadouts_per_spec"],
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "class_tree_points",
+        "spec_tree_points",
+        "spec_tree_gates",
+        "pvp_slots",
+        "pvp_talents_per_spec",
+        "loadouts_per_spec"
+      ],
       "properties": {
-        "class_tree_points": {"type": "integer"},
-        "spec_tree_points": {"type": "integer"},
-        "spec_tree_gates": {"type": "array", "items": {"type": "integer"}},
-        "pvp_slots": {"type": "integer"},
-        "pvp_talents_per_spec": {"type": "integer"},
-        "loadouts_per_spec": {"type": "integer"}
+        "class_tree_points": {
+          "type": "integer"
+        },
+        "spec_tree_points": {
+          "type": "integer"
+        },
+        "spec_tree_gates": {
+          "type": "array",
+          "items": {
+            "type": "integer"
+          }
+        },
+        "pvp_slots": {
+          "type": "integer"
+        },
+        "pvp_talents_per_spec": {
+          "type": "integer"
+        },
+        "loadouts_per_spec": {
+          "type": "integer"
+        }
+      }
+    },
+    "audio": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "weapon_impact_sounds"
+      ],
+      "properties": {
+        "weapon_impact_sounds": {
+          "type": "object",
+          "description": "Weapon type -> impact sound (an AudioStreamRandomizer in game/assets/audio/sfx).",
+          "propertyNames": {
+            "$ref": "common.schema.json#/$defs/weapon_type"
+          },
+          "additionalProperties": {
+            "enum": [
+              "impact_blunt",
+              "impact_slash",
+              "impact_pierce"
+            ]
+          }
+        }
       }
     }
   }

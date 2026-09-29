@@ -2,6 +2,12 @@
 
 One entry per build-loop iteration, newest first. Format: date, backlog ID, what changed, how it was checked.
 
+## 2026-09-29 — Weapon-type impacts and a lower heal ring (human feedback)
+- Feedback: the v2 hit sounded blunt; a sword should sound like a slash. The single hit became three families, each with three seeded variations and a Godot `AudioStreamRandomizer` (slight pitch and volume changes per play): `impact_blunt` (the v2 hit: maces, hammers, staves, fists), `impact_slash` (swords, axes, polearms: a smooth bright-to-dark swish, a short metal edge, a wet cut, a light thud) and `impact_pierce` (daggers, spears, arrows: a tight noise thunk and a sharp tip click).
+- Specs now declare a weapon (`type`, `hands`); `tuning.json` maps weapon types to impact sounds, and the validator requires a sound for every weapon type used.
+- Feedback: lower the heal's ring. Bells moved down an octave (440, 554, 659 Hz) with soft overtones so they stay bell-like.
+- Fixed from spectrograms: the slash edge rang for half a second at 3.2 kHz (shortened to about 50 ms); the slash sweep switched filters abruptly (now crossfaded). Fixed in the tests: the tonality detector's wide median misread steep filter edges in noise as tones (31-bin median now; still flags the chime-like v1 hit at 92%).
+
 ## 2026-09-29 — Sound revisions from human listening feedback
 - `weapon_impact` v2. Feedback: v1 "doesn't sound like a weapon hit; more like you scored a point". Cause: v1 was built on sustained pure tones (93% of its energy above 200 Hz sat in narrow tonal peaks), which is how a chime is built. v2 layers a broadband crack, a falling low thud with sub, a low-mid body, a crackling crunch, and metal made of narrow resonant noise bands that fade within about 0.1 s; tonal share is now 0%.
 - `holy_heal` v2. Feedback: "pretty decent, but needs to sound meatier"; the light, high ring alone lacked weight. v2 adds a rising build-up, a soft deep impact where the heal lands, a warm chord with a low octave and sub, and moves the bells down an octave at a lower level. Energy below 250 Hz rose from 20% to 84%. Two clicks found in the spectrogram (build-up noise stopping instantly; the chord's level jumping in one sample) were fixed.

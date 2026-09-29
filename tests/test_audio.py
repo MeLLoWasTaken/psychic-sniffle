@@ -16,7 +16,7 @@ from scipy import signal
 
 SFX = Path(__file__).resolve().parent.parent / "game" / "assets" / "audio" / "sfx"
 
-IMPACTS = ["weapon_impact"]
+IMPACTS = [f"impact_{kind}_{v:02d}" for kind in ("blunt", "slash", "pierce") for v in (1, 2, 3)]
 SMOOTH = ["frost_cast_loop", "holy_heal"]  # no sharp transients expected
 HEALS = ["holy_heal"]
 
@@ -27,11 +27,20 @@ def load(name: str) -> tuple[np.ndarray, int]:
 
 
 def tonal_share(x: np.ndarray, sr: int) -> float:
-    """Share of energy above 200 Hz sitting in narrow spectral peaks (20x the local median)."""
+    """Share of energy above 200 Hz sitting in narrow spectral peaks (20x the local median).
+
+    The median spans 31 bins (about 360 Hz). A much wider median (101 bins) misread steep
+    filter edges in plain noise as peaks: a noise-only pierce sound measured 31% "tonal".
+    """
     f, p = signal.welch(x, sr, nperseg=4096)
     p = p[f > 200]
-    peaks = p > 20 * signal.medfilt(p, 101)
+    peaks = p > 20 * signal.medfilt(p, 31)
     return float(p[peaks].sum() / p.sum())
+
+
+def test_tonality_detector_flags_the_chime_like_v1_hit():
+    x, sr = sf.read(Path(__file__).resolve().parent.parent / "previews" / "audio" / "v1" / "weapon_impact.ogg")
+    assert tonal_share(x, sr) > 0.8
 
 
 @pytest.mark.parametrize("name", IMPACTS)

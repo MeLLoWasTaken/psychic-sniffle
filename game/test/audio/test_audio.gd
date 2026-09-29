@@ -14,7 +14,7 @@ const REQUIRED_BUSES: Dictionary = {
 	"Voice": "Master",
 }
 const SOUNDS: Array[String] = [
-	"res://assets/audio/sfx/weapon_impact.ogg",
+	"res://assets/audio/sfx/impact_slash_01.ogg",
 	"res://assets/audio/sfx/frost_cast_loop.ogg",
 	"res://assets/audio/sfx/holy_heal.ogg",
 ]
@@ -50,3 +50,11 @@ func test_sound_plays_on_enemy_effects_bus() -> void:
 func test_frost_cast_loop_is_marked_looping_on_import() -> void:
 	var stream: AudioStreamOggVorbis = load(SOUNDS[1])
 	assert_bool(stream.loop).override_failure_message("frost_cast_loop must loop").is_true()
+
+
+func test_every_weapon_type_has_a_playable_impact_randomizer() -> void:
+	for weapon: String in Data.tuning["audio"]["weapon_impact_sounds"]:
+		var sound: String = Data.tuning["audio"]["weapon_impact_sounds"][weapon]
+		var r: AudioStreamRandomizer = load("res://assets/audio/sfx/%s.tres" % sound)
+		assert_object(r).override_failure_message("no randomizer for %s" % sound).is_not_null()
+		assert_int(r.streams_count).is_equal(3)

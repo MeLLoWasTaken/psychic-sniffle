@@ -4,21 +4,91 @@
   "title": "Specialization",
   "type": "object",
   "additionalProperties": false,
-  "required": ["id", "name", "class", "role", "range", "primary_resource", "abilities", "spec_tree", "pvp_talents", "kit_status"],
+  "required": [
+    "id",
+    "name",
+    "class",
+    "role",
+    "range",
+    "primary_resource",
+    "abilities",
+    "spec_tree",
+    "pvp_talents",
+    "kit_status",
+    "weapon"
+  ],
   "properties": {
-    "id": {"$ref": "common.schema.json#/$defs/id"},
-    "name": {"type": "string", "minLength": 1},
-    "class": {"type": "string"},
-    "description": {"type": "string"},
-    "role": {"$ref": "common.schema.json#/$defs/role"},
-    "range": {"enum": ["melee", "ranged"]},
-    "primary_resource": {"$ref": "common.schema.json#/$defs/resource"},
-    "secondary_resource": {"$ref": "common.schema.json#/$defs/resource"},
-    "health_override": {"type": "integer", "minimum": 1, "description": "Omit to use the role default from tuning.json."},
-    "abilities": {"type": "array", "items": {"type": "string"}},
-    "spec_tree": {"type": "string"},
-    "pvp_talents": {"type": "string"},
-    "kit_status": {"$ref": "common.schema.json#/$defs/status"},
-    "asset": {"type": "string", "description": "Asset spec id for this spec's character model."}
+    "id": {
+      "$ref": "common.schema.json#/$defs/id"
+    },
+    "name": {
+      "type": "string",
+      "minLength": 1
+    },
+    "class": {
+      "type": "string"
+    },
+    "description": {
+      "type": "string"
+    },
+    "role": {
+      "$ref": "common.schema.json#/$defs/role"
+    },
+    "range": {
+      "enum": [
+        "melee",
+        "ranged"
+      ]
+    },
+    "primary_resource": {
+      "$ref": "common.schema.json#/$defs/resource"
+    },
+    "secondary_resource": {
+      "$ref": "common.schema.json#/$defs/resource"
+    },
+    "health_override": {
+      "type": "integer",
+      "minimum": 1,
+      "description": "Omit to use the role default from tuning.json."
+    },
+    "abilities": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    },
+    "spec_tree": {
+      "type": "string"
+    },
+    "pvp_talents": {
+      "type": "string"
+    },
+    "kit_status": {
+      "$ref": "common.schema.json#/$defs/status"
+    },
+    "asset": {
+      "type": "string",
+      "description": "Asset spec id for this spec's character model."
+    },
+    "weapon": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "type",
+        "hands"
+      ],
+      "description": "Main weapon; picks the impact sound family and the weapon model.",
+      "properties": {
+        "type": {
+          "$ref": "common.schema.json#/$defs/weapon_type"
+        },
+        "hands": {
+          "enum": [
+            1,
+            2
+          ]
+        }
+      }
+    }
   }
 }

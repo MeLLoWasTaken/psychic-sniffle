@@ -29,11 +29,15 @@ OUT_DIR = REPO / "game" / "assets" / "audio" / "sfx"
 SAMPLE_RATE = 48000
 
 RECIPES: dict[str, tuple[callable, float, bool]] = {}  # name -> (fn, peak_dbfs, loops)
+VARIANTS: dict[str, int] = {}  # name -> number of seeded variations to render (_01, _02, ...)
 
 
-def recipe(peak_dbfs: float, loops: bool = False):
+def recipe(peak_dbfs: float, loops: bool = False, variants: int = 1):
+    """Register a recipe. Sounds heard often (hits) get several seeded variations so repeats
+    do not sound identical; the game picks one at random (AudioStreamRandomizer)."""
     def deco(fn):
         RECIPES[fn.__name__] = (fn, peak_dbfs, loops)
+        VARIANTS[fn.__name__] = variants
         return fn
     return deco
 
@@ -136,9 +140,9 @@ def make_loop(x: np.ndarray, fade_s: float = 0.25) -> np.ndarray:
 
 # ----------------------------------------------------------------------------- recipes
 
-@recipe(peak_dbfs=-3.0)
-def weapon_impact(rng: np.random.Generator) -> np.ndarray:
-    """Heavy two-handed blade hitting armour and body: crack, thud, crunch, short noisy clang.
+@recipe(peak_dbfs=-3.0, variants=3)
+def impact_blunt(rng: np.random.Generator) -> np.ndarray:
+    """Blunt weapon (mace, hammer, staff, fist) hitting armour and body: crack, thud, crunch, clang.
 
     v2 (human feedback: v1 "sounds like you scored a point"). v1 was built on sustained pure
     tones, which read as a chime. v2 has no pure tone above 200 Hz: its energy is a sharp
@@ -168,6 +172,64 @@ def weapon_impact(rng: np.random.Generator) -> np.ndarray:
     x = crack + thud + sub + chunk + crunch + clang
     x = saturate(normalize(x) * 1.0, 3.0)  # heavy saturation glues the layers and adds grit
     return simple_reverb(x, rng, length_s=0.5, mix=0.10, brightness=3500)
+
+
+@recipe(peak_dbfs=-3.0, variants=3)
+def impact_slash(rng: np.random.Generator) -> np.ndarray:
+    """Edged weapon (sword, axe) cutting through armour and body: bright edge, swish, wet cut.
+
+    Human feedback on the single weapon hit: it sounded blunt, and a sword should sound like a
+    slash. A slash is brighter and moves: the edge rings briefly as it draws across, the noise
+    sweeps downward like a blade passing, and the low thud is light.
+    """
+    t = t_axis(0.7)
+    n = len(t)
+    # 1. swish: noise bands from bright to darker, each faded in and out by an overlapping
+    #    window so the sweep is smooth (switching filters abruptly leaves clicks)
+    sw = noise(n, rng)
+    swish = np.zeros(n)
+    seg = int(0.12 * SAMPLE_RATE)
+    bands = np.linspace([5200, 9000], [1400, 3600], 6)
+    width = seg // 3
+    for i, (lo, hi) in enumerate(bands):
+        centre = int(i * (seg - width) / (len(bands) - 1)) + width // 2
+        win = np.zeros(n)
+        a = max(centre - width // 2, 0)
+        win[a:a + width] = np.hanning(width)[: min(width, n - a)]
+        swish += bandpass(sw, lo, hi) * win
+    swish *= 0.8
+    # 2. edge: bright metal "shing" from resonant noise, short (a long ring reads as a chime)
+    edge = np.zeros(n)
+    base = rng.uniform(2600, 3400)
+    for ratio, q, amp, dec in ((1.0, 18, 0.9, 0.05), (1.52, 20, 0.6, 0.04), (2.31, 22, 0.4, 0.03)):
+        edge += resonator(noise(n, rng), base * ratio, q) * env_exp(n, dec, attack_s=0.002) * amp
+    edge = highpass(edge, 1800) * 1.0
+    # 3. cut: wet, crackling mid noise (the blade through padding and flesh)
+    cut_env = grains(n, rng, per_second=1400, decay_s=0.002) * env_exp(n, 0.05, attack_s=0.001)
+    cut = bandpass(noise(n, rng), 900, 3800) * cut_env * 0.9
+    # 4. light thud: much less weight than a blunt hit
+    thud = sweep(t, 140, 70, curve=10) * env_exp(n, 0.035, attack_s=0.001) * 0.45
+    tick = highpass(noise(n, rng), 3000) * env_exp(n, 0.003, attack_s=0.0003) * 0.8
+    x = swish + edge + cut + thud + tick
+    x = saturate(normalize(x), 2.0)
+    return simple_reverb(x, rng, length_s=0.5, mix=0.10, brightness=6000)
+
+
+@recipe(peak_dbfs=-3.0, variants=3)
+def impact_pierce(rng: np.random.Generator) -> np.ndarray:
+    """Piercing weapon (dagger, spear, arrow) striking: tight thunk, sharp tip click, short and dry."""
+    t = t_axis(0.35)
+    n = len(t)
+    tip = highpass(noise(n, rng), 2500) * env_exp(n, 0.0025, attack_s=0.0002) * 1.1
+    # thunk mostly from low noise: a saturated low sine alone adds evenly spaced harmonics that
+    # read as a pitch (measured 50% tonal before this change)
+    thunk = lowpass(noise(n, rng), 450) * env_exp(n, 0.03, attack_s=0.0008) * 1.8
+    body = bandpass(noise(n, rng), 250, 1200) * env_exp(n, 0.025, attack_s=0.0008) * 0.9
+    wet_env = grains(n, rng, per_second=700, decay_s=0.002) * env_exp(n, 0.03)
+    wet = bandpass(noise(n, rng), 1200, 4000) * wet_env * 0.6
+    x = tip + thunk + body + wet
+    x = saturate(normalize(x), 1.6)
+    return simple_reverb(x, rng, length_s=0.35, mix=0.08, brightness=4000)
 
 
 @recipe(peak_dbfs=-6.0, loops=True)
@@ -201,7 +263,7 @@ def holy_heal(rng: np.random.Generator) -> np.ndarray:
     alone had no weight). v2 adds a sub and low-octave body, a soft low impact where the heal
     lands, and a rising build-up into it; the shimmer moves down an octave and is quieter.
     """
-    t = t_axis(3.0)
+    t = t_axis(3.2)
     n = len(t)
     land = int(0.22 * SAMPLE_RATE)  # the moment the heal lands
     # 1. build-up: filtered noise rising into the landing, then falling away quickly (not cut
@@ -228,19 +290,22 @@ def holy_heal(rng: np.random.Generator) -> np.ndarray:
     jump = int(0.02 * SAMPLE_RATE)
     body_env = np.concatenate([pre, np.linspace(0.2, 1.0, jump), np.ones(n - land - jump)])
     body = saturate(lowpass(body, 2500) / 6, 1.6) * body_env * env_adsr(n, 0.001, 0.4, 0.6, 1.6) * 1.2
-    # 4. shimmer: bells an octave lower than v1 and quieter, striking at the landing
+    # 4. ring: bells two octaves below v1 (feedback on v2: "lower the pitch of the ring"), each
+    #    with soft inharmonic overtones so a low bell still sounds like a bell, not a hum
     bell = np.zeros(n)
-    for f, a in ((880.0, 0.20), (1108.7, 0.15), (1318.5, 0.12), (1760.0, 0.06)):
+    for f, a in ((440.0, 0.22), (554.4, 0.16), (659.3, 0.13)):
         onset = land + int(rng.uniform(0.0, 0.05) * SAMPLE_RATE)
         seg = n - onset
-        bell[onset:] += a * np.sin(2 * np.pi * f * np.arange(seg) / SAMPLE_RATE) * env_exp(seg, 0.5)
+        ts = np.arange(seg) / SAMPLE_RATE
+        for ratio, pa, dec in ((1.0, 1.0, 0.7), (2.0, 0.35, 0.45), (2.76, 0.18, 0.3), (5.4, 0.06, 0.15)):
+            bell[onset:] += a * pa * np.sin(2 * np.pi * f * ratio * ts) * env_exp(seg, dec)
     x = build + whomp + push + normalize(body) * 0.9 + bell
     return simple_reverb(x, rng, length_s=1.6, mix=0.25, brightness=6000)
 
 
 # ----------------------------------------------------------------------------- output
 
-def render(name: str, out_dir: Path, seed: int = 1) -> Path:
+def render(name: str, out_dir: Path, seed: int = 1, stem: str | None = None) -> Path:
     fn, peak_dbfs, loops = RECIPES[name]
     rng = np.random.default_rng(seed)
     x = normalize(fn(rng)) * 10 ** (peak_dbfs / 20)
@@ -250,7 +315,7 @@ def render(name: str, out_dir: Path, seed: int = 1) -> Path:
         f = min(int(0.02 * SAMPLE_RATE), len(x))
         x[-f:] *= np.linspace(1, 0, f)
     out_dir.mkdir(parents=True, exist_ok=True)
-    path = out_dir / f"{name}.ogg"
+    path = out_dir / f"{stem or name}.ogg"
     # Vorbis encoding can raise peaks by 1 to 2 dB; measure the encoded file and correct.
     target = 10 ** (peak_dbfs / 20)
     for _ in range(4):
@@ -330,12 +395,35 @@ def main(argv: list[str]) -> int:
     if unknown or not names:
         parser.error(f"unknown or missing sound names: {unknown or '(none)'}; use --list")
     for name in names:
-        path = render(name, args.out, args.seed)
-        print(f"WROTE {path.relative_to(REPO)}")
-        if args.spectrograms:
-            png = spectrogram(path, args.spectrograms / f"{name}.png")
-            print(f"SPECTROGRAM {png.relative_to(REPO)}")
+        count = VARIANTS.get(name, 1)
+        paths = []
+        for v in range(1, count + 1):
+            stem = f"{name}_{v:02d}" if count > 1 else name
+            path = render(name, args.out, args.seed + v - 1, stem)
+            paths.append(path)
+            print(f"WROTE {path.relative_to(REPO)}")
+            if args.spectrograms:
+                png = spectrogram(path, args.spectrograms / f"{stem}.png")
+                print(f"SPECTROGRAM {png.relative_to(REPO)}")
+        if count > 1:
+            print(f"WROTE {write_randomizer(name, paths).relative_to(REPO)}")
     return 0
+
+
+def write_randomizer(name: str, paths: list[Path]) -> Path:
+    """Godot AudioStreamRandomizer that picks one variation per play, with slight pitch and
+    volume changes, so repeated hits never sound identical. Play `res://.../<name>.tres`."""
+    lines = [f'[gd_resource type="AudioStreamRandomizer" load_steps={len(paths) + 1} format=3]', ""]
+    for i, p in enumerate(paths):
+        res = "res://" + str(p.relative_to(REPO / "game"))
+        lines.append(f'[ext_resource type="AudioStream" path="{res}" id="{i + 1}"]')
+    lines += ["", "[resource]", "random_pitch = 1.06", "random_volume_offset_db = 1.5",
+              f"streams_count = {len(paths)}"]
+    for i in range(len(paths)):
+        lines += [f'stream_{i}/stream = ExtResource("{i + 1}")', f"stream_{i}/weight = 1.0"]
+    out = paths[0].parent / f"{name}.tres"
+    out.write_text("\n".join(lines) + "\n")
+    return out
 
 
 if __name__ == "__main__":

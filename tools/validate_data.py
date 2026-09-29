@@ -164,6 +164,8 @@ def validate(data_dir: Path) -> list[str]:
             report.error(rel, f"asset '{s['asset']}' not found")
         if s["kit_status"] == "complete":
             _check_kit(report, rel, s, abilities, auras)
+        if tuning and s["weapon"]["type"] not in tuning["audio"]["weapon_impact_sounds"]:
+            report.error(rel, f"weapon type '{s['weapon']['type']}' has no impact sound in tuning.json audio")
 
     # ---- abilities and auras ------------------------------------------------
     owners = set(classes) | set(specs) | {"shared"}

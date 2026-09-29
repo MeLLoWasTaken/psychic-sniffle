@@ -9,25 +9,74 @@
       "description": "Lowercase snake_case identifier, unique within its data type."
     },
     "school": {
-      "enum": ["physical", "fire", "frost", "shadow", "holy", "nature", "storm", "blood", "fel", "time"]
+      "enum": [
+        "physical",
+        "fire",
+        "frost",
+        "shadow",
+        "holy",
+        "nature",
+        "storm",
+        "blood",
+        "fel",
+        "time"
+      ]
     },
     "resource": {
-      "enum": ["mana", "rage", "energy", "combo_points", "focus", "runes", "runic_power", "fury", "essence"]
+      "enum": [
+        "mana",
+        "rage",
+        "energy",
+        "combo_points",
+        "focus",
+        "runes",
+        "runic_power",
+        "fury",
+        "essence"
+      ]
     },
     "armor": {
-      "enum": ["cloth", "leather", "mail", "plate"]
+      "enum": [
+        "cloth",
+        "leather",
+        "mail",
+        "plate"
+      ]
     },
     "role": {
-      "enum": ["dps", "healer", "tank", "support_dps"]
+      "enum": [
+        "dps",
+        "healer",
+        "tank",
+        "support_dps"
+      ]
     },
     "cc_category": {
-      "enum": ["none", "stun", "incapacitate", "disorient", "silence", "root", "disarm", "knockback"]
+      "enum": [
+        "none",
+        "stun",
+        "incapacitate",
+        "disorient",
+        "silence",
+        "root",
+        "disarm",
+        "knockback"
+      ]
     },
     "dispel_type": {
-      "enum": ["none", "magic", "curse", "poison", "disease"]
+      "enum": [
+        "none",
+        "magic",
+        "curse",
+        "poison",
+        "disease"
+      ]
     },
     "status": {
-      "enum": ["draft", "complete"],
+      "enum": [
+        "draft",
+        "complete"
+      ],
       "description": "Draft content gets structural checks only; complete content also gets design-rule checks (kit template, talent point totals)."
     },
     "hex_color": {
@@ -36,9 +85,27 @@
     },
     "vec3": {
       "type": "array",
-      "items": {"type": "number"},
+      "items": {
+        "type": "number"
+      },
       "minItems": 3,
       "maxItems": 3
+    },
+    "weapon_type": {
+      "enum": [
+        "sword",
+        "axe",
+        "polearm",
+        "mace",
+        "hammer",
+        "staff",
+        "fist",
+        "dagger",
+        "spear",
+        "bow",
+        "wand",
+        "glaive"
+      ]
     }
   }
 }
