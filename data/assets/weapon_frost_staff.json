@@ -16,8 +16,9 @@
   },
   "params": {
     "type": "staff",
-    "below_m": 0.95,
-    "above_m": 0.8
+    "below_m": 0.7,
+    "above_m": 1.05,
+    "hold": "upright"
   },
   "out": "game/assets/weapons/weapon_frost_staff.glb",
   "status": "draft"

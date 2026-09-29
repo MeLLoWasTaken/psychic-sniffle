@@ -5,8 +5,16 @@ extends GdUnitTestSuite
 const BONES: Array[String] = ["root", "pelvis", "spine", "chest", "neck", "head", "clavicle_l", "upperarm_l",
 	"forearm_l", "hand_l", "clavicle_r", "upperarm_r", "forearm_r", "hand_r", "thigh_l", "calf_l", "foot_l",
 	"thigh_r", "calf_r", "foot_r"]
-const CHARACTERS: Array[String] = ["res://assets/characters/char_warblade_carnage.glb"]
-const WEAPONS: Array[String] = ["res://assets/weapons/weapon_greatsword.glb"]
+const CHARACTERS: Array[String] = [
+	"res://assets/characters/char_warblade_carnage.glb",
+	"res://assets/characters/char_arcanist_rime.glb",
+	"res://assets/characters/char_oracle_grace.glb",
+]
+const WEAPONS: Array[String] = [
+	"res://assets/weapons/weapon_greatsword.glb",
+	"res://assets/weapons/weapon_frost_staff.glb",
+	"res://assets/weapons/weapon_mace.glb",
+]
 
 
 func _triangles(root: Node) -> int:
@@ -51,4 +59,5 @@ func test_weapons_hold_at_the_grip() -> void:
 		for n: Node in root.find_children("*", "MeshInstance3D", true, false):
 			box = (n as MeshInstance3D).mesh.get_aabb()
 		assert_bool(box.position.y < 0.0 and box.end.y > 0.0).override_failure_message("%s: grip is not at the origin" % path).is_true()
-		assert_float(box.size.y).is_between(0.8, 2.2)
+		# scale sanity: a mace (0.95 m) up to an oversized staff (2.4 m); DECISIONS.md, M1-21
+		assert_float(box.size.y).override_failure_message("%s is %.2f m long" % [path, box.size.y]).is_between(0.5, 2.6)

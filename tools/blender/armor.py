@@ -311,6 +311,18 @@ def _jagged(P, z_hem, depth, count, seed):
     return P[:, 2] - (z_hem + tear)   # positive above the hem line (kept), negative below (cut)
 
 
+def _draped_torso(torso, j):
+    """The torso as cloth sees it: the chest and back filled out with a broad smooth volume,
+    so a robe hangs over the pecs and shoulder blades instead of hugging them."""
+    z = lambda name: float(j[name][2])  # noqa: E731
+    c = np.array([0.0, 0.01, (z("chest") + z("chest_top")) / 2])
+
+    def fn(P):
+        chest = sdf.sd_round_box(P, c, (0.17, 0.125, 0.12), 0.1)
+        return sdf.smin(torso(P), chest, 0.08)
+    return fn
+
+
 def arcanist_robe(j: dict, build: str = "lean") -> list[Piece]:
     """Frost mage: long hooded robe with a torn hem, layered collar with ice crystals, wrapped
     sleeves, sash, bracers and soft boots. Cloth pieces take their skin weights from the body."""
@@ -319,7 +331,7 @@ def arcanist_robe(j: dict, build: str = "lean") -> list[Piece]:
     ev = lambda names: (lambda P, s=sdf.subset(body, names): sdf.eval_points(s, P))  # noqa: E731
     z = lambda name: float(j[name][2])  # noqa: E731
     torso = ev({"pelvis", "abdomen", "ribcage", "girdle", "pec", "lat", "trap", "glute"})
-    legs = ev({"thigh", "quad", "adductor", "knee", "shin", "calf"})
+    draped = _draped_torso(torso, j)
     pieces: list[Piece] = []
 
     # robe: the torso shell continues into a skirt that flares from the hips to the ankles
@@ -327,7 +339,7 @@ def arcanist_robe(j: dict, build: str = "lean") -> list[Piece]:
     hem = z("ankle_l") + 0.1
 
     def robe(P):
-        upper = sdf.shell(torso, P, 0.008, 0.03)
+        upper = sdf.shell(draped, P, 0.008, 0.03)
         # skirt: a tapered cone around both legs, widening towards the hem
         t = np.clip((waist - P[:, 2]) / (waist - hem), 0, 1)
         radius_x = 0.2 + 0.1 * t
@@ -460,12 +472,13 @@ def oracle_vestments(j: dict, build: str = "lean") -> list[Piece]:
     ev = lambda names: (lambda P, s=sdf.subset(body, names): sdf.eval_points(s, P))  # noqa: E731
     z = lambda name: float(j[name][2])  # noqa: E731
     torso = ev({"pelvis", "abdomen", "ribcage", "girdle", "pec", "lat", "trap", "glute"})
+    draped = _draped_torso(torso, j)
     pieces: list[Piece] = []
     waist = z("spine") - 0.08
     hem = z("ankle_l") + 0.07
 
     def robe(P):
-        upper = sdf.shell(torso, P, 0.008, 0.03)
+        upper = sdf.shell(draped, P, 0.008, 0.03)
         t = np.clip((waist - P[:, 2]) / (waist - hem), 0, 1)
         radius_x = 0.2 + 0.07 * t
         radius_y = 0.15 + 0.07 * t
@@ -486,7 +499,7 @@ def oracle_vestments(j: dict, build: str = "lean") -> list[Piece]:
 
     # tabard: a long front panel with a gold border, from the belt to the shins
     def tabard(P):
-        top, bottom = waist + 0.02, hem + 0.12
+        top, bottom = waist + 0.02, z("knee_l") + 0.08  # ends above the knee, so the legs swing behind it
         mid_z = (top + bottom) / 2
         t = np.clip((waist - P[:, 2]) / (waist - hem), 0, 1)
         front_y = -(0.15 + 0.07 * t) - 0.03            # just in front of the skirt
@@ -495,7 +508,7 @@ def oracle_vestments(j: dict, build: str = "lean") -> list[Piece]:
         point = sdf.half_space(P, v(0, 0, bottom), (0.6, 0, 1)) * 0.0  # square hem
         return np.maximum(panel, point - 1.0)
     pieces.append(Piece("tabard", "pelvis", "trim_cloth", tabard, v(-0.2, -0.35, hem), v(0.2, -0.1, waist + 0.1), 400,
-                        facet_deg=40, skin="transfer"))
+                        facet_deg=40))  # rigid on the pelvis: weights from both thighs tore it apart
 
     # belt with a gold clasp
     def belt(P):
@@ -524,10 +537,10 @@ def oracle_vestments(j: dict, build: str = "lean") -> list[Piece]:
     def halo(P):
         q = P - halo_c
         r = np.sqrt(q[:, 0] ** 2 + q[:, 2] ** 2)
-        ring = np.sqrt((r - 0.3) ** 2 + q[:, 1] ** 2) - 0.018
+        ring = np.sqrt((r - 0.25) ** 2 + q[:, 1] ** 2) - 0.016
         ang = np.arctan2(q[:, 2], q[:, 0])
-        rays = np.maximum(np.abs(q[:, 1]) - 0.008, np.abs(r - 0.37) - 0.05 * (0.5 + 0.5 * np.cos(ang * 12)) ** 8)
-        rays = np.maximum(rays, 0.33 - r)
+        rays = np.maximum(np.abs(q[:, 1]) - 0.008, np.abs(r - 0.305) - 0.042 * (0.5 + 0.5 * np.cos(ang * 12)) ** 8)
+        rays = np.maximum(rays, 0.27 - r)
         return np.minimum(ring, rays)
     pieces.append(Piece("halo", "chest", "holy", halo, halo_c - v(0.5, 0.1, 0.5), halo_c + v(0.5, 0.1, 0.5), 1200,
                         facet_deg=30, voxel=0.005))

@@ -181,8 +181,38 @@ def evaluate(shape: Shape, voxel: float, floor_z: float | None = 0.0):
 def extract(shape: Shape, voxel: float = 0.006, floor_z: float | None = 0.0):
     """Closed triangle mesh of the shape's surface: (vertices N x 3, faces M x 3)."""
     f, origin = evaluate(shape, voxel, floor_z)
-    verts, faces, _normals, _vals = measure.marching_cubes(f, level=0.0, spacing=(voxel, voxel, voxel))
+    verts, faces = surface(f, voxel)
     return verts + origin, faces
+
+
+def surface(f: np.ndarray, voxel: float, min_island_voxels: float = 3.0):
+    """Marching cubes on a sampled field, made safe for welding and triangle reduction.
+
+    A sample on (or within microns of) the surface puts the vertices of every cube edge that
+    meets it at the same point; welding them leaves zero-area triangles, and collapsing those
+    (in the build or in the glTF exporter) tears holes and fins into the mesh. So every sample
+    is kept at least 1% of a voxel away from the surface, which moves the surface by at most
+    that much. Separate islands smaller than `min_island_voxels` across are sampling noise
+    where a thin feature grazes a grid point; the triangle reduction would flatten each into a
+    pair of back-to-back triangles, so they are dropped."""
+    tau = np.float32(0.01 * voxel)
+    f = np.where(np.abs(f) < tau, np.where(f < 0, -tau, tau), f).astype(np.float32)
+    verts, faces, _normals, _vals = measure.marching_cubes(f, level=0.0, spacing=(voxel, voxel, voxel))
+    if len(faces) == 0:
+        return verts, faces
+    from scipy.sparse import coo_matrix
+    from scipy.sparse.csgraph import connected_components
+    rows = np.repeat(np.arange(len(faces)), 3)
+    graph = coo_matrix((np.ones(len(rows)), (rows, faces.ravel())), shape=(len(faces), len(verts)))
+    _count, label = connected_components((graph @ graph.T).tocsr(), directed=False)
+    keep = np.zeros(len(faces), bool)
+    for island in np.unique(label):
+        members = label == island
+        pts = verts[faces[members].ravel()]
+        if (pts.max(axis=0) - pts.min(axis=0)).max() >= min_island_voxels * voxel:
+            keep |= members
+    used, faces = np.unique(faces[keep], return_inverse=True)
+    return verts[used], faces.reshape(-1, 3)
 
 
 # ----------------------------------------------------------------------------- free-form fields
@@ -211,7 +241,7 @@ def extract_field(fn, lo, hi, voxel: float = 0.006):
     P = np.stack([gx.ravel(), gy.ravel(), gz.ravel()], axis=1)
     f = fn(P).reshape(gx.shape).astype(np.float32)
     f[0, :, :] = f[-1, :, :] = f[:, 0, :] = f[:, -1, :] = f[:, :, 0] = f[:, :, -1] = 1.0
-    verts, faces, _n, _v = measure.marching_cubes(f, level=0.0, spacing=(voxel, voxel, voxel))
+    verts, faces = surface(f, voxel)
     return verts + lo, faces
 
 

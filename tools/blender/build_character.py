@@ -43,7 +43,7 @@ def materials(pal: dict) -> dict:
         "trim_cloth": kit.kit_material("trim_cloth", pal.get("trim_cloth", "#e6ddc8"), roughness=0.9, edge=0.1,
                                        cavity=0.45),
         "holy": kit.kit_material("holy", pal.get("holy", "#ffd98a"), roughness=0.3, metallic=0.2, edge=0.5,
-                                 cavity=0.3, emission=1.0),
+                                 cavity=0.3, emission=0.6),
     }
 
 
@@ -64,7 +64,10 @@ def mesh_object(name: str, verts, faces) -> bpy.types.Object:
     return o
 
 
-def reduce(o: bpy.types.Object, tris: int, facet_deg: float) -> None:
+MIN_ISLAND_TRIS = 24  # a separate part (a spike, a stud) never drops below this in the reduction
+
+
+def _decimate(o: bpy.types.Object, tris: int) -> None:
     bpy.ops.object.select_all(action="DESELECT")
     o.select_set(True)
     bpy.context.view_layer.objects.active = o
@@ -74,6 +77,66 @@ def reduce(o: bpy.types.Object, tris: int, facet_deg: float) -> None:
         d = o.modifiers.new("dec", "DECIMATE")
         d.ratio = min(1.0, tris / max(len(o.data.polygons), 1))
         common.apply_all_modifiers(o)
+
+
+def _split_small_islands(o: bpy.types.Object, ratio: float) -> list[bpy.types.Object]:
+    """Move the separate parts that a uniform reduction would shrink below MIN_ISLAND_TRIS into
+    objects of their own. The collapse would flatten such a part into two back-to-back
+    triangles, which the glTF exporter then deletes as duplicates, leaving holes."""
+    import bmesh
+    bm = bmesh.new()
+    bm.from_mesh(o.data)
+    bm.faces.index_update()
+    seen, islands = set(), []
+    for f in bm.faces:
+        if f in seen:
+            continue
+        stack, island = [f], []
+        seen.add(f)
+        while stack:
+            g = stack.pop()
+            island.append(g)
+            for e in g.edges:
+                for h in e.link_faces:
+                    if h not in seen:
+                        seen.add(h)
+                        stack.append(h)
+        islands.append(island)
+    small = [i for i in islands if len(i) * ratio < MIN_ISLAND_TRIS]
+    if not small or len(small) == len(islands):
+        bm.free()
+        return []
+    parts = []
+    for island in small:
+        part_bm = bm.copy()  # same face order, so the indices match
+        part_bm.faces.index_update()
+        idx = {f.index for f in island}
+        bmesh.ops.delete(part_bm, geom=[f for f in part_bm.faces if f.index not in idx], context="FACES")
+        me = bpy.data.meshes.new(f"{o.name}_part")
+        part_bm.to_mesh(me)
+        part_bm.free()
+        part = bpy.data.objects.new(me.name, me)
+        bpy.context.scene.collection.objects.link(part)
+        parts.append(part)
+    bmesh.ops.delete(bm, geom=[f for i in small for f in i], context="FACES")
+    bm.to_mesh(o.data)
+    bm.free()
+    return parts
+
+
+def reduce(o: bpy.types.Object, tris: int, facet_deg: float) -> None:
+    ratio = min(1.0, tris / max(len(o.data.polygons), 1))
+    small = _split_small_islands(o, ratio)
+    _decimate(o, tris - sum(max(MIN_ISLAND_TRIS, round(len(p.data.polygons) * ratio)) for p in small))
+    for part in small:
+        _decimate(part, max(MIN_ISLAND_TRIS, round(len(part.data.polygons) * ratio)))
+    if small:
+        bpy.ops.object.select_all(action="DESELECT")
+        for part in small:
+            part.select_set(True)
+        o.select_set(True)
+        bpy.context.view_layer.objects.active = o
+        bpy.ops.object.join()
     kit.shade_smooth_by_angle(o, facet_deg)
 
 
@@ -102,28 +165,35 @@ def transfer_weights(o: bpy.types.Object, body: bpy.types.Object) -> None:
 
 def close_holes(o: bpy.types.Object) -> None:
     """Weld duplicate vertices and fill any small holes left after reduction and joining, so
-    the character stays a set of closed meshes (asset validation)."""
+    the character stays a set of closed meshes (asset validation).
+
+    The pieces arrive closed (sdf.surface, reduce), so this is a safety net. It must not
+    collapse short edges: a 2 mm threshold used here once pinched thin rims and spike tips
+    into edges shared by four faces and tore holes the fill could not close."""
     import bmesh
     bm = bmesh.new()
     bm.from_mesh(o.data)
     bmesh.ops.remove_doubles(bm, verts=bm.verts, dist=1e-5)
-    # zero-area slivers from the reduction are dropped by the glTF exporter, which opens holes;
-    # dissolve them here instead
-    # and needle-thin faces at spike tips (under 2 mm) are merged away by the exporter; collapse
-    # them first
-    bmesh.ops.dissolve_degenerate(bm, dist=2e-3, edges=bm.edges)
+    # zero-area slivers are dropped by the glTF exporter, which opens holes; dissolve them here
+    bmesh.ops.dissolve_degenerate(bm, dist=1e-5, edges=bm.edges)
     bmesh.ops.triangulate(bm, faces=bm.faces)
     # an edge shared by more than two faces: drop those faces and let the hole fill close it
     bad = {f for e in bm.edges if len(e.link_faces) > 2 for f in e.link_faces}
     if bad:
+        print(f"  WARNING {len(bad)} faces on edges shared by more than two faces")
         bmesh.ops.delete(bm, geom=list(bad), context="FACES")
     boundary = [e for e in bm.edges if e.is_boundary]
     if boundary:
         filled = bmesh.ops.holes_fill(bm, edges=boundary, sides=64)
         bmesh.ops.triangulate(bm, faces=filled["faces"])
-        print(f"  filled {len(filled['faces'])} small holes")
+        print(f"  WARNING filled {len(filled['faces'])} small holes")
     bm.to_mesh(o.data)
     bm.free()
+    # automatic weights can exceed 1 by a hair; the exporter then reports the mesh as invalid
+    for v in o.data.vertices:
+        for g in v.groups:
+            if g.weight > 1.0:
+                g.weight = 1.0
 
 
 def rivet(pos, normal, mat, bone: str) -> bpy.types.Object:

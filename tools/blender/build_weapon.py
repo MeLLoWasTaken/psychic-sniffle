@@ -171,12 +171,15 @@ def mace(p: dict, m: dict, rng) -> list:
         parts.append(cylinder("ring", 0.052, 0.025, (0, 0, z), sides=8, mat=m["gold"]))
     for k in range(6):
         a = k * math.tau / 6
-        f = block("flange", (0.075, 0.018, 0.2), (math.cos(a) * 0.075, math.sin(a) * 0.075, hz), rot=(0, 0, a),
+        f = block("flange", (0.095, 0.018, 0.22), (math.cos(a) * 0.085, math.sin(a) * 0.085, hz), rot=(0, 0, a),
                   bevel=0.006, mat=m["iron"], tint=random_tint(rng, 0.05))
-        for v in f.data.vertices:  # flanges narrow towards the top and bottom (a leaf shape)
-            rel = (v.co.z - hz) / 0.1
-            v.co.x -= math.cos(a) * 0.03 * rel * rel
-            v.co.y -= math.sin(a) * 0.03 * rel * rel
+        for v in f.data.vertices:  # the outer edge comes to a point at mid-height (a leaf shape)
+            radial = v.co.x * math.cos(a) + v.co.y * math.sin(a)
+            if radial > 0.09:
+                rel = abs(v.co.z - hz) / 0.11
+                pull = 0.075 * rel ** 1.5
+                v.co.x -= math.cos(a) * pull
+                v.co.y -= math.sin(a) * pull
         parts.append(f)
     parts.append(cylinder("spike", 0.03, 0.1, (0, 0, hz + 0.16), sides=8, radius_top=0.003, mat=m["gold"]))
     return parts
@@ -206,6 +209,9 @@ def main() -> None:
     parts = WEAPONS[spec["params"]["type"]](spec["params"], m, rng)
     kit.apply_transforms(parts)
     obj = common.join_objects(parts, spec["id"])
+    fused = kit.fuse_touching_parts(obj)
+    if fused:
+        print(f"  fused touching parts: removed {fused} coincident faces")
     kit.shade_smooth_by_angle(obj, 30)
     kit.bake_piece(obj, common.REPO / "previews" / "kit_textures", spec["id"], size=int(spec.get("texture_size", 1024)),
                    samples=32, bevel_normal=0.004)

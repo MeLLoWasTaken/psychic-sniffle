@@ -251,6 +251,27 @@ def jitter_vertices(obj: bpy.types.Object, rng: random.Random, amount: float) ->
         v.co += moves[key]
 
 
+def fuse_touching_parts(obj: bpy.types.Object, dist: float = 1e-5) -> int:
+    """Where two joined parts meet face to face (two cones base to base, a block on a block),
+    their touching faces coincide. Welded, as the exporter's consumers and the asset validator
+    do, those faces leave edges shared by three or four faces. Delete every face that has a
+    coincident twin, then weld, so the parts fuse into one closed surface. Returns the number
+    of faces removed."""
+    bm = bmesh.new()
+    bm.from_mesh(obj.data)
+    target = bmesh.ops.find_doubles(bm, verts=bm.verts, dist=dist)["targetmap"]
+    seen: dict[frozenset, list] = {}
+    for f in bm.faces:
+        seen.setdefault(frozenset(target.get(v, v) for v in f.verts), []).append(f)
+    twins = [f for fs in seen.values() if len(fs) > 1 for f in fs]
+    if twins:
+        bmesh.ops.delete(bm, geom=twins, context="FACES")
+    bmesh.ops.remove_doubles(bm, verts=bm.verts, dist=dist)
+    bm.to_mesh(obj.data)
+    bm.free()
+    return len(twins)
+
+
 # ----------------------------------------------------------------------------- baking
 
 def bake_piece(obj: bpy.types.Object, out_dir: Path, name: str, size: int = 1024, samples: int = 48,
@@ -412,11 +433,27 @@ def bake_piece(obj: bpy.types.Object, out_dir: Path, name: str, size: int = 1024
         me.color_attributes.remove(me.color_attributes[TINT_ATTR])
 
 
-def shrink_buried_uvs(obj: bpy.types.Object, probe: float = 0.06) -> int:
+def _uv_continuous(e, f, g, uv) -> bool:
+    """True when faces f and g use the same UVs along their shared edge e (no UV seam)."""
+    for v in e.verts:
+        a = next(l[uv].uv for l in f.loops if l.vert is v)
+        b = next(l[uv].uv for l in g.loops if l.vert is v)
+        if (a - b).length_squared > 1e-12:
+            return False
+    return True
+
+
+def shrink_buried_uvs(obj: bpy.types.Object, probe: float = 0.06, extent: float = 0.001) -> int:
     """Faces that touch another part or the ground (a drum's top under the next drum, a
-    stone's back against the wall) are never seen. Shrink their UVs to a point so the texture
-    goes to visible surfaces. A face is buried when a short ray from its centre along its
-    normal hits the same mesh, or when it faces down at ground level. Returns the count."""
+    stone's back against the wall, a body under a robe) are never seen. Shrink their UVs so
+    the texture goes to visible surfaces. A face is buried when a short ray from its centre
+    along its normal hits the same mesh, or when it faces down at ground level. Returns the
+    count.
+
+    Buried faces shrink together, one patch per connected run of buried faces within a UV
+    island, to at most `extent` UV units. Shrinking each face on its own would give every one
+    its own UV island, and the seams around them stop Godot's level-of-detail generator from
+    simplifying those areas at all (it stalled at one LOD on the robed characters)."""
     from mathutils.bvhtree import BVHTree
     me = obj.data
     bm = bmesh.new()
@@ -425,7 +462,7 @@ def shrink_buried_uvs(obj: bpy.types.Object, probe: float = 0.06) -> int:
     tree = BVHTree.FromBMesh(bm)
     uv = bm.loops.layers.uv.active
     min_z = min(v.co.z for v in bm.verts)
-    count = 0
+    buried = set()
     for f in bm.faces:
         c = f.calc_center_median()
         n = f.normal
@@ -435,13 +472,32 @@ def shrink_buried_uvs(obj: bpy.types.Object, probe: float = 0.06) -> int:
             samples = [c] + [c.lerp(v.co, 0.85) for v in f.verts]
             hidden = all(tree.ray_cast(pt + n * 0.002, n, probe)[0] is not None for pt in samples)
         if hidden:
-            count += 1
-            centre = sum((l[uv].uv for l in f.loops), start=Vector((0.0, 0.0))) / len(f.loops)
-            for l in f.loops:
-                l[uv].uv = centre + (l[uv].uv - centre) * 0.02
+            buried.add(f)
+    seen: set = set()
+    for start in buried:
+        if start in seen:
+            continue
+        patch, stack = [], [start]
+        seen.add(start)
+        while stack:
+            f = stack.pop()
+            patch.append(f)
+            for e in f.edges:
+                for g in e.link_faces:
+                    if g in buried and g not in seen and _uv_continuous(e, f, g, uv):
+                        seen.add(g)
+                        stack.append(g)
+        loops = [l for f in patch for l in f.loops]
+        us = [l[uv].uv.x for l in loops]
+        vs = [l[uv].uv.y for l in loops]
+        centre = Vector(((min(us) + max(us)) / 2, (min(vs) + max(vs)) / 2))
+        size = max(max(us) - min(us), max(vs) - min(vs), 1e-9)
+        scale = min(0.02, extent / size)
+        for l in loops:
+            l[uv].uv = centre + (l[uv].uv - centre) * scale
     bm.to_mesh(me)
     bm.free()
-    return count
+    return len(buried)
 
 
 def shade_smooth_by_angle(obj: bpy.types.Object, degrees: float = 35.0) -> None:
