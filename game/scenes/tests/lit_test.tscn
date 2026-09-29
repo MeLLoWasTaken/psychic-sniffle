@@ -1,0 +1,83 @@
+[gd_scene load_steps=9 format=3]
+
+[ext_resource type="PackedScene" path="res://assets/props/test_crate.glb" id="1_crate"]
+
+[sub_resource type="ProceduralSkyMaterial" id="sky_mat"]
+sky_top_color = Color(0.09, 0.1, 0.14, 1)
+sky_horizon_color = Color(0.32, 0.22, 0.17, 1)
+ground_bottom_color = Color(0.05, 0.045, 0.04, 1)
+ground_horizon_color = Color(0.32, 0.22, 0.17, 1)
+sun_angle_max = 8.0
+
+[sub_resource type="Sky" id="sky"]
+sky_material = SubResource("sky_mat")
+
+[sub_resource type="Environment" id="env"]
+background_mode = 2
+sky = SubResource("sky")
+ambient_light_source = 3
+ambient_light_color = Color(0.35, 0.38, 0.5, 1)
+ambient_light_energy = 0.5
+tonemap_mode = 4
+ssao_enabled = true
+glow_enabled = true
+glow_intensity = 0.6
+glow_bloom = 0.08
+volumetric_fog_enabled = true
+volumetric_fog_density = 0.02
+volumetric_fog_albedo = Color(0.75, 0.62, 0.52, 1)
+adjustment_enabled = true
+adjustment_saturation = 0.85
+
+[sub_resource type="PlaneMesh" id="ground_mesh"]
+size = Vector2(30, 30)
+
+[sub_resource type="StandardMaterial3D" id="ground_mat"]
+albedo_color = Color(0.17, 0.155, 0.14, 1)
+roughness = 0.95
+
+[sub_resource type="BoxMesh" id="pillar_mesh"]
+size = Vector3(1.2, 4, 1.2)
+
+[sub_resource type="StandardMaterial3D" id="stone_mat"]
+albedo_color = Color(0.36, 0.34, 0.32, 1)
+roughness = 0.9
+
+[node name="LitTest" type="Node3D"]
+
+[node name="WorldEnvironment" type="WorldEnvironment" parent="."]
+environment = SubResource("env")
+
+[node name="Sun" type="DirectionalLight3D" parent="."]
+position = Vector3(0, 8, 0)
+rotation_degrees = Vector3(-50, 35, 0)
+light_color = Color(1, 0.74, 0.52, 1)
+light_energy = 1.6
+shadow_enabled = true
+
+[node name="Brazier" type="OmniLight3D" parent="."]
+position = Vector3(-2.2, 1.2, 0.8)
+light_color = Color(1, 0.45, 0.15, 1)
+light_energy = 3.0
+omni_range = 5.0
+shadow_enabled = true
+
+[node name="Ground" type="MeshInstance3D" parent="."]
+mesh = SubResource("ground_mesh")
+surface_material_override/0 = SubResource("ground_mat")
+
+[node name="Pillar" type="MeshInstance3D" parent="."]
+position = Vector3(2.5, 2, -1.5)
+mesh = SubResource("pillar_mesh")
+surface_material_override/0 = SubResource("stone_mat")
+
+[node name="Crate" parent="." instance=ExtResource("1_crate")]
+
+[node name="Crate2" parent="." instance=ExtResource("1_crate")]
+position = Vector3(-1.3, 0, -0.9)
+rotation_degrees = Vector3(0, 20, 0)
+
+[node name="Camera" type="Camera3D" parent="."]
+position = Vector3(2.4, 2.4, 4.2)
+rotation_degrees = Vector3(-20.4, 29.7, 0)
+fov = 55.0

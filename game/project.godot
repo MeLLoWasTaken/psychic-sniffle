@@ -14,6 +14,7 @@ config/features=PackedStringArray("4.7", "Forward Plus")
 
 Log="*res://core/log.gd"
 Data="*res://core/data.gd"
+Capture="*res://core/capture.gd"
 
 [debug]
 

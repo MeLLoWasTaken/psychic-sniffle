@@ -35,10 +35,10 @@ Exit gate: two bots join a server, move, target and auto-attack for 5 minutes wi
 - [x] Entry scenes: `client_main.tscn` (menu stub) and `server_main.tscn`. `--server` on the command line starts the server scene.
 - [x] `godot --headless --path game --quit-after 120` exits 0 with no errors or warnings in the log.
 
-### M0-04 Screenshot capture without a GPU `[todo]`
-- [ ] `tools/screenshot.sh <scene> <out.png> [width height]` runs Godot under `xvfb-run` with lavapipe (Forward+) and saves a frame after a set number of frames.
-- [ ] Produces a correct, non-black 1920×1080 PNG of a test scene with a lit mesh, fog and bloom enabled.
-- [ ] Time per screenshot recorded in DECISIONS.md. If Forward+ fails on lavapipe, fall back to the Compatibility renderer for screenshots only and log it in KNOWN_ISSUES.md.
+### M0-04 Screenshot capture without a GPU `[done]`
+- [x] `tools/screenshot.sh <scene> <out.png> [width height]` runs Godot under `xvfb-run` with lavapipe (Forward+) and saves a frame after a set number of frames.
+- [x] Produces a correct, non-black 1920×1080 PNG of a test scene with a lit mesh, fog and bloom enabled.
+- [x] Time per screenshot recorded in DECISIONS.md. If Forward+ fails on lavapipe, fall back to the Compatibility renderer for screenshots only and log it in KNOWN_ISSUES.md.
 
 ### M0-05 Data schemas `[done]`
 - [x] JSON Schema files in `/data/schemas` for: class, spec, ability, aura, talent tree, tuning, map, asset spec, keybind profile.
@@ -185,6 +185,7 @@ The slice specs are Warblade Carnage (melee, rage), Arcanist Rime (casting, inte
 - [ ] Under 1.5 million visible triangles; screenshots reviewed against the art bible.
 
 **Characters**
+- [ ] Color balance: warm key light and warm fog together turned the M0-04 test scene uniformly orange-brown; keep cool ambient and fill so iron and stone stay readable.
 
 ### M1-16 Standard skeleton and parametric body `[doing]` (started early while M0 waited on the Godot build)
 - [x] One humanoid skeleton with fixed bone names, written to `docs/ART_BIBLE.md`.

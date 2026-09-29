@@ -2,6 +2,10 @@
 
 One entry per build-loop iteration, newest first. Format: date, backlog ID, what changed, how it was checked.
 
+## 2026-09-29 — M0-04 Screenshot capture without a GPU
+- Added a `Capture` autoload (any scene can be captured with `-- --screenshot out.png --frames N`) and `tools/screenshot.sh`.
+- Checked: `previews/shots/lit_test.png` at 1920×1080 shows the imported crate, shadows, volumetric fog and a glowing brazier. Noted a color-balance issue for M1-15.
+
 ## 2026-09-29 — M0-02, M0-03, M0-07, M0-08, M0-09 Godot running; checks wired up
 - Godot 4.7.2 compiled from source (48 minutes after a workspace restart) and installed; `tools/env/setup_cloud.sh` rebuilds the whole environment.
 - Godot project skeleton boots as client and as server with no errors or warnings; data loads through the `Data` autoload.
