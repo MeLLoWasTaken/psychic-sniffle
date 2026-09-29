@@ -4,26 +4,180 @@
   "title": "Map",
   "type": "object",
   "additionalProperties": false,
-  "required": ["id", "name", "mode", "brackets", "size_m", "scene", "lighting_preset", "spawns"],
+  "required": [
+    "id",
+    "name",
+    "mode",
+    "brackets",
+    "size_m",
+    "scene",
+    "lighting_preset",
+    "spawns",
+    "bounds_half_m",
+    "colliders"
+  ],
   "properties": {
-    "id": {"$ref": "common.schema.json#/$defs/id"},
-    "name": {"type": "string"},
-    "description": {"type": "string"},
-    "mode": {"enum": ["arena", "capture_the_flag", "resource_control"]},
-    "brackets": {"type": "array", "items": {"enum": ["1v1", "2v2", "3v3", "10v10"]}, "minItems": 1},
-    "size_m": {"type": "number", "minimum": 1},
-    "scene": {"type": "string", "description": "res:// path of the Godot scene."},
-    "lighting_preset": {"type": "string", "description": "Shared with Blender preview renders."},
-    "twist": {"type": "string"},
+    "id": {
+      "$ref": "common.schema.json#/$defs/id"
+    },
+    "name": {
+      "type": "string"
+    },
+    "description": {
+      "type": "string"
+    },
+    "mode": {
+      "enum": [
+        "arena",
+        "capture_the_flag",
+        "resource_control"
+      ]
+    },
+    "brackets": {
+      "type": "array",
+      "items": {
+        "enum": [
+          "1v1",
+          "2v2",
+          "3v3",
+          "10v10"
+        ]
+      },
+      "minItems": 1
+    },
+    "size_m": {
+      "type": "number",
+      "minimum": 1
+    },
+    "scene": {
+      "type": "string",
+      "description": "res:// path of the Godot scene."
+    },
+    "lighting_preset": {
+      "type": "string",
+      "description": "Shared with Blender preview renders."
+    },
+    "twist": {
+      "type": "string"
+    },
     "spawns": {
       "type": "object",
       "additionalProperties": false,
-      "required": ["team_a", "team_b"],
+      "required": [
+        "team_a",
+        "team_b"
+      ],
       "properties": {
-        "team_a": {"type": "array", "items": {"$ref": "common.schema.json#/$defs/vec3"}, "minItems": 1},
-        "team_b": {"type": "array", "items": {"$ref": "common.schema.json#/$defs/vec3"}, "minItems": 1}
+        "team_a": {
+          "type": "array",
+          "items": {
+            "$ref": "common.schema.json#/$defs/vec3"
+          },
+          "minItems": 1
+        },
+        "team_b": {
+          "type": "array",
+          "items": {
+            "$ref": "common.schema.json#/$defs/vec3"
+          },
+          "minItems": 1
+        }
       }
     },
-    "status": {"$ref": "common.schema.json#/$defs/status"}
+    "status": {
+      "$ref": "common.schema.json#/$defs/status"
+    },
+    "bounds_half_m": {
+      "type": "number",
+      "minimum": 1,
+      "description": "Players are kept inside a square of this half-size around the origin (x and z)."
+    },
+    "colliders": {
+      "type": "array",
+      "description": "Static blockers used by movement and line of sight. Coordinates are x, z on the ground plane; y is up.",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "type",
+          "blocks_los"
+        ],
+        "properties": {
+          "type": {
+            "enum": [
+              "circle",
+              "box"
+            ]
+          },
+          "center": {
+            "type": "array",
+            "items": {
+              "type": "number"
+            },
+            "minItems": 2,
+            "maxItems": 2
+          },
+          "radius": {
+            "type": "number",
+            "exclusiveMinimum": 0
+          },
+          "min": {
+            "type": "array",
+            "items": {
+              "type": "number"
+            },
+            "minItems": 2,
+            "maxItems": 2
+          },
+          "max": {
+            "type": "array",
+            "items": {
+              "type": "number"
+            },
+            "minItems": 2,
+            "maxItems": 2
+          },
+          "height": {
+            "type": "number",
+            "default": 4
+          },
+          "blocks_los": {
+            "type": "boolean"
+          }
+        },
+        "allOf": [
+          {
+            "if": {
+              "properties": {
+                "type": {
+                  "const": "circle"
+                }
+              }
+            },
+            "then": {
+              "required": [
+                "center",
+                "radius"
+              ]
+            }
+          },
+          {
+            "if": {
+              "properties": {
+                "type": {
+                  "const": "box"
+                }
+              }
+            },
+            "then": {
+              "required": [
+                "min",
+                "max"
+              ]
+            }
+          }
+        ]
+      }
+    }
   }
 }

@@ -12,6 +12,8 @@ var health: int = 1
 var max_health: int = 1
 var resources: Dictionary = {}  ## resource name -> float
 var auras: Array[Dictionary] = []  ## active aura instances
+var target_id: int = -1
+var swing_timer: float = 0.0
 
 
 func _init(p_id: int, p_team: int, p_spec_id: String = "", p_max_health: int = 60000) -> void:
@@ -34,6 +36,6 @@ func snapshot_string() -> String:
 	var res_parts: PackedStringArray = []
 	for k: String in res_keys:
 		res_parts.append("%s=%.4f" % [k, resources[k]])
-	return "%d|%d|%s|%.4f,%.4f,%.4f|%.4f|%d/%d|%s|%d" % [
-		id, team, spec_id, position.x, position.y, position.z, facing,
-		health, max_health, ",".join(res_parts), auras.size()]
+	return "%d|%d|%s|%.4f,%.4f,%.4f|%.4f,%.4f,%.4f|%.4f|%d/%d|%s|%d|%d|%.4f" % [
+		id, team, spec_id, position.x, position.y, position.z, velocity.x, velocity.y, velocity.z,
+		facing, health, max_health, ",".join(res_parts), auras.size(), target_id, swing_timer]
