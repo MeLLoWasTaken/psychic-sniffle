@@ -62,6 +62,8 @@ if [[ -f "$REPO/game/project.godot" && ! -d "$REPO/game/addons/gdUnit4" ]]; then
   rm -rf "$tmp"
 fi
 
+"$REPO/tools/install_hooks.sh"
+
 log "done"
 echo "Godot:   $(godot --version)"
 echo "Blender: $(python3 -c 'import bpy; print(bpy.app.version_string)' 2>/dev/null | tail -1)"

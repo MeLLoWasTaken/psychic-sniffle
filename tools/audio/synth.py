@@ -199,7 +199,30 @@ def render(name: str, out_dir: Path, seed: int = 1) -> Path:
         if peak <= target * 1.03:
             break
         x = x * (target / peak)
+    _set_godot_loop(path, loops)
     return path
+
+
+def _set_godot_loop(path: Path, loops: bool) -> None:
+    """Write the loop flag into Godot's .import file (Godot keeps import settings there).
+
+    If the file does not exist yet, write a minimal one; Godot fills in the rest on import.
+    """
+    imp = path.with_name(path.name + ".import")
+    flag = "true" if loops else "false"
+    if imp.exists():
+        text = imp.read_text()
+        if "loop=" in text:
+            import re
+            text = re.sub(r"(?m)^loop=\w+$", f"loop={flag}", text)
+        else:
+            text += f"\nloop={flag}\n"
+        imp.write_text(text)
+    else:
+        imp.write_text(
+            '[remap]\n\nimporter="oggvorbisstr"\ntype="AudioStreamOggVorbis"\n\n'
+            f"[params]\n\nloop={flag}\nloop_offset=0\nbpm=0\nbeat_count=0\nbar_beats=4\n"
+        )
 
 
 def spectrogram(path: Path, out_png: Path) -> Path:

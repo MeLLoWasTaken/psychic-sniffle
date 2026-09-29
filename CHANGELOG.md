@@ -2,6 +2,20 @@
 
 One entry per build-loop iteration, newest first. Format: date, backlog ID, what changed, how it was checked.
 
+## 2026-09-29 — M0-02, M0-03, M0-07, M0-08, M0-09 Godot running; checks wired up
+- Godot 4.7.2 compiled from source (48 minutes after a workspace restart) and installed; `tools/env/setup_cloud.sh` rebuilds the whole environment.
+- Godot project skeleton boots as client and as server with no errors or warnings; data loads through the `Data` autoload.
+- GdUnit4 6.2.1 installed; `tools/run_tests.sh` runs tests headless (a deliberately failing test returns exit code 100). `tools/check_all` runs 5 checks; a pre-commit hook runs it.
+- Fixed-step simulation core (`game/core/sim.gd`, `unit.gd`) passes its 4 tests: 600 ticks = 10.0 s, frame-rate independence, same seed gives the same state hash, different seed differs.
+- Audio buses from the design added (`default_bus_layout.tres`); tests confirm routing, loading and playback. The frost loop was imported as a one-shot, caught by a test; the generator now writes Godot's loop flag.
+- `check_all` caught the glTF importer adding a bone display mesh to rigged models; the asset validator now ignores bone display shapes.
+- Created `docs/ART_BIBLE.md` with the standard skeleton, conventions and review lessons.
+- Still open in M0-02: storing the compiled Godot binary outside the workspace needs the project's GitHub repository.
+
+## 2026-09-29 — M1-16 Parametric body (in progress, started early)
+- Standard 20-bone skeleton, armature generation and automatic skin weights work; a pose test (raised arm, bent knee, twisted spine) deforms cleanly.
+- Body v1 (Skin modifier) was too thin. Body v2 uses metaball masses with a measured size correction; the heavy build is chunky but still reads as a segmented mannequin, and the lean build separates into pieces. Logged in KNOWN_ISSUES.md.
+
 ## 2026-09-28 — M0-16 Sound synth prototype (partial)
 - Added `tools/audio/synth.py` with three recipes: `weapon_impact`, `frost_cast_loop` (seamless loop) and `holy_heal`, plus spectrogram rendering for review.
 - Fixed problems found in the spectrograms: clicks where the dry signal was cut off while tones still rang; a volume jump in the envelope release; encoded peaks above target.

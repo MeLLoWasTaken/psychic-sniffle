@@ -25,15 +25,15 @@ Exit gate: two bots join a server, move, target and auto-attack for 5 minutes wi
 - [x] Git repository initialized on branch `main` with a first commit.
 
 ### M0-02 Reproducible tool setup `[doing]`
-- [ ] `tools/env/setup_cloud.sh` installs apt packages, `bpy`, `scons` and GdUnit4 prerequisites, and builds or restores Godot 4.7.2, from a clean container.
-- [ ] The compiled Godot editor binary is stored where it survives the session (a release asset or LFS file in the project's own remote repository), and the script restores it instead of recompiling when it is available.
-- [ ] `godot --version` prints `4.7.2.stable`; `godot --headless --quit` exits with code 0.
+- [x] `tools/env/setup_cloud.sh` installs apt packages, `bpy`, `scons` and GdUnit4 prerequisites, and builds or restores Godot 4.7.2, from a clean container.
+- [ ] (blocked: needs the project's GitHub repository) The compiled Godot editor binary is stored where it survives the session (a release asset or LFS file in the project's own remote repository), and the script restores it instead of recompiling when it is available.
+- [x] `godot --version` prints `4.7.2.stable`; `godot --headless --quit` exits with code 0.
 
-### M0-03 Godot project skeleton `[todo]`
-- [ ] `/game/project.godot` uses the Forward+ renderer, with the folder layout from DESIGN.md (`core`, `net`, `ui`, `assets`, `scenes`).
-- [ ] Autoloads: `Data` (loads `/data` JSON at start), `Log` (structured logging to file and stdout).
-- [ ] Entry scenes: `client_main.tscn` (menu stub) and `server_main.tscn`. `--server` on the command line starts the server scene.
-- [ ] `godot --headless --path game --quit-after 120` exits 0 with no errors or warnings in the log.
+### M0-03 Godot project skeleton `[done]`
+- [x] `/game/project.godot` uses the Forward+ renderer, with the folder layout from DESIGN.md (`core`, `net`, `ui`, `assets`, `scenes`).
+- [x] Autoloads: `Data` (loads `/data` JSON at start), `Log` (structured logging to file and stdout).
+- [x] Entry scenes: `client_main.tscn` (menu stub) and `server_main.tscn`. `--server` on the command line starts the server scene.
+- [x] `godot --headless --path game --quit-after 120` exits 0 with no errors or warnings in the log.
 
 ### M0-04 Screenshot capture without a GPU `[todo]`
 - [ ] `tools/screenshot.sh <scene> <out.png> [width height]` runs Godot under `xvfb-run` with lavapipe (Forward+) and saves a frame after a set number of frames.
@@ -50,19 +50,19 @@ Exit gate: two bots join a server, move, target and auto-attack for 5 minutes wi
 - [x] Talent tree checks: no unreachable nodes, gate values valid, point totals match the design.
 - [x] Passes on the real data; fails with a clear message on each of at least 6 broken fixtures in `tests/data_fixtures/`.
 
-### M0-07 Test framework `[todo]`
-- [ ] GdUnit4 installed in `game/addons` (cloned from its Git repository at a tagged version compatible with Godot 4.7).
-- [ ] `tools/run_tests.sh` runs all tests headless and returns non-zero on any failure.
-- [ ] One passing sample test, and proof that a failing test fails the command.
+### M0-07 Test framework `[done]`
+- [x] GdUnit4 installed in `game/addons` (cloned from its Git repository at a tagged version compatible with Godot 4.7).
+- [x] `tools/run_tests.sh` runs all tests headless and returns non-zero on any failure.
+- [x] One passing sample test, and proof that a failing test fails the command.
 
-### M0-08 `tools/check_all` and pre-commit hook `[todo]`
-- [ ] Runs data validation, unit tests and asset validation (when assets exist), then prints one pass or fail line per check.
-- [ ] Exits non-zero if any check fails. A Git pre-commit hook runs it.
+### M0-08 `tools/check_all` and pre-commit hook `[done]`
+- [x] Runs data validation, unit tests and asset validation (when assets exist), then prints one pass or fail line per check.
+- [x] Exits non-zero if any check fails. A Git pre-commit hook runs it.
 
-### M0-09 Fixed-step simulation core `[todo]`
-- [ ] `game/core/sim.gd` advances the world at exactly 60 ticks per second, independent of frame rate.
-- [ ] Entity model: unit with id, team, position, facing, health, resources and an aura list.
-- [ ] Seeded random number generator per match. Unit test: 600 ticks = 10.0 s of sim time; the same seed and inputs give the same state hash.
+### M0-09 Fixed-step simulation core `[done]`
+- [x] `game/core/sim.gd` advances the world at exactly 60 ticks per second, independent of frame rate.
+- [x] Entity model: unit with id, team, position, facing, health, resources and an aura list.
+- [x] Seeded random number generator per match. Unit test: 600 ticks = 10.0 s of sim time; the same seed and inputs give the same state hash.
 
 ### M0-10 Network layer `[todo]`
 - [ ] ENet server and client: connect, handshake with protocol version, clean disconnect.
@@ -88,14 +88,14 @@ Exit gate: two bots join a server, move, target and auto-attack for 5 minutes wi
 - [ ] `tools/sim/run_match.py --bots 2 --minutes 5` starts a server and bots and writes a match summary JSON.
 - [ ] **Gate:** 5 minutes with 2 bots, zero errors or warnings in server and client logs.
 
-### M0-15 Blender pipeline smoke test `[doing]`
+### M0-15 Blender pipeline smoke test `[done]`
 - [x] `tools/blender/common.py`: reset scene, metric units, glTF export, preview camera rig, contact-sheet renderer (front, side, back, three-quarter).
 - [x] `tools/validate_asset.py`: triangle budget, scale, origin, centring, texture sizes, non-manifold check. Facing is checked for characters once the standard skeleton exists (M1-16).
-- [ ] A test prop builds, exports to `.glb`, and its contact sheet is reviewed (done). It imports into Godot without warnings (waiting on M0-02).
+- [x] A test prop builds, exports to `.glb`, imports into Godot without warnings, and its contact sheet is reviewed.
 
-### M0-16 Sound approach decision and synth prototype `[doing]`
+### M0-16 Sound approach decision and synth prototype `[done]`
 - [x] `tools/audio/synth.py` generates 3 test sounds (weapon impact, frost cast loop, holy heal) as `.ogg`.
-- [ ] The sounds import and play in Godot through the correct audio buses.
+- [x] The sounds import and play in Godot through the correct audio buses.
 - [x] Sound source decision recorded in DECISIONS.md (DESIGN.md says decide at the start of M0).
 
 ### M0-17 Review pass 1 `[todo]`

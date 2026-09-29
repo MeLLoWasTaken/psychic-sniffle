@@ -9,7 +9,7 @@ cd "$REPO/game"
 godot --headless --path . --import >/dev/null 2>&1 || true
 # --remote-debug to an unbound port stops Godot's interactive debugger from waiting for input
 # on a script error (see addons/gdUnit4/runtest.sh).
-godot --headless --path . -s -d --remote-debug tcp://127.0.0.1:0 \
+godot --headless --path . -s -d --remote-debug tcp://127.0.0.1:1 \
   res://addons/gdUnit4/bin/GdUnitCmdTool.gd --ignoreHeadlessMode -a "$TARGET" -c
 code=$?
 godot --headless --path . --quiet -s res://addons/gdUnit4/bin/GdUnitCopyLog.gd >/dev/null 2>&1 || true

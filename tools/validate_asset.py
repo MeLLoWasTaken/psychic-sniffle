@@ -44,7 +44,11 @@ def check(spec: dict) -> list[str]:
 
     bpy.ops.wm.read_factory_settings(use_empty=True)
     bpy.ops.import_scene.gltf(filepath=str(glb))
-    meshes = [o for o in bpy.data.objects if o.type == "MESH"]
+    # Blender's glTF importer adds display-shape meshes for bones (an "Icosphere"); they are not
+    # part of the file, so skip every mesh used as a bone custom shape.
+    bone_shapes = {pb.custom_shape for o in bpy.data.objects if o.type == "ARMATURE"
+                   for pb in o.pose.bones if pb.custom_shape}
+    meshes = [o for o in bpy.data.objects if o.type == "MESH" and o not in bone_shapes]
     if not meshes:
         return ["no meshes in file"]
 
