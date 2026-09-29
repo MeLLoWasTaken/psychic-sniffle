@@ -5,7 +5,8 @@ extends RefCounted
 ## tick. Behaviour and ability priorities come from data/bots/<spec>.json.
 
 const RETARGET_S: float = 3.0
-const LOCAL_PRESS_LOCK_TICKS: int = 12  ## do not re-press the same ability while the server catches up
+const LOCAL_PRESS_LOCK_TICKS: int = 12
+const KITE_STEP_M: float = 6.0  ## do not re-press the same ability while the server catches up
 
 var spec_id: String
 var spec: Dictionary
@@ -26,6 +27,13 @@ var _local_gcd_until: int = -1
 var _press_lock: Dictionary = {}  ## ability -> tick
 var _seen_casts: Dictionary = {}  ## "<unit>:<start_tick>" -> tick the bot will react
 var _wander_goal: Vector3 = Vector3.ZERO
+var _progress_pos: Vector3 = Vector3(INF, 0, INF)
+var _progress_tick: int = 0
+var _movement_impaired: bool = false
+var stuck_count: int = 0
+var stuck_log: Array = []  ## where and toward what the bot got stuck (explain mode only)  ## times this bot stopped making progress toward a goal (for reports)
+var explain: bool = false  ## record why each priority rule was skipped (for traces)
+var explanation: Array = []
 
 
 func _init(p_spec_id: String, seed_value: int, p_geometry: ArenaGeometry, p_nav: NavGrid = null) -> void:
@@ -59,16 +67,24 @@ func next_input(view: Dictionary) -> Dictionary:
 		input["target"] = press["target"]
 	# movement
 	var casting: bool = not me["cast"].is_empty() or tick < _hold_until
+	_movement_impaired = _has_cc(me, ["root", "stun", "incapacitate", "disorient"])
+	if casting or _movement_impaired:
+		_reset_progress(me["position"], tick)  # not trying to move, so not stuck
 	if casting:
 		input["yaw"] = _yaw_to(me["position"], _pos_of(view, int(me["cast"].get("target", target["id"]))))
 		return input
-	var goal: Vector3 = _steer_point(me["position"], _movement_goal(view, me, target, enemies, allies), tick)
+	var final_goal: Vector3 = _movement_goal(view, me, target, enemies, allies)
+	var goal: Vector3 = _steer_point(me["position"], final_goal, tick)
 	var to: Vector3 = goal - me["position"]
 	to.y = 0.0
-	if to.length() > 0.4:
+	var remaining: Vector3 = final_goal - me["position"]
+	remaining.y = 0.0
+	# walk while the final goal is still away, steering by the next waypoint (which can be close)
+	if remaining.length() > 0.4 and to.length() > 0.01:
 		input["yaw"] = atan2(-to.x, -to.z)
 		input["move"] = Vector2(0, 1)
 	else:
+		_reset_progress(me["position"], tick)
 		input["yaw"] = _yaw_to(me["position"], target["position"])
 	return input
 
@@ -97,6 +113,10 @@ func _choose_target(view: Dictionary, me: Dictionary, enemies: Array, tick: int)
 				var healers: Array = candidates.filter(func(e: Dictionary) -> bool: return Data.specs.get(e["spec"], {}).get("role", "") == "healer")
 				var pool: Array = healers if not healers.is_empty() and _sees(me, healers[0]) else candidates
 				best = _lowest(pool)
+			"dps_first":
+				var dps: Array = candidates.filter(func(e: Dictionary) -> bool: return Data.specs.get(e["spec"], {}).get("role", "") != "healer")
+				var pool_d: Array = dps.filter(func(e: Dictionary) -> bool: return _sees(me, e))
+				best = _lowest(pool_d if not pool_d.is_empty() else (dps if not dps.is_empty() else candidates))
 			"lowest_health":
 				best = _lowest(candidates)
 			_:
@@ -125,22 +145,31 @@ func _choose_ability(view: Dictionary, me: Dictionary, target: Dictionary, enemi
 	for a: Dictionary in me["auras"]:
 		if Data.auras.get(a["id"], {}).get("pacify", false):
 			return {}  # sealed in an immunity: nothing can be used
+	if explain:
+		explanation = []
 	for rule: Dictionary in profile["priorities"]:
 		var ab_id: String = rule["ability"]
 		var ab: Dictionary = Data.abilities.get(ab_id, {})
 		if ab.is_empty() or tick < int(_press_lock.get(ab_id, -1)):
+			_why(ab_id, "pressed_recently")
 			continue
 		if hard_cc and not _cc_allowed(me, ab):
+			_why(ab_id, "crowd_controlled")
 			continue
 		if not _ready(view, me, ab, tick):
+			_why(ab_id, "not_ready:" + _not_ready_reason(view, me, ab, tick))
 			continue
 		var on: Dictionary = _pick_on(rule.get("on", "target"), view, me, target, enemies, allies, tick, ab)
 		if on.is_empty():
+			_why(ab_id, "no_unit_for:" + str(rule.get("on", "target")))
 			continue
 		if not _conditions(rule.get("when", {}), view, me, on, enemies, allies, tick, ab):
+			_why(ab_id, "conditions")
 			continue
 		if not _in_range(me, on, ab):
+			_why(ab_id, "out_of_range_or_los")
 			continue
+		_why(ab_id, "PRESS")
 		# press it
 		_press_lock[ab_id] = tick + LOCAL_PRESS_LOCK_TICKS
 		if ab["triggers_gcd"]:
@@ -149,6 +178,27 @@ func _choose_ability(view: Dictionary, me: Dictionary, target: Dictionary, enemi
 			_hold_until = tick + roundi(float(ab["cast_time_s"]) * view["tick_rate"]) + 3
 		return {"ability": ab_id, "target": on["id"]}
 	return {}
+
+
+func _why(ab_id: String, reason: String) -> void:
+	if explain:
+		explanation.append("%s=%s" % [ab_id, reason])
+
+
+func _not_ready_reason(view: Dictionary, me: Dictionary, ab: Dictionary, tick: int) -> String:
+	if int(view["cooldowns"].get(ab["id"], 0)) > tick:
+		return "cooldown"
+	if int(view.get("school_locks", {}).get(ab["school"], 0)) > tick:
+		return "school_locked"
+	if ab["triggers_gcd"] and int(view["gcd_ready_tick"]) > tick:
+		return "gcd"
+	if ab["triggers_gcd"] and tick < _local_gcd_until:
+		return "local_gcd"
+	if not me["cast"].is_empty():
+		return "casting"
+	if tick < _hold_until:
+		return "holding"
+	return "resource_or_silence"
 
 
 func _ready(view: Dictionary, me: Dictionary, ab: Dictionary, tick: int) -> bool:
@@ -213,6 +263,8 @@ func _conditions(w: Dictionary, view: Dictionary, me: Dictionary, on: Dictionary
 		var focus: Dictionary = _find(enemies, target_id)
 		if focus.is_empty() or _pct(focus) >= float(w["focus_health_below_pct"]):
 			return false
+	if w.get("not_focus", false) and int(on["id"]) == target_id:
+		return false
 	if w.has("self_health_below_pct") and _pct(me) >= float(w["self_health_below_pct"]):
 		return false
 	if w.has("target_health_below_pct") and _pct(on) >= float(w["target_health_below_pct"]):
@@ -250,7 +302,8 @@ func _conditions(w: Dictionary, view: Dictionary, me: Dictionary, on: Dictionary
 		return false
 	if w.has("resource_at_least") and float(me["resource"]) < float(w["resource_at_least"]):
 		return false
-	if w.get("has_dispellable", false) and not _has_dispellable(on, me, ab):
+	var dispel_rule: Variant = w.get("has_dispellable", false)
+	if (dispel_rule is String or dispel_rule == true) and not _has_dispellable(on, me, ab, dispel_rule is String):
 		return false
 	if w.has("no_free_melee_within_m") and not _free_melee_near(me, enemies, float(w["no_free_melee_within_m"])).is_empty():
 		return false
@@ -289,7 +342,7 @@ func _casting_interruptible(u: Dictionary, tick: int, view: Dictionary) -> bool:
 	return tick >= int(_seen_casts[key]) and tick < int(u["cast"]["end_tick"]) - 2
 
 
-func _has_dispellable(u: Dictionary, me: Dictionary, ab: Dictionary) -> bool:
+func _has_dispellable(u: Dictionary, me: Dictionary, ab: Dictionary, major_only: bool = false) -> bool:
 	var types: Array = []
 	for e: Dictionary in ab["effects"]:
 		if e["type"] == "dispel":
@@ -298,6 +351,8 @@ func _has_dispellable(u: Dictionary, me: Dictionary, ab: Dictionary) -> bool:
 	for a: Dictionary in u["auras"]:
 		var d: Dictionary = Data.auras.get(a["id"], {})
 		if d.get("kind", "") == want and d.get("dispel_type", "") in types:
+			if major_only and want == "buff" and not str(d.get("hud_priority", "")).begins_with("major"):
+				continue
 			return true
 	return false
 
@@ -335,19 +390,62 @@ func _movement_goal(view: Dictionary, me: Dictionary, target: Dictionary, enemie
 				continue
 			var d_e: float = _dist(me, e)
 			if d_e < 7.0 or (d_e < kite_d and _has_cc(e, ["root", "stun", "incapacitate", "disorient"])):
-				var away: Vector3 = pos - e["position"]
-				away.y = 0.0
-				return pos + away.normalized() * 6.0
+				return _kite_point(pos, e["position"])
 	var lo: float = float(b["preferred_range_m"][0])
 	var hi: float = float(b["preferred_range_m"][1])
 	var d: float = _dist(me, target)
 	if d > hi or not _sees(me, target):
 		return target["position"]
 	if d < lo:
-		var back: Vector3 = pos - target["position"]
-		back.y = 0.0
-		return pos + back.normalized() * (lo - d + 1.0)
+		return _kite_point(pos, target["position"])
 	return pos
+
+
+func _reset_progress(pos: Vector3, tick: int) -> void:
+	_progress_pos = pos
+	_progress_tick = tick
+
+
+## Where to run from a melee threat: the most open direction that still gains distance, so a
+## kiting bot circles through the arena instead of backing into a wall or corner.
+func _kite_point(pos: Vector3, threat: Vector3) -> Vector3:
+	var away: Vector3 = pos - threat
+	away.y = 0.0
+	if away.length() < 0.01:
+		away = Vector3(0, 0, 1)
+	away = away.normalized()
+	# if every direction is blocked (a corner), head for the middle of the arena
+	var to_mid: Vector3 = Vector3(-pos.x, 0.0, -pos.z)
+	var best: Vector3 = pos + (to_mid.normalized() if to_mid.length() > 0.01 else away) * KITE_STEP_M
+	var best_score: float = -INF
+	for deg: float in [0.0, 35.0, -35.0, 70.0, -70.0, 105.0, -105.0]:
+		var dir: Vector3 = away.rotated(Vector3.UP, deg_to_rad(deg))
+		var p: Vector3 = pos + dir * KITE_STEP_M
+		if geometry and geometry.resolve(p).distance_to(p) > 0.05:
+			continue  # would walk into a wall or pillar
+		var gain: float = Vector2(p.x - threat.x, p.z - threat.z).length() - Vector2(pos.x - threat.x, pos.z - threat.z).length()
+		var score: float = gain + 1.5 * minf(_clearance(p), 6.0)
+		if score > best_score:
+			best_score = score
+			best = p
+	return best
+
+
+## Distance from a point to the nearest arena edge or obstacle, in metres.
+func _clearance(p: Vector3) -> float:
+	if geometry == null:
+		return 10.0
+	var c: float = geometry.bounds_half - maxf(absf(p.x), absf(p.z))
+	var q: Vector2 = Vector2(p.x, p.z)
+	for circ: Dictionary in geometry.circles:
+		c = minf(c, q.distance_to(circ["center"]) - float(circ["radius"]))
+	for b: Dictionary in geometry.boxes:
+		if b["gate"] and geometry.gates_open:
+			continue
+		var dx: float = maxf(maxf(b["min"].x - q.x, q.x - b["max"].x), 0.0)
+		var dz: float = maxf(maxf(b["min"].y - q.y, q.y - b["max"].y), 0.0)
+		c = minf(c, Vector2(dx, dz).length())
+	return c
 
 
 ## The next point to walk toward on the way to `goal`, going around obstacles.
@@ -358,11 +456,24 @@ func _steer_point(pos: Vector3, goal: Vector3, tick: int) -> Vector3:
 		_gates_open_seen = geometry.gates_open
 		nav.rebuild()
 		_path.clear()
+	# stuck: wanted to move for half a second and barely did; plan again from here
+	if pos.distance_to(_progress_pos) > 0.5:
+		_progress_pos = pos
+		_progress_tick = tick
+	elif tick - _progress_tick > 30 and pos.distance_to(goal) > 1.0:
+		_path.clear()
+		_progress_tick = tick
+		stuck_count += 1
+		if explain:
+			stuck_log.append({"tick": tick, "pos": [snappedf(pos.x, 0.1), snappedf(pos.z, 0.1)],
+				"goal": [snappedf(goal.x, 0.1), snappedf(goal.z, 0.1)]})
 	if _path.is_empty() or goal.distance_to(_path_goal) > 1.5 or tick - _path_tick > 30:
 		_path = nav.path(pos, goal)
 		_path_goal = goal
 		_path_tick = tick
-	while _path.size() > 1 and Vector2(pos.x, pos.z).distance_to(Vector2(_path[0].x, _path[0].z)) < 0.6:
+	# skip ahead only when the next leg is walkable from here (near a corner it may not be)
+	while _path.size() > 1 and (Vector2(pos.x, pos.z).distance_to(Vector2(_path[0].x, _path[0].z)) < 0.15
+			or nav.walkable(pos, _path[1])):
 		_path.pop_front()
 	return _path[0] if not _path.is_empty() else goal
 

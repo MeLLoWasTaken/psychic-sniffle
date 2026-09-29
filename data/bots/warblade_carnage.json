@@ -17,9 +17,9 @@
     {
       "ability": "throat_punch",
       "when": {
-        "target_casting": true,
-        "target_distance_below_m": 5.5
-      }
+        "target_casting": true
+      },
+      "on": "enemy_caster"
     },
     {
       "ability": "break_free",

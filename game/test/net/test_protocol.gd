@@ -46,6 +46,7 @@ func test_snapshot_round_trip() -> void:
 	u.school_locks = {"holy": 1100}
 	u.cooldowns = {"ruin_strike": 1200}
 	u.gcd_ready_tick = 1050
+	u.displaced_tick = 980
 	var snap: Dictionary = Protocol.decode(Protocol.snapshot(999, 77, [u],
 		{"phase": 1, "start_tick": 600, "dampening_pct": 4, "winner": -1}, u))
 	assert_int(snap["tick"]).is_equal(999)
@@ -68,6 +69,7 @@ func test_snapshot_round_trip() -> void:
 	assert_int(snap["own"]["school_locks"]["holy"]).is_equal(1100)
 	assert_int(snap["match"]["dampening_pct"]).is_equal(4)
 	assert_int(snap["own"]["gcd_ready_tick"]).is_equal(1050)
+	assert_int(snap["own"]["displaced_tick"]).is_equal(980)
 	assert_int(snap["own"]["cooldowns"]["ruin_strike"]).is_equal(1200)
 
 

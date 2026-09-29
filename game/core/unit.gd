@@ -32,6 +32,7 @@ var dr: Dictionary = {}  ## crowd-control category -> {count, reset_tick}
 var combat_until_tick: int = 0
 var stats: Dictionary = {"power_bonus": 0.0, "haste": 0.0, "crit_chance": 0.1}
 var moved_this_tick: bool = false
+var displaced_tick: int = -1  ## last tick an ability moved this unit (charge, blink, knockback)
 
 
 func _init(p_id: int, p_team: int, p_spec_id: String = "", p_max_health: int = 60000) -> void:

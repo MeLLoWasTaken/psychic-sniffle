@@ -4,6 +4,8 @@ extends RefCounted
 ## colliders (inflated by the player radius), and A* paths with line-of-sight smoothing.
 
 const CELL: float = 0.5
+const BLOCK_MARGIN: float = 0.1  ## cells this close to a collider (beyond the unit radius) are blocked
+const WALK_SLACK: float = 0.02  ## straight moves may pass this close to a collider without counting as blocked
 
 var geometry: ArenaGeometry
 var size: int
@@ -34,7 +36,7 @@ func rebuild() -> void:
 
 
 func _blocked_at(p: Vector3) -> bool:
-	var r: float = ArenaGeometry.UNIT_RADIUS + 0.1
+	var r: float = ArenaGeometry.UNIT_RADIUS + BLOCK_MARGIN
 	var lim: float = geometry.bounds_half - r
 	if absf(p.x) > lim or absf(p.z) > lim:
 		return true
@@ -61,11 +63,11 @@ func cell_center(c: Vector2i) -> Vector3:
 ## Waypoints from `from` to `to` (excluding the start). Straight line when nothing is in the way.
 func path(from: Vector3, to: Vector3) -> Array[Vector3]:
 	var out: Array[Vector3] = []
-	if _clear(from, to):
+	if walkable(from, to):
 		out.append(to)
 		return out
-	var a: Vector2i = _nearest_open(cell_of(from))
-	var b: Vector2i = _nearest_open(cell_of(to))
+	var a: Vector2i = _nearest_open(from)
+	var b: Vector2i = _nearest_open(to)
 	var cells: Array[Vector2i] = _astar.get_id_path(a, b)
 	if cells.is_empty():
 		out.append(to)
@@ -75,32 +77,55 @@ func path(from: Vector3, to: Vector3) -> Array[Vector3]:
 	var i: int = 0
 	while i < cells.size():
 		var j: int = cells.size() - 1
-		while j > i and not _clear(anchor, cell_center(cells[j])):
+		while j > i and not walkable(anchor, cell_center(cells[j])):
 			j -= 1
 		anchor = cell_center(cells[j])
 		out.append(anchor)
 		i = j + 1
-	out[-1] = to if _clear(out[-1], to) else out[-1]
+	if walkable(out[-1], to):
+		out.append(to)
 	return out
 
 
-func _clear(a: Vector3, b: Vector3) -> bool:
-	var d: float = Vector2(a.x, a.z).distance_to(Vector2(b.x, b.z))
-	var steps: int = maxi(1, int(d / (CELL * 0.5)))
-	for s: int in steps + 1:
-		var p: Vector3 = a.lerp(b, float(s) / steps)
-		if _astar.is_point_solid(cell_of(p)):
+## True when a unit can walk the straight line from `a` to `b` without touching a collider:
+## an exact test against the map shapes grown by the unit's radius, not a grid lookup, so
+## shortcuts never clip a corner.
+func walkable(a: Vector3, b: Vector3) -> bool:
+	var grow: float = ArenaGeometry.UNIT_RADIUS - WALK_SLACK
+	var lim: float = geometry.bounds_half - grow
+	if absf(b.x) > lim or absf(b.z) > lim:
+		return false
+	var pa: Vector2 = Vector2(a.x, a.z)
+	var pb: Vector2 = Vector2(b.x, b.z)
+	for c: Dictionary in geometry.circles:
+		if ArenaGeometry._segment_hits_circle(pa, pb, c["center"], float(c["radius"]) + grow):
+			return false
+	for bx: Dictionary in geometry.boxes:
+		if bx["gate"] and geometry.gates_open:
+			continue
+		if ArenaGeometry._segment_hits_box(pa, pb, bx["min"] - Vector2.ONE * grow, bx["max"] + Vector2.ONE * grow):
 			return false
 	return true
 
 
-func _nearest_open(c: Vector2i) -> Vector2i:
+## The open cell nearest to a point by straight-line distance (searching square rings outward,
+## so the result is the nearest to within one cell).
+func _nearest_open(p: Vector3) -> Vector2i:
+	var c: Vector2i = cell_of(p)
 	if not _astar.is_point_solid(c):
 		return c
+	var best: Vector2i = c
+	var best_d: float = INF
 	for r: int in range(1, 8):
 		for dx: int in range(-r, r + 1):
 			for dz: int in range(-r, r + 1):
 				var n: Vector2i = Vector2i(clampi(c.x + dx, 0, size - 1), clampi(c.y + dz, 0, size - 1))
-				if not _astar.is_point_solid(n):
-					return n
+				if _astar.is_point_solid(n):
+					continue
+				var d: float = cell_center(n).distance_squared_to(Vector3(p.x, 0, p.z))
+				if d < best_d:
+					best_d = d
+					best = n
+		if best_d < INF:
+			return best
 	return c

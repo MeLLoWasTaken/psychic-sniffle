@@ -169,10 +169,10 @@ The slice specs are Warblade Carnage (melee, rage), Arcanist Rime (casting, inte
 - [x] Kit fills the template, including single-target and area heals, a magic dispel, a fear (disorient) and a personal defensive.
 - [x] Unit tests for dispel and healing under dampening.
 
-### M1-13 Bot AI v1 `[todo]`
-- [ ] Priority-list rotations for the three specs, stored as data per spec.
-- [ ] Bots interrupt enemy casts, use defensives below 35% health, heal the lowest ally (healer), and break line of sight when losing.
-- [ ] In 100 simulated 2v2 matches, at least 90% end in a kill rather than a draw, and no match crashes.
+### M1-13 Bot AI v1 `[done]`
+- [x] Priority-list rotations for the three specs, stored as data per spec (`data/bots/*.json`).
+- [x] Bots interrupt enemy casts, use defensives below 35% health, heal the lowest ally (healer), and break line of sight when losing (`test/core/test_bot_behaviour.gd`).
+- [x] In 100 simulated 2v2 matches, at least 90% end in a kill rather than a draw, and no match crashes: 99 of 100 ended by a kill, 0 errors (`docs/reports/bots_m1-13_2026-09-29.json`).
 
 **Arena**
 
@@ -273,6 +273,13 @@ The slice specs are Warblade Carnage (melee, rage), Arcanist Rime (casting, inte
 - [ ] Snapshots send only fields that changed since the last acknowledged snapshot.
 - [ ] Units far from the receiving player are sent at a reduced rate.
 - [ ] 20 players at 60 Hz stay under 48 KB/s per client (half the budget). Needed before M4.
+
+### F-03 Smooth server-caused position corrections on screen `[todo]`
+- [ ] When a stun, root, charge or blink the client could not predict moves the player's own character, blend the camera and model to the corrected position over about 100 ms instead of snapping (up to 1.5 m at 150 ms round trip).
+
+### F-04 Bot movement polish `[todo]`
+- [ ] Healers near a pillar sometimes alternate between two movement goals (hide and stay near the ally) and stall; about 10 stall events per match. Add hysteresis to goal changes.
+- [ ] Recheck the small team-1 edge seen across 209 matches after the turn-order fix (55%, not statistically significant) at the next review pass.
 
 ### F-02 GPU frame-rate measurement `[blocked: needs a GPU machine]`
 - [ ] Record fps for the M1 vertical slice on recommended and minimum PC profiles at the M1 gate.

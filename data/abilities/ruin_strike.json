@@ -18,7 +18,7 @@
   "effects": [
     {
       "type": "damage",
-      "base": 4800,
+      "base": 4200,
       "power_coefficient": 1.0,
       "school": "physical"
     },

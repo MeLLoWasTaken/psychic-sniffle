@@ -1,0 +1,90 @@
+{
+ "date": "2026-09-29",
+ "backlog": "M1-13",
+ "command": "godot --headless --path game -s res://tools/batch_sim.gd -- --matches 100 --seed 7 --comp warblade_carnage+oracle_grace:arcanist_rime+oracle_grace",
+ "summary": {
+  "headline": {
+   "avg_seconds": 236.164166666667,
+   "ended_by_kill": 99,
+   "errors": 0,
+   "kill_rate": 0.99,
+   "matches": 100
+  },
+  "specs": {
+   "arcanist_rime": {
+    "cc": 2003,
+    "cc_per_game": 20.03,
+    "damage": 30500448,
+    "damage_per_game": 305004.48,
+    "deaths": 59,
+    "deaths_per_game": 0.59,
+    "games": 100,
+    "healing": 0,
+    "healing_per_game": 0.0,
+    "interrupts": 768,
+    "interrupts_per_game": 7.68,
+    "stuck": 2886,
+    "stuck_per_game": 28.86,
+    "win_rate": 0.4,
+    "wins": 40
+   },
+   "oracle_grace": {
+    "cc": 1524,
+    "cc_per_game": 7.62,
+    "damage": 10740530,
+    "damage_per_game": 53702.65,
+    "deaths": 101,
+    "deaths_per_game": 0.505,
+    "games": 200,
+    "healing": 54269345,
+    "healing_per_game": 271346.725,
+    "interrupts": 1149,
+    "interrupts_per_game": 5.745,
+    "stuck": 1851,
+    "stuck_per_game": 9.255,
+    "win_rate": 0.495,
+    "wins": 99
+   },
+   "warblade_carnage": {
+    "cc": 1604,
+    "cc_per_game": 16.04,
+    "damage": 28740802,
+    "damage_per_game": 287408.02,
+    "deaths": 41,
+    "deaths_per_game": 0.41,
+    "games": 100,
+    "healing": 2544720,
+    "healing_per_game": 25447.2,
+    "interrupts": 849,
+    "interrupts_per_game": 8.49,
+    "stuck": 33,
+    "stuck_per_game": 0.33,
+    "win_rate": 0.59,
+    "wins": 59
+   }
+  },
+  "wall_seconds": 1302.853
+ },
+ "mirrors": {
+  "warblade_carnage+oracle_grace mirror, 40 matches, team 0 created first": {
+   "team0": 19,
+   "team1": 16,
+   "draws": 5
+  },
+  "same, team 1 created first": {
+   "team0": 17,
+   "team1": 18,
+   "draws": 5
+  },
+  "arcanist_rime+oracle_grace mirror, 40 matches": {
+   "team0": 16,
+   "team1": 24,
+   "draws": 0
+  }
+ },
+ "match_seconds": {
+  "median": 204.2,
+  "p10": 113.1,
+  "p90": 352.9
+ }
+}

@@ -36,6 +36,7 @@
         "target_priority": {
           "enum": [
             "healer_first",
+            "dps_first",
             "lowest_health",
             "nearest"
           ]
@@ -158,8 +159,8 @@
                 "type": "number"
               },
               "has_dispellable": {
-                "type": "boolean",
-                "description": "The chosen unit has an effect this ability can remove."
+                "enum": [true, false, "major"],
+                "description": "The chosen unit has an effect this ability can remove. \"major\": only count enemy buffs whose HUD priority is major_offensive or major_defensive (cheap buffs are not worth a global cooldown)."
               },
               "ally_hard_cc": {
                 "type": "boolean",
@@ -172,6 +173,10 @@
               "focus_health_below_pct": {
                 "type": "number",
                 "description": "The bot's own kill target is below this health."
+              },
+              "not_focus": {
+                "type": "boolean",
+                "description": "The chosen unit is not the bot's own kill target (crowd control belongs on the other enemy)."
               }
             }
           }

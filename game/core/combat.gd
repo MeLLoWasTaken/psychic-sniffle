@@ -277,12 +277,7 @@ func tick() -> void:
 
 
 func _sorted_units() -> Array:
-	var ids: Array = sim.units.keys()
-	ids.sort()
-	var out: Array = []
-	for i: int in ids:
-		out.append(sim.units[i])
-	return out
+	return sim.turn_order()
 
 
 func _update_cast(u: Unit) -> void:
@@ -405,6 +400,7 @@ func apply_effect(u: Unit, t: Unit, eff: Dictionary, ab: Dictionary, scale: floa
 				dir = Movement.forward_of(u.facing)
 			var to: Vector3 = t.position + dir * float(eff.get("distance_m", 8.0))
 			t.position = geometry.resolve(to) if geometry else to
+			t.displaced_tick = sim.tick
 			_cancel_if_casting(t, "knocked_back")
 			_log({"type": "knockback", "source": u.id, "target": t.id})
 		"charge":
@@ -419,6 +415,7 @@ func apply_effect(u: Unit, t: Unit, eff: Dictionary, ab: Dictionary, scale: floa
 					break
 				pos = res
 			u.position = pos
+			u.displaced_tick = sim.tick
 			var to_t: Vector3 = _flat3(t.position - u.position)
 			if to_t.length() > 0.01:
 				u.facing = atan2(-to_t.x, -to_t.z)
@@ -434,6 +431,7 @@ func apply_effect(u: Unit, t: Unit, eff: Dictionary, ab: Dictionary, scale: floa
 					break
 				dest = res
 			t.position = dest
+			t.displaced_tick = sim.tick
 			_log({"type": "teleport", "source": u.id, "target": t.id})
 
 
@@ -463,7 +461,7 @@ func deal_damage(u: Unit, t: Unit, base: float, school: String, ab: Dictionary,
 	_log({"type": "damage", "source": u.id if u else -1, "target": t.id, "ability": ab.get("id", ""),
 		"school": school, "amount": dealt, "absorbed": absorbed, "crit": crit, "killed": t.health <= 0,
 		"weapon": u.weapon_type if u and ab.get("id", "") == "auto_attack" else ""})
-	_after_damage(u, t, dealt + absorbed)
+	_after_damage(u, t, dealt + absorbed, str(ab.get("id", "")))
 	return dealt
 
 
@@ -484,14 +482,16 @@ func heal(u: Unit, t: Unit, base: float, ab: Dictionary, coef: float = 1.0, can_
 	return done
 
 
-func _after_damage(u: Unit, t: Unit, amount: int) -> void:
+func _after_damage(u: Unit, t: Unit, amount: int, ability_id: String = "") -> void:
 	var now: int = sim.tick
 	t.combat_until_tick = now + _in_combat_ticks
 	if u:
 		u.combat_until_tick = now + _in_combat_ticks
 	var rage: Dictionary = tuning["resources"]["rage"]
-	if u and u.resource_max.has("rage"):
-		_add_resource(u, "rage", amount / 1000.0 * float(rage["per_1000_damage_dealt"]))
+	if u and u.resource_max.has("rage") and ability_id == "auto_attack":
+		# rage comes from weapon swings and from being hit; abilities spend it (or grant a fixed
+		# amount in their own data), so no spender can pay for itself
+		_add_resource(u, "rage", amount / 1000.0 * float(rage["per_1000_auto_attack_damage"]))
 	if t.resource_max.has("rage"):
 		_add_resource(t, "rage", amount / 1000.0 * float(rage["per_1000_damage_taken"]))
 	# crowd control that breaks on damage

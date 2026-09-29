@@ -71,6 +71,22 @@ func apply_input(unit: Unit, inp: Dictionary) -> void:
 		combat.press(unit, inp["ability"], tid)
 
 
+## A simulation system that drives bots: every bot decides from the same start-of-tick world,
+## then the inputs are applied in this tick's turn order (see Sim.turn_order), so no bot sees
+## another's move from the same tick and no team always moves first.
+## `brains` maps unit id -> BotBrain. Register before system_combat_and_rules.
+func bot_system(brains: Dictionary) -> Callable:
+	return func(s: Sim, _inputs: Dictionary) -> void:
+		var decided: Dictionary = {}
+		for uid: int in brains:
+			var u: Unit = s.units.get(uid)
+			if u:
+				decided[uid] = brains[uid].next_input(view_for(u))
+		for u: Unit in s.turn_order():
+			if decided.has(u.id):
+				apply_input(u, decided[u.id])
+
+
 ## Combat and match rules for this tick. Register as the last simulation system.
 func system_combat_and_rules(s: Sim, _inputs: Dictionary) -> void:
 	combat.tick()

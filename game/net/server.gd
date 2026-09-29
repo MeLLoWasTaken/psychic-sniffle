@@ -12,6 +12,7 @@ extends Node
 ## per client per tick, and sends every client a snapshot after every tick.
 
 const CATCH_UP_BUFFER: int = 6  ## above this many queued inputs, apply two per tick to catch up
+const GAP_GIVE_UP_INPUTS: int = 4  ## a missing input is treated as lost once this many newer ones are queued
 const RESPAWN_S: float = 5.0
 const END_LINGER_S: float = 3.0
 
@@ -129,24 +130,41 @@ func _on_packet(peer: ENetPacketPeer, key: int, msg: Dictionary) -> void:
 			if c.is_empty():
 				return
 			for inp: Dictionary in msg["inputs"]:
-				if inp["seq"] > c["last_received_seq"]:
-					c["last_received_seq"] = inp["seq"]
-					c["inputs"].append(inp)
+				_queue_input(c, inp)
 		Protocol.Msg.PING:
 			transport.send(peer, Protocol.CH_RELIABLE, Protocol.pong(msg["t_usec"]), true)
+
+
+## Keep every input not yet applied, sorted by sequence number, without duplicates. Packets
+## can arrive out of order; each carries the last few inputs, so a lost packet is usually
+## covered by the next one.
+func _queue_input(c: Dictionary, inp: Dictionary) -> void:
+	var seq: int = int(inp["seq"])
+	if seq <= int(c["ack_seq"]):
+		return
+	var queue: Array = c["inputs"]
+	var i: int = queue.size()
+	while i > 0 and int(queue[i - 1]["seq"]) >= seq:
+		if int(queue[i - 1]["seq"]) == seq:
+			return
+		i -= 1
+	queue.insert(i, inp)
+	c["last_received_seq"] = maxi(int(c["last_received_seq"]), seq)
 
 
 func _client_stats(c: Dictionary) -> Dictionary:
 	var secs: float = (sim.tick - int(c["joined_tick"])) / float(sim.tick_rate)
 	return {"snapshots_sent": c["snapshots"], "seconds": secs, "spec": c["spec"],
-		"snapshot_rate_hz": c["snapshots"] / secs if secs > 0 else 0.0, "starved_ticks": c["starved_ticks"]}
+		"snapshot_rate_hz": c["snapshots"] / secs if secs > 0 else 0.0, "starved_ticks": c["starved_ticks"],
+		"lost_inputs": c["lost_inputs"]}
 
 
 func _add_client(peer: ENetPacketPeer, key: int, player_name: String, spec_id: String) -> void:
 	var team: int = clients.size() % 2
 	var unit: Unit = runner.add_unit(spec_id, team)
 	clients[key] = {"peer": peer, "name": player_name, "spec": spec_id, "unit_id": unit.id, "inputs": [],
-		"last_received_seq": 0, "ack_seq": 0, "snapshots": 0, "starved_ticks": 0, "joined_tick": sim.tick}
+		"last_received_seq": 0, "ack_seq": 0, "snapshots": 0, "starved_ticks": 0, "lost_inputs": 0,
+		"joined_tick": sim.tick}
 	transport.send(peer, Protocol.CH_RELIABLE, Protocol.welcome(unit.id, sim.tick, sim.tick_rate, map["id"]), true)
 	Log.info("server: %s joined as unit %d (%s) on team %d" % [player_name, unit.id, spec_id, team])
 
@@ -172,16 +190,23 @@ func _send_snapshots() -> void:
 ## (a starved tick); when inputs pile up, two are applied per tick until caught up.
 ## Crowd control overrides player movement (feared units run, stunned units stand still).
 func _system_inputs_and_movement(s: Sim, _inputs: Dictionary) -> void:
+	var by_unit: Dictionary = {}
 	for c: Dictionary in clients.values():
-		var unit: Unit = s.units.get(c["unit_id"])
-		if unit == null:
+		by_unit[int(c["unit_id"])] = c
+	for unit: Unit in s.turn_order():  # fair order: no player always moves first
+		var c: Dictionary = by_unit.get(unit.id, {})
+		if c.is_empty():
 			continue
 		var queue: Array = c["inputs"]
-		if queue.is_empty():
-			c["starved_ticks"] += 1
-			continue
 		var count: int = 2 if queue.size() > CATCH_UP_BUFFER else 1
 		for i: int in count:
+			# the next input in sequence; if it is missing, wait for it (it may arrive out of
+			# order) until GAP_GIVE_UP_INPUTS newer ones are queued, then accept it as lost
+			if queue.is_empty() or (int(queue[0]["seq"]) != int(c["ack_seq"]) + 1 and queue.size() < GAP_GIVE_UP_INPUTS):
+				c["starved_ticks"] += 1
+				break
+			if int(queue[0]["seq"]) != int(c["ack_seq"]) + 1:
+				c["lost_inputs"] += int(queue[0]["seq"]) - int(c["ack_seq"]) - 1
 			var inp: Dictionary = queue.pop_front()
 			c["ack_seq"] = inp["seq"]
 			runner.apply_input(unit, inp)

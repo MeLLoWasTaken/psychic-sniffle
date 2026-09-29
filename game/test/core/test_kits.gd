@@ -68,14 +68,26 @@ func test_rage_is_built_then_spent() -> void:
 	cb.press(war, "wide_hew", 2)
 	assert_str(_fail()).is_equal("no_resource")
 	cb.press(war, "grim_hack", 2)
-	# 12 from the ability plus rage from dealing its damage x 0.9 (cloth armor), 8 per 1,000
-	var hack: int = roundi(_base("grim_hack") * 0.9)
-	assert_float(war.resources["rage"]).is_equal_approx(12.0 + hack / 1000.0 * 8.0, 0.01)
+	# abilities give only their own fixed rage; damage they deal gives none
+	assert_float(war.resources["rage"]).is_equal_approx(12.0, 0.01)
+	war.resources["rage"] = 20.0
 	_ready_all()
-	var before: float = war.resources["rage"]
 	cb.press(war, "wide_hew", 2)
-	var hew: int = roundi(_base("wide_hew") * 0.9)
-	assert_float(war.resources["rage"]).is_equal_approx(before - 20.0 + hew / 1000.0 * 8.0, 0.01)
+	assert_float(war.resources["rage"]).is_equal_approx(0.0, 0.01)  # a spender never refunds itself
+
+
+func test_auto_attacks_and_damage_taken_build_rage() -> void:
+	var per_1000: float = float(Data.tuning["resources"]["rage"]["per_1000_auto_attack_damage"])
+	var swing: int = roundi(float(Data.tuning["damage"]["auto_attack"]["base_damage"]) * 0.9)  # cloth
+	war.target_id = 2
+	var hp_before: int = arc.health
+	_run(roundi(2.0 * TR) + 2)
+	var hits: int = (hp_before - arc.health) / swing
+	assert_int(hits).is_greater_equal(1)
+	assert_float(war.resources["rage"]).is_greater_equal(swing / 1000.0 * per_1000 - 0.5)
+	var rage: float = war.resources["rage"]
+	cb.deal_damage(arc, war, 5000.0, "frost", {"id": "test"}, 0.0)
+	assert_float(war.resources["rage"]).is_greater(rage)
 
 
 func test_headsmans_verdict_only_below_20_percent() -> void:

@@ -12,12 +12,17 @@ var rng: RandomNumberGenerator = RandomNumberGenerator.new()
 var units: Dictionary = {}  ## unit id -> Unit
 
 var _accumulator: float = 0.0
+var _seed: int = 0
+var _order_rng: RandomNumberGenerator = RandomNumberGenerator.new()
+var _order: Array = []
+var _order_tick: int = -1
 var _systems: Array[Callable] = []  ## called every tick with (sim, inputs)
 
 
 func _init(seed_value: int, p_tick_rate: int = 60) -> void:
 	tick_rate = p_tick_rate
 	rng.seed = seed_value
+	_seed = seed_value
 
 
 ## Seconds per tick.
@@ -32,6 +37,29 @@ func time_s() -> float:
 
 func add_unit(unit: Unit) -> void:
 	units[unit.id] = unit
+	_order_tick = -1
+
+
+## Units in this tick's turn order: a shuffle that depends only on the match seed and the tick,
+## so no unit or team always acts first in same-tick races (who lands the killing blow, whose
+## interrupt resolves first), and replays stay identical. Uses its own random stream so the
+## combat rolls are unaffected.
+func turn_order() -> Array:
+	if _order_tick == tick and _order.size() == units.size():
+		return _order
+	var ids: Array = units.keys()
+	ids.sort()
+	_order_rng.seed = hash([_seed, tick])
+	for i: int in range(ids.size() - 1, 0, -1):
+		var j: int = _order_rng.randi_range(0, i)
+		var tmp: Variant = ids[i]
+		ids[i] = ids[j]
+		ids[j] = tmp
+	_order = []
+	for id: Variant in ids:
+		_order.append(units[id])
+	_order_tick = tick
+	return _order
 
 
 ## Register a system: a callable taking (sim: Sim, inputs: Dictionary). Systems run in the

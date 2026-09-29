@@ -18,11 +18,7 @@ func _play(specs_a: Array, specs_b: Array, seed_value: int, max_s: float) -> Dic
 		for spec: String in (specs_a if team == 0 else specs_b):
 			var u: Unit = runner.add_unit(spec, team)
 			brains[u.id] = BotBrain.new(spec, seed_value * 100 + u.id, runner.geometry, nav)
-	var feed: Callable = func(_s: Sim, _inputs: Dictionary) -> void:
-		for uid: int in brains:
-			var u: Unit = runner.sim.units[uid]
-			runner.apply_input(u, brains[uid].next_input(runner.view_for(u)))
-	runner.sim.add_system(feed)
+	runner.sim.add_system(runner.bot_system(brains))
 	runner.sim.add_system(runner.system_combat_and_rules)
 	var limit: int = roundi(max_s * runner.sim.tick_rate)
 	while runner.sim.tick < limit and not runner.ended():
@@ -56,15 +52,36 @@ func test_nav_straight_line_when_clear() -> void:
 	assert_int(path.size()).is_equal(1)
 
 
+func test_bots_get_around_the_central_block() -> void:
+	# a melee bot hugging a corner of the central block must reach a target behind it
+	# (regression: skipping a waypoint near the corner sent it straight into the wall)
+	for sx: float in [-1.0, 1.0]:
+		for sz: float in [-1.0, 1.0]:
+			var runner: MatchRunner = MatchRunner.new(Data.maps[MAP], "arena", "1v1", 0.0, 1)
+			var war: Unit = runner.add_unit("warblade_carnage", 0)
+			var ora: Unit = runner.add_unit("oracle_grace", 1)
+			var brain: BotBrain = BotBrain.new("warblade_carnage", 1, runner.geometry)
+			runner.sim.add_system(runner.bot_system({war.id: brain}))
+			runner.sim.add_system(runner.system_combat_and_rules)
+			runner.sim.step()
+			war.position = Vector3(2.95 * sx, 0, 2.8 * sz)
+			ora.position = Vector3(-9.8 * sx, 0, 2.5 * sz)
+			for i: int in 5 * 60:
+				runner.sim.step()
+			var d: float = Vector2(war.position.x, war.position.z).distance_to(Vector2(ora.position.x, ora.position.z))
+			runner.sim._systems.clear()
+			assert_float(d).override_failure_message("stuck at %s" % war.position).is_less(4.0)
+
+
 func test_closed_gates_block_paths_until_rebuilt() -> void:
 	var runner: MatchRunner = _runner()
 	runner.geometry.gates_open = false
 	var nav: NavGrid = NavGrid.new(runner.geometry)
 	var inside: Vector3 = Vector3(-17, 0, 0)
-	assert_bool(nav._clear(inside, Vector3(-10, 0, 0))).is_false()
+	assert_bool(nav.walkable(inside, Vector3(-10, 0, 0))).is_false()
 	runner.geometry.gates_open = true
 	nav.rebuild()
-	assert_bool(nav._clear(inside, Vector3(-10, 0, 0))).is_true()
+	assert_bool(nav.walkable(inside, Vector3(-10, 0, 0))).is_true()
 
 
 func test_bots_idle_before_the_match_starts() -> void:

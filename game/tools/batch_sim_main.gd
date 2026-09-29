@@ -8,6 +8,7 @@ extends Node
 ## Prints one line per match and a summary; exits 1 if any match raised an error.
 
 var _results: Array = []
+var _team1_first: bool = false
 var _trace_path: String = ""
 
 
@@ -16,6 +17,7 @@ func _ready() -> void:
 	var matches: int = int(_arg(args, "--matches", "10"))
 	var seed_base: int = int(_arg(args, "--seed", "1"))
 	var out: String = _arg(args, "--out", "")
+	_team1_first = "--team1-first" in args  # create team 1's units first (lower ids), to test ordering bias
 	_trace_path = _arg(args, "--trace", "")  # write the first match's full event log here
 	var max_minutes: float = float(_arg(args, "--max-minutes", "20"))
 	var comps: Array = []
@@ -51,20 +53,17 @@ func _run_match(team_specs: Array, seed_value: int, max_minutes: float) -> Dicti
 	var runner: MatchRunner = MatchRunner.new(map, "arena", bracket, 0.0, seed_value)
 	var brains: Dictionary = {}
 	var nav: NavGrid = NavGrid.new(runner.geometry)
-	for team: int in 2:
+	for team: int in ([1, 0] if _team1_first else [0, 1]):
 		for spec: String in team_specs[team]:
 			var u: Unit = runner.add_unit(spec, team)
 			brains[u.id] = BotBrain.new(spec, seed_value * 100 + u.id, runner.geometry, nav)
+			brains[u.id].explain = _trace_path != "" and _results.is_empty()
 	var errors_before: int = Log.error_count
 	var stats: Dictionary = {}
 	for uid: int in brains:
 		stats[uid] = {"spec": runner.sim.units[uid].spec_id, "team": runner.sim.units[uid].team, "damage": 0,
 			"healing": 0, "casts": 0, "interrupts": 0, "cc": 0, "failed": {}, "died": false}
-	var feed: Callable = func(s: Sim, _i: Dictionary) -> void:
-		for uid: int in brains:
-			var u: Unit = s.units[uid]
-			runner.apply_input(u, brains[uid].next_input(runner.view_for(u)))
-	runner.sim.add_system(feed)
+	runner.sim.add_system(runner.bot_system(brains))
 	runner.sim.add_system(runner.system_combat_and_rules)
 	var limit: int = roundi(max_minutes * 60.0 * runner.sim.tick_rate)
 	var end_reason: String = "limit"
@@ -76,7 +75,8 @@ func _run_match(team_specs: Array, seed_value: int, max_minutes: float) -> Dicti
 			var snap: Array = []
 			for u: Unit in runner.sim.units.values():
 				snap.append({"id": u.id, "hp": u.health, "pos": [snappedf(u.position.x, 0.1), snappedf(u.position.z, 0.1)],
-					"res": snappedf(float(u.resources.get(u.primary_resource, 0.0)), 1), "target": u.target_id})
+					"res": snappedf(float(u.resources.get(u.primary_resource, 0.0)), 1), "target": u.target_id,
+					"cast": u.cast.get("ability", ""), "gcd": u.gcd_ready_tick, "why": brains[u.id].explanation.duplicate()})
 			trace.append({"tick": runner.sim.tick, "type": "state", "units": snap})
 		for ev: Dictionary in runner.take_events():
 			if tracing:
@@ -108,6 +108,10 @@ func _run_match(team_specs: Array, seed_value: int, max_minutes: float) -> Dicti
 					end_reason = ev["reason"]
 		if runner.ended():
 			break
+	for uid: int in brains:
+		stats[uid]["stuck"] = brains[uid].stuck_count
+		if tracing:
+			trace.append({"type": "stuck_log", "unit": uid, "spec": stats[uid]["spec"], "log": brains[uid].stuck_log})
 	var result: Dictionary = {"winner": runner.arena.winner_team, "seconds": runner.arena.match_seconds(runner.sim.tick),
 		"end_reason": end_reason, "units": stats, "errors": Log.error_count - errors_before,
 		"state_hash": runner.sim.state_hash()}
@@ -132,7 +136,7 @@ func _summarise() -> Dictionary:
 		secs += float(r["seconds"])
 		for uid: Variant in r["units"]:
 			var u: Dictionary = r["units"][uid]
-			var s: Dictionary = spec.get(u["spec"], {"games": 0, "wins": 0, "damage": 0, "healing": 0, "interrupts": 0, "cc": 0, "deaths": 0})
+			var s: Dictionary = spec.get(u["spec"], {"games": 0, "wins": 0, "damage": 0, "healing": 0, "interrupts": 0, "cc": 0, "deaths": 0, "stuck": 0})
 			s["games"] += 1
 			s["wins"] += 1 if r["winner"] == u["team"] else 0
 			s["damage"] += u["damage"]
@@ -140,11 +144,12 @@ func _summarise() -> Dictionary:
 			s["interrupts"] += u["interrupts"]
 			s["cc"] += u["cc"]
 			s["deaths"] += 1 if u["died"] else 0
+			s["stuck"] += int(u.get("stuck", 0))
 			spec[u["spec"]] = s
 	for k: String in spec:
 		var s: Dictionary = spec[k]
 		s["win_rate"] = float(s["wins"]) / s["games"]
-		for f: String in ["damage", "healing", "interrupts", "cc", "deaths"]:
+		for f: String in ["damage", "healing", "interrupts", "cc", "deaths", "stuck"]:
 			s[f + "_per_game"] = float(s[f]) / s["games"]
 	return {"headline": {"matches": n, "ended_by_kill": kills, "kill_rate": float(kills) / maxi(n, 1),
 		"avg_seconds": secs / maxi(n, 1), "errors": errors}, "specs": spec}

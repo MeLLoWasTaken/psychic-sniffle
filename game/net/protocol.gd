@@ -6,7 +6,7 @@ extends RefCounted
 ## Abilities, auras and specs travel as small indexes into their sorted id lists (both sides
 ## load the same data, and the protocol version changes whenever that could differ).
 
-const VERSION: int = 2
+const VERSION: int = 3
 const CH_RELIABLE: int = 0
 const CH_UNRELIABLE: int = 1
 const CHANNELS: int = 2
@@ -177,6 +177,7 @@ static func snapshot(tick: int, ack_seq: int, units: Array, match_state: Diction
 		b.put_float(own.velocity.z)
 		b.put_float(own.swing_timer)
 		b.put_u32(own.gcd_ready_tick)
+		b.put_32(own.displaced_tick)
 		var cds: Array = own.cooldowns.keys().filter(func(k: String) -> bool: return int(own.cooldowns[k]) > tick)
 		b.put_u8(cds.size())
 		for k: String in cds:
@@ -287,7 +288,7 @@ static func decode(data: PackedByteArray) -> Dictionary:
 			if b.get_u8() == 1:
 				var own: Dictionary = {"position": Vector3(b.get_float(), b.get_float(), b.get_float()),
 					"velocity": Vector3(b.get_float(), b.get_float(), b.get_float()), "swing_timer": b.get_float(),
-					"gcd_ready_tick": b.get_u32(), "cooldowns": {}}
+					"gcd_ready_tick": b.get_u32(), "displaced_tick": b.get_32(), "cooldowns": {}}
 				var nc: int = b.get_u8()
 				for j: int in nc:
 					var ab_id: String = id_at("abilities", b.get_u16())

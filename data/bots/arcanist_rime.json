@@ -5,7 +5,7 @@
       18,
       30
     ],
-    "target_priority": "healer_first",
+    "target_priority": "dps_first",
     "reaction_ms": [
       250,
       600
@@ -117,7 +117,8 @@
       "when": {
         "target_not_cc": true,
         "no_free_melee_within_m": 12,
-        "focus_health_below_pct": 70
+        "focus_health_below_pct": 70,
+        "not_focus": true
       }
     },
     {
@@ -130,7 +131,7 @@
     {
       "ability": "unravel",
       "when": {
-        "has_dispellable": true
+        "has_dispellable": "major"
       }
     },
     {

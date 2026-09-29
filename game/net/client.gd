@@ -48,6 +48,7 @@ var _stats: Dictionary = {"snapshots": 0, "corrections": 0, "correction_sum": 0.
 	"effect_corrections": 0, "effect_correction_max": 0.0, "correction_log": []}
 var _start_usec: int = 0
 var _match_ended_usec: int = 0
+var _last_displaced_tick: int = -1
 var quit_on_match_end: bool = false  ## test bots leave one second after an arena match ends
 var _snap_window_start_usec: int = 0
 var _next_ping_usec: int = 0
@@ -182,6 +183,10 @@ func _reconcile(snap: Dictionary) -> void:
 	predicted.target_id = mine["target_id"]
 	predicted.team = mine["team"]
 	var effect_changed: bool = _movement_effects_changed(own_auras, mine["auras"], int(snap["tick"]))
+	var displaced: int = int(own.get("displaced_tick", -1))
+	if displaced != _last_displaced_tick:
+		_last_displaced_tick = displaced
+		effect_changed = true  # an ability moved us (charge, blink, knockback): server-decided
 	own_auras = mine["auras"]
 	while not _pending.is_empty() and int(_pending[0]["seq"]) <= int(snap["ack_seq"]):
 		_pending.pop_front()
