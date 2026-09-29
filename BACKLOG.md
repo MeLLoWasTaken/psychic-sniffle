@@ -181,13 +181,13 @@ The slice specs are Warblade Carnage (melee, rage), Arcanist Rime (casting, inte
 - [x] Bot navigation on this map (bots path between the rooms only when the gates are open); line-of-sight rules tested on this map, and the scene's collision agrees with the server's line of sight on 800 random sightlines (`test/core/test_map.gd`).
 - [x] Top-down, overview and player-view screenshots reviewed (`previews/maps/`).
 
-### M1-15 Arena art kit and lighting v1 `[todo]`
-- [ ] Blender-built modular kit: stone floor, walls, pillars, gates, braziers, gallows, banners in team colors.
-- [ ] Baked lighting, volumetric fog, bloom, filmic tonemapping and a map color grade matching the art bible.
-- [ ] Under 1.5 million visible triangles; screenshots reviewed against the art bible.
+### M1-15 Arena art kit and lighting v1 `[done]`
+- [x] Blender-built modular kit (`tools/blender/build_kit_gallows.py`, 10 pieces): flagstone floor, coursed stone wall and corner, pillar, iron portcullis and stone lintel, wooden gallows platform with nooses, brazier, banners in crimson and steel blue. Painted look baked into textures (pulled forward from M1-17 for environment pieces).
+- [x] Baked bounced light (VoxelGI, baked when the map loads in about 5 s), volumetric fog, bloom, AgX filmic tonemapping, and a split-tone color grade from `data/lighting/dusk_grim.json`.
+- [x] 706,000 visible triangles (budget 1.5 million, tested); screenshots reviewed against the art bible (`previews/maps/kit_player.png`, `kit_overview.png`).
+- [x] Color balance: stone stays grey with cool shadows and warm light; accent colors only from banners and fire.
 
 **Characters**
-- [ ] Color balance: warm key light and warm fog together turned the M0-04 test scene uniformly orange-brown; keep cool ambient and fill so iron and stone stay readable. (Greybox pass: cool sky horizon and fog in `data/lighting/dusk_grim.json` fixed it for plain stone; recheck with painted textures.)
 
 ### M1-16 Standard skeleton and parametric body `[doing]` (started early while M0 waited on the Godot build)
 - [x] One humanoid skeleton with fixed bone names, written to `docs/ART_BIBLE.md`.
@@ -196,7 +196,7 @@ The slice specs are Warblade Carnage (melee, rage), Arcanist Rime (casting, inte
 - [ ] Status 2026-09-29: skeleton, armature and automatic weights work (pose test deforms cleanly). Body v2 uses metaball masses; heavy build is chunky but reads as a segmented mannequin; lean build is broken (masses shrink without moving, leaving gaps). Next: fuller blending between masses, build-specific offsets for lean, then a head with real features.
 
 ### M1-17 Hand-painted texture bake `[todo]`
-- [ ] Bake pipeline producing 2048 px base color (light from above, darkened crevices, lightened edges), plus normal and roughness maps.
+- [ ] Bake pipeline producing 2048 px base color (light from above, darkened crevices, lightened edges), plus normal and roughness maps. (Environment pieces already bake base color and roughness/metallic with `tools/blender/kit.py`; still to do: characters, normal maps.)
 - [ ] Before-and-after contact sheets show the painted look; no photo textures and no fine noise.
 - [ ] Edge highlights read as worn paint on the edges, not as thin outlines (found in the M0-15 test crate).
 - [ ] The `dusk_grim` preview lighting keeps the back of a model readable, not near-black (found in the M0-15 test crate).
@@ -280,6 +280,12 @@ The slice specs are Warblade Carnage (melee, rage), Arcanist Rime (casting, inte
 ### F-04 Bot movement polish `[todo]`
 - [ ] Healers near a pillar sometimes alternate between two movement goals (hide and stay near the ally) and stall; about 10 stall events per match. Add hysteresis to goal changes.
 - [ ] Recheck the small team-1 edge seen across 209 matches after the turn-order fix (55%, not statistically significant) at the next review pass.
+
+### F-05 Gallows Courtyard dressing polish `[todo]`
+- [ ] A skyline beyond the walls (towers, rooftops, a distant keep) so the sky above the 6 m walls is not empty.
+- [ ] A gatehouse above each gate: the raised portcullis now shows above the wall.
+- [ ] Wall tops read as walkable plazas from above; use roof or rampart pieces instead of floor tiles.
+- [ ] Props along the walls (crates, barrels, chains, rubble) and fire effects for the braziers (with M1-24).
 
 ### F-02 GPU frame-rate measurement `[blocked: needs a GPU machine]`
 - [ ] Record fps for the M1 vertical slice on recommended and minimum PC profiles at the M1 gate.

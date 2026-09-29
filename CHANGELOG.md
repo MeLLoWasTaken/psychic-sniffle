@@ -2,6 +2,14 @@
 
 One entry per build-loop iteration, newest first. Format: date, backlog ID, what changed, how it was checked.
 
+## 2026-09-29 — M1-15 Arena art kit and lighting v1
+- `tools/blender/kit.py` and `build_kit_gallows.py` build a 10-piece Gallows Courtyard kit from asset specs: flagstone floor tile (1,632 triangles), coursed stone wall (5,952), corner quoins, pillar with a shackle ring, iron portcullis, stone lintel, wooden gallows platform with frame and nooses (6,976), iron brazier with glowing coals, and banners in crimson and steel blue with an original ring-and-chevron emblem.
+- The painted look (broad color variation between stones, light from above, worn edges, dark crevices, no fine noise) is baked into textures. Faces hidden against other parts get almost no texture space; a first version of that check blacked out a drum face next to a small iron plate, fixed by requiring every sample point on a face to be covered.
+- `MapBuilder` dresses maps that name a kit: tiled floors, facades on every open wall side, quoins on corners, paved wall tops, pillars, gallows, portcullises that rise when the gates open, lintels, and decorations from map data (braziers with fire lights, banners). Collision stays on the greybox bodies, so gameplay and the line-of-sight test are unchanged. Repeated tiles and walls are drawn in batches.
+- Lighting: bounced light (VoxelGI) baked at map load in about 5 s, and a split-tone color grade (cool shadows, warm highlights) from the lighting preset.
+- Validation: asset specs can declare a "face" pivot; maps must have a spec for every kit piece they use.
+- Checked: all 13 assets pass validation; the dressed arena has 706,000 visible triangles (test, budget 1.5 million); screenshots reviewed (`previews/maps/kit_player.png`, `kit_overview.png`); contact sheets in `previews/kit/`. Remaining polish listed as F-05.
+
 ## 2026-09-29 — M1-14 Arena greybox: Gallows Courtyard
 - New layout: a 39 by 36 m courtyard with four pillars and a central gallows block, and a gated starting room beyond each end. The first layout's full-width gates left two long strips behind them where healers got cornered.
 - `scenes/maps/map_builder.gd` builds any arena from its map data: greybox shapes with a 1 m grid, perimeter walls, team-colored gates and room floors (crimson west, steel blue east), gates that sink into the floor when they open, collision on `world` and `los_blocker` physics layers, and lighting from the new `data/lighting/dusk_grim.json` preset.

@@ -1,0 +1,26 @@
+{
+  "id": "gallows_floor_tile",
+  "kind": "environment_kit",
+  "builder": "build_kit_gallows.py",
+  "seed": 10,
+  "tri_budget": {
+    "min": 1000,
+    "max": 4000
+  },
+  "texture_size": 1024,
+  "palette": {
+    "stone": "#6d6961",
+    "flag": "#5b5852",
+    "mortar": "#2c2a27",
+    "wood": "#6b4a30",
+    "dark_wood": "#46301f",
+    "iron": "#3c3f44",
+    "rope": "#8a7654",
+    "emblem": "#d8ccb0"
+  },
+  "params": {
+    "piece": "floor_tile"
+  },
+  "out": "game/assets/kits/gallows/gallows_floor_tile.glb",
+  "status": "draft"
+}

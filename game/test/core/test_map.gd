@@ -107,6 +107,20 @@ func test_gates_sink_and_stop_blocking_when_opened() -> void:
 	assert_int(builder.gates.size()).is_equal(2)
 	builder.set_gates_open(true, 0.0)
 	for g: Node3D in builder.gates:
-		assert_float(g.position.y).is_less(-4.9)
+		# greybox gates sink into the floor; kit portcullises rise into the gatehouse
+		var expected: float = MapBuilder.GATE_OPEN_RISE if builder.has_kit() else -MapBuilder.GATE_OPEN_DEPTH
+		assert_float(g.position.y).is_equal_approx(expected, 0.001)
 		var body: StaticBody3D = g.get_node("Mesh/Body")
 		assert_int(body.collision_layer).is_equal(0)
+
+
+func test_dressed_arena_stays_under_the_triangle_budget() -> void:
+	var builder: MapBuilder = auto_free(MapBuilder.new())
+	builder.map_id = MAP_ID
+	builder.build_lighting = false
+	add_child(builder)
+	assert_bool(builder.has_kit()).is_true()
+	var tris: int = builder.visible_triangles()
+	print("arena visible triangles: %d" % tris)
+	assert_int(tris).override_failure_message("%d visible triangles" % tris).is_less(1_500_000)
+	assert_int(tris).is_greater(100_000)  # the kit really is there

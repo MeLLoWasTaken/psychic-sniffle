@@ -57,6 +57,12 @@ Presets live in `data/lighting/<id>.json` (sun, fill, sky, ambient light, fog, p
 
 `scenes/maps/map_builder.gd` builds every arena from its map data, so art always matches gameplay collision. Colliders carry a `tag` (pillar, wall, gate, gallows, prop); the art kit (M1-15) replaces the greybox shape for each tag. Team colors: crimson for team A (west room), steel blue for team B (east room), shown on the gates and room floors. Review views: `tools/screenshot.sh res://scenes/tests/map_view.tscn <out.png> 1920 1080 60 --view top|overview|player`.
 
+## Environment kits
+
+- One asset spec per piece (`data/assets/<kit>_<piece>.json`), built by `tools/blender/build_kit_<kit>.py`. Standard sizes: floor tiles and wall segments 4 m wide, walls 6 m tall, so the map builder can tile and stretch them slightly to fit colliders.
+- Stones, planks and bars are separate beveled parts with slight random offsets, each with its own tint, then joined and baked. Keep shapes chunky; detail comes from the gaps and bevels, not texture noise.
+- Pieces that mount on a surface use the "face" pivot (the mounting face on y = 0).
+
 ## Approved references
 
 None yet. The first entries are expected at the M1-22 art gate.

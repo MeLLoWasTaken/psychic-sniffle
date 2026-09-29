@@ -4,7 +4,8 @@
 Checks (docs/DESIGN.md, "Asset pipeline", Validation):
   - triangle count inside the spec's tri_budget
   - metric scale: bounding box within sane limits for the asset kind
-  - origin at the feet: lowest point at z = 0 (within 1 cm), centred on x and y
+  - origin at the feet: lowest point at z = 0 (within 1 cm), centred on x and y (pivot "face":
+    centred on x, with the mounting face on y = 0)
   - no non-manifold edges (holes or edges shared by more than two faces)
   - every image texture is square-free power-of-two sized
   - characters only: required bone names and animation clips (list grows with backlog M1-16/M1-21)
@@ -87,8 +88,11 @@ def check(spec: dict) -> list[str]:
     if abs(min(zs)) > 0.01:
         errors.append(f"lowest point at z = {min(zs):.3f} m; origin must be at the feet (z = 0)")
     cx, cy = (max(xs) + min(xs)) / 2, (max(ys) + min(ys)) / 2
-    if abs(cx) > 0.05 or abs(cy) > 0.05:
+    face_pivot = spec.get("pivot", "centre") == "face"
+    if abs(cx) > 0.05 or (abs(cy) > 0.05 and not face_pivot):
         errors.append(f"not centred: bounding-box centre at x={cx:.3f}, y={cy:.3f}")
+    if face_pivot and not (min(ys) <= 0.15 and max(ys) >= -0.15):
+        errors.append(f"face pivot: the mounting face should lie on y = 0, but y spans {min(ys):.2f}..{max(ys):.2f}")
 
     if non_manifold:
         errors.append(f"{non_manifold} non-manifold edges")

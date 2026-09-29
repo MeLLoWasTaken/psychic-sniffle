@@ -194,6 +194,16 @@ def validate(data_dir: Path) -> list[str]:
     # ---- maps ------------------------------------------------------------------
     for mid, m in db["maps"].items():
         rel = f"maps/{mid}.json"
+        if m.get("kit"):
+            needed = {"floor_tile", "wall", "corner"} | {c.get("tag", "") for c in m["colliders"]} - {""}
+            needed |= {d["piece"] for d in m.get("decor", [])}
+            needed = {"gate" if n == "gate" else n for n in needed}
+            if any(c.get("gate") for c in m["colliders"]):
+                needed.add("gate_lintel")
+            for piece in sorted(needed):
+                if f"{m['kit']}_{piece}" not in db["assets"]:
+                    report.error(rel, f"kit '{m['kit']}' has no asset spec for piece '{piece}' "
+                                      f"(expected assets/{m['kit']}_{piece}.json)")
         if m.get("lighting_preset") and m["lighting_preset"] not in db["lighting"]:
             report.error(rel, f"unknown lighting preset '{m['lighting_preset']}'")
         need = max(BRACKET_SIZE[b] for b in m["brackets"])

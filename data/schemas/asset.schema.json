@@ -5,24 +5,97 @@
   "description": "Input to a tools/blender build script. The same spec and seed always produce the same asset.",
   "type": "object",
   "additionalProperties": false,
-  "required": ["id", "kind", "builder", "seed", "tri_budget", "out"],
+  "required": [
+    "id",
+    "kind",
+    "builder",
+    "seed",
+    "tri_budget",
+    "out"
+  ],
   "properties": {
-    "id": {"$ref": "common.schema.json#/$defs/id"},
-    "kind": {"enum": ["character", "weapon", "prop", "environment_kit", "icon", "test"]},
-    "builder": {"type": "string", "description": "Script in tools/blender that builds this asset, e.g. build_prop.py."},
-    "seed": {"type": "integer", "minimum": 0},
-    "spec": {"type": "string", "description": "Spec id, for character assets."},
-    "body_build": {"enum": ["heavy", "lean"]},
+    "id": {
+      "$ref": "common.schema.json#/$defs/id"
+    },
+    "kind": {
+      "enum": [
+        "character",
+        "weapon",
+        "prop",
+        "environment_kit",
+        "icon",
+        "test"
+      ]
+    },
+    "builder": {
+      "type": "string",
+      "description": "Script in tools/blender that builds this asset, e.g. build_prop.py."
+    },
+    "seed": {
+      "type": "integer",
+      "minimum": 0
+    },
+    "spec": {
+      "type": "string",
+      "description": "Spec id, for character assets."
+    },
+    "body_build": {
+      "enum": [
+        "heavy",
+        "lean"
+      ]
+    },
     "tri_budget": {
       "type": "object",
       "additionalProperties": false,
-      "required": ["min", "max"],
-      "properties": {"min": {"type": "integer", "minimum": 0}, "max": {"type": "integer", "minimum": 1}}
+      "required": [
+        "min",
+        "max"
+      ],
+      "properties": {
+        "min": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "max": {
+          "type": "integer",
+          "minimum": 1
+        }
+      }
     },
-    "texture_size": {"enum": [256, 512, 1024, 2048, 4096]},
-    "palette": {"type": "object", "additionalProperties": {"$ref": "common.schema.json#/$defs/hex_color"}},
-    "params": {"type": "object", "description": "Builder-specific parameters."},
-    "out": {"type": "string", "description": "Output .glb path relative to the repo root."},
-    "status": {"$ref": "common.schema.json#/$defs/status"}
+    "texture_size": {
+      "enum": [
+        256,
+        512,
+        1024,
+        2048,
+        4096
+      ]
+    },
+    "palette": {
+      "type": "object",
+      "additionalProperties": {
+        "$ref": "common.schema.json#/$defs/hex_color"
+      }
+    },
+    "params": {
+      "type": "object",
+      "description": "Builder-specific parameters."
+    },
+    "out": {
+      "type": "string",
+      "description": "Output .glb path relative to the repo root."
+    },
+    "status": {
+      "$ref": "common.schema.json#/$defs/status"
+    },
+    "pivot": {
+      "enum": [
+        "centre",
+        "face"
+      ],
+      "default": "centre",
+      "description": "centre: centred on x and y, lowest point at z = 0. face: the mounting face lies on y = 0 (walls, banners, lintels placed flush against a collider), centred on x only."
+    }
   }
 }

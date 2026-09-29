@@ -1,0 +1,28 @@
+{
+  "id": "gallows_gate",
+  "kind": "environment_kit",
+  "builder": "build_kit_gallows.py",
+  "seed": 14,
+  "tri_budget": {
+    "min": 500,
+    "max": 5000
+  },
+  "texture_size": 512,
+  "palette": {
+    "stone": "#6d6961",
+    "flag": "#5b5852",
+    "mortar": "#2c2a27",
+    "wood": "#6b4a30",
+    "dark_wood": "#46301f",
+    "iron": "#3c3f44",
+    "rope": "#8a7654",
+    "emblem": "#d8ccb0"
+  },
+  "params": {
+    "width_m": 8.0,
+    "height_m": 5.0,
+    "piece": "gate"
+  },
+  "out": "game/assets/kits/gallows/gallows_gate.glb",
+  "status": "draft"
+}

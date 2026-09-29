@@ -1,0 +1,28 @@
+{
+  "id": "gallows_gallows",
+  "kind": "environment_kit",
+  "builder": "build_kit_gallows.py",
+  "seed": 16,
+  "tri_budget": {
+    "min": 3000,
+    "max": 16000
+  },
+  "texture_size": 2048,
+  "palette": {
+    "stone": "#6d6961",
+    "flag": "#5b5852",
+    "mortar": "#2c2a27",
+    "wood": "#6b4a30",
+    "dark_wood": "#46301f",
+    "iron": "#3c3f44",
+    "rope": "#8a7654",
+    "emblem": "#d8ccb0"
+  },
+  "params": {
+    "size_m": 5.0,
+    "deck_m": 3.2,
+    "piece": "gallows"
+  },
+  "out": "game/assets/kits/gallows/gallows_gallows.glb",
+  "status": "draft"
+}

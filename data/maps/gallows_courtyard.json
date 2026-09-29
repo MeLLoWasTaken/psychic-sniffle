@@ -222,5 +222,104 @@
       "tag": "gate"
     }
   ],
-  "status": "draft"
+  "status": "draft",
+  "kit": "gallows",
+  "decor": [
+    {
+      "piece": "brazier",
+      "pos": [
+        -17.6,
+        -16.1
+      ],
+      "light": true
+    },
+    {
+      "piece": "brazier",
+      "pos": [
+        -17.6,
+        16.1
+      ],
+      "light": true
+    },
+    {
+      "piece": "brazier",
+      "pos": [
+        -24.0,
+        -3.1
+      ],
+      "light": true
+    },
+    {
+      "piece": "brazier",
+      "pos": [
+        17.6,
+        -16.1
+      ],
+      "light": true
+    },
+    {
+      "piece": "brazier",
+      "pos": [
+        17.6,
+        16.1
+      ],
+      "light": true
+    },
+    {
+      "piece": "brazier",
+      "pos": [
+        24.0,
+        -3.1
+      ],
+      "light": true
+    },
+    {
+      "piece": "banner_crimson",
+      "pos": [
+        -19.5,
+        -6.5
+      ],
+      "yaw_deg": 90
+    },
+    {
+      "piece": "banner_crimson",
+      "pos": [
+        -19.5,
+        6.5
+      ],
+      "yaw_deg": 90
+    },
+    {
+      "piece": "banner_crimson",
+      "pos": [
+        -25.0,
+        0
+      ],
+      "yaw_deg": 90
+    },
+    {
+      "piece": "banner_steel",
+      "pos": [
+        19.5,
+        -6.5
+      ],
+      "yaw_deg": -90
+    },
+    {
+      "piece": "banner_steel",
+      "pos": [
+        19.5,
+        6.5
+      ],
+      "yaw_deg": -90
+    },
+    {
+      "piece": "banner_steel",
+      "pos": [
+        25.0,
+        0
+      ],
+      "yaw_deg": -90
+    }
+  ]
 }

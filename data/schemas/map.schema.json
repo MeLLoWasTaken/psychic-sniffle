@@ -149,7 +149,13 @@
             "description": "Gate: blocks only during the preparation phase, then opens."
           },
           "tag": {
-            "enum": ["pillar", "wall", "gate", "gallows", "prop"],
+            "enum": [
+              "pillar",
+              "wall",
+              "gate",
+              "gallows",
+              "prop"
+            ],
             "description": "What the blocker is, so the map builder picks the right greybox or art-kit piece."
           }
         },
@@ -185,6 +191,53 @@
             }
           }
         ]
+      }
+    },
+    "kit": {
+      "type": "string",
+      "pattern": "^[a-z0-9_]+$",
+      "description": "Environment kit (game/assets/kits/<kit>/<kit>_<piece>.glb) that dresses the colliders. Without it the map builds as greybox."
+    },
+    "decor": {
+      "type": "array",
+      "description": "Decoration with no collision: braziers, banners, debris.",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "piece",
+          "pos"
+        ],
+        "properties": {
+          "piece": {
+            "type": "string",
+            "pattern": "^[a-z0-9_]+$",
+            "description": "Kit piece name, e.g. brazier or banner_crimson."
+          },
+          "pos": {
+            "type": "array",
+            "items": {
+              "type": "number"
+            },
+            "minItems": 2,
+            "maxItems": 2,
+            "description": "x, z on the ground plane."
+          },
+          "y": {
+            "type": "number",
+            "default": 0
+          },
+          "yaw_deg": {
+            "type": "number",
+            "default": 0,
+            "description": "Rotation about the vertical axis; 0 faces +z."
+          },
+          "light": {
+            "type": "boolean",
+            "default": false,
+            "description": "Add a warm fire light (braziers)."
+          }
+        }
       }
     }
   }
