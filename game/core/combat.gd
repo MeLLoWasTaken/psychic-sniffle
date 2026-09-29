@@ -246,6 +246,8 @@ func _usable_if(u: Unit, t: Unit, ab: Dictionary) -> String:
 		return "target_health_too_high"
 	if c.has("target_has_aura") and (t == null or not has_aura(t, c["target_has_aura"])):
 		return "target_missing_aura"
+	if c.has("target_cc") and (t == null or not has_cc_in(t, c["target_cc"])):
+		return "target_not_controlled"
 	if c.has("caster_has_aura") and not has_aura(u, c["caster_has_aura"]):
 		return "caster_missing_aura"
 	if c.has("caster_not_has_aura") and has_aura(u, c["caster_not_has_aura"]):
@@ -373,7 +375,8 @@ func apply_effect(u: Unit, t: Unit, eff: Dictionary, ab: Dictionary, scale: floa
 		"damage":
 			var mult: float = scale
 			var mi: Dictionary = eff.get("multiplier_if", {})
-			if mi.has("target_has_aura") and has_aura(t, mi["target_has_aura"]):
+			if (mi.has("target_has_aura") and has_aura(t, mi["target_has_aura"])) \
+					or (mi.has("target_cc") and has_cc_in(t, mi["target_cc"])):
 				mult *= float(mi["value"])
 			if eff.has("condition") and not _condition(u, t, eff["condition"]):
 				return
@@ -404,6 +407,22 @@ func apply_effect(u: Unit, t: Unit, eff: Dictionary, ab: Dictionary, scale: floa
 			t.position = geometry.resolve(to) if geometry else to
 			_cancel_if_casting(t, "knocked_back")
 			_log({"type": "knockback", "source": u.id, "target": t.id})
+		"charge":
+			# rush the caster to the target, stopping 1.5 m short; pillars and walls stop it
+			var goal: Vector3 = t.position - _flat3(t.position - u.position).normalized() * 1.5
+			var pos: Vector3 = u.position
+			var step: Vector3 = (goal - pos) / 40.0
+			for i: int in 40:
+				var nxt: Vector3 = pos + step
+				var res: Vector3 = geometry.resolve(nxt) if geometry else nxt
+				if res.distance_to(nxt) > 0.05:
+					break
+				pos = res
+			u.position = pos
+			var to_t: Vector3 = _flat3(t.position - u.position)
+			if to_t.length() > 0.01:
+				u.facing = atan2(-to_t.x, -to_t.z)
+			_log({"type": "charge", "source": u.id, "target": t.id})
 		"teleport":
 			var fwd: Vector3 = Movement.forward_of(t.facing)
 			var dist: float = float(eff.get("distance_m", 15.0))
@@ -662,6 +681,13 @@ func _remove_aura_by_id(u: Unit, aura_id: String, reason: String) -> void:
 func has_aura(u: Unit, aura_id: String) -> bool:
 	for a: Dictionary in u.auras:
 		if a["id"] == aura_id:
+			return true
+	return false
+
+
+func has_cc_in(u: Unit, categories: Array) -> bool:
+	for a: Dictionary in u.auras:
+		if auras_db[a["id"]]["cc_category"] in categories:
 			return true
 	return false
 

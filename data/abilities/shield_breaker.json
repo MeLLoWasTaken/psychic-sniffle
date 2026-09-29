@@ -1,0 +1,32 @@
+{
+  "id": "shield_breaker",
+  "name": "Shield Breaker",
+  "description": "Hurl your weapon to strip one magic effect from an enemy, even an immunity.",
+  "owner": "warblade_carnage",
+  "kit_slot": "utility",
+  "school": "physical",
+  "cast_type": "instant",
+  "cooldown_s": 60,
+  "triggers_gcd": true,
+  "range_m": 30,
+  "requires_los": true,
+  "target": "enemy",
+  "effects": [
+    {
+      "type": "damage",
+      "base": 1500
+    },
+    {
+      "type": "dispel",
+      "dispel_types": [
+        "magic",
+        "none"
+      ],
+      "dispel_count": 1
+    }
+  ],
+  "icon": {
+    "symbol": "thrown_blade",
+    "school": "physical"
+  }
+}

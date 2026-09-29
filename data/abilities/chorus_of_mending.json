@@ -1,0 +1,30 @@
+{
+  "id": "chorus_of_mending",
+  "name": "Chorus of Mending",
+  "description": "Heal the ally and every ally within 12 of them for 4,000.",
+  "owner": "oracle_grace",
+  "kit_slot": "core",
+  "school": "holy",
+  "cast_type": "instant",
+  "cooldown_s": 12,
+  "triggers_gcd": true,
+  "range_m": 40,
+  "requires_los": true,
+  "target": "ally",
+  "effects": [
+    {
+      "type": "heal",
+      "base": 4000,
+      "affects": "allies_in_radius",
+      "radius_m": 12
+    }
+  ],
+  "icon": {
+    "symbol": "choir",
+    "school": "holy"
+  },
+  "cost": {
+    "resource": "mana",
+    "amount": 2500
+  }
+}

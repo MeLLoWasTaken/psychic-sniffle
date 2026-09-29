@@ -1,0 +1,20 @@
+{
+  "tree_id": "arcanist_rime_pvp",
+  "kind": "pvp",
+  "owner": "arcanist_rime",
+  "points": 3,
+  "status": "draft",
+  "nodes": [
+    {
+      "id": "arcanist_rime_pvp_placeholder",
+      "name": "Placeholder",
+      "type": "passive",
+      "effects": [
+        {
+          "modify": "self.placeholder",
+          "per_rank": 0
+        }
+      ]
+    }
+  ]
+}

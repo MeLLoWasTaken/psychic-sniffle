@@ -1,0 +1,31 @@
+{
+  "id": "unravel",
+  "name": "Unravel",
+  "description": "Strip one magic effect from an enemy.",
+  "owner": "arcanist_rime",
+  "kit_slot": "utility",
+  "school": "frost",
+  "cast_type": "instant",
+  "cooldown_s": 0,
+  "triggers_gcd": true,
+  "range_m": 40,
+  "requires_los": true,
+  "target": "enemy",
+  "effects": [
+    {
+      "type": "dispel",
+      "dispel_types": [
+        "magic"
+      ],
+      "dispel_count": 1
+    }
+  ],
+  "icon": {
+    "symbol": "unravel",
+    "school": "frost"
+  },
+  "cost": {
+    "resource": "mana",
+    "amount": 1200
+  }
+}

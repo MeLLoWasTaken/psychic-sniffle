@@ -1,0 +1,24 @@
+{
+  "id": "hush",
+  "name": "Hush",
+  "description": "Interrupt a cast and lock that school for 3 s.",
+  "owner": "oracle_grace",
+  "kit_slot": "interrupt",
+  "school": "holy",
+  "cast_type": "instant",
+  "cooldown_s": 30,
+  "triggers_gcd": false,
+  "range_m": 30,
+  "requires_los": true,
+  "target": "enemy",
+  "effects": [
+    {
+      "type": "interrupt",
+      "school_lock_s": 3
+    }
+  ],
+  "icon": {
+    "symbol": "finger_lips",
+    "school": "holy"
+  }
+}

@@ -1,0 +1,32 @@
+{
+  "id": "crippling_slash",
+  "name": "Crippling Slash",
+  "description": "Slow the target by 50% for 12 s.",
+  "owner": "warblade_carnage",
+  "kit_slot": "utility",
+  "school": "physical",
+  "cast_type": "instant",
+  "cooldown_s": 0,
+  "triggers_gcd": true,
+  "range_m": 5,
+  "requires_los": true,
+  "target": "enemy",
+  "effects": [
+    {
+      "type": "damage",
+      "base": 800
+    },
+    {
+      "type": "apply_aura",
+      "aura": "crippled"
+    }
+  ],
+  "icon": {
+    "symbol": "cut_tendon",
+    "school": "physical"
+  },
+  "cost": {
+    "resource": "rage",
+    "amount": 10
+  }
+}

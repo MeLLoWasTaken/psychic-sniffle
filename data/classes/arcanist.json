@@ -1,0 +1,15 @@
+{
+  "id": "arcanist",
+  "name": "Arcanist",
+  "description": "Scholar of elemental magic.",
+  "armor": "cloth",
+  "color": "#5aa6d6",
+  "specs": [
+    "arcanist_rime"
+  ],
+  "class_tree": "arcanist_class",
+  "shared_abilities": [
+    "auto_attack",
+    "break_free"
+  ]
+}

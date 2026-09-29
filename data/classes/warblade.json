@@ -1,10 +1,15 @@
 {
   "id": "warblade",
   "name": "Warblade",
-  "description": "Plate-armored weapon master. Carnage and Berserker deal melee damage; Bulwark tanks.",
+  "description": "Plate-armored weapon master.",
   "armor": "plate",
   "color": "#b5452f",
-  "specs": ["warblade_carnage"],
+  "specs": [
+    "warblade_carnage"
+  ],
   "class_tree": "warblade_class",
-  "shared_abilities": ["auto_attack", "break_free"]
+  "shared_abilities": [
+    "auto_attack",
+    "break_free"
+  ]
 }

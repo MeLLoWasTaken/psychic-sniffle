@@ -1,0 +1,28 @@
+{
+  "tree_id": "arcanist_class",
+  "kind": "class",
+  "owner": "arcanist",
+  "points": 30,
+  "status": "draft",
+  "nodes": [
+    {
+      "id": "arcanist_class_placeholder",
+      "name": "Placeholder",
+      "type": "passive",
+      "effects": [
+        {
+          "modify": "self.placeholder",
+          "per_rank": 0
+        }
+      ],
+      "pos": [
+        3,
+        0
+      ]
+    }
+  ],
+  "gates": [
+    8,
+    20
+  ]
+}

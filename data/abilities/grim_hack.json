@@ -1,0 +1,28 @@
+{
+  "id": "grim_hack",
+  "name": "Grim Hack",
+  "description": "A quick chop that builds rage.",
+  "owner": "warblade_carnage",
+  "kit_slot": "core",
+  "school": "physical",
+  "cast_type": "instant",
+  "cooldown_s": 4.5,
+  "triggers_gcd": true,
+  "range_m": 5,
+  "requires_los": true,
+  "target": "enemy",
+  "effects": [
+    {
+      "type": "damage",
+      "base": 2800
+    }
+  ],
+  "icon": {
+    "symbol": "hatchet",
+    "school": "physical"
+  },
+  "generates": {
+    "resource": "rage",
+    "amount": 12
+  }
+}

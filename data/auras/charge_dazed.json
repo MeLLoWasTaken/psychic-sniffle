@@ -1,0 +1,14 @@
+{
+  "id": "charge_dazed",
+  "name": "Bowled Over",
+  "description": "Stunned by a charge.",
+  "kind": "debuff",
+  "duration_s": 1.5,
+  "dispel_type": "none",
+  "cc_category": "stun",
+  "hud_priority": "cc",
+  "icon": {
+    "symbol": "charge",
+    "school": "physical"
+  }
+}

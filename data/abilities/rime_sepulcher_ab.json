@@ -1,0 +1,32 @@
+{
+  "id": "rime_sepulcher_ab",
+  "name": "Rime Sepulcher",
+  "description": "Encase yourself: immune to damage and crowd control for 8 s, unable to act. Removes crowd control.",
+  "owner": "arcanist_rime",
+  "kit_slot": "defensive",
+  "school": "frost",
+  "cast_type": "instant",
+  "cooldown_s": 240,
+  "triggers_gcd": false,
+  "range_m": 0,
+  "requires_los": false,
+  "target": "self",
+  "effects": [
+    {
+      "type": "remove_cc"
+    },
+    {
+      "type": "apply_aura",
+      "aura": "rime_sepulcher"
+    }
+  ],
+  "icon": {
+    "symbol": "ice_block",
+    "school": "frost"
+  },
+  "usable_while_cc": [
+    "stun",
+    "root",
+    "silence"
+  ]
+}

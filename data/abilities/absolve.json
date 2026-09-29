@@ -1,0 +1,32 @@
+{
+  "id": "absolve",
+  "name": "Absolve",
+  "description": "Remove one magic or disease effect from an ally.",
+  "owner": "oracle_grace",
+  "kit_slot": "utility",
+  "school": "holy",
+  "cast_type": "instant",
+  "cooldown_s": 8,
+  "triggers_gcd": true,
+  "range_m": 40,
+  "requires_los": true,
+  "target": "ally",
+  "effects": [
+    {
+      "type": "dispel",
+      "dispel_types": [
+        "magic",
+        "disease"
+      ],
+      "dispel_count": 1
+    }
+  ],
+  "icon": {
+    "symbol": "cleansing_hand",
+    "school": "holy"
+  },
+  "cost": {
+    "resource": "mana",
+    "amount": 1000
+  }
+}

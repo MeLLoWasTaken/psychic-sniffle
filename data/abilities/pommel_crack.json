@@ -1,0 +1,24 @@
+{
+  "id": "pommel_crack",
+  "name": "Pommel Crack",
+  "description": "Stun the target for 4 s.",
+  "owner": "warblade_carnage",
+  "kit_slot": "cc",
+  "school": "physical",
+  "cast_type": "instant",
+  "cooldown_s": 30,
+  "triggers_gcd": true,
+  "range_m": 5,
+  "requires_los": true,
+  "target": "enemy",
+  "effects": [
+    {
+      "type": "apply_aura",
+      "aura": "pommel_cracked"
+    }
+  ],
+  "icon": {
+    "symbol": "pommel",
+    "school": "physical"
+  }
+}

@@ -1,0 +1,30 @@
+{
+  "id": "hailstorm",
+  "name": "Hailstorm",
+  "description": "Channel a hailstorm on the target for 3 s: 3 strikes of 2,200.",
+  "owner": "arcanist_rime",
+  "kit_slot": "core",
+  "school": "frost",
+  "cast_type": "channel",
+  "cooldown_s": 20,
+  "triggers_gcd": true,
+  "range_m": 40,
+  "requires_los": true,
+  "target": "enemy",
+  "effects": [
+    {
+      "type": "damage",
+      "base": 2200
+    }
+  ],
+  "icon": {
+    "symbol": "hail",
+    "school": "frost"
+  },
+  "cast_time_s": 3.0,
+  "channel_ticks": 3,
+  "cost": {
+    "resource": "mana",
+    "amount": 2000
+  }
+}

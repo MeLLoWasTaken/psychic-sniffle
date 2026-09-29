@@ -1,0 +1,21 @@
+{
+  "id": "chilled",
+  "name": "Chilled",
+  "description": "Movement speed down 40%.",
+  "kind": "debuff",
+  "duration_s": 6,
+  "dispel_type": "magic",
+  "cc_category": "none",
+  "hud_priority": "normal",
+  "modifiers": [
+    {
+      "stat": "move_speed",
+      "op": "multiply",
+      "value": 0.6
+    }
+  ],
+  "icon": {
+    "symbol": "snowflake",
+    "school": "frost"
+  }
+}

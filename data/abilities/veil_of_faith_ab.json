@@ -1,0 +1,24 @@
+{
+  "id": "veil_of_faith_ab",
+  "name": "Veil of Faith",
+  "description": "An ally takes 40% less damage for 8 s.",
+  "owner": "oracle_grace",
+  "kit_slot": "defensive",
+  "school": "holy",
+  "cast_type": "instant",
+  "cooldown_s": 90,
+  "triggers_gcd": false,
+  "range_m": 40,
+  "requires_los": true,
+  "target": "ally",
+  "effects": [
+    {
+      "type": "apply_aura",
+      "aura": "veil_of_faith"
+    }
+  ],
+  "icon": {
+    "symbol": "veil",
+    "school": "holy"
+  }
+}

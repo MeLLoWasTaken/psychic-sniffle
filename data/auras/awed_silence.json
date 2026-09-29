@@ -1,0 +1,14 @@
+{
+  "id": "awed_silence",
+  "name": "Chains of Awe",
+  "description": "Silenced.",
+  "kind": "debuff",
+  "duration_s": 4,
+  "dispel_type": "magic",
+  "cc_category": "silence",
+  "hud_priority": "cc",
+  "icon": {
+    "symbol": "chains",
+    "school": "holy"
+  }
+}

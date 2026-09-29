@@ -1,0 +1,31 @@
+{
+  "id": "unravel_holy",
+  "name": "Unravel",
+  "description": "Strip one magic effect from an enemy.",
+  "owner": "oracle_grace",
+  "kit_slot": "utility",
+  "school": "holy",
+  "cast_type": "instant",
+  "cooldown_s": 0,
+  "triggers_gcd": true,
+  "range_m": 40,
+  "requires_los": true,
+  "target": "enemy",
+  "effects": [
+    {
+      "type": "dispel",
+      "dispel_types": [
+        "magic"
+      ],
+      "dispel_count": 1
+    }
+  ],
+  "icon": {
+    "symbol": "unravel",
+    "school": "holy"
+  },
+  "cost": {
+    "resource": "mana",
+    "amount": 1200
+  }
+}

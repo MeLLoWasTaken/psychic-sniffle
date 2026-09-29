@@ -1,0 +1,24 @@
+{
+  "id": "unbroken_stance_ab",
+  "name": "Unbroken Stance",
+  "description": "Take 40% less damage for 8 s.",
+  "owner": "warblade_carnage",
+  "kit_slot": "defensive",
+  "school": "physical",
+  "cast_type": "instant",
+  "cooldown_s": 120,
+  "triggers_gcd": false,
+  "range_m": 0,
+  "requires_los": false,
+  "target": "self",
+  "effects": [
+    {
+      "type": "apply_aura",
+      "aura": "unbroken_stance"
+    }
+  ],
+  "icon": {
+    "symbol": "planted_sword",
+    "school": "physical"
+  }
+}

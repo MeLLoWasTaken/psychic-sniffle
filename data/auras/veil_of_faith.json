@@ -1,0 +1,21 @@
+{
+  "id": "veil_of_faith",
+  "name": "Veil of Faith",
+  "description": "Damage taken down 40%.",
+  "kind": "buff",
+  "duration_s": 8,
+  "dispel_type": "magic",
+  "cc_category": "none",
+  "hud_priority": "major_defensive",
+  "modifiers": [
+    {
+      "stat": "damage_taken",
+      "op": "multiply",
+      "value": 0.6
+    }
+  ],
+  "icon": {
+    "symbol": "veil",
+    "school": "holy"
+  }
+}

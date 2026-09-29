@@ -1,0 +1,14 @@
+{
+  "id": "pommel_cracked",
+  "name": "Skull Rattled",
+  "description": "Stunned.",
+  "kind": "debuff",
+  "duration_s": 4,
+  "dispel_type": "none",
+  "cc_category": "stun",
+  "hud_priority": "cc",
+  "icon": {
+    "symbol": "stars",
+    "school": "physical"
+  }
+}

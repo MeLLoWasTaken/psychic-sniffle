@@ -1,0 +1,15 @@
+{
+  "id": "glacier_shield",
+  "name": "Glacier Shield",
+  "description": "Absorbs 12,000 damage.",
+  "kind": "buff",
+  "duration_s": 20,
+  "dispel_type": "magic",
+  "cc_category": "none",
+  "hud_priority": "major_defensive",
+  "absorb": 12000,
+  "icon": {
+    "symbol": "ice_shield",
+    "school": "frost"
+  }
+}

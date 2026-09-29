@@ -1,0 +1,24 @@
+{
+  "id": "waning_light_ab",
+  "name": "Waning Light",
+  "description": "Take 20% less damage and move 30% faster for 6 s.",
+  "owner": "oracle_grace",
+  "kit_slot": "defensive",
+  "school": "holy",
+  "cast_type": "instant",
+  "cooldown_s": 45,
+  "triggers_gcd": false,
+  "range_m": 0,
+  "requires_los": false,
+  "target": "self",
+  "effects": [
+    {
+      "type": "apply_aura",
+      "aura": "waning_light"
+    }
+  ],
+  "icon": {
+    "symbol": "fading",
+    "school": "holy"
+  }
+}

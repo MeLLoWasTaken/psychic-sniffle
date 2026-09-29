@@ -1,0 +1,15 @@
+{
+  "id": "effigy_encased",
+  "name": "Frost Effigy",
+  "description": "Encased in ice. Any damage shatters it.",
+  "kind": "debuff",
+  "duration_s": 8,
+  "dispel_type": "magic",
+  "cc_category": "incapacitate",
+  "hud_priority": "cc",
+  "breaks_on_damage": "any",
+  "icon": {
+    "symbol": "ice_statue",
+    "school": "frost"
+  }
+}

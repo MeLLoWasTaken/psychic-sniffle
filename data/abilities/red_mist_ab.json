@@ -1,0 +1,24 @@
+{
+  "id": "red_mist_ab",
+  "name": "Red Mist",
+  "description": "For 10 s, deal 25% more damage with 20% more critical chance.",
+  "owner": "warblade_carnage",
+  "kit_slot": "burst",
+  "school": "physical",
+  "cast_type": "instant",
+  "cooldown_s": 90,
+  "triggers_gcd": false,
+  "range_m": 0,
+  "requires_los": false,
+  "target": "self",
+  "effects": [
+    {
+      "type": "apply_aura",
+      "aura": "red_mist"
+    }
+  ],
+  "icon": {
+    "symbol": "red_eye",
+    "school": "physical"
+  }
+}

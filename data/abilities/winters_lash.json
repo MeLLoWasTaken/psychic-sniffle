@@ -1,0 +1,33 @@
+{
+  "id": "winters_lash",
+  "name": "Winter's Lash",
+  "description": "A whip of cold that can be cast while moving.",
+  "owner": "arcanist_rime",
+  "kit_slot": "core",
+  "school": "frost",
+  "cast_type": "instant",
+  "cooldown_s": 8,
+  "triggers_gcd": true,
+  "range_m": 40,
+  "requires_los": true,
+  "target": "enemy",
+  "effects": [
+    {
+      "type": "damage",
+      "base": 2400
+    },
+    {
+      "type": "apply_aura",
+      "aura": "chilled"
+    }
+  ],
+  "icon": {
+    "symbol": "ice_whip",
+    "school": "frost"
+  },
+  "castable_while_moving": true,
+  "cost": {
+    "resource": "mana",
+    "amount": 800
+  }
+}

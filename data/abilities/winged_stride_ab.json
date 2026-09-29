@@ -1,0 +1,24 @@
+{
+  "id": "winged_stride_ab",
+  "name": "Winged Stride",
+  "description": "Move 50% faster for 4 s.",
+  "owner": "oracle_grace",
+  "kit_slot": "mobility",
+  "school": "holy",
+  "cast_type": "instant",
+  "cooldown_s": 20,
+  "triggers_gcd": false,
+  "range_m": 0,
+  "requires_los": false,
+  "target": "self",
+  "effects": [
+    {
+      "type": "apply_aura",
+      "aura": "winged_stride"
+    }
+  ],
+  "icon": {
+    "symbol": "feather",
+    "school": "holy"
+  }
+}

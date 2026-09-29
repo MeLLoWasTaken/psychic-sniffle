@@ -1,0 +1,21 @@
+{
+  "id": "gashed",
+  "name": "Festering Gash",
+  "description": "Healing taken reduced by 30%.",
+  "kind": "debuff",
+  "duration_s": 10,
+  "dispel_type": "none",
+  "cc_category": "none",
+  "hud_priority": "normal",
+  "modifiers": [
+    {
+      "stat": "healing_taken",
+      "op": "multiply",
+      "value": 0.7
+    }
+  ],
+  "icon": {
+    "symbol": "gash",
+    "school": "physical"
+  }
+}

@@ -1,0 +1,28 @@
+{
+  "tree_id": "oracle_class",
+  "kind": "class",
+  "owner": "oracle",
+  "points": 30,
+  "status": "draft",
+  "nodes": [
+    {
+      "id": "oracle_class_placeholder",
+      "name": "Placeholder",
+      "type": "passive",
+      "effects": [
+        {
+          "modify": "self.placeholder",
+          "per_rank": 0
+        }
+      ],
+      "pos": [
+        3,
+        0
+      ]
+    }
+  ],
+  "gates": [
+    8,
+    20
+  ]
+}

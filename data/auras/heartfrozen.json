@@ -1,0 +1,14 @@
+{
+  "id": "heartfrozen",
+  "name": "Heartfrozen",
+  "description": "Stunned by deep cold.",
+  "kind": "debuff",
+  "duration_s": 4,
+  "dispel_type": "magic",
+  "cc_category": "stun",
+  "hud_priority": "cc",
+  "icon": {
+    "symbol": "ice_heart",
+    "school": "frost"
+  }
+}

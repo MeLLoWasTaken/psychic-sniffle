@@ -1,0 +1,26 @@
+{
+  "id": "red_mist",
+  "name": "Red Mist",
+  "description": "Damage done up 25%, critical chance up 20%.",
+  "kind": "buff",
+  "duration_s": 10,
+  "dispel_type": "none",
+  "cc_category": "none",
+  "hud_priority": "major_offensive",
+  "modifiers": [
+    {
+      "stat": "damage_done",
+      "op": "multiply",
+      "value": 1.25
+    },
+    {
+      "stat": "crit_chance",
+      "op": "add",
+      "value": 0.2
+    }
+  ],
+  "icon": {
+    "symbol": "red_eye",
+    "school": "blood"
+  }
+}

@@ -1,0 +1,24 @@
+{
+  "id": "deep_winter_ab",
+  "name": "Deep Winter",
+  "description": "For 15 s, cast 30% faster and deal 15% more damage.",
+  "owner": "arcanist_rime",
+  "kit_slot": "burst",
+  "school": "frost",
+  "cast_type": "instant",
+  "cooldown_s": 120,
+  "triggers_gcd": false,
+  "range_m": 0,
+  "requires_los": false,
+  "target": "self",
+  "effects": [
+    {
+      "type": "apply_aura",
+      "aura": "deep_winter"
+    }
+  ],
+  "icon": {
+    "symbol": "blizzard_eye",
+    "school": "frost"
+  }
+}

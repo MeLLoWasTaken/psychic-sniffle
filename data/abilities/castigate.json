@@ -1,0 +1,29 @@
+{
+  "id": "castigate",
+  "name": "Castigate",
+  "description": "Sear an enemy for 3,500.",
+  "owner": "oracle_grace",
+  "kit_slot": "core",
+  "school": "holy",
+  "cast_type": "cast",
+  "cooldown_s": 0,
+  "triggers_gcd": true,
+  "range_m": 40,
+  "requires_los": true,
+  "target": "enemy",
+  "effects": [
+    {
+      "type": "damage",
+      "base": 3500
+    }
+  ],
+  "icon": {
+    "symbol": "sun_brand",
+    "school": "holy"
+  },
+  "cast_time_s": 1.5,
+  "cost": {
+    "resource": "mana",
+    "amount": 800
+  }
+}

@@ -1,0 +1,35 @@
+{
+  "id": "shiver_lance",
+  "name": "Shiver Lance",
+  "description": "Instant lance of ice. Deals triple damage to rooted or stunned targets.",
+  "owner": "arcanist_rime",
+  "kit_slot": "core",
+  "school": "frost",
+  "cast_type": "instant",
+  "cooldown_s": 0,
+  "triggers_gcd": true,
+  "range_m": 40,
+  "requires_los": true,
+  "target": "enemy",
+  "effects": [
+    {
+      "type": "damage",
+      "base": 2600,
+      "multiplier_if": {
+        "target_cc": [
+          "root",
+          "stun"
+        ],
+        "value": 3.0
+      }
+    }
+  ],
+  "icon": {
+    "symbol": "ice_lance",
+    "school": "frost"
+  },
+  "cost": {
+    "resource": "mana",
+    "amount": 1000
+  }
+}

@@ -1,0 +1,19 @@
+{
+  "id": "rime_sepulcher",
+  "name": "Rime Sepulcher",
+  "description": "Immune to damage and crowd control; cannot act.",
+  "kind": "buff",
+  "duration_s": 8,
+  "dispel_type": "none",
+  "cc_category": "none",
+  "hud_priority": "major_defensive",
+  "immune": [
+    "damage",
+    "cc"
+  ],
+  "pacify": true,
+  "icon": {
+    "symbol": "ice_block",
+    "school": "frost"
+  }
+}

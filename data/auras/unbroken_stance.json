@@ -1,0 +1,21 @@
+{
+  "id": "unbroken_stance",
+  "name": "Unbroken Stance",
+  "description": "Damage taken down 40%.",
+  "kind": "buff",
+  "duration_s": 8,
+  "dispel_type": "none",
+  "cc_category": "none",
+  "hud_priority": "major_defensive",
+  "modifiers": [
+    {
+      "stat": "damage_taken",
+      "op": "multiply",
+      "value": 0.6
+    }
+  ],
+  "icon": {
+    "symbol": "planted_sword",
+    "school": "physical"
+  }
+}

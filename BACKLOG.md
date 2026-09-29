@@ -156,18 +156,18 @@ The slice specs are Warblade Carnage (melee, rage), Arcanist Rime (casting, inte
 
 **Specs and bots**
 
-### M1-10 Warblade Carnage kit `[todo]`
-- [ ] 14 to 18 abilities that fill the ability kit template, defined in data with original names.
-- [ ] Unique mechanics (execute below a health threshold, rage spending) have unit tests.
-- [ ] Data validation passes.
+### M1-10 Warblade Carnage kit `[done]`
+- [x] 14 to 18 abilities that fill the ability kit template, defined in data with original names.
+- [x] Unique mechanics (execute below a health threshold, rage spending) have unit tests.
+- [x] Data validation passes.
 
-### M1-11 Arcanist Rime kit `[todo]`
-- [ ] Kit fills the template, including a root, a freeze (incapacitate), a shatter combo on frozen targets and a counterspell interrupt.
-- [ ] Unit tests for the shatter combo and the interrupt lock.
+### M1-11 Arcanist Rime kit `[done]`
+- [x] Kit fills the template, including a root, a freeze (incapacitate), a shatter combo on frozen targets and a counterspell interrupt.
+- [x] Unit tests for the shatter combo and the interrupt lock.
 
-### M1-12 Oracle Grace kit `[todo]`
-- [ ] Kit fills the template, including single-target and area heals, a magic dispel, a fear (disorient) and a personal defensive.
-- [ ] Unit tests for dispel and healing under dampening.
+### M1-12 Oracle Grace kit `[done]`
+- [x] Kit fills the template, including single-target and area heals, a magic dispel, a fear (disorient) and a personal defensive.
+- [x] Unit tests for dispel and healing under dampening.
 
 ### M1-13 Bot AI v1 `[todo]`
 - [ ] Priority-list rotations for the three specs, stored as data per spec.

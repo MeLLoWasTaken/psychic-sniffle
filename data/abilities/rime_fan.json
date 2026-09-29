@@ -1,0 +1,36 @@
+{
+  "id": "rime_fan",
+  "name": "Rime Fan",
+  "description": "A fan of frost around you: 2,500 damage and a slow to enemies within 10 m.",
+  "owner": "arcanist_rime",
+  "kit_slot": "core",
+  "school": "frost",
+  "cast_type": "instant",
+  "cooldown_s": 10,
+  "triggers_gcd": true,
+  "range_m": 0,
+  "requires_los": false,
+  "target": "self",
+  "effects": [
+    {
+      "type": "damage",
+      "base": 2500,
+      "affects": "enemies_in_radius",
+      "radius_m": 10
+    },
+    {
+      "type": "apply_aura",
+      "aura": "chilled",
+      "affects": "enemies_in_radius",
+      "radius_m": 10
+    }
+  ],
+  "icon": {
+    "symbol": "ice_fan",
+    "school": "frost"
+  },
+  "cost": {
+    "resource": "mana",
+    "amount": 1200
+  }
+}

@@ -1,0 +1,31 @@
+{
+  "id": "frost_step",
+  "name": "Frost Step",
+  "description": "Step 15 m forward through the cold, breaking stuns and roots.",
+  "owner": "arcanist_rime",
+  "kit_slot": "mobility",
+  "school": "frost",
+  "cast_type": "instant",
+  "cooldown_s": 15,
+  "triggers_gcd": false,
+  "range_m": 0,
+  "requires_los": false,
+  "target": "self",
+  "effects": [
+    {
+      "type": "remove_cc"
+    },
+    {
+      "type": "teleport",
+      "distance_m": 15
+    }
+  ],
+  "icon": {
+    "symbol": "frost_step",
+    "school": "frost"
+  },
+  "usable_while_cc": [
+    "stun",
+    "root"
+  ]
+}

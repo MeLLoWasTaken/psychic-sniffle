@@ -1,0 +1,28 @@
+{
+  "id": "lingering_grace_ab",
+  "name": "Lingering Grace",
+  "description": "Heal an ally for 1,500 every 3 s for 15 s.",
+  "owner": "oracle_grace",
+  "kit_slot": "core",
+  "school": "holy",
+  "cast_type": "instant",
+  "cooldown_s": 0,
+  "triggers_gcd": true,
+  "range_m": 40,
+  "requires_los": true,
+  "target": "ally",
+  "effects": [
+    {
+      "type": "apply_aura",
+      "aura": "lingering_grace"
+    }
+  ],
+  "icon": {
+    "symbol": "glow",
+    "school": "holy"
+  },
+  "cost": {
+    "resource": "mana",
+    "amount": 1800
+  }
+}

@@ -1,0 +1,31 @@
+{
+  "id": "headsmans_verdict",
+  "name": "Headsman's Verdict",
+  "description": "Finish a target below 20% health.",
+  "owner": "warblade_carnage",
+  "kit_slot": "core",
+  "school": "physical",
+  "cast_type": "instant",
+  "cooldown_s": 0,
+  "triggers_gcd": true,
+  "range_m": 5,
+  "requires_los": true,
+  "target": "enemy",
+  "effects": [
+    {
+      "type": "damage",
+      "base": 14000
+    }
+  ],
+  "icon": {
+    "symbol": "axe_block",
+    "school": "physical"
+  },
+  "cost": {
+    "resource": "rage",
+    "amount": 40
+  },
+  "usable_if": {
+    "target_health_below_pct": 20
+  }
+}

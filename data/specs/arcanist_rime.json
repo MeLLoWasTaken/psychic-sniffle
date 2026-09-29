@@ -1,0 +1,37 @@
+{
+  "id": "arcanist_rime",
+  "name": "Rime",
+  "class": "arcanist",
+  "description": "Frost control: roots, freezes and shatter combos.",
+  "role": "dps",
+  "range": "ranged",
+  "primary_resource": "mana",
+  "abilities": [
+    "rime_bolt",
+    "shiver_lance",
+    "winters_lash",
+    "rime_fan",
+    "hailstorm",
+    "deep_winter_ab",
+    "rimebind",
+    "frost_effigy",
+    "heartfreeze",
+    "spellsever",
+    "rime_sepulcher_ab",
+    "glacier_shield_ab",
+    "frost_step",
+    "unravel"
+  ],
+  "spec_tree": "arcanist_rime",
+  "pvp_talents": "arcanist_rime_pvp",
+  "kit_status": "complete",
+  "asset": "test_crate",
+  "weapon": {
+    "type": "staff",
+    "hands": 2
+  },
+  "stats": {
+    "crit_chance": 0.15,
+    "haste": 0.1
+  }
+}

@@ -1,0 +1,24 @@
+{
+  "id": "spellsever",
+  "name": "Spellsever",
+  "description": "Interrupt a cast and lock that school for 5 s.",
+  "owner": "arcanist_rime",
+  "kit_slot": "interrupt",
+  "school": "frost",
+  "cast_type": "instant",
+  "cooldown_s": 24,
+  "triggers_gcd": false,
+  "range_m": 40,
+  "requires_los": true,
+  "target": "enemy",
+  "effects": [
+    {
+      "type": "interrupt",
+      "school_lock_s": 5
+    }
+  ],
+  "icon": {
+    "symbol": "severed_rune",
+    "school": "frost"
+  }
+}

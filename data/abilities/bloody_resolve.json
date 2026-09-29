@@ -1,0 +1,25 @@
+{
+  "id": "bloody_resolve",
+  "name": "Bloody Resolve",
+  "description": "Heal yourself for 12,000.",
+  "owner": "warblade_carnage",
+  "kit_slot": "defensive",
+  "school": "physical",
+  "cast_type": "instant",
+  "cooldown_s": 60,
+  "triggers_gcd": false,
+  "range_m": 0,
+  "requires_los": false,
+  "target": "self",
+  "effects": [
+    {
+      "type": "heal",
+      "base": 12000,
+      "can_crit": false
+    }
+  ],
+  "icon": {
+    "symbol": "bandage",
+    "school": "physical"
+  }
+}

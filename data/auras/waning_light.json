@@ -1,0 +1,26 @@
+{
+  "id": "waning_light",
+  "name": "Waning Light",
+  "description": "Damage taken down 20%, movement up 30%.",
+  "kind": "buff",
+  "duration_s": 6,
+  "dispel_type": "magic",
+  "cc_category": "none",
+  "hud_priority": "major_defensive",
+  "modifiers": [
+    {
+      "stat": "damage_taken",
+      "op": "multiply",
+      "value": 0.8
+    },
+    {
+      "stat": "move_speed",
+      "op": "multiply",
+      "value": 1.3
+    }
+  ],
+  "icon": {
+    "symbol": "fading",
+    "school": "holy"
+  }
+}

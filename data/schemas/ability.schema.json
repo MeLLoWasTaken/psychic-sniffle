@@ -242,6 +242,13 @@
         },
         "caster_not_has_aura": {
           "type": "string"
+        },
+        "target_cc": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          },
+          "description": "Target must have a crowd-control aura of one of these categories."
         }
       }
     },
@@ -302,7 +309,8 @@
             "teleport",
             "summon",
             "absorb",
-            "remove_cc"
+            "remove_cc",
+            "charge"
           ]
         },
         "base": {
@@ -360,7 +368,7 @@
         },
         "multiplier_if": {
           "type": "object",
-          "description": "Optional multiplier applied when a condition holds, e.g. {\"target_has_aura\": \"frozen\", \"value\": 2.0}."
+          "description": "Multiplier when a condition holds: {\"target_has_aura\": id, \"value\": x} or {\"target_cc\": [categories], \"value\": x}."
         },
         "affects": {
           "enum": [

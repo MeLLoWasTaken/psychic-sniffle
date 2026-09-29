@@ -1,0 +1,20 @@
+{
+  "tree_id": "oracle_grace_pvp",
+  "kind": "pvp",
+  "owner": "oracle_grace",
+  "points": 3,
+  "status": "draft",
+  "nodes": [
+    {
+      "id": "oracle_grace_pvp_placeholder",
+      "name": "Placeholder",
+      "type": "passive",
+      "effects": [
+        {
+          "modify": "self.placeholder",
+          "per_rank": 0
+        }
+      ]
+    }
+  ]
+}

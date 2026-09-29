@@ -1,0 +1,29 @@
+{
+  "id": "mending_light",
+  "name": "Mending Light",
+  "description": "A steady heal for 9,000.",
+  "owner": "oracle_grace",
+  "kit_slot": "core",
+  "school": "holy",
+  "cast_type": "cast",
+  "cooldown_s": 0,
+  "triggers_gcd": true,
+  "range_m": 40,
+  "requires_los": true,
+  "target": "ally",
+  "effects": [
+    {
+      "type": "heal",
+      "base": 9000
+    }
+  ],
+  "icon": {
+    "symbol": "warm_hands",
+    "school": "holy"
+  },
+  "cast_time_s": 2.0,
+  "cost": {
+    "resource": "mana",
+    "amount": 2200
+  }
+}

@@ -1,0 +1,36 @@
+{
+  "id": "oracle_grace",
+  "name": "Grace",
+  "class": "oracle",
+  "description": "Direct and area healing, fear, strong dispels.",
+  "role": "healer",
+  "range": "ranged",
+  "primary_resource": "mana",
+  "abilities": [
+    "mending_light",
+    "swift_benediction",
+    "lingering_grace_ab",
+    "chorus_of_mending",
+    "castigate",
+    "seraphic_surge_ab",
+    "psalm_of_dread",
+    "chains_of_awe",
+    "hush",
+    "veil_of_faith_ab",
+    "waning_light_ab",
+    "winged_stride_ab",
+    "absolve",
+    "unravel_holy"
+  ],
+  "spec_tree": "oracle_grace",
+  "pvp_talents": "oracle_grace_pvp",
+  "kit_status": "complete",
+  "asset": "test_crate",
+  "weapon": {
+    "type": "mace",
+    "hands": 1
+  },
+  "stats": {
+    "haste": 0.1
+  }
+}

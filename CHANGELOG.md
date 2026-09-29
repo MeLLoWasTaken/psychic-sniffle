@@ -2,6 +2,11 @@
 
 One entry per build-loop iteration, newest first. Format: date, backlog ID, what changed, how it was checked.
 
+## 2026-09-29 — M1-10 to M1-12 Three starter kits
+- Warblade Carnage (rage, two-handed sword), Arcanist Rime (mana, frost, staff) and Oracle Grace (mana healer, mace): 14 abilities each on the bars, filling the kit template, with 21 new auras. All names are original; several first-draft names that matched another game's abilities were replaced before commit.
+- New engine features for the kits: a charge (gap-closer stopped by pillars) and conditions on crowd-controlled targets (shatter-style bonus damage, a stun usable only on frozen targets).
+- Checked: validator passes the kits as complete (template and CC-category rules); 13 new tests cover rage building and spending, execute, healing reduction, charge, shatter, school lock, blink out of roots, immunity, dispel, dampened healing and fear movement. 60 Godot tests pass.
+
 ## 2026-09-29 — M1-01 to M1-09 Combat core
 - Added `game/core/combat.gd`: data-driven abilities (instant, cast, channel), GCD with haste and a 0.75 s floor, 400 ms spell queue, cooldowns and costs, mana and rage, auras (periodic effects, stacking, refresh rules, modifiers, absorbs, immunities), the damage and healing formula with armor and crits, casting rules (moving cancels, re-checks at completion), interrupts with school locks, crowd control with diminishing returns (100/50/25/immune, 18 s reset, 8 s cap), break-on-damage, Break Free, fear movement, roots and slows, dispels, knockbacks, blinks, area effects, line of sight at cast start and finish, and auto-attack.
 - Added `game/core/arena_match.gd`: 60 s preparation behind gate colliders, dampening from 3:00 (1:00 in 1v1), win on elimination, draw at 20:00.

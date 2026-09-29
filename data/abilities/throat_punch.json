@@ -1,0 +1,24 @@
+{
+  "id": "throat_punch",
+  "name": "Throat Punch",
+  "description": "Interrupt a cast and lock that school for 4 s.",
+  "owner": "warblade_carnage",
+  "kit_slot": "interrupt",
+  "school": "physical",
+  "cast_type": "instant",
+  "cooldown_s": 15,
+  "triggers_gcd": false,
+  "range_m": 5,
+  "requires_los": true,
+  "target": "enemy",
+  "effects": [
+    {
+      "type": "interrupt",
+      "school_lock_s": 4
+    }
+  ],
+  "icon": {
+    "symbol": "fist",
+    "school": "physical"
+  }
+}

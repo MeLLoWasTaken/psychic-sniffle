@@ -1,0 +1,15 @@
+{
+  "id": "oracle",
+  "name": "Oracle",
+  "description": "Priest of light and dread.",
+  "armor": "cloth",
+  "color": "#e8dcb0",
+  "specs": [
+    "oracle_grace"
+  ],
+  "class_tree": "oracle_class",
+  "shared_abilities": [
+    "auto_attack",
+    "break_free"
+  ]
+}

@@ -1,0 +1,28 @@
+{
+  "id": "chains_of_awe",
+  "name": "Chains of Awe",
+  "description": "Silence an enemy for 4 s.",
+  "owner": "oracle_grace",
+  "kit_slot": "cc",
+  "school": "holy",
+  "cast_type": "instant",
+  "cooldown_s": 45,
+  "triggers_gcd": true,
+  "range_m": 30,
+  "requires_los": true,
+  "target": "enemy",
+  "effects": [
+    {
+      "type": "apply_aura",
+      "aura": "awed_silence"
+    }
+  ],
+  "icon": {
+    "symbol": "chains",
+    "school": "holy"
+  },
+  "cost": {
+    "resource": "mana",
+    "amount": 1000
+  }
+}

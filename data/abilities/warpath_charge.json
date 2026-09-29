@@ -1,0 +1,32 @@
+{
+  "id": "warpath_charge",
+  "name": "Warpath Charge",
+  "description": "Rush to an enemy 8 to 25 m away, stunning it for 1.5 s and gaining 20 rage.",
+  "owner": "warblade_carnage",
+  "kit_slot": "mobility",
+  "school": "physical",
+  "cast_type": "instant",
+  "cooldown_s": 20,
+  "triggers_gcd": false,
+  "range_m": 25,
+  "requires_los": true,
+  "target": "enemy",
+  "effects": [
+    {
+      "type": "charge"
+    },
+    {
+      "type": "apply_aura",
+      "aura": "charge_dazed"
+    }
+  ],
+  "icon": {
+    "symbol": "charge",
+    "school": "physical"
+  },
+  "min_range_m": 8,
+  "generates": {
+    "resource": "rage",
+    "amount": 20
+  }
+}

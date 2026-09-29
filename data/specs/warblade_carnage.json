@@ -2,19 +2,35 @@
   "id": "warblade_carnage",
   "name": "Carnage",
   "class": "warblade",
-  "description": "Two-handed weapon, huge single hits, execute on low-health targets.",
+  "description": "Two-handed sword, huge single hits, execute on low-health targets.",
   "role": "dps",
   "range": "melee",
   "primary_resource": "rage",
   "abilities": [
-    "ruin_strike"
+    "ruin_strike",
+    "grim_hack",
+    "wide_hew",
+    "gashing_blow",
+    "headsmans_verdict",
+    "red_mist_ab",
+    "pommel_crack",
+    "dread_roar",
+    "throat_punch",
+    "unbroken_stance_ab",
+    "bloody_resolve",
+    "warpath_charge",
+    "crippling_slash",
+    "shield_breaker"
   ],
   "spec_tree": "warblade_carnage",
   "pvp_talents": "warblade_carnage_pvp",
-  "kit_status": "draft",
+  "kit_status": "complete",
   "asset": "test_crate",
   "weapon": {
     "type": "sword",
     "hands": 2
+  },
+  "stats": {
+    "crit_chance": 0.15
   }
 }

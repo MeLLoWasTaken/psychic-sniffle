@@ -1,0 +1,34 @@
+{
+  "id": "heartfreeze",
+  "name": "Heartfreeze",
+  "description": "Stun a rooted or stunned target for 4 s.",
+  "owner": "arcanist_rime",
+  "kit_slot": "cc",
+  "school": "frost",
+  "cast_type": "instant",
+  "cooldown_s": 30,
+  "triggers_gcd": true,
+  "range_m": 40,
+  "requires_los": true,
+  "target": "enemy",
+  "effects": [
+    {
+      "type": "damage",
+      "base": 1500
+    },
+    {
+      "type": "apply_aura",
+      "aura": "heartfrozen"
+    }
+  ],
+  "icon": {
+    "symbol": "ice_heart",
+    "school": "frost"
+  },
+  "usable_if": {
+    "target_cc": [
+      "root",
+      "stun"
+    ]
+  }
+}

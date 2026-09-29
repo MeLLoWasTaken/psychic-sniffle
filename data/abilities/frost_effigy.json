@@ -1,0 +1,29 @@
+{
+  "id": "frost_effigy",
+  "name": "Frost Effigy",
+  "description": "Encase an enemy in ice for 8 s. Any damage shatters it.",
+  "owner": "arcanist_rime",
+  "kit_slot": "cc",
+  "school": "frost",
+  "cast_type": "cast",
+  "cooldown_s": 0,
+  "triggers_gcd": true,
+  "range_m": 40,
+  "requires_los": true,
+  "target": "enemy",
+  "effects": [
+    {
+      "type": "apply_aura",
+      "aura": "effigy_encased"
+    }
+  ],
+  "icon": {
+    "symbol": "ice_statue",
+    "school": "frost"
+  },
+  "cast_time_s": 1.5,
+  "cost": {
+    "resource": "mana",
+    "amount": 1500
+  }
+}

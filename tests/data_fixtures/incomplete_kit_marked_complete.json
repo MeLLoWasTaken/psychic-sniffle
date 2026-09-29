@@ -3,6 +3,9 @@
   "file": "specs/warblade_carnage.json",
   "expect": "abilities on the bars; template needs 14 to 18",
   "set": {
+    "/abilities": [
+      "ruin_strike"
+    ],
     "/kit_status": "complete"
   }
 }

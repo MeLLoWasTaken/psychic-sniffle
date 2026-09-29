@@ -1,0 +1,30 @@
+{
+  "id": "rimebind",
+  "name": "Rimebind",
+  "description": "Freeze enemies within 10 m in place for 6 s.",
+  "owner": "arcanist_rime",
+  "kit_slot": "cc",
+  "school": "frost",
+  "cast_type": "instant",
+  "cooldown_s": 25,
+  "triggers_gcd": true,
+  "range_m": 0,
+  "requires_los": false,
+  "target": "self",
+  "effects": [
+    {
+      "type": "apply_aura",
+      "aura": "rimebound",
+      "affects": "enemies_in_radius",
+      "radius_m": 10
+    }
+  ],
+  "icon": {
+    "symbol": "ice_feet",
+    "school": "frost"
+  },
+  "cost": {
+    "resource": "mana",
+    "amount": 1000
+  }
+}

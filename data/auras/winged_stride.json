@@ -1,0 +1,21 @@
+{
+  "id": "winged_stride",
+  "name": "Winged Stride",
+  "description": "Movement up 50%.",
+  "kind": "buff",
+  "duration_s": 4,
+  "dispel_type": "magic",
+  "cc_category": "none",
+  "hud_priority": "normal",
+  "modifiers": [
+    {
+      "stat": "move_speed",
+      "op": "multiply",
+      "value": 1.5
+    }
+  ],
+  "icon": {
+    "symbol": "feather",
+    "school": "holy"
+  }
+}

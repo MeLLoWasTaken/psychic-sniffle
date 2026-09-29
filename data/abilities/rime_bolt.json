@@ -1,0 +1,33 @@
+{
+  "id": "rime_bolt",
+  "name": "Rime Bolt",
+  "description": "Hurl a bolt of rime: 5,200 damage and a 40% slow for 6 s.",
+  "owner": "arcanist_rime",
+  "kit_slot": "core",
+  "school": "frost",
+  "cast_type": "cast",
+  "cooldown_s": 0,
+  "triggers_gcd": true,
+  "range_m": 40,
+  "requires_los": true,
+  "target": "enemy",
+  "effects": [
+    {
+      "type": "damage",
+      "base": 5200
+    },
+    {
+      "type": "apply_aura",
+      "aura": "chilled"
+    }
+  ],
+  "icon": {
+    "symbol": "ice_bolt",
+    "school": "frost"
+  },
+  "cast_time_s": 1.8,
+  "cost": {
+    "resource": "mana",
+    "amount": 1500
+  }
+}

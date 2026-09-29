@@ -1,0 +1,28 @@
+{
+  "id": "wide_hew",
+  "name": "Wide Hew",
+  "description": "A broad swing that spends spare rage.",
+  "owner": "warblade_carnage",
+  "kit_slot": "core",
+  "school": "physical",
+  "cast_type": "instant",
+  "cooldown_s": 0,
+  "triggers_gcd": true,
+  "range_m": 5,
+  "requires_los": true,
+  "target": "enemy",
+  "effects": [
+    {
+      "type": "damage",
+      "base": 3800
+    }
+  ],
+  "icon": {
+    "symbol": "arc_blade",
+    "school": "physical"
+  },
+  "cost": {
+    "resource": "rage",
+    "amount": 20
+  }
+}
