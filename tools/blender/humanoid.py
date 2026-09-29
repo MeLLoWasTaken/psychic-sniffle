@@ -234,6 +234,37 @@ def build_body(build_name: str, name: str = "body") -> bpy.types.Object:
     return obj
 
 
+def build_body_sdf(build_name: str, name: str = "body", target_tris: int = 9000,
+                   voxel: float = 0.005) -> bpy.types.Object:
+    """Third version: a signed-distance-field body (tapered limbs and muscles blended with
+    smooth unions, see body_sdf.py), extracted with marching cubes and reduced to the
+    triangle target. Replaced the metaball body, which read as a segmented mannequin."""
+    import numpy as np
+    import body_sdf
+    build = BUILDS[build_name]
+    j = {k: np.array(v) for k, v in joints(build).items()}
+    verts, faces = body_sdf.body_mesh(j, build_name, voxel)
+    mesh = bpy.data.meshes.new(name)
+    mesh.from_pydata(verts.tolist(), [], faces.tolist())
+    mesh.validate()
+    obj = bpy.data.objects.new(name, mesh)
+    bpy.context.scene.collection.objects.link(obj)
+    bpy.ops.object.select_all(action="DESELECT")
+    obj.select_set(True)
+    bpy.context.view_layer.objects.active = obj
+    dec = obj.modifiers.new("decimate", "DECIMATE")
+    dec.ratio = min(1.0, target_tris / max(len(faces), 1))
+    dec.use_symmetry = True
+    dec.symmetry_axis = "X"
+    smooth = obj.modifiers.new("smooth", "CORRECTIVE_SMOOTH")
+    smooth.iterations = 3
+    smooth.use_only_smooth = True
+    for m in list(obj.modifiers):
+        bpy.ops.object.modifier_apply(modifier=m.name)
+    bpy.ops.object.shade_smooth()
+    return obj
+
+
 def build_body_skin(build_name: str, name: str = "body") -> bpy.types.Object:
     """First version (kept for comparison): Skin-modifier body. Too thin; see build_body."""
     build = BUILDS[build_name]

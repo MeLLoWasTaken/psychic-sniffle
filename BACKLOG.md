@@ -189,11 +189,11 @@ The slice specs are Warblade Carnage (melee, rage), Arcanist Rime (casting, inte
 
 **Characters**
 
-### M1-16 Standard skeleton and parametric body `[doing]` (started early while M0 waited on the Godot build)
+### M1-16 Standard skeleton and parametric body `[done]`
 - [x] One humanoid skeleton with fixed bone names, written to `docs/ART_BIBLE.md`.
-- [ ] Heavy and lean body builds from the Skin-modifier method, about 7 heads tall with oversized hands, feet and shoulders.
-- [ ] Asset validation passes; contact sheets reviewed.
-- [ ] Status 2026-09-29: skeleton, armature and automatic weights work (pose test deforms cleanly). Body v2 uses metaball masses; heavy build is chunky but reads as a segmented mannequin; lean build is broken (masses shrink without moving, leaving gaps). Next: fuller blending between masses, build-specific offsets for lean, then a head with real features.
+- [x] Heavy (1.96 m) and lean (1.88 m) body builds, about 7.5 heads tall with oversized hands and feet and broad shoulders. Method changed from the Skin modifier (attempt 1, thin tubes) and metaballs (attempt 2, segmented) to a signed-distance-field body (attempt 3, `tools/blender/body_sdf.py`): tapered limbs, blocky torso masses and muscles blended with smooth unions into one continuous surface.
+- [x] Asset validation passes (9,000 triangles each, closed meshes); contact sheets and the pose test (raised arm, bent knee, twisted spine) reviewed: deformation is clean.
+- Known limits, carried to M1-22: the face is crude (clay-like features); the body surface is very smooth. Helmets and hoods cover most of the head for the first three classes.
 
 ### M1-17 Hand-painted texture bake `[todo]`
 - [ ] Bake pipeline producing 2048 px base color (light from above, darkened crevices, lightened edges), plus normal and roughness maps. (Environment pieces already bake base color and roughness/metallic with `tools/blender/kit.py`; still to do: characters, normal maps.)

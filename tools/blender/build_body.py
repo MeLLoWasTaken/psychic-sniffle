@@ -40,7 +40,7 @@ def main() -> None:
     spec = common.load_spec(args.spec)
     common.reset_scene()
     build = spec["body_build"]
-    body = humanoid.build_body(build, spec["id"])
+    body = humanoid.build_body_sdf(build, spec["id"], target_tris=int(spec.get("params", {}).get("target_tris", 9000)))
     body.data.materials.append(common.painted_material("skin", spec["palette"]["skin"], roughness=0.7,
                                                        edge_highlight=0.0, cavity_darken=0.5))
     rig = humanoid.build_armature(build, f"{spec['id']}_rig")

@@ -35,15 +35,19 @@ Suffix `_l` is the character's left (+X), `_r` its right (-X).
 
 ## Body builds
 
+Bodies are signed distance fields (`tools/blender/body_sdf.py`) on the skeleton's joints, extracted as one closed mesh and reduced to about 9,000 triangles. Fast shape preview: `python3 tools/blender/preview_body.py --build heavy --out previews/body_iter/heavy.png`.
+
 | Build | Height | Used by | Notes |
 | --- | --- | --- | --- |
-| heavy | 1.95 m | Plate wearers | Broad, top-heavy; bulk 1.0 |
-| lean | 1.85 m | Cloth and leather wearers | Narrower shoulders; bulk 0.74 (currently broken: masses separate) |
+| heavy | 1.96 m | Plate wearers | Broad, top-heavy, thick limbs, hands 1.22x |
+| lean | 1.88 m | Cloth and leather wearers | Torso and limbs 0.8x, smaller muscles |
 
 ## Lessons from reviews
 
-- The Skin modifier alone makes thin tubes; it cannot give the heavy silhouette. Bodies use metaball masses instead.
-- Metaball surfaces sit inside their radius: at threshold 0.1 and stiffness 2, the surface is at 0.795 of the radius (measured). Radii are scaled up to compensate.
+- The Skin modifier alone makes thin tubes, and metaball masses read as a segmented mannequin. Bodies are signed distance fields: tapered capsules joint to joint, blended with smooth unions.
+- Round ellipsoids for the torso gave an hourglass, female-looking silhouette. A heroic male torso uses rounded boxes: flat, square pec plates, a thick straight waist, hips narrower than the chest.
+- Thigh tops wider than the pelvis create an hourglass from the front; keep the outer edge of the thigh inside the hip line.
+- A hand seen edge-on from the front looks like a thin point; judge hand size from the side and three-quarter views.
 - Blender's Pointiness value is per vertex, so it highlights whole low-poly parts. Edge highlights use a Bevel-normal comparison instead.
 
 - Warm key light plus warm fog plus a brown sky horizon turned whole scenes orange-brown. Keep the sun warm, but make the sky horizon, fog and ambient light cool (blue-grey), and keep stone base colors neutral grey. The shadow side of stone should read cool.

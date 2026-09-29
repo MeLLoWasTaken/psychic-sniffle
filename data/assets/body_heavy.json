@@ -4,8 +4,16 @@
   "builder": "build_body.py",
   "seed": 1,
   "body_build": "heavy",
-  "tri_budget": {"min": 4000, "max": 14000},
-  "palette": {"skin": "#8a6a55"},
+  "tri_budget": {
+    "min": 4000,
+    "max": 14000
+  },
+  "palette": {
+    "skin": "#8a6a55"
+  },
   "out": "game/assets/characters/body_heavy.glb",
-  "status": "draft"
+  "status": "draft",
+  "params": {
+    "target_tris": 9000
+  }
 }
