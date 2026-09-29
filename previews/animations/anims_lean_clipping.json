@@ -1,0 +1,348 @@
+{
+ "char_arcanist_rime": {
+  "rest": {},
+  "clips": {
+   "idle": {},
+   "combat_idle": {},
+   "run": {},
+   "strafe_left": {},
+   "strafe_right": {},
+   "backpedal": {},
+   "jump": {},
+   "cast_start": {},
+   "cast_loop": {},
+   "cast_release": {},
+   "channel": {},
+   "attack_1": {
+    "arm_l/arm_r": {
+     "depth_m": 0.081,
+     "verts": 449,
+     "at": [
+      "upperarm_r",
+      "forearm_l"
+     ],
+     "frame": 8
+    },
+    "arm_l/torso": {
+     "depth_m": 0.071,
+     "verts": 84,
+     "at": [
+      "upperarm_r",
+      "upperarm_r"
+     ],
+     "frame": 10
+    },
+    "arm_r/torso": {
+     "depth_m": 0.074,
+     "verts": 204,
+     "at": [
+      "upperarm_r",
+      "upperarm_l"
+     ],
+     "frame": 8
+    },
+    "weapon/arm_l": {
+     "depth_m": 0.037,
+     "verts": 5,
+     "at": [
+      "clavicle_l",
+      "clavicle_l"
+     ],
+     "frame": 6
+    },
+    "weapon/torso": {
+     "depth_m": 0.064,
+     "verts": 47,
+     "at": [
+      "clavicle_l",
+      "clavicle_l"
+     ],
+     "frame": 6
+    }
+   },
+   "attack_2": {
+    "arm_l/torso": {
+     "depth_m": 0.022,
+     "verts": 5,
+     "at": [
+      "upperarm_l",
+      "upperarm_l"
+     ],
+     "frame": 8
+    },
+    "arm_r/leg_r": {
+     "depth_m": 0.018,
+     "verts": 2,
+     "at": [
+      "forearm_r",
+      "forearm_r"
+     ],
+     "frame": 14
+    },
+    "arm_r/torso": {
+     "depth_m": 0.035,
+     "verts": 3,
+     "at": [
+      "upperarm_r",
+      "upperarm_r"
+     ],
+     "frame": 12
+    }
+   },
+   "attack_3": {
+    "arm_l/arm_r": {
+     "depth_m": 0.025,
+     "verts": 16,
+     "at": [
+      "forearm_r",
+      "forearm_r"
+     ],
+     "frame": 16
+    },
+    "arm_l/torso": {
+     "depth_m": 0.019,
+     "verts": 1,
+     "at": [
+      "upperarm_l",
+      "upperarm_l"
+     ],
+     "frame": 16
+    },
+    "arm_r/torso": {
+     "depth_m": 0.017,
+     "verts": 1,
+     "at": [
+      "upperarm_r",
+      "upperarm_r"
+     ],
+     "frame": 16
+    },
+    "weapon/arm_l": {
+     "depth_m": 0.021,
+     "verts": 2,
+     "at": [
+      "hand_r",
+      "hand_r"
+     ],
+     "frame": 16
+    }
+   },
+   "hit": {},
+   "stunned": {},
+   "feared_run": {
+    "arm_l/arm_r": {
+     "depth_m": 0.025,
+     "verts": 12,
+     "at": [
+      "hand_r",
+      "hand_r"
+     ],
+     "frame": 0
+    },
+    "weapon/arm_l": {
+     "depth_m": 0.021,
+     "verts": 6,
+     "at": [
+      "hand_r",
+      "hand_r"
+     ],
+     "frame": 2
+    }
+   },
+   "death": {},
+   "victory": {
+    "arm_r/torso": {
+     "depth_m": 0.086,
+     "verts": 124,
+     "at": [
+      "upperarm_r",
+      "head"
+     ],
+     "frame": 46
+    },
+    "weapon/arm_l": {
+     "depth_m": 0.097,
+     "verts": 161,
+     "at": [
+      "upperarm_l",
+      "upperarm_l"
+     ],
+     "frame": 46
+    },
+    "weapon/torso": {
+     "depth_m": 0.096,
+     "verts": 8,
+     "at": [
+      "upperarm_l",
+      "upperarm_l"
+     ],
+     "frame": 46
+    }
+   },
+   "ranged_shot": {
+    "arm_r/torso": {
+     "depth_m": 0.021,
+     "verts": 6,
+     "at": [
+      "hand_r",
+      "hand_r"
+     ],
+     "frame": 8
+    },
+    "weapon/leg_r": {
+     "depth_m": 0.039,
+     "verts": 14,
+     "at": [
+      "thigh_r",
+      "thigh_r"
+     ],
+     "frame": 8
+    },
+    "weapon/torso": {
+     "depth_m": 0.038,
+     "verts": 5,
+     "at": [
+      "spine",
+      "spine"
+     ],
+     "frame": 10
+    }
+   },
+   "cast_release_frost": {},
+   "cast_release_holy": {}
+  },
+  "gated_failures": {}
+ },
+ "char_oracle_grace": {
+  "rest": {},
+  "clips": {
+   "idle": {},
+   "combat_idle": {},
+   "run": {},
+   "strafe_left": {},
+   "strafe_right": {},
+   "backpedal": {},
+   "jump": {},
+   "cast_start": {},
+   "cast_loop": {},
+   "cast_release": {},
+   "channel": {},
+   "attack_1": {
+    "arm_l/arm_r": {
+     "depth_m": 0.079,
+     "verts": 406,
+     "at": [
+      "upperarm_r",
+      "forearm_l"
+     ],
+     "frame": 10
+    },
+    "arm_l/leg_l": {
+     "depth_m": 0.02,
+     "verts": 4,
+     "at": [
+      "hand_l",
+      "hand_l"
+     ],
+     "frame": 14
+    },
+    "arm_l/torso": {
+     "depth_m": 0.062,
+     "verts": 17,
+     "at": [
+      "upperarm_r",
+      "upperarm_r"
+     ],
+     "frame": 10
+    },
+    "arm_r/torso": {
+     "depth_m": 0.069,
+     "verts": 146,
+     "at": [
+      "upperarm_r",
+      "upperarm_l"
+     ],
+     "frame": 8
+    }
+   },
+   "attack_2": {
+    "arm_l/torso": {
+     "depth_m": 0.021,
+     "verts": 1,
+     "at": [
+      "upperarm_l",
+      "upperarm_l"
+     ],
+     "frame": 8
+    },
+    "arm_r/torso": {
+     "depth_m": 0.03,
+     "verts": 3,
+     "at": [
+      "upperarm_r",
+      "upperarm_r"
+     ],
+     "frame": 12
+    }
+   },
+   "attack_3": {
+    "arm_l/arm_r": {
+     "depth_m": 0.024,
+     "verts": 3,
+     "at": [
+      "forearm_r",
+      "forearm_r"
+     ],
+     "frame": 16
+    },
+    "arm_l/torso": {
+     "depth_m": 0.016,
+     "verts": 1,
+     "at": [
+      "upperarm_l",
+      "upperarm_l"
+     ],
+     "frame": 16
+    }
+   },
+   "hit": {},
+   "stunned": {},
+   "feared_run": {
+    "arm_l/arm_r": {
+     "depth_m": 0.024,
+     "verts": 3,
+     "at": [
+      "hand_r",
+      "hand_l"
+     ],
+     "frame": 2
+    },
+    "weapon/arm_l": {
+     "depth_m": 0.023,
+     "verts": 5,
+     "at": [
+      "forearm_l",
+      "forearm_l"
+     ],
+     "frame": 2
+    }
+   },
+   "death": {},
+   "victory": {
+    "arm_r/torso": {
+     "depth_m": 0.081,
+     "verts": 57,
+     "at": [
+      "upperarm_r",
+      "head"
+     ],
+     "frame": 46
+    }
+   },
+   "ranged_shot": {},
+   "cast_release_frost": {},
+   "cast_release_holy": {}
+  },
+  "gated_failures": {}
+ }
+}

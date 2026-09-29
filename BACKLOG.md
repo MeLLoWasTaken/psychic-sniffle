@@ -201,24 +201,24 @@ The slice specs are Warblade Carnage (melee, rage), Arcanist Rime (casting, inte
 - [x] Edge highlights read as worn, chipped paint in broad patches (a low-frequency wear mask), not thin outlines.
 - [x] Preview lighting comes from the game's lighting preset (`data/lighting/dusk_grim.json`) plus a soft rim light; the backs of models are readable.
 
-### M1-18 Warblade plate armor kit and two-handed weapon `[doing]`
-- [ ] Angular plate with spikes, rivets, dents and wear; oversized two-handed weapon.
-- [ ] 15,000 to 25,000 triangles at LOD0, plus 2 LODs; armor rigidly parented to bones.
-- [ ] No clipping in idle, run and cast poses. (Those poses arrive with M1-21; until then the pose test covers a raised arm, bent knee and twisted spine. The full check moves to M1-21, which now lists it.)
+### M1-18 Warblade plate armor kit and two-handed weapon `[done]`
+- [x] Angular plate with spikes, rivets, dents and wear (horned helm, spiked pauldrons, brass trim); oversized greatsword (1.78 m).
+- [x] 24,896 triangles at LOD0, plus 2 LODs generated at import (12,448 and 6,000); armor rigidly parented to bones; 0 non-manifold edges.
+- [x] No clipping in idle, run and cast poses: checked in M1-21 with the animation set (clipping report `previews/animations/anims_heavy_clipping.json`).
 
-### M1-19 Arcanist cloth kit and staff `[todo]`
-- [ ] Heavy cloth with torn hems, frost accents; staff.
-- [ ] Same budgets and checks as M1-18.
+### M1-19 Arcanist cloth kit and staff `[done]`
+- [x] Heavy hooded robe with torn hems and frost crystals on the shoulders; frost staff (2.4 m, iron bands, glowing crystal head).
+- [x] 16,300 triangles, LODs 8,150 and 4,074; 0 non-manifold edges; no clipping in idle, run and cast poses (M1-21).
 
-### M1-20 Oracle cloth kit and weapon `[todo]`
-- [ ] Silhouette clearly different from the Arcanist (the grayscale test in M1-22 must pass).
-- [ ] Same budgets and checks as M1-18.
+### M1-20 Oracle cloth kit and weapon `[done]`
+- [x] White and gold vestments, crown and rayed halo; flanged mace (0.95 m). The grayscale silhouette test against the Arcanist runs at M1-22.
+- [x] 17,100 triangles, LODs 8,550 and 4,274; 0 non-manifold edges; no clipping in idle, run and cast poses (M1-21).
 
-### M1-21 Animation set v1 `[todo]`
-- [ ] Clipping check for all three characters in the idle, run and cast poses (moved from M1-18..M1-20, which could only use a static pose test).
-- [ ] Idle, combat idle, run, strafe left and right, backpedal, jump, cast start, cast loop, cast release, channel, 3 melee attacks, hit reaction, stunned, feared run, death, victory.
-- [ ] Keyframed by script from pose data with eased curves; shared by all three characters.
-- [ ] Preview sheets or turntable frames reviewed for stiffness; all clips named per the art bible.
+### M1-21 Animation set v1 `[done]`
+- [x] Clipping check for all three characters in the idle, run and cast poses (moved from M1-18..M1-20, which could only use a static pose test): no vertex deeper than 1.5 cm inside another body part or the weapon in idle, combat idle, run, cast start, cast loop, cast release (default, frost, holy) and channel, sampled every second frame.
+- [x] Idle, combat idle, run, strafe left and right, backpedal, jump, cast start, cast loop, cast release (plus frost and holy variants), channel, 3 melee attacks, ranged shot, hit reaction, stunned, feared run, death, victory (22 clips in `data/animations/humanoid.json`).
+- [x] Keyframed by script from pose data with eased curves (`tools/blender/animation.py`, `build_animations.py`); one library per body build shared by its characters; played in the game by `CharacterRig` with data-driven weapon grips.
+- [x] Pose sheets reviewed for stiffness (`previews/animations/<character>_<locomotion|casting|combat>.png`) and a game screenshot mid-run (`godot_run.png`); clip names in the art bible. Found and queued: small cast releases, one-handed swings of two-handed weapons and overhead clipping in melee clips (F-06), robe skirts parting at the front (F-07).
 
 ### M1-22 Lineup render and M1 art gate `[todo]`
 - [ ] Lineup of the three characters in the arena lighting preset.
@@ -287,6 +287,15 @@ The slice specs are Warblade Carnage (melee, rage), Arcanist Rime (casting, inte
 - [ ] A gatehouse above each gate: the raised portcullis now shows above the wall.
 - [ ] Wall tops read as walkable plazas from above; use roof or rampart pieces instead of floor tiles.
 - [ ] Props along the walls (crates, barrels, chains, rubble) and fire effects for the braziers (with M1-24).
+
+### F-06 Two-handed grip, melee clean-up and stronger releases `[todo]`
+- [ ] The left hand reaches for the hilt of a two-handed weapon (two-bone reach toward a grip point on the weapon, baked into the clips) instead of swinging free.
+- [ ] Cast releases read small from the game camera: exaggerate the push and hold the follow-through a few frames longer.
+- [ ] Melee attacks, ranged shot, feared run and victory still pass arms through the torso or pauldrons in overhead frames (up to 11 cm in attack_1); bring them under the same 1.5 cm clipping limit as the gated clips, heavy build first.
+
+### F-07 Robe skirt deformation `[todo]`
+- [ ] Arcanist and Oracle robe skirts stay closed at the front through run, jump and feared run (KNOWN_ISSUES.md): weights blend toward the pelvis above the hem, or skirt bones follow the thighs at half strength.
+- [ ] Pose sheets show no dark gap at the robe front; the clipping check still passes.
 
 ### F-02 GPU frame-rate measurement `[blocked: needs a GPU machine]`
 - [ ] Record fps for the M1 vertical slice on recommended and minimum PC profiles at the M1 gate.

@@ -1,25 +1,28 @@
 extends Node3D
 ## Review views of an arena for screenshots (backlog M1-14):
 ##   tools/screenshot.sh res://scenes/tests/map_view.tscn previews/maps/top.png -- \
-##     (arguments after the scene: --map gallows_courtyard --view top|overview|player --gates open|closed)
+##     (arguments after the scene: --map gallows_courtyard --view top|overview|player|lineup|character --gates open|closed --anim run --anim-time 0.18)
 ## Places players at the spawns and in the courtyard so scale reads in every view: the built
 ## character model when one exists (the Warblade for now), otherwise a team-colored capsule.
-## View "character" frames the player's character up close.
+## View "character" frames the player's character up close. Characters are animated and hold
+## their weapons through CharacterRig; --anim <clip> --anim-time <s> freezes every character on
+## that frame (default: idle at 0 s).
 
 const PLAYER_HEIGHT: float = 1.8
-## Sword, staff or mace in the right hand, relative to the hand bone (its +Y runs from wrist to
-## fingertips); every weapon's origin is its grip.
-var grip: Transform3D = Transform3D(Basis.from_euler(Vector3(PI / 2, 0, 0)), Vector3(0, 0.07, 0.0))
 ## Specs shown at each team's spawns, in order.
 var lineup: Array[String] = ["warblade_carnage", "arcanist_rime", "oracle_grace"]
 
 var builder: MapBuilder
+var anim_clip: String = "idle"
+var anim_time: float = 0.0
 
 
 func _ready() -> void:
 	var args: PackedStringArray = OS.get_cmdline_user_args()
 	var map_id: String = _arg(args, "--map", "gallows_courtyard")
 	var view: String = _arg(args, "--view", "overview")
+	anim_clip = _arg(args, "--anim", "idle")
+	anim_time = float(_arg(args, "--anim-time", "0"))
 	var map: Dictionary = Data.maps.get(map_id, {})
 	var scene: PackedScene = load(map.get("scene", "res://scenes/maps/gallows_courtyard.tscn"))
 	builder = scene.instantiate()
@@ -51,7 +54,7 @@ static func _character_asset(spec_id: String) -> Dictionary:
 
 
 static func _res(asset: Dictionary) -> String:
-	return "res://" + str(asset.get("out", "")).trim_prefix("game/")
+	return CharacterRig.res_path(asset)
 
 
 func _stand_in(pos: Vector3, team: int, yaw: float, spec_id: String = "") -> void:
@@ -64,16 +67,15 @@ func _stand_in(pos: Vector3, team: int, yaw: float, spec_id: String = "") -> voi
 		var model: Node3D = (load(model_path) as PackedScene).instantiate()
 		model.rotation.y = PI  # models face +Z; the game's forward is -Z
 		root.add_child(model)
-		var sk: Skeleton3D = model.find_children("*", "Skeleton3D", true, false)[0]
-		var weapon: Dictionary = Data.assets.get(str(asset.get("params", {}).get("weapon", "")), {})
-		if not weapon.is_empty() and ResourceLoader.exists(_res(weapon)):
-			var hand: BoneAttachment3D = BoneAttachment3D.new()
-			hand.bone_name = "hand_r"
-			sk.add_child(hand)
-			var sword: Node3D = (load(_res(weapon)) as PackedScene).instantiate()
-			sword.transform = grip
-			hand.add_child(sword)
 		add_child(root)
+		var player: AnimationPlayer = CharacterRig.setup(asset, model)
+		if player != null:
+			if not player.has_animation(anim_clip):
+				Log.error("map_view: no animation '%s'" % anim_clip)
+				return
+			player.play(anim_clip)
+			player.seek(anim_time, true)
+			player.pause()
 		return
 	var body: CapsuleMesh = CapsuleMesh.new()
 	body.radius = ArenaGeometry.UNIT_RADIUS

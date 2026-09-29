@@ -42,7 +42,22 @@ Bodies are signed distance fields (`tools/blender/body_sdf.py`) on the skeleton'
 | heavy | 1.96 m | Plate wearers | Broad, top-heavy, thick limbs, hands 1.22x |
 | lean | 1.88 m | Cloth and leather wearers | Torso and limbs 0.8x, smaller muscles |
 
+## Animation
+
+Every humanoid clip is authored as a few key poses in `data/animations/humanoid.json` and baked frame by frame (30 fps) by `tools/blender/build_animations.py` into one library per body build (`game/assets/animations/anims_<build>.glb`, asset specs `anims_<build>.json`). Characters of a build share its library; `CharacterRig` in the game plays it on each character's own skeleton.
+
+- Poses use joint terms, not bone axes: torso and head bend, twist, lean or tilt; thighs swing and spread; calves bend; feet point; clavicles raise and swing; upper arms swing and raise; forearms bend; hands curl and cock. Degrees, positive as the set's description says. `animation.check_axes` proves every term moves the skeleton the documented way on every build.
+- Motion between keys is a smooth curve that never overshoots a key. A key can set `ease`: "in" for a strike landing (accelerates into the key), "out" for snapping out of one.
+- Follow-through: chest, neck, head, forearms, hands and feet trail their parents by `overlap_s`; clavicles shrug as the arms lift past 50 degrees forward or 25 sideways.
+- Weapons sit in the right fist by the set's `weapon_grip`: the grip point and each hold's blade direction are given in rest-pose character terms, so they fit every build. Swords and maces are held "forward" (blade forward from the fist); staffs are held "upright", with a wrist rule that keeps them upright through arm swings, baked as `<clip>_upright` copies of every clip.
+- Clip names are lower snake case: idle, combat_idle, run, strafe_left, strafe_right, backpedal, jump, cast_start, cast_loop, cast_release, cast_release_<school> (frost and holy so far), channel, attack_1, attack_2, attack_3, ranged_shot, hit, stunned, feared_run, death, victory. A clip's length is a whole number of frames.
+- Review: pose sheets (`previews/animations/<character>_<locomotion|casting|combat>.png`, six frames per clip) and the clipping report (`anims_<build>_clipping.json`). Idle, combat idle, run and the cast clips must be free of clipping: no vertex more than 1.5 cm inside another body part or the weapon, outside the shoulder and hip zones.
+
 ## Lessons from reviews
+
+- Pose sheets must pose the rig with its baked tracks removed; left in place, the tracks override the pose on every render and every frame looks the same.
+- A staff held rigidly tips over whenever the elbow bends; a separate hold with a wrist rule keeps it upright. Its foot must stay well above the ground (grip 0.7 m from the foot), or the running feet kick it.
+- Heavy plate needs the arms wider than the lean build does; poses are tuned against the heavy build's clipping report first.
 
 - The Skin modifier alone makes thin tubes, and metaball masses read as a segmented mannequin. Bodies are signed distance fields: tapered capsules joint to joint, blended with smooth unions.
 - Round ellipsoids for the torso gave an hourglass, female-looking silhouette. A heroic male torso uses rounded boxes: flat, square pec plates, a thick straight waist, hips narrower than the chest.

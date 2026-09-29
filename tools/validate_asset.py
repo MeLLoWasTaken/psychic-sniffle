@@ -33,7 +33,7 @@ sys.path.insert(0, str(REPO / "tools" / "blender"))
 import humanoid  # noqa: E402  (standard skeleton, docs/ART_BIBLE.md)
 
 REQUIRED_BONES: list[str] = humanoid.BONE_NAMES
-REQUIRED_ANIMATIONS: list[str] = []  # filled in by backlog M1-21 (animation set)
+import animation  # noqa: E402  (animation sets, backlog M1-21)
 
 
 def _is_pow2(n: int) -> bool:
@@ -48,6 +48,8 @@ def check(spec: dict) -> list[str]:
 
     bpy.ops.wm.read_factory_settings(use_empty=True)
     bpy.ops.import_scene.gltf(filepath=str(glb))
+    if spec["kind"] == "animation":
+        return check_animation_library(spec)
     # Blender's glTF importer adds display-shape meshes for bones (an "Icosphere"); they are not
     # part of the file, so skip every mesh used as a bone custom shape.
     bone_shapes = {pb.custom_shape for o in bpy.data.objects if o.type == "ARMATURE"
@@ -114,12 +116,40 @@ def check(spec: dict) -> list[str]:
         for b in REQUIRED_BONES:
             if b not in bones:
                 errors.append(f"missing bone '{b}'")
-        clips = {a.name for a in bpy.data.actions}
-        for a in REQUIRED_ANIMATIONS:
-            if not any(c == a or c.endswith(f"_{a}") for c in clips):
-                errors.append(f"missing animation '{a}'")
+        # clips live in the shared library for the body build (kind "animation")
+        libs = [json.loads(p.read_text()) for p in (REPO / "data" / "assets").glob("*.json")]
+        if not any(a["kind"] == "animation" and a.get("body_build") == spec.get("body_build") for a in libs):
+            errors.append(f"no animation library for body build '{spec.get('body_build')}'")
 
     print(f"  {spec['id']}: {tris} tris, {size:.2f} m, {non_manifold} non-manifold edges")
+    return errors
+
+
+def check_animation_library(spec: dict) -> list[str]:
+    """Skeleton, required clips and clip lengths of a shared animation library."""
+    errors = []
+    bones = {b.name for o in bpy.data.objects if o.type == "ARMATURE" for b in o.data.bones}
+    for b in REQUIRED_BONES:
+        if b not in bones:
+            errors.append(f"missing bone '{b}'")
+    anim = animation.load_set(spec["params"]["set"])
+    fps = bpy.context.scene.render.fps / bpy.context.scene.render.fps_base
+    actions = {a.name: a for a in bpy.data.actions}
+    clips = sorted(set(animation.REQUIRED_CLIPS) | set(anim["clips"]))
+    wanted = [(c, None) for c in clips] + [(c, h) for h in animation.hold_variants(anim) for c in clips]
+    for clip, hold in wanted:
+        name = animation.variant_name(clip, hold)
+        act = actions.get(name)
+        if act is None:
+            errors.append(f"missing animation '{name}'")
+            continue
+        if clip in anim["clips"]:
+            start, end = act.frame_range
+            length = (end - start) / fps
+            want = (animation.frame_count(anim["clips"][clip], anim["fps"]) - 1) / anim["fps"]
+            if abs(length - want) > 1.0 / anim["fps"]:
+                errors.append(f"animation '{name}' lasts {length:.3f} s, expected {want:.3f} s")
+    print(f"  {spec['id']}: {len(actions)} clips, {len(bones)} bones")
     return errors
 
 

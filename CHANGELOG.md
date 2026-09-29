@@ -2,6 +2,22 @@
 
 One entry per build-loop iteration, newest first. Format: date, backlog ID, what changed, how it was checked.
 
+## 2026-09-29 — M1-21 Animation set v1
+- 22 clips authored as key poses in `data/animations/humanoid.json` (idle, combat idle, run, strafes, backpedal, jump, cast start, loop and release with frost and holy variants, channel, three melee attacks, ranged shot, hit, stunned, feared run, death, victory), in joint terms (bend, swing, raise, curl...) rather than bone axes. `tools/blender/animation.py` converts them with axes measured on the skeleton and checked on every build, fills frames with a smooth non-overshooting curve plus per-key eases, delays extremities for follow-through, and shrugs the clavicles as the arms lift.
+- `tools/blender/build_animations.py` bakes one library per body build (`game/assets/animations/anims_heavy.glb`, `anims_lean.glb`, 44 clips each including the upright-staff variants) and reviews it on every finished character: pose sheets in `previews/animations/` and a clipping report.
+- Clipping check: pieces of each character are welded back into closed meshes; a vertex more than 1.5 cm inside another body part or the weapon fails. Idle, combat idle, run and all cast clips are clean on all three characters, after widening the arms and knees in those poses, an earlier clavicle shrug, and moving the staff's grip lower.
+- Weapons: grip and hold directions are data in rest-pose terms, the same in Blender and in the game; staffs use an upright hold whose wrist rule keeps them within 20 degrees of vertical in every clip but death.
+- Game: `CharacterRig` loads the build's library onto each character's own skeleton with loop flags from data, picks hold variants and attaches the weapon; `map_view` takes `--anim` and `--anim-time`; `Data` loads the animations folder.
+- Bugs found on the way: the export used Blender's 24 fps, so every clip played 25% slow (the asset validator and a Godot test now check lengths); preview renders all showed one pose because the baked tracks overrode it; Godot's importer renames `cast_loop` to `cast` (mapped back by name).
+- Checked: data and asset validation, 6 animation tests (lengths, track retargeting on all characters, loop flags, grips, bones driven, staff upright while running) and 3 character tests pass; pose sheets reviewed; clipping reports `anims_heavy_clipping.json`, `anims_lean_clipping.json`. Open: melee clips still clip in overhead frames and two-handed weapons swing one-handed (F-06); robe skirts part at the front in the run (F-07).
+
+## 2026-09-29 — M1-18, M1-19, M1-20 Warblade, Arcanist and Oracle
+- Three armored characters built from asset specs by `tools/blender/build_character.py` on the signed-distance-field bodies: the Warblade in horned, spiked plate with brass trim (24,896 triangles), the Arcanist in a hooded, torn-hem robe with frost crystals (16,300), the Oracle in white and gold vestments with a crown and rayed halo (17,100). Armor pieces are signed-distance shells over the body, rigid on one bone or following the body's skin weights (cloth); one mesh and one 2048 px painted texture set per character.
+- Weapons (`build_weapon.py`): greatsword (1.78 m), frost staff (2.4 m, glowing crystal head), flanged mace (0.95 m), each with its origin at the grip.
+- Build fixes: marching-cubes samples landing exactly on the surface and tiny separate specks left holes after export; edge collapse under 2 mm pinched thin rims; the staff's crystal cones overlapped face to face; skin weights slightly above 1. All four assets now have 0 non-manifold edges.
+- The texture bake shrank each hidden face into its own UV island, which stopped Godot's importer from simplifying the cloth characters past one level of detail; hidden patches now shrink as a unit and every character gets two lower LODs (about 50% and 25%).
+- Checked: asset validation passes for all 21 assets; character tests cover all three characters and weapons (skeleton, budgets, 2 LODs, grip at the origin; weapon length bound widened to 0.5-2.6 m for the staff, see DECISIONS.md); contact sheets and pose tests reviewed.
+
 ## 2026-09-29 — M1-17 Hand-painted texture bake
 - `bake_piece` now also bakes a tangent-space normal map from Cycles bevel shading, so low-poly edges look rounded and catch light, and a glow map for emissive parts only (a character with a glowing crystal no longer glows all over).
 - Worn edges come and go in broad patches along each edge (chipped paint) instead of a uniform outline.

@@ -40,6 +40,7 @@ FOLDERS = {
     "keybinds": ("keybind_profile.schema.json", "id"),
     "bots": ("bot_profile.schema.json", "id"),
     "lighting": ("lighting.schema.json", "id"),
+    "animations": ("animation_set.schema.json", "id"),
 }
 
 # Ability kit template (docs/DESIGN.md, "Ability kit template"): slot -> (min, max)
@@ -190,6 +191,23 @@ def validate(data_dir: Path) -> list[str]:
     # ---- talent trees --------------------------------------------------------
     for tid, t in trees.items():
         _check_tree(report, f"talents/{tid}.json", t, abilities, auras, tuning)
+
+    # ---- animation sets ----------------------------------------------------------
+    sys.path.insert(0, str(REPO / "tools" / "blender"))
+    import animation as anim_mod  # pure Python part: term table and key checks
+
+    for aid, a in db["animations"].items():
+        rel = f"animations/{aid}.json"
+        for problem in anim_mod.validate_set(a):
+            report.error(rel, problem)
+        missing = [c for c in anim_mod.REQUIRED_CLIPS if c not in a["clips"]]
+        if missing:
+            report.error(rel, f"missing required clips: {', '.join(missing)}")
+    for asid, asset in db["assets"].items():
+        if asset["kind"] == "animation":
+            set_id = asset.get("params", {}).get("set", "")
+            if set_id not in db["animations"]:
+                report.error(f"assets/{asid}.json", f"unknown animation set '{set_id}'")
 
     # ---- maps ------------------------------------------------------------------
     for mid, m in db["maps"].items():

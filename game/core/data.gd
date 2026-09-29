@@ -5,7 +5,8 @@ extends Node
 
 const DATA_ROOT: String = "res://data"
 const FOLDERS: Array[String] = [
-	"classes", "specs", "abilities", "auras", "talents", "maps", "assets", "keybinds", "bots", "lighting"]
+	"classes", "specs", "abilities", "auras", "talents", "maps", "assets", "keybinds", "bots", "lighting",
+	"animations"]
 
 var tuning: Dictionary = {}
 var classes: Dictionary = {}
@@ -18,6 +19,7 @@ var assets: Dictionary = {}
 var keybinds: Dictionary = {}
 var bots: Dictionary = {}
 var lighting: Dictionary = {}
+var animations: Dictionary = {}
 
 
 func _ready() -> void:

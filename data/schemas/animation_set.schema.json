@@ -1,0 +1,193 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "animation_set.schema.json",
+  "title": "Animation set",
+  "description": "Key poses for a skeleton's clips (backlog M1-21). tools/blender/animation.py turns joint terms into bone rotations and bakes every frame; tools/blender/build_animations.py exports one library per body build.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "id",
+    "fps",
+    "clips"
+  ],
+  "$defs": {
+    "terms": {
+      "type": "object",
+      "description": "Joint term -> degrees (root up/forward/left in metres).",
+      "additionalProperties": {
+        "type": "number",
+        "minimum": -180,
+        "maximum": 180
+      }
+    },
+    "key": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "t",
+        "pose"
+      ],
+      "properties": {
+        "t": {
+          "type": "number",
+          "minimum": 0
+        },
+        "ease": {
+          "enum": [
+            "smooth",
+            "in",
+            "out",
+            "linear"
+          ],
+          "description": "Shape of the segment that ends at this key."
+        },
+        "pose": {
+          "type": "object",
+          "propertyNames": {
+            "pattern": "^(root|pelvis|spine|chest|neck|head|clavicle_[lr]|upperarm_[lr]|forearm_[lr]|hand_[lr]|thigh_[lr]|calf_[lr]|foot_[lr])$"
+          },
+          "additionalProperties": {
+            "$ref": "#/$defs/terms"
+          }
+        }
+      }
+    }
+  },
+  "properties": {
+    "id": {
+      "$ref": "common.schema.json#/$defs/id"
+    },
+    "description": {
+      "type": "string"
+    },
+    "fps": {
+      "type": "integer",
+      "minimum": 10,
+      "maximum": 60
+    },
+    "overlap_s": {
+      "type": "object",
+      "description": "Follow-through: joint family -> delay in seconds behind the authored curve.",
+      "additionalProperties": {
+        "type": "number",
+        "minimum": 0,
+        "maximum": 0.25
+      }
+    },
+    "auto_shrug": {
+      "type": "number",
+      "minimum": 0,
+      "maximum": 1
+    },
+    "clips": {
+      "type": "object",
+      "propertyNames": {
+        "pattern": "^[a-z][a-z0-9_]*$"
+      },
+      "additionalProperties": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "length_s",
+          "loop",
+          "keys"
+        ],
+        "properties": {
+          "length_s": {
+            "type": "number",
+            "exclusiveMinimum": 0
+          },
+          "loop": {
+            "type": "boolean"
+          },
+          "keys": {
+            "type": "array",
+            "minItems": 2,
+            "items": {
+              "$ref": "#/$defs/key"
+            }
+          }
+        }
+      }
+    },
+    "weapon_grip": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "bone",
+        "along_m",
+        "palm_m",
+        "holds"
+      ],
+      "description": "Where a held weapon sits, in rest-pose terms so it works on every body build: the grip point lies along_m down the hand bone and palm_m toward the palm; each hold names the character-space directions (rest pose, character faces -Y, left is +X) of the weapon's blade (+Z) and blade flat (+Y). Weapon specs pick a hold with params.hold (default forward).",
+      "properties": {
+        "bone": {
+          "type": "string"
+        },
+        "along_m": {
+          "type": "number"
+        },
+        "palm_m": {
+          "type": "number"
+        },
+        "holds": {
+          "type": "object",
+          "additionalProperties": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": [
+              "blade",
+              "flat"
+            ],
+            "properties": {
+              "blade": {
+                "type": "array",
+                "items": {
+                  "type": "number"
+                },
+                "minItems": 3,
+                "maxItems": 3
+              },
+              "flat": {
+                "type": "array",
+                "items": {
+                  "type": "number"
+                },
+                "minItems": 3,
+                "maxItems": 3
+              },
+              "wrist": {
+                "type": "object",
+                "additionalProperties": false,
+                "required": [
+                  "aim"
+                ],
+                "description": "Wrist rule for this hold: after each pose, the grip hand turns (about the wrist) so the weapon's blade points along aim, a direction in the character's own frame (its root bone, so it follows a fall), by weight of the way and at most limit degrees. Keeps an upright staff upright through arm swings. Holds with a rule get their own baked copy of every clip, named <clip>_<hold>.",
+                "properties": {
+                  "aim": {
+                    "type": "array",
+                    "items": {
+                      "type": "number"
+                    },
+                    "minItems": 3,
+                    "maxItems": 3
+                  },
+                  "weight": {
+                    "type": "number",
+                    "minimum": 0,
+                    "maximum": 1
+                  },
+                  "limit": {
+                    "type": "number",
+                    "minimum": 0,
+                    "maximum": 180
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+}

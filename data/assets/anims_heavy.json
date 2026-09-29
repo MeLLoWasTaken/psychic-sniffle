@@ -1,0 +1,16 @@
+{
+  "id": "anims_heavy",
+  "kind": "animation",
+  "builder": "build_animations.py",
+  "seed": 0,
+  "body_build": "heavy",
+  "tri_budget": {
+    "min": 0,
+    "max": 100
+  },
+  "params": {
+    "set": "humanoid"
+  },
+  "out": "game/assets/animations/anims_heavy.glb",
+  "status": "draft"
+}
