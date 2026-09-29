@@ -4,6 +4,7 @@ Every choice not specified in docs/DESIGN.md, newest first. One line of reasonin
 
 | Date | Decision | Reason | Approved by |
 | --- | --- | --- | --- |
+| 2026-09-29 | ENet's packet throttle is pinned open on every peer | It silently dropped up to 17% of snapshots when round trip rose under CPU load; the game controls its own send rate and bandwidth | Model |
 | 2026-09-29 | The latency check compares measured round trip with the simulated lag plus a 10 ms local base (the round trip with no simulated lag, from polling at up to 240 frames per second) | The simulator adds exactly its setting; the original check compared total round trip and would have failed a correct simulator. This clarifies what is measured and does not loosen the 10% tolerance | Model |
 | 2026-09-29 | Simulated jitter is a bounded random walk, not an independent random delay per packet | Independent per-packet jitter reordered about 6% of 60 Hz snapshots, which real network queueing rarely does | Model |
 | 2026-09-29 | The server applies every client input exactly once and in order: it waits when no input has arrived and applies two per tick when more than 6 are queued; it never drops or repeats inputs | Dropping and repeating inputs caused prediction errors up to 0.93 m and lost one-shot actions (targeting) under 150 ms lag; exactly-once gave 0 corrections | Model |

@@ -72,7 +72,7 @@ def main() -> int:
 
     server_log = open(out / "server.log", "w")
     server = subprocess.Popen(base + ["--", "--server", "--port", str(args.port), "--match-seconds",
-                                      str(seconds + 3), "--respawn", "--summary", str(out / "summary.json")],
+                                      str(seconds + 0.3 * args.bots + 10), "--respawn", "--summary", str(out / "summary.json")],
                               stdout=server_log, stderr=subprocess.STDOUT)
     deadline = time.time() + 30
     while "server: listening" not in (out / "server.log").read_text():

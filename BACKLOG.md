@@ -98,9 +98,9 @@ Exit gate: two bots join a server, move, target and auto-attack for 5 minutes wi
 - [x] The sounds import and play in Godot through the correct audio buses.
 - [x] Sound source decision recorded in DECISIONS.md (DESIGN.md says decide at the start of M0).
 
-### M0-17 Review pass 1 `[todo]`
-- [ ] Run the review pass from DESIGN.md (minus balance simulations, which need specs).
-- [ ] Update this backlog and CHANGELOG.md.
+### M0-17 Review pass 1 `[done]`
+- [x] Run the review pass from DESIGN.md (minus balance simulations, which need specs).
+- [x] Update this backlog and CHANGELOG.md.
 
 ---
 
@@ -111,6 +111,7 @@ Exit gate: a full 2v2 match plays start to finish with humans or bots, at 60 fps
 The slice specs are Warblade Carnage (melee, rage), Arcanist Rime (casting, interrupts, roots) and Oracle Grace (healing, dispels).
 
 **Combat core**
+- [x] Report: `docs/reports/review_01.md`.
 
 ### M1-01 Data-driven ability system `[todo]`
 - [ ] Ability fields: id, school, cast type (instant, cast, channel), cast time, cooldown, charges, triggers GCD, cost, range, needs line of sight, target type, effect list.
@@ -262,6 +263,18 @@ The slice specs are Warblade Carnage (melee, rage), Arcanist Rime (casting, inte
 - [ ] Server tick time for a 4-player match recorded (target well under 8 ms).
 - [ ] Client frame time on the software renderer recorded as a relative baseline; GPU fps check added to KNOWN_ISSUES.md as pending if no GPU machine is available.
 - [ ] Full review pass; the M1 gate is checked and the result written to CHANGELOG.md.
+
+---
+
+## Follow-ups from review pass 1
+
+### F-01 Delta-compressed snapshots and distance-based send rates `[todo]`
+- [ ] Snapshots send only fields that changed since the last acknowledged snapshot.
+- [ ] Units far from the receiving player are sent at a reduced rate.
+- [ ] 20 players at 60 Hz stay under 48 KB/s per client (half the budget). Needed before M4.
+
+### F-02 GPU frame-rate measurement `[blocked: needs a GPU machine]`
+- [ ] Record fps for the M1 vertical slice on recommended and minimum PC profiles at the M1 gate.
 
 ---
 

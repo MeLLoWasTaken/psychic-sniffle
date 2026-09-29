@@ -2,6 +2,11 @@
 
 One entry per build-loop iteration, newest first. Format: date, backlog ID, what changed, how it was checked.
 
+## 2026-09-29 — M0-17 Review pass 1
+- 20-bot match: server tick average 0.24 ms (p95 0.46 ms), 38.7 KB/s per client, every bot at 60.0 snapshots per second. Report: `docs/reports/perf_20bots_2026-09-29.json`.
+- Fixed from this run: the server stopped before late-launched bots finished (harness); ENet's packet throttle dropped up to 17% of snapshots under CPU load (now pinned open); a client shutdown race.
+- Review written to `docs/reports/review_01.md`; follow-ups F-01 (delta compression) and F-02 (GPU fps) added to the backlog.
+
 ## 2026-09-29 — M0-10 to M0-14 Networking, movement, targeting, bots; M0 exit gate passed
 - Added the network layer: binary protocol (`game/net/protocol.gd`), ENet transport with a latency, jitter and loss simulator (`transport.gd`), authoritative server (`server.gd`), client with prediction, reconciliation and interpolation (`client.gd`), and bots (`bot_brain.gd`, `scenes/bot_main.tscn`).
 - Added `tools/sim/run_match.py`, which runs a server and bots as separate processes and checks logs, snapshot rate, round trip and prediction corrections. `check_all` now includes a 30 s match with and without simulated lag.

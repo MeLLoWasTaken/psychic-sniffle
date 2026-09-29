@@ -31,6 +31,12 @@ func simulating() -> bool:
 	return lag_ms > 0.0 or jitter_ms > 0.0 or loss > 0.0
 
 
+## ENet's packet throttle silently drops unreliable packets when round trip rises. The game
+## manages its own send rate and bandwidth, so the throttle is pinned open on every peer.
+static func disable_throttle(peer: ENetPacketPeer) -> void:
+	peer.throttle_configure(5000, 32, 0)  # interval ms, acceleration (max), deceleration (never)
+
+
 func start_server(port: int, max_peers: int = 32) -> Error:
 	return host.create_host_bound("127.0.0.1", port, max_peers, Protocol.CHANNELS)
 
@@ -39,6 +45,8 @@ func start_client(address: String, port: int) -> ENetPacketPeer:
 	var err: Error = host.create_host(1, Protocol.CHANNELS)
 	if err != OK:
 		return null
+	# The throttle is configured on the connect event (see poll); configuring it before the
+	# handshake completes makes ENet drop the connection.
 	return host.connect_to_host(address, port, Protocol.CHANNELS)
 
 
@@ -81,6 +89,7 @@ func poll() -> Array[Dictionary]:
 		match etype:
 			ENetConnection.EVENT_CONNECT:
 				out["type"] = "connect"
+				disable_throttle(ev[1])
 			ENetConnection.EVENT_DISCONNECT:
 				out["type"] = "disconnect"
 			ENetConnection.EVENT_RECEIVE:

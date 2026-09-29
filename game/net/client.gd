@@ -36,6 +36,7 @@ var events_received: int = 0
 const TELEPORT_M: float = 5.0  ## server moves larger than this in one snapshot are teleports
 
 var _synced: bool = false
+var _finished: bool = false  ## set once we start shutting down; later network events are ignored
 var _last_server_pos: Vector3 = Vector3.ZERO
 var _stats: Dictionary = {"snapshots": 0, "corrections": 0, "correction_sum": 0.0, "teleports": 0,
 	"correction_max": 0.0, "rtt_ms": [], "stale_snapshots": 0, "inputs_sent": 0}
@@ -73,7 +74,7 @@ func connect_to_server(host: String = "", port: int = 0) -> void:
 
 
 func _process(_delta: float) -> void:
-	if server_peer:
+	if server_peer and not _finished:
 		_poll_network()
 
 
@@ -94,7 +95,7 @@ func _poll_network() -> void:
 
 
 func _physics_process(_delta: float) -> void:
-	if server_peer == null:
+	if server_peer == null or _finished:
 		return
 	_poll_network()
 	if unit_id != -1 and input_source.is_valid():
@@ -242,6 +243,9 @@ func stats() -> Dictionary:
 
 
 func _finish(code: int) -> void:
+	if _finished:
+		return
+	_finished = true
 	set_physics_process(false)
 	var s: Dictionary = stats()
 	if stats_path != "":
