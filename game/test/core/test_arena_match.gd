@@ -9,7 +9,7 @@ var units: Dictionary
 
 
 func before_test() -> void:
-	geo = ArenaGeometry.from_map(Data.maps["gallows_courtyard"])
+	geo = preload("res://test/fixtures/fixture_map.gd").geometry()
 	arena = ArenaMatch.new(Data.tuning, "2v2", TR, geo, 0)
 	units = {}
 	for i: int in 4:

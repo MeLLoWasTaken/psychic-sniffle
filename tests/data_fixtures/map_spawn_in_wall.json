@@ -1,0 +1,8 @@
+{
+  "description": "a spawn point inside a wall",
+  "file": "maps/gallows_courtyard.json",
+  "expect": "spawn [22.8, 0, 10] is inside or touching collider",
+  "set": {
+    "/spawns/team_b/0": [22.8, 0, 10]
+  }
+}

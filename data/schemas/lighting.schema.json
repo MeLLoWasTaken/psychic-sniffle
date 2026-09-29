@@ -1,0 +1,52 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "lighting.schema.json",
+  "title": "Lighting preset",
+  "description": "Sun, fill, sky, ambient light, fog and post-processing for a map (docs/ART_BIBLE.md). Colors are linear RGB 0-1.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["id", "sun", "sky", "ambient", "fog", "post"],
+  "$defs": {
+    "rgb": {"type": "array", "items": {"type": "number", "minimum": 0, "maximum": 4}, "minItems": 3, "maxItems": 3},
+    "light": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["color", "energy", "pitch_deg", "yaw_deg"],
+      "properties": {
+        "color": {"$ref": "#/$defs/rgb"},
+        "energy": {"type": "number", "minimum": 0},
+        "pitch_deg": {"type": "number", "minimum": -90, "maximum": 0, "description": "Downward angle of the light; -90 is straight down."},
+        "yaw_deg": {"type": "number"},
+        "shadows": {"type": "boolean"}
+      }
+    }
+  },
+  "properties": {
+    "id": {"type": "string", "pattern": "^[a-z0-9_]+$"},
+    "description": {"type": "string"},
+    "sun": {"$ref": "#/$defs/light"},
+    "fill": {"$ref": "#/$defs/light"},
+    "sky": {
+      "type": "object", "additionalProperties": false, "required": ["top", "horizon", "ground"],
+      "properties": {"top": {"$ref": "#/$defs/rgb"}, "horizon": {"$ref": "#/$defs/rgb"}, "ground": {"$ref": "#/$defs/rgb"}}
+    },
+    "ambient": {
+      "type": "object", "additionalProperties": false, "required": ["color", "energy"],
+      "properties": {"color": {"$ref": "#/$defs/rgb"}, "energy": {"type": "number", "minimum": 0}}
+    },
+    "fog": {
+      "type": "object", "additionalProperties": false, "required": ["density", "albedo"],
+      "properties": {"density": {"type": "number", "minimum": 0, "maximum": 0.2}, "albedo": {"$ref": "#/$defs/rgb"}, "emission": {"$ref": "#/$defs/rgb"}}
+    },
+    "post": {
+      "type": "object", "additionalProperties": false,
+      "properties": {
+        "exposure": {"type": "number", "minimum": 0.1},
+        "saturation": {"type": "number", "minimum": 0},
+        "contrast": {"type": "number", "minimum": 0},
+        "glow_intensity": {"type": "number", "minimum": 0},
+        "ssao": {"type": "boolean"}
+      }
+    }
+  }
+}

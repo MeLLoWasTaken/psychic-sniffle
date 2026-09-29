@@ -2,6 +2,15 @@
 
 One entry per build-loop iteration, newest first. Format: date, backlog ID, what changed, how it was checked.
 
+## 2026-09-29 — M1-14 Arena greybox: Gallows Courtyard
+- New layout: a 39 by 36 m courtyard with four pillars and a central gallows block, and a gated starting room beyond each end. The first layout's full-width gates left two long strips behind them where healers got cornered.
+- `scenes/maps/map_builder.gd` builds any arena from its map data: greybox shapes with a 1 m grid, perimeter walls, team-colored gates and room floors (crimson west, steel blue east), gates that sink into the floor when they open, collision on `world` and `los_blocker` physics layers, and lighting from the new `data/lighting/dusk_grim.json` preset.
+- Review scene `scenes/tests/map_view.tscn` with top, overview and player-camera views and 1.8 m stand-in players; `tools/screenshot.sh` now passes extra arguments to the scene.
+- Fixed from the screenshots: the scene went orange-brown again (brown sky horizon and warm fog; now cool) and the gallows block read as a black hole from the player camera (wood brightened).
+- Validator: spawn points must stand clear of every collider; maps must name a known lighting preset.
+- Balance on the new map: the Warblade side won 68% until the Oracle bot was fixed (it had no heal to cast between 40% and 75% health while a melee was on it); now 55% over 60 matches, mirrors 28-29 and 26-34, 177 of 180 matches ended by a kill.
+- Checked: 78 Godot tests pass, including map tests (scene collision agrees with the server's line of sight on 800 random sightlines, and fails when a pillar is moved 1.5 m), path between rooms only with gates open, gates stop blocking when open. Screenshots: `previews/maps/gallows_top.png`, `gallows_overview.png`, `gallows_player.png`.
+
 ## 2026-09-29 — M1-13 Bot AI v1
 - Bots read a "view" of the world with the same shape on the server (batch simulation) and on a network client, and play from per-spec data in `data/bots/`: targeting (healer first, damage dealers first, lowest health), ranges, kiting, hiding behind pillars when low, and priority rules with conditions. Added `MatchRunner` (one match's rules, shared by the server and the batch simulator), `NavGrid` (A* paths around pillars and gates) and `tools/batch_sim.gd` (thousands of matches in-process, with an optional trace that records why each bot skipped each ability).
 - Bugs found by simulation and fixed: an Arcanist and an Oracle dispelled and reapplied the same cheap buff for minutes; a Warblade stuck on a corner of the central block (bots skipped a waypoint whose next leg was blocked; also the reason the Warblade could only win duels from one side); kiting healers backed into corners; the team whose units were created first won 79% of mirror matches because units always acted in id order (now a seeded shuffle per tick); Wide Hew refunded more rage than it cost.

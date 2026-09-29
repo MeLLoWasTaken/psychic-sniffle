@@ -1,0 +1,28 @@
+{
+ "date": "2026-09-29",
+ "backlog": "M1-14",
+ "map": "gallows_courtyard (39 x 36 m courtyard, rooms outside)",
+ "main": {
+  "comp": "warblade_carnage+oracle_grace vs arcanist_rime+oracle_grace",
+  "matches": 60,
+  "ended_by_kill": 60,
+  "warblade_side_wins": 33,
+  "arcanist_side_wins": 27,
+  "avg_seconds": 187.4
+ },
+ "mirrors": {
+  "warblade_carnage+oracle_grace": {
+   "matches": 60,
+   "team0": 28,
+   "team1": 29,
+   "draws": 3
+  },
+  "arcanist_rime+oracle_grace": {
+   "matches": 60,
+   "team0": 26,
+   "team1": 34,
+   "draws": 0
+  }
+ },
+ "note": "Before the Oracle bot fix on this map: 68% Warblade side (60 matches); the Oracle under melee pressure had no heal to cast between 40% and 75% health."
+}

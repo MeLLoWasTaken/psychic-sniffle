@@ -176,10 +176,10 @@ The slice specs are Warblade Carnage (melee, rage), Arcanist Rime (casting, inte
 
 **Arena**
 
-### M1-14 Arena greybox: Gallows Courtyard `[todo]`
-- [ ] About 40 m across, 4 pillars, two starting rooms with gates, spawn points, `los_blocker` collision on pillars and walls.
-- [ ] Bot navigation mesh; the line-of-sight test from M1-08 passes in this map.
-- [ ] Top-down and player-view screenshots reviewed.
+### M1-14 Arena greybox: Gallows Courtyard `[done]`
+- [x] About 40 m across (39 by 36 m courtyard), 4 pillars, a central gallows block, two gated starting rooms, spawn points, and `los_blocker` collision (physics layer 2) on pillars and walls. The scene is built from the map data by `scenes/maps/map_builder.gd`.
+- [x] Bot navigation on this map (bots path between the rooms only when the gates are open); line-of-sight rules tested on this map, and the scene's collision agrees with the server's line of sight on 800 random sightlines (`test/core/test_map.gd`).
+- [x] Top-down, overview and player-view screenshots reviewed (`previews/maps/`).
 
 ### M1-15 Arena art kit and lighting v1 `[todo]`
 - [ ] Blender-built modular kit: stone floor, walls, pillars, gates, braziers, gallows, banners in team colors.
@@ -187,7 +187,7 @@ The slice specs are Warblade Carnage (melee, rage), Arcanist Rime (casting, inte
 - [ ] Under 1.5 million visible triangles; screenshots reviewed against the art bible.
 
 **Characters**
-- [ ] Color balance: warm key light and warm fog together turned the M0-04 test scene uniformly orange-brown; keep cool ambient and fill so iron and stone stay readable.
+- [ ] Color balance: warm key light and warm fog together turned the M0-04 test scene uniformly orange-brown; keep cool ambient and fill so iron and stone stay readable. (Greybox pass: cool sky horizon and fog in `data/lighting/dusk_grim.json` fixed it for plain stone; recheck with painted textures.)
 
 ### M1-16 Standard skeleton and parametric body `[doing]` (started early while M0 waited on the Godot build)
 - [x] One humanoid skeleton with fixed bone names, written to `docs/ART_BIBLE.md`.

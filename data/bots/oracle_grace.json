@@ -81,14 +81,14 @@
       "ability": "swift_benediction",
       "on": "lowest_ally",
       "when": {
-        "ally_health_below_pct": 40
+        "ally_health_below_pct": 65
       }
     },
     {
       "ability": "chorus_of_mending",
       "on": "lowest_ally",
       "when": {
-        "ally_health_below_pct": 70
+        "ally_health_below_pct": 80
       }
     },
     {

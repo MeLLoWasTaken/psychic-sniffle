@@ -46,6 +46,17 @@ Suffix `_l` is the character's left (+X), `_r` its right (-X).
 - Metaball surfaces sit inside their radius: at threshold 0.1 and stiffness 2, the surface is at 0.795 of the radius (measured). Radii are scaled up to compensate.
 - Blender's Pointiness value is per vertex, so it highlights whole low-poly parts. Edge highlights use a Bevel-normal comparison instead.
 
+- Warm key light plus warm fog plus a brown sky horizon turned whole scenes orange-brown. Keep the sun warm, but make the sky horizon, fog and ambient light cool (blue-grey), and keep stone base colors neutral grey. The shadow side of stone should read cool.
+- A dark wood color on a block that sits in shadow reads as a black hole from the player camera; set wood base colors to about 0.4 value or brighter.
+
+## Lighting presets
+
+Presets live in `data/lighting/<id>.json` (sun, fill, sky, ambient light, fog, post-processing) and maps name one. `dusk_grim` is the default arena look: low warm sun from the south-west, cool sky fill, blue-grey volumetric fog, AgX tonemapping.
+
+## Arena greybox
+
+`scenes/maps/map_builder.gd` builds every arena from its map data, so art always matches gameplay collision. Colliders carry a `tag` (pillar, wall, gate, gallows, prop); the art kit (M1-15) replaces the greybox shape for each tag. Team colors: crimson for team A (west room), steel blue for team B (east room), shown on the gates and room floors. Review views: `tools/screenshot.sh res://scenes/tests/map_view.tscn <out.png> 1920 1080 60 --view top|overview|player`.
+
 ## Approved references
 
 None yet. The first entries are expected at the M1-22 art gate.

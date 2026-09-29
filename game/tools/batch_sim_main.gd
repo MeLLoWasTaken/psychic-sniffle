@@ -67,6 +67,7 @@ func _run_match(team_specs: Array, seed_value: int, max_minutes: float) -> Dicti
 	runner.sim.add_system(runner.system_combat_and_rules)
 	var limit: int = roundi(max_minutes * 60.0 * runner.sim.tick_rate)
 	var end_reason: String = "limit"
+	var first_death: Dictionary = {}
 	var trace: Array = []
 	var tracing: bool = _trace_path != "" and _results.is_empty()
 	while runner.sim.tick < limit:
@@ -88,6 +89,10 @@ func _run_match(team_specs: Array, seed_value: int, max_minutes: float) -> Dicti
 						stats[src]["damage"] += int(ev["amount"])
 					if ev["killed"] and stats.has(int(ev["target"])):
 						stats[int(ev["target"])]["died"] = true
+						if first_death.is_empty():
+							first_death = {"spec": stats[int(ev["target"])]["spec"], "team": stats[int(ev["target"])]["team"],
+								"killer": stats[src]["spec"] if stats.has(src) else "", "ability": ev.get("ability", ""),
+								"second": runner.arena.match_seconds(runner.sim.tick)}
 				"heal":
 					if stats.has(src):
 						stats[src]["healing"] += int(ev["amount"])
@@ -113,7 +118,7 @@ func _run_match(team_specs: Array, seed_value: int, max_minutes: float) -> Dicti
 		if tracing:
 			trace.append({"type": "stuck_log", "unit": uid, "spec": stats[uid]["spec"], "log": brains[uid].stuck_log})
 	var result: Dictionary = {"winner": runner.arena.winner_team, "seconds": runner.arena.match_seconds(runner.sim.tick),
-		"end_reason": end_reason, "units": stats, "errors": Log.error_count - errors_before,
+		"end_reason": end_reason, "first_death": first_death, "units": stats, "errors": Log.error_count - errors_before,
 		"state_hash": runner.sim.state_hash()}
 	if tracing:
 		var f: FileAccess = FileAccess.open(_trace_path, FileAccess.WRITE)

@@ -9,7 +9,7 @@ var geo: ArenaGeometry
 
 func before_test() -> void:
 	tuning = Data.tuning
-	geo = ArenaGeometry.from_map(Data.maps["gallows_courtyard"])
+	geo = preload("res://test/fixtures/fixture_map.gd").geometry()
 
 
 func test_runs_7_metres_per_second_forward() -> void:

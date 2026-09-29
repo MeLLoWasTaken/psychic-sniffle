@@ -77,7 +77,8 @@ func test_closed_gates_block_paths_until_rebuilt() -> void:
 	var runner: MatchRunner = _runner()
 	runner.geometry.gates_open = false
 	var nav: NavGrid = NavGrid.new(runner.geometry)
-	var inside: Vector3 = Vector3(-17, 0, 0)
+	var sp: Array = Data.maps[MAP]["spawns"]["team_a"][2]
+	var inside: Vector3 = Vector3(sp[0], 0, sp[2])  # the middle spawn, in the starting room
 	assert_bool(nav.walkable(inside, Vector3(-10, 0, 0))).is_false()
 	runner.geometry.gates_open = true
 	nav.rebuild()

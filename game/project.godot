@@ -28,6 +28,11 @@ window/size/viewport_height=1080
 window/stretch/mode="canvas_items"
 window/stretch/aspect="expand"
 
+[layer_names]
+
+3d_physics/layer_1="world"
+3d_physics/layer_2="los_blocker"
+
 [physics]
 
 common/physics_ticks_per_second=60

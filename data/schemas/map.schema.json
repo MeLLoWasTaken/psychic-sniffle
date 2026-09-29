@@ -147,6 +147,10 @@
           "gate": {
             "type": "boolean",
             "description": "Gate: blocks only during the preparation phase, then opens."
+          },
+          "tag": {
+            "enum": ["pillar", "wall", "gate", "gallows", "prop"],
+            "description": "What the blocker is, so the map builder picks the right greybox or art-kit piece."
           }
         },
         "allOf": [

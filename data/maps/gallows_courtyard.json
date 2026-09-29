@@ -1,48 +1,48 @@
 {
   "id": "gallows_courtyard",
   "name": "Gallows Courtyard",
-  "description": "A walled execution yard at dusk. Four stone pillars and a central gallows block line of sight.",
+  "description": "A walled execution yard at dusk: a 39 by 36 m courtyard with four stone pillars and a central gallows block, and a gated starting room beyond each end.",
   "mode": "arena",
   "brackets": [
     "2v2",
     "3v3"
   ],
   "size_m": 40,
-  "bounds_half_m": 20,
+  "bounds_half_m": 25.0,
   "scene": "res://scenes/maps/gallows_courtyard.tscn",
   "lighting_preset": "dusk_grim",
   "twist": "The gallows platform collapses at 5:00, opening the center.",
   "spawns": {
     "team_a": [
       [
-        -18,
+        -22.8,
         0,
         -2
       ],
       [
-        -18,
+        -22.8,
         0,
         2
       ],
       [
-        -18,
+        -22.8,
         0,
         0
       ]
     ],
     "team_b": [
       [
-        18,
+        22.8,
         0,
         -2
       ],
       [
-        18,
+        22.8,
         0,
         2
       ],
       [
-        18,
+        22.8,
         0,
         0
       ]
@@ -52,38 +52,46 @@
     {
       "type": "circle",
       "center": [
-        -7,
+        -8,
         -7
       ],
       "radius": 1.2,
-      "blocks_los": true
+      "height": 6,
+      "blocks_los": true,
+      "tag": "pillar"
     },
     {
       "type": "circle",
       "center": [
-        7,
+        8,
         -7
       ],
       "radius": 1.2,
-      "blocks_los": true
+      "height": 6,
+      "blocks_los": true,
+      "tag": "pillar"
     },
     {
       "type": "circle",
       "center": [
-        -7,
+        -8,
         7
       ],
       "radius": 1.2,
-      "blocks_los": true
+      "height": 6,
+      "blocks_los": true,
+      "tag": "pillar"
     },
     {
       "type": "circle",
       "center": [
-        7,
+        8,
         7
       ],
       "radius": 1.2,
-      "blocks_los": true
+      "height": 6,
+      "blocks_los": true,
+      "tag": "pillar"
     },
     {
       "type": "box",
@@ -96,35 +104,122 @@
         2.5
       ],
       "height": 3.5,
-      "blocks_los": true
+      "blocks_los": true,
+      "tag": "gallows"
     },
     {
       "type": "box",
       "min": [
-        -15.5,
-        -20
+        -19.5,
+        18
       ],
       "max": [
-        -14.5,
-        20
+        19.5,
+        25.0
       ],
-      "height": 5,
+      "height": 6,
       "blocks_los": true,
-      "gate": true
+      "tag": "wall"
     },
     {
       "type": "box",
       "min": [
-        14.5,
-        -20
+        -19.5,
+        -25.0
       ],
       "max": [
-        15.5,
-        20
+        19.5,
+        -18
+      ],
+      "height": 6,
+      "blocks_los": true,
+      "tag": "wall"
+    },
+    {
+      "type": "box",
+      "min": [
+        -25.0,
+        -25.0
+      ],
+      "max": [
+        -19.5,
+        -4
+      ],
+      "height": 6,
+      "blocks_los": true,
+      "tag": "wall"
+    },
+    {
+      "type": "box",
+      "min": [
+        -25.0,
+        4
+      ],
+      "max": [
+        -19.5,
+        25.0
+      ],
+      "height": 6,
+      "blocks_los": true,
+      "tag": "wall"
+    },
+    {
+      "type": "box",
+      "min": [
+        -20.5,
+        -4
+      ],
+      "max": [
+        -19.5,
+        4
       ],
       "height": 5,
       "blocks_los": true,
-      "gate": true
+      "gate": true,
+      "tag": "gate"
+    },
+    {
+      "type": "box",
+      "min": [
+        19.5,
+        -25.0
+      ],
+      "max": [
+        25.0,
+        -4
+      ],
+      "height": 6,
+      "blocks_los": true,
+      "tag": "wall"
+    },
+    {
+      "type": "box",
+      "min": [
+        19.5,
+        4
+      ],
+      "max": [
+        25.0,
+        25.0
+      ],
+      "height": 6,
+      "blocks_los": true,
+      "tag": "wall"
+    },
+    {
+      "type": "box",
+      "min": [
+        19.5,
+        -4
+      ],
+      "max": [
+        20.5,
+        4
+      ],
+      "height": 5,
+      "blocks_los": true,
+      "gate": true,
+      "tag": "gate"
     }
   ],
   "status": "draft"

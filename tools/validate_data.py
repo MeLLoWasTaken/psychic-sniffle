@@ -19,6 +19,7 @@ from __future__ import annotations
 
 import argparse
 import json
+import math
 import sys
 from pathlib import Path
 
@@ -38,6 +39,7 @@ FOLDERS = {
     "assets": ("asset.schema.json", "id"),
     "keybinds": ("keybind_profile.schema.json", "id"),
     "bots": ("bot_profile.schema.json", "id"),
+    "lighting": ("lighting.schema.json", "id"),
 }
 
 # Ability kit template (docs/DESIGN.md, "Ability kit template"): slot -> (min, max)
@@ -192,10 +194,16 @@ def validate(data_dir: Path) -> list[str]:
     # ---- maps ------------------------------------------------------------------
     for mid, m in db["maps"].items():
         rel = f"maps/{mid}.json"
+        if m.get("lighting_preset") and m["lighting_preset"] not in db["lighting"]:
+            report.error(rel, f"unknown lighting preset '{m['lighting_preset']}'")
         need = max(BRACKET_SIZE[b] for b in m["brackets"])
         for team in ("team_a", "team_b"):
             if len(m["spawns"][team]) < need:
                 report.error(rel, f"{team} has {len(m['spawns'][team])} spawns; bracket needs {need}")
+            for sp in m["spawns"][team]:
+                blocker = _spawn_blocked(m, sp[0], sp[2])
+                if blocker:
+                    report.error(rel, f"{team} spawn {sp} is inside or touching {blocker}")
 
     # ---- assets ------------------------------------------------------------------
     for asid, a in db["assets"].items():
@@ -318,6 +326,25 @@ def _check_tree(report: Report, rel: str, t: dict, abilities: dict, auras: dict,
     total_ranks = sum(n.get("ranks", 1) for n in nodes)
     if total_ranks < t["points"]:
         report.error(rel, f"only {total_ranks} ranks available for {t['points']} points")
+
+
+UNIT_RADIUS = 0.45  # matches ArenaGeometry.UNIT_RADIUS in game/core/arena_geometry.gd
+
+
+def _spawn_blocked(m: dict, x: float, z: float) -> str:
+    """Name of what a player standing at (x, z) would overlap, or '' if the spot is clear.
+    Gates count: players spawn behind them while they are closed."""
+    half = m["bounds_half_m"] - UNIT_RADIUS
+    if abs(x) > half or abs(z) > half:
+        return "the arena bounds"
+    for i, c in enumerate(m["colliders"]):
+        if c["type"] == "circle":
+            if math.hypot(x - c["center"][0], z - c["center"][1]) < c["radius"] + UNIT_RADIUS:
+                return f"collider {i} ({c.get('tag', 'circle')})"
+        elif (c["min"][0] - UNIT_RADIUS < x < c["max"][0] + UNIT_RADIUS
+              and c["min"][1] - UNIT_RADIUS < z < c["max"][1] + UNIT_RADIUS):
+            return f"collider {i} ({c.get('tag', 'box')})"
+    return ""
 
 
 def _check_kit(report: Report, rel: str, spec: dict, abilities: dict, auras: dict) -> None:

@@ -1,0 +1,70 @@
+{
+  "id": "dusk_grim",
+  "description": "Low warm sun at dusk with a cool sky fill and blue-grey fog, so stone and iron keep their color (art bible: darker ambient, deeper shadows).",
+  "sun": {
+    "color": [
+      1.0,
+      0.8,
+      0.62
+    ],
+    "energy": 1.5,
+    "pitch_deg": -28,
+    "yaw_deg": 38,
+    "shadows": true
+  },
+  "fill": {
+    "color": [
+      0.5,
+      0.6,
+      0.9
+    ],
+    "energy": 0.3,
+    "pitch_deg": -50,
+    "yaw_deg": 218
+  },
+  "sky": {
+    "top": [
+      0.06,
+      0.075,
+      0.12
+    ],
+    "horizon": [
+      0.3,
+      0.27,
+      0.3
+    ],
+    "ground": [
+      0.04,
+      0.045,
+      0.05
+    ]
+  },
+  "ambient": {
+    "color": [
+      0.42,
+      0.47,
+      0.6
+    ],
+    "energy": 0.45
+  },
+  "fog": {
+    "density": 0.01,
+    "albedo": [
+      0.55,
+      0.6,
+      0.7
+    ],
+    "emission": [
+      0.015,
+      0.018,
+      0.03
+    ]
+  },
+  "post": {
+    "exposure": 1.0,
+    "saturation": 0.92,
+    "contrast": 1.05,
+    "glow_intensity": 0.5,
+    "ssao": true
+  }
+}

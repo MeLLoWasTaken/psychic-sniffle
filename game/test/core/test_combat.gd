@@ -309,7 +309,7 @@ func test_execute_only_usable_below_20_percent() -> void:
 # ------------------------------------------------------------ M1-08 line of sight
 
 func test_cast_fails_if_target_steps_behind_a_pillar_before_it_finishes() -> void:
-	cb.geometry = ArenaGeometry.from_map(Data.maps["gallows_courtyard"])
+	cb.geometry = preload("res://test/fixtures/fixture_map.gd").geometry()
 	me.position = Vector3(7, 0, -14)
 	foe.position = Vector3(3, 0, -7)  # visible, west of the pillar at (7, -7)
 	cb.press(me, "slow_bolt", 2)
