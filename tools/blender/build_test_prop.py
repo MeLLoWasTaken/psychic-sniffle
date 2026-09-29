@@ -13,6 +13,7 @@ from pathlib import Path
 sys.path.insert(0, str(Path(__file__).resolve().parent))
 import bpy  # noqa: E402
 import common  # noqa: E402
+import kit  # noqa: E402
 
 
 def box(name, size, loc, rot=(0, 0, 0), bevel=0.0, segments=1, mat=None):
@@ -44,9 +45,9 @@ def build(spec: dict) -> bpy.types.Object:
     s = spec["params"]["size_m"]
     h = s / 2
     pal = spec["palette"]
-    wood = common.painted_material("crate_wood", pal["wood"], roughness=0.85)
+    wood = kit.kit_material("crate_wood", pal["wood"], roughness=0.85, mottle=0.15, mottle_scale=1.5)
     # Hand-painted style: metal is painted, not mirror-like, so keep metallic low.
-    iron = common.painted_material("crate_iron", pal["iron"], roughness=0.5, metallic=0.3, edge_highlight=0.55)
+    iron = kit.kit_material("crate_iron", pal["iron"], roughness=0.5, metallic=0.3, edge=0.55)
 
     parts = []
     # core block, slightly inset so planks sit proud of it
@@ -96,6 +97,8 @@ def build(spec: dict) -> bpy.types.Object:
 
     for o in parts:
         common.apply_all_modifiers(o)
+        kit.clear_uvs(o)
+        kit.set_tint(o, kit.random_tint(rng, 0.12, 0.04))  # each plank and band a little different
     crate = common.join_objects(parts, spec["id"])
     common.origin_to_feet(crate)
     bpy.ops.object.shade_auto_smooth(angle=math.radians(35))
@@ -113,7 +116,10 @@ def main() -> None:
                                             engine=args.engine, cell=args.preview_size,
                                             title=f"{spec['id']}  {tris} tris")
         print(f"PREVIEW {sheet}")
-    common.flatten_materials_for_export([obj])
+    kit.bake_piece(obj, common.REPO / "previews" / "kit_textures", spec["id"], size=int(spec.get("texture_size", 512)))
+    if args.previews:
+        common.render_contact_sheet([obj], args.previews / f"{spec['id']}_baked.png", engine=args.engine,
+                                    cell=args.preview_size, title="after bake (exported look)")
     out = common.export_glb(args.out or Path(spec["out"]), [obj])
     print(f"BUILT {spec['id']} tris={tris} -> {out}")
 

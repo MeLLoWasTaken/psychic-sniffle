@@ -183,3 +183,46 @@ def extract(shape: Shape, voxel: float = 0.006, floor_z: float | None = 0.0):
     f, origin = evaluate(shape, voxel, floor_z)
     verts, faces, _normals, _vals = measure.marching_cubes(f, level=0.0, spacing=(voxel, voxel, voxel))
     return verts + origin, faces
+
+
+# ----------------------------------------------------------------------------- free-form fields
+
+def eval_points(shape: Shape, P: np.ndarray) -> np.ndarray:
+    """Distance of a shape at arbitrary points (all primitives, no bounding-box skipping)."""
+    f = np.full(len(P), 10.0)
+    for p in shape.prims:
+        d = p.fn(P)
+        f = smax(f, -d, p.k) if p.subtract else smin(f, d, p.k)
+    return f
+
+
+def subset(shape: Shape, names: set[str]) -> Shape:
+    """The primitives whose name (ignoring the mirror suffix) is in `names`."""
+    return Shape([p for p in shape.prims if p.name.removesuffix("_m") in names])
+
+
+def extract_field(fn, lo, hi, voxel: float = 0.006):
+    """Closed mesh of the zero surface of fn(P) inside the box lo..hi (fn must be positive on
+    the box faces, so the surface closes)."""
+    lo, hi = np.asarray(lo, float), np.asarray(hi, float)
+    n = np.ceil((hi - lo) / voxel).astype(int) + 1
+    axes = [lo[d] + voxel * np.arange(n[d]) for d in range(3)]
+    gx, gy, gz = np.meshgrid(*axes, indexing="ij")
+    P = np.stack([gx.ravel(), gy.ravel(), gz.ravel()], axis=1)
+    f = fn(P).reshape(gx.shape).astype(np.float32)
+    f[0, :, :] = f[-1, :, :] = f[:, 0, :] = f[:, -1, :] = f[:, :, 0] = f[:, :, -1] = 1.0
+    verts, faces, _n, _v = measure.marching_cubes(f, level=0.0, spacing=(voxel, voxel, voxel))
+    return verts + lo, faces
+
+
+def shell(base, P, inner: float, outer: float):
+    """A solid layer between offsets `inner` and `outer` of a base distance (armor over skin)."""
+    d = base(P)
+    return np.maximum(d - outer, inner - d)
+
+
+def half_space(P, point, normal):
+    """Distance to a plane; negative on the side the normal points away from."""
+    n = np.asarray(normal, float)
+    n = n / np.linalg.norm(n)
+    return (P - np.asarray(point, float)) @ n

@@ -2,6 +2,13 @@
 
 One entry per build-loop iteration, newest first. Format: date, backlog ID, what changed, how it was checked.
 
+## 2026-09-29 — M1-17 Hand-painted texture bake
+- `bake_piece` now also bakes a tangent-space normal map from Cycles bevel shading, so low-poly edges look rounded and catch light, and a glow map for emissive parts only (a character with a glowing crystal no longer glows all over).
+- Worn edges come and go in broad patches along each edge (chipped paint) instead of a uniform outline.
+- Preview lighting reads the game's lighting preset; a soft rim light keeps the backs of models readable.
+- Baked materials are single-sided (closed meshes), which halves the pixels Godot shades for them.
+- Checked: before-and-after sheets of the test crate; the exported glTF carries base color, roughness/metallic and normal textures. The arena kit was rebuilt with normal maps.
+
 ## 2026-09-29 — M1-16 Parametric body (done, attempt 3)
 - New body method: a signed distance field (`tools/blender/sdf.py`, `body_sdf.py`). Limbs are tapered capsules joint to joint; torso masses are rounded boxes; muscles, hands with separate fingers, feet and facial features are blended with smooth unions, then extracted with marching cubes (5 mm grid, about 8 s) and reduced to 9,000 triangles.
 - Review iterations (fast preview script `preview_body.py`): limbs 30-40% thicker; ellipsoid torso read as an hourglass with breast-like pecs, replaced by rounded boxes with flat pec plates and a straight waist; thigh tops narrowed inside the hip line; deltoids blended into the traps; hands enlarged (heavy 1.22x).

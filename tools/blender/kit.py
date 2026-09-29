@@ -87,9 +87,26 @@ def kit_material(name: str, hex_color: str, roughness: float = 0.85, metallic: f
     em.inputs["To Min"].default_value = edge
     em.inputs["To Max"].default_value = 0.0
     l.new(dot.outputs["Value"], em.inputs["Value"])
+    # wear comes and goes along an edge in broad patches (chipped paint), instead of a uniform
+    # outline around every edge
+    wear_noise = n.new("ShaderNodeTexNoise")
+    wear_noise.inputs["Scale"].default_value = 4.0
+    wear_noise.inputs["Detail"].default_value = 1.5
+    l.new(tex.outputs["Object"], wear_noise.inputs["Vector"])
+    wear = n.new("ShaderNodeMapRange")
+    wear.clamp = True
+    wear.inputs["From Min"].default_value = 0.38
+    wear.inputs["From Max"].default_value = 0.62
+    wear.inputs["To Min"].default_value = 0.15
+    wear.inputs["To Max"].default_value = 1.0
+    l.new(wear_noise.outputs["Fac"], wear.inputs["Value"])
+    edge_mask = n.new("ShaderNodeMath")
+    edge_mask.operation = "MULTIPLY"
+    l.new(em.outputs["Result"], edge_mask.inputs[0])
+    l.new(wear.outputs["Result"], edge_mask.inputs[1])
     light_col = n.new("ShaderNodeRGB")
     light_col.outputs[0].default_value = (1.0, 0.96, 0.88, 1.0)
-    edged = _mix(nt, "SCREEN", lit, light_col.outputs[0], em.outputs["Result"])
+    edged = _mix(nt, "SCREEN", lit, light_col.outputs[0], edge_mask.outputs["Value"])
 
     # crevices
     ao = n.new("ShaderNodeAmbientOcclusion")
@@ -237,11 +254,13 @@ def jitter_vertices(obj: bpy.types.Object, rng: random.Random, amount: float) ->
 # ----------------------------------------------------------------------------- baking
 
 def bake_piece(obj: bpy.types.Object, out_dir: Path, name: str, size: int = 1024, samples: int = 48,
-               keep_unbaked: list[bpy.types.Object] | None = None) -> None:
+               keep_unbaked: list[bpy.types.Object] | None = None, bevel_normal: float = 0.012) -> None:
     """Bake the painted materials of `obj` into textures and replace them with one plain
     material: base color from `<name>_albedo.png`, roughness and metallic from `<name>_orm.png`
-    (glTF layout: G = roughness, B = metallic). Emissive parts should be separate objects in
-    `keep_unbaked`; they keep their own material."""
+    (glTF layout: G = roughness, B = metallic), and a tangent-space normal map from Cycles'
+    Bevel shading (`bevel_normal` metres; 0 skips it), which rounds hard edges on low-poly
+    parts so they catch light without extra geometry. Emissive parts should be separate objects
+    in `keep_unbaked`; they keep their own material."""
     out_dir.mkdir(parents=True, exist_ok=True)
     scene = bpy.context.scene
     scene.render.engine = "CYCLES"
@@ -303,9 +322,67 @@ def bake_piece(obj: bpy.types.Object, out_dir: Path, name: str, size: int = 1024
         pass_img.file_format = "PNG"
         pass_img.save()
 
+    normal = None
+    if bevel_normal > 0:
+        normal = bpy.data.images.new(f"{name}_normal", size, size, alpha=False)
+        normal.colorspace_settings.name = "Non-Color"
+        added = []
+        for mat in mats:
+            nt = mat.node_tree
+            bsdf = nt.nodes["Principled BSDF"]
+            bev = nt.nodes.new("ShaderNodeBevel")
+            bev.samples = 8
+            bev.inputs["Radius"].default_value = bevel_normal
+            nt.links.new(bev.outputs["Normal"], bsdf.inputs["Normal"])
+            img_node = nt.nodes.new("ShaderNodeTexImage")
+            img_node.image = normal
+            nt.nodes.active = img_node
+            added.append((mat, bev, img_node))
+        scene.render.bake.normal_space = "TANGENT"
+        scene.cycles.samples = 16  # the bevel normal is smooth; few samples are enough
+        bpy.ops.object.bake(type="NORMAL")
+        scene.cycles.samples = samples
+        for mat, bev, img_node in added:
+            mat.node_tree.nodes.remove(bev)
+            mat.node_tree.nodes.remove(img_node)
+        normal.filepath_raw = str(out_dir / f"{normal.name}.png")
+        normal.file_format = "PNG"
+        normal.save()
+
     emissive = any(float(m.get("kit_emission", 0)) > 0 for m in mats)
+    glow = None
+    if emissive:
+        # a glow texture: the painted color on emissive materials, black everywhere else
+        glow = bpy.data.images.new(f"{name}_emit", size, size, alpha=False)
+        added = []
+        for mat in mats:
+            nt = mat.node_tree
+            out = next(nd for nd in nt.nodes if nd.type == "OUTPUT_MATERIAL")
+            prev = out.inputs["Surface"].links[0].from_socket
+            emit = nt.nodes.new("ShaderNodeEmission")
+            if float(mat.get("kit_emission", 0)) > 0:
+                nt.links.new(_find_socket(nt, mat), emit.inputs["Color"])
+            else:
+                emit.inputs["Color"].default_value = (0.0, 0.0, 0.0, 1.0)
+            nt.links.new(emit.outputs["Emission"], out.inputs["Surface"])
+            img_node = nt.nodes.new("ShaderNodeTexImage")
+            img_node.image = glow
+            nt.nodes.active = img_node
+            added.append((mat, out, prev, emit, img_node))
+        scene.cycles.samples = 16
+        bpy.ops.object.bake(type="EMIT")
+        scene.cycles.samples = samples
+        for mat, out, prev, emit, img_node in added:
+            mat.node_tree.links.new(prev, out.inputs["Surface"])
+            mat.node_tree.nodes.remove(emit)
+            mat.node_tree.nodes.remove(img_node)
+        glow.filepath_raw = str(out_dir / f"{glow.name}.png")
+        glow.file_format = "PNG"
+        glow.save()
+    glow_strength = max([float(m.get("kit_emission", 0)) for m in mats] + [0.0])
     final = bpy.data.materials.new(f"{name}_baked")
     final.use_nodes = True
+    final.use_backface_culling = True  # closed meshes: glTF then marks the material single-sided
     nt = final.node_tree
     bsdf = nt.nodes["Principled BSDF"]
     t_alb = nt.nodes.new("ShaderNodeTexImage")
@@ -317,9 +394,17 @@ def bake_piece(obj: bpy.types.Object, out_dir: Path, name: str, size: int = 1024
     nt.links.new(t_orm.outputs["Color"], sep.inputs["Color"])
     nt.links.new(sep.outputs["Green"], bsdf.inputs["Roughness"])
     nt.links.new(sep.outputs["Blue"], bsdf.inputs["Metallic"])
-    if emissive:
-        nt.links.new(t_alb.outputs["Color"], bsdf.inputs["Emission Color"])
-        bsdf.inputs["Emission Strength"].default_value = 1.0
+    if normal is not None:
+        t_nrm = nt.nodes.new("ShaderNodeTexImage")
+        t_nrm.image = normal
+        nmap = nt.nodes.new("ShaderNodeNormalMap")
+        nt.links.new(t_nrm.outputs["Color"], nmap.inputs["Color"])
+        nt.links.new(nmap.outputs["Normal"], bsdf.inputs["Normal"])
+    if glow is not None:
+        t_glow = nt.nodes.new("ShaderNodeTexImage")
+        t_glow.image = glow
+        nt.links.new(t_glow.outputs["Color"], bsdf.inputs["Emission Color"])
+        bsdf.inputs["Emission Strength"].default_value = glow_strength
     me.materials.clear()
     me.materials.append(final)
     # the tint attribute is baked in now; drop it so glTF does not export it as vertex color

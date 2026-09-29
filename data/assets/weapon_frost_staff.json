@@ -1,0 +1,24 @@
+{
+  "id": "weapon_frost_staff",
+  "kind": "weapon",
+  "builder": "build_weapon.py",
+  "seed": 32,
+  "pivot": "grip",
+  "tri_budget": {
+    "min": 500,
+    "max": 5000
+  },
+  "texture_size": 1024,
+  "palette": {
+    "wood": "#5a3f2a",
+    "iron": "#45474d",
+    "frost": "#9fe6ff"
+  },
+  "params": {
+    "type": "staff",
+    "below_m": 0.95,
+    "above_m": 0.8
+  },
+  "out": "game/assets/weapons/weapon_frost_staff.glb",
+  "status": "draft"
+}

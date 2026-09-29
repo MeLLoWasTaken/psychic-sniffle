@@ -21,18 +21,6 @@ from mathutils import Vector
 
 REPO = Path(__file__).resolve().parents[2]
 
-# Lighting presets shared with the game (map data "lighting_preset"). Values are starting points;
-# keep them in sync with the matching Godot environment resources.
-LIGHTING_PRESETS = {
-    "dusk_grim": {
-        "world_color": (0.030, 0.033, 0.045),
-        "world_strength": 1.0,
-        "key": {"energy": 3.2, "color": (1.0, 0.72, 0.48), "rotation_deg": (58, 0, 38)},
-        "fill": {"energy": 0.6, "color": (0.45, 0.55, 0.85), "rotation_deg": (70, 0, 220)},
-        "rim": {"energy": 4.5, "color": (0.85, 0.90, 1.0), "rotation_deg": (100, 0, 160)},
-    },
-}
-
 
 # ----------------------------------------------------------------------------- arguments
 
@@ -223,21 +211,30 @@ def export_glb(path: Path, objects: list[bpy.types.Object] | None = None) -> Pat
 # ----------------------------------------------------------------------------- previews
 
 def setup_lighting(preset: str = "dusk_grim") -> None:
-    p = LIGHTING_PRESETS[preset]
+    """Preview lighting from the game's preset (data/lighting/<preset>.json), so Blender contact
+    sheets match what the model will look like in the arena: sun, sky fill and ambient light.
+    Adds a soft rim light from behind so the back of a model stays readable in previews."""
+    data = json.loads((REPO / "data" / "lighting" / f"{preset}.json").read_text())
     world = bpy.data.worlds.new(f"world_{preset}")
     world.use_nodes = True
     bg = world.node_tree.nodes["Background"]
-    bg.inputs["Color"].default_value = (*p["world_color"], 1.0)
-    bg.inputs["Strength"].default_value = p["world_strength"]
+    amb = data["ambient"]
+    bg.inputs["Color"].default_value = (*amb["color"], 1.0)
+    bg.inputs["Strength"].default_value = float(amb["energy"]) * 0.9
     bpy.context.scene.world = world
-    for role in ("key", "fill", "rim"):
-        cfg = p[role]
-        data = bpy.data.lights.new(f"light_{role}", type="SUN")
-        data.energy = cfg["energy"]
-        data.color = cfg["color"]
-        data.angle = math.radians(3)
-        light = bpy.data.objects.new(f"light_{role}", data)
-        light.rotation_euler = [math.radians(a) for a in cfg["rotation_deg"]]
+    lights = [("key", data["sun"], 2.4), ("fill", data.get("fill"), 2.4),
+              ("rim", {"color": data["sky"]["horizon"], "energy": 0.8, "pitch_deg": -20,
+                       "yaw_deg": float(data["sun"]["yaw_deg"]) + 180}, 2.4)]
+    for role, cfg, scale in lights:
+        if not cfg:
+            continue
+        light_data = bpy.data.lights.new(f"light_{role}", type="SUN")
+        light_data.energy = float(cfg["energy"]) * scale
+        light_data.color = tuple(cfg["color"])
+        light_data.angle = math.radians(3)
+        light = bpy.data.objects.new(f"light_{role}", light_data)
+        # game lights: pitch below the horizon, yaw about the vertical axis; Blender sun points -Z
+        light.rotation_euler = (math.radians(90 + float(cfg["pitch_deg"])), 0, math.radians(float(cfg["yaw_deg"])))
         bpy.context.scene.collection.objects.link(light)
 
 
@@ -259,7 +256,8 @@ def render_contact_sheet(objs, out_png: Path, engine: str = "CYCLES", cell: int 
     setup_lighting(preset)
 
     # ground plane to catch shadows
-    bpy.ops.mesh.primitive_plane_add(size=40, location=(0, 0, 0))
+    lo0, _hi0 = _bounds(objs)
+    bpy.ops.mesh.primitive_plane_add(size=40, location=(0, 0, min(0.0, lo0.z)))  # under the lowest point
     ground = bpy.context.active_object
     ground.name = "_preview_ground"
     ground.data.materials.append(painted_material("_ground", "#2a2723", roughness=0.95, edge_highlight=0))

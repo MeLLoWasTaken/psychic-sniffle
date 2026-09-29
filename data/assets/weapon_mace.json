@@ -1,0 +1,24 @@
+{
+  "id": "weapon_mace",
+  "kind": "weapon",
+  "builder": "build_weapon.py",
+  "seed": 33,
+  "pivot": "grip",
+  "tri_budget": {
+    "min": 300,
+    "max": 4000
+  },
+  "texture_size": 1024,
+  "palette": {
+    "iron": "#50535a",
+    "gold": "#b08a3e",
+    "leather": "#4a3325"
+  },
+  "params": {
+    "type": "mace",
+    "grip_m": 0.2,
+    "shaft_m": 0.42
+  },
+  "out": "game/assets/weapons/weapon_mace.glb",
+  "status": "draft"
+}

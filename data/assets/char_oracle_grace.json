@@ -1,0 +1,30 @@
+{
+  "id": "char_oracle_grace",
+  "kind": "character",
+  "builder": "build_character.py",
+  "seed": 23,
+  "spec": "oracle_grace",
+  "body_build": "lean",
+  "tri_budget": {
+    "min": 15000,
+    "max": 25000
+  },
+  "texture_size": 2048,
+  "palette": {
+    "cloth": "#d8cfb8",
+    "trim_cloth": "#f0e9d8",
+    "gold": "#b08a3e",
+    "holy": "#ffd98a",
+    "leather": "#4a3325",
+    "skin": "#a0826a",
+    "cloth_dark": "#3a2f28"
+  },
+  "params": {
+    "armor": "oracle_vestments",
+    "body_tris": 6500,
+    "bare_hands": true,
+    "weapon": "weapon_mace"
+  },
+  "out": "game/assets/characters/char_oracle_grace.glb",
+  "status": "draft"
+}

@@ -195,16 +195,16 @@ The slice specs are Warblade Carnage (melee, rage), Arcanist Rime (casting, inte
 - [x] Asset validation passes (9,000 triangles each, closed meshes); contact sheets and the pose test (raised arm, bent knee, twisted spine) reviewed: deformation is clean.
 - Known limits, carried to M1-22: the face is crude (clay-like features); the body surface is very smooth. Helmets and hoods cover most of the head for the first three classes.
 
-### M1-17 Hand-painted texture bake `[todo]`
-- [ ] Bake pipeline producing 2048 px base color (light from above, darkened crevices, lightened edges), plus normal and roughness maps. (Environment pieces already bake base color and roughness/metallic with `tools/blender/kit.py`; still to do: characters, normal maps.)
-- [ ] Before-and-after contact sheets show the painted look; no photo textures and no fine noise.
-- [ ] Edge highlights read as worn paint on the edges, not as thin outlines (found in the M0-15 test crate).
-- [ ] The `dusk_grim` preview lighting keeps the back of a model readable, not near-black (found in the M0-15 test crate).
+### M1-17 Hand-painted texture bake `[done]`
+- [x] Bake pipeline (`tools/blender/kit.py`, `bake_piece`) producing base color (light from above, darkened crevices, lightened edges, per-part color variation), roughness/metallic, a tangent-space normal map from Cycles bevel shading (rounded edges on low-poly parts), and a glow map for emissive parts. Characters use one 2048 px set; props 512-1024 px.
+- [x] Before-and-after sheets of the test crate (`previews/test_crate/test_crate_before_bake.png`, `test_crate_baked.png`): painted look, no photo textures, no fine noise.
+- [x] Edge highlights read as worn, chipped paint in broad patches (a low-frequency wear mask), not thin outlines.
+- [x] Preview lighting comes from the game's lighting preset (`data/lighting/dusk_grim.json`) plus a soft rim light; the backs of models are readable.
 
-### M1-18 Warblade plate armor kit and two-handed weapon `[todo]`
+### M1-18 Warblade plate armor kit and two-handed weapon `[doing]`
 - [ ] Angular plate with spikes, rivets, dents and wear; oversized two-handed weapon.
 - [ ] 15,000 to 25,000 triangles at LOD0, plus 2 LODs; armor rigidly parented to bones.
-- [ ] No clipping in idle, run and cast poses.
+- [ ] No clipping in idle, run and cast poses. (Those poses arrive with M1-21; until then the pose test covers a raised arm, bent knee and twisted spine. The full check moves to M1-21, which now lists it.)
 
 ### M1-19 Arcanist cloth kit and staff `[todo]`
 - [ ] Heavy cloth with torn hems, frost accents; staff.
@@ -215,6 +215,7 @@ The slice specs are Warblade Carnage (melee, rage), Arcanist Rime (casting, inte
 - [ ] Same budgets and checks as M1-18.
 
 ### M1-21 Animation set v1 `[todo]`
+- [ ] Clipping check for all three characters in the idle, run and cast poses (moved from M1-18..M1-20, which could only use a static pose test).
 - [ ] Idle, combat idle, run, strafe left and right, backpedal, jump, cast start, cast loop, cast release, channel, 3 melee attacks, hit reaction, stunned, feared run, death, victory.
 - [ ] Keyframed by script from pose data with eased curves; shared by all three characters.
 - [ ] Preview sheets or turntable frames reviewed for stiffness; all clips named per the art bible.

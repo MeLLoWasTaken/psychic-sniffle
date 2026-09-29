@@ -1,0 +1,27 @@
+{
+  "id": "char_warblade_carnage",
+  "kind": "character",
+  "builder": "build_character.py",
+  "seed": 21,
+  "spec": "warblade_carnage",
+  "body_build": "heavy",
+  "tri_budget": {
+    "min": 15000,
+    "max": 25000
+  },
+  "texture_size": 2048,
+  "palette": {
+    "plate": "#4b4e55",
+    "trim": "#8a6b3c",
+    "leather": "#4a3325",
+    "cloth": "#3a2a24",
+    "skin": "#9a7a62"
+  },
+  "params": {
+    "armor": "warblade_plate",
+    "body_tris": 4500,
+    "weapon": "weapon_greatsword"
+  },
+  "out": "game/assets/characters/char_warblade_carnage.glb",
+  "status": "draft"
+}

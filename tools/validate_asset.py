@@ -29,7 +29,10 @@ REPO = Path(__file__).resolve().parent.parent
 SIZE_LIMITS_M = {  # max bounding-box edge per kind
     "character": 3.5, "weapon": 3.0, "prop": 12.0, "environment_kit": 60.0, "icon": 5.0, "test": 5.0,
 }
-REQUIRED_BONES: list[str] = []       # filled in by backlog M1-16 (standard skeleton)
+sys.path.insert(0, str(REPO / "tools" / "blender"))
+import humanoid  # noqa: E402  (standard skeleton, docs/ART_BIBLE.md)
+
+REQUIRED_BONES: list[str] = humanoid.BONE_NAMES
 REQUIRED_ANIMATIONS: list[str] = []  # filled in by backlog M1-21 (animation set)
 
 
@@ -85,7 +88,11 @@ def check(spec: dict) -> list[str]:
     if size < 0.05:
         errors.append(f"largest dimension {size:.3f} m is implausibly small (check scale)")
 
-    if abs(min(zs)) > 0.01:
+    grip_pivot = spec.get("pivot", "centre") == "grip"
+    if grip_pivot:
+        if not (min(zs) < 0 < max(zs)):
+            errors.append(f"grip pivot: the origin should be inside the weapon, but z spans {min(zs):.2f}..{max(zs):.2f}")
+    elif abs(min(zs)) > 0.01:
         errors.append(f"lowest point at z = {min(zs):.3f} m; origin must be at the feet (z = 0)")
     cx, cy = (max(xs) + min(xs)) / 2, (max(ys) + min(ys)) / 2
     face_pivot = spec.get("pivot", "centre") == "face"
