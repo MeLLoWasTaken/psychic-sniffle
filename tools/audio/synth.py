@@ -98,6 +98,24 @@ def normalize(x: np.ndarray) -> np.ndarray:
     return x / peak if peak > 0 else x
 
 
+def resonator(x: np.ndarray, freq: float, q: float) -> np.ndarray:
+    """Narrow resonant band: noise through this sounds like struck material, not a pure note."""
+    b, a = signal.iirpeak(freq, q, fs=SAMPLE_RATE)
+    return signal.lfilter(b, a, x)
+
+
+def grains(n: int, rng: np.random.Generator, per_second: float, decay_s: float) -> np.ndarray:
+    """Random short impulses (a crackle envelope) for crunch and debris textures."""
+    env = np.zeros(n)
+    count = max(1, int(per_second * n / SAMPLE_RATE))
+    g = env_exp(int(decay_s * 6 * SAMPLE_RATE), decay_s, attack_s=0.0005)
+    for _ in range(count):
+        s = rng.integers(0, n)
+        e = min(n, s + len(g))
+        env[s:e] += g[: e - s] * rng.uniform(0.3, 1.0)
+    return env
+
+
 def simple_reverb(x: np.ndarray, rng: np.random.Generator, length_s: float = 1.2, mix: float = 0.25,
                   brightness: float = 6000) -> np.ndarray:
     """Convolution with a decaying noise tail: a cheap, stone-room style reverb."""
@@ -120,18 +138,36 @@ def make_loop(x: np.ndarray, fade_s: float = 0.25) -> np.ndarray:
 
 @recipe(peak_dbfs=-3.0)
 def weapon_impact(rng: np.random.Generator) -> np.ndarray:
-    """Heavy two-handed blade hitting plate: body thump, crunch, metal ring."""
-    t = t_axis(1.8)  # long enough for the ring to decay fully (cutting it off clicks)
+    """Heavy two-handed blade hitting armour and body: crack, thud, crunch, short noisy clang.
+
+    v2 (human feedback: v1 "sounds like you scored a point"). v1 was built on sustained pure
+    tones, which read as a chime. v2 has no pure tone above 200 Hz: its energy is a sharp
+    broadband crack, a heavy low thud, a crackling mid crunch, and metal made from narrow
+    resonant noise bands that die away within about 0.1 s.
+    """
+    t = t_axis(0.8)
     n = len(t)
-    thump = sweep(t, 140, 45, curve=8) * env_exp(n, 0.09) * 1.0
-    crunch = bandpass(noise(n, rng), 900, 5200) * env_exp(n, 0.035) * 0.8
-    grit = highpass(noise(n, rng), 5000) * env_exp(n, 0.012) * 0.35
-    ring = np.zeros(n)
-    base = 780 + rng.uniform(-40, 40)
-    for ratio, amp, dec in ((1.0, 0.30, 0.28), (2.76, 0.18, 0.18), (5.40, 0.10, 0.10), (8.93, 0.05, 0.06)):
-        ring += amp * np.sin(2 * np.pi * base * ratio * t + rng.uniform(0, 6.28)) * env_exp(n, dec)
-    x = saturate(thump + crunch + grit + ring, 1.8)
-    return simple_reverb(x, rng, length_s=0.9, mix=0.18)
+    white = noise(n, rng)
+    # 1. crack: a few milliseconds of broadband noise, the moment of contact
+    crack = highpass(white, 1500) * env_exp(n, 0.004, attack_s=0.0003) * 1.2
+    # 2. thud: falling low sine (the weight behind the swing) plus a short sub push
+    thud = sweep(t, 190, 48, curve=10) * env_exp(n, 0.075, attack_s=0.001) * 1.0
+    sub = np.sin(2 * np.pi * 42 * t) * env_exp(n, 0.05, attack_s=0.003) * 0.6
+    # 3. chunk: low-mid noise body (flesh and padding under the armour)
+    chunk = bandpass(noise(n, rng), 120, 700) * env_exp(n, 0.05, attack_s=0.001) * 1.4
+    # 4. crunch: mid noise shaped by a dense crackle, like links and plates grinding
+    crunch_env = grains(n, rng, per_second=900, decay_s=0.003) * env_exp(n, 0.06)
+    crunch = bandpass(noise(n, rng), 700, 4500) * crunch_env * 0.9
+    # 5. clang: noise through inharmonic resonators, decaying fast so no note is heard
+    clang = np.zeros(n)
+    base = rng.uniform(900, 1300)
+    for ratio, q, amp, dec in ((1.0, 18, 0.9, 0.07), (1.73, 22, 0.7, 0.055), (2.61, 25, 0.5, 0.045),
+                               (3.94, 28, 0.35, 0.035), (5.37, 30, 0.25, 0.025)):
+        clang += resonator(noise(n, rng), base * ratio, q) * env_exp(n, dec, attack_s=0.0005) * amp
+    clang = highpass(clang, 700) * 0.9
+    x = crack + thud + sub + chunk + crunch + clang
+    x = saturate(normalize(x) * 1.0, 3.0)  # heavy saturation glues the layers and adds grit
+    return simple_reverb(x, rng, length_s=0.5, mix=0.10, brightness=3500)
 
 
 @recipe(peak_dbfs=-6.0, loops=True)
@@ -159,23 +195,47 @@ def frost_cast_loop(rng: np.random.Generator) -> np.ndarray:
 
 @recipe(peak_dbfs=-4.0)
 def holy_heal(rng: np.random.Generator) -> np.ndarray:
-    """Warm heal landing: a rising major chord swell with a bright bell shimmer on top."""
-    t = t_axis(2.8)  # long enough for the bells to decay fully
+    """Heal landing with weight: a short build-up, a soft deep impact, a warm chord, a lower shimmer.
+
+    v2 (human feedback: v1 "pretty decent, but needs to sound meatier"; its light, high ring
+    alone had no weight). v2 adds a sub and low-octave body, a soft low impact where the heal
+    lands, and a rising build-up into it; the shimmer moves down an octave and is quieter.
+    """
+    t = t_axis(3.0)
     n = len(t)
-    pad = np.zeros(n)
-    for f in (220.0, 277.2, 329.6, 440.0, 554.4):  # A major
-        for detune in (-0.25, 0.0, 0.3):  # slight detune makes it choir-like
-            ff = f * (1 + detune / 100) * (1 + 0.02 * np.minimum(t / 0.6, 1))
-            pad += np.sin(2 * np.pi * np.cumsum(ff) / SAMPLE_RATE) * (1 / (1 + f / 400))
-    pad = lowpass(pad, 3500) * env_adsr(n, 0.25, 0.3, 0.55, 1.2)
+    land = int(0.22 * SAMPLE_RATE)  # the moment the heal lands
+    # 1. build-up: filtered noise rising into the landing, then falling away quickly (not cut
+    #    off: an instant stop clicks)
+    rise = np.zeros(n)
+    rise[:land] = np.linspace(0, 1, land) ** 2.5
+    rise[land:] = env_exp(n - land, 0.04, attack_s=0.0)
+    build = bandpass(noise(n, rng), 400, 5000) * rise * 0.35
+    # 2. impact: soft, deep "whomp" at the landing (sine drop plus a muffled air push)
+    t_land = np.arange(n - land) / SAMPLE_RATE
+    whomp = np.zeros(n)
+    whomp[land:] = np.sin(2 * np.pi * np.cumsum(55 + 75 * np.exp(-t_land / 0.05)) / SAMPLE_RATE) \
+        * env_exp(n - land, 0.28, attack_s=0.004) * 1.0
+    push = np.zeros(n)
+    push[land:] = lowpass(noise(n - land, rng), 700) * env_exp(n - land, 0.12, attack_s=0.003) * 0.9
+    # 3. body: A major chord with a low octave and a sub, lightly saturated for warmth
+    body = np.zeros(n)
+    for f, w in ((55.0, 1.0), (110.0, 0.9), (220.0, 0.6), (277.2, 0.45), (329.6, 0.45), (440.0, 0.3)):
+        for detune in (-0.3, 0.0, 0.25):
+            ff = f * (1 + detune / 100)
+            body += w * np.sin(2 * np.pi * np.cumsum(np.full(n, ff)) / SAMPLE_RATE)
+    # quiet under the build-up, then up to full over 20 ms at the landing (a one-sample jump clicks)
+    pre = np.linspace(0, 1, land) ** 1.5 * 0.2
+    jump = int(0.02 * SAMPLE_RATE)
+    body_env = np.concatenate([pre, np.linspace(0.2, 1.0, jump), np.ones(n - land - jump)])
+    body = saturate(lowpass(body, 2500) / 6, 1.6) * body_env * env_adsr(n, 0.001, 0.4, 0.6, 1.6) * 1.2
+    # 4. shimmer: bells an octave lower than v1 and quieter, striking at the landing
     bell = np.zeros(n)
-    for f, a in ((1760.0, 0.25), (2217.5, 0.18), (2637.0, 0.14), (3520.0, 0.08)):
-        onset = int(rng.uniform(0.18, 0.32) * SAMPLE_RATE)
+    for f, a in ((880.0, 0.20), (1108.7, 0.15), (1318.5, 0.12), (1760.0, 0.06)):
+        onset = land + int(rng.uniform(0.0, 0.05) * SAMPLE_RATE)
         seg = n - onset
-        bell[onset:] += a * np.sin(2 * np.pi * f * np.arange(seg) / SAMPLE_RATE) * env_exp(seg, 0.45)
-    air = bandpass(noise(n, rng), 6000, 14000) * env_adsr(n, 0.3, 0.2, 0.3, 0.8) * 0.08
-    x = normalize(pad) * 0.8 + bell + air
-    return simple_reverb(x, rng, length_s=1.6, mix=0.3, brightness=8000)
+        bell[onset:] += a * np.sin(2 * np.pi * f * np.arange(seg) / SAMPLE_RATE) * env_exp(seg, 0.5)
+    x = build + whomp + push + normalize(body) * 0.9 + bell
+    return simple_reverb(x, rng, length_s=1.6, mix=0.25, brightness=6000)
 
 
 # ----------------------------------------------------------------------------- output

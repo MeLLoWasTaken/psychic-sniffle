@@ -4,6 +4,8 @@ Every choice not specified in docs/DESIGN.md, newest first. One line of reasonin
 
 | Date | Decision | Reason | Approved by |
 | --- | --- | --- | --- |
+| 2026-09-29 | Impact sounds contain no sustained pure tones above 200 Hz; metal is made from resonant noise that fades within about 0.1 s | Human feedback: a tonal impact read as scoring a point; enforced by `tests/test_audio.py` | Human feedback |
+| 2026-09-29 | Heals and other big positive effects carry a low-end body and a soft impact, not only a high shimmer | Human feedback: the high ring alone felt light | Human feedback |
 | 2026-09-29 | The compiled Godot binary is committed as two xz parts (67 MB total) in `tools/env/bin/`, with a SHA-256 check on restore | Git LFS uploads go to a storage host the cloud workspace blocks; plain git files must stay under GitHub's 100 MB limit (parts are kept under the 50 MB warning size); recompiling costs about an hour per fresh workspace | Model |
 | 2026-09-29 | ENet's packet throttle is pinned open on every peer | It silently dropped up to 17% of snapshots when round trip rose under CPU load; the game controls its own send rate and bandwidth | Model |
 | 2026-09-29 | The latency check compares measured round trip with the simulated lag plus a 10 ms local base (the round trip with no simulated lag, from polling at up to 240 frames per second) | The simulator adds exactly its setting; the original check compared total round trip and would have failed a correct simulator. This clarifies what is measured and does not loosen the 10% tolerance | Model |

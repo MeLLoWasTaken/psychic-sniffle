@@ -2,6 +2,12 @@
 
 One entry per build-loop iteration, newest first. Format: date, backlog ID, what changed, how it was checked.
 
+## 2026-09-29 — Sound revisions from human listening feedback
+- `weapon_impact` v2. Feedback: v1 "doesn't sound like a weapon hit; more like you scored a point". Cause: v1 was built on sustained pure tones (93% of its energy above 200 Hz sat in narrow tonal peaks), which is how a chime is built. v2 layers a broadband crack, a falling low thud with sub, a low-mid body, a crackling crunch, and metal made of narrow resonant noise bands that fade within about 0.1 s; tonal share is now 0%.
+- `holy_heal` v2. Feedback: "pretty decent, but needs to sound meatier"; the light, high ring alone lacked weight. v2 adds a rising build-up, a soft deep impact where the heal lands, a warm chord with a low octave and sub, and moves the bells down an octave at a lower level. Energy below 250 Hz rose from 20% to 84%. Two clicks found in the spectrogram (build-up noise stopping instantly; the chord's level jumping in one sample) were fixed.
+- Added `tests/test_audio.py`: impacts must not be tonal, smooth sounds must not click (detector verified against a deliberate click), heals must carry low-end weight, nothing louder than the CC warning level.
+- `frost_cast_loop` unchanged (feedback: sounds fine). Previous versions kept in `previews/audio/v1/` for comparison.
+
 ## 2026-09-29 — M0-17 Review pass 1
 - 20-bot match: server tick average 0.24 ms (p95 0.46 ms), 38.7 KB/s per client, every bot at 60.0 snapshots per second. Report: `docs/reports/perf_20bots_2026-09-29.json`.
 - Fixed from this run: the server stopped before late-launched bots finished (harness); ENet's packet throttle dropped up to 17% of snapshots under CPU load (now pinned open); a client shutdown race.
