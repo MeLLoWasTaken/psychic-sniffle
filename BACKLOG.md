@@ -64,29 +64,29 @@ Exit gate: two bots join a server, move, target and auto-attack for 5 minutes wi
 - [x] Entity model: unit with id, team, position, facing, health, resources and an aura list.
 - [x] Seeded random number generator per match. Unit test: 600 ticks = 10.0 s of sim time; the same seed and inputs give the same state hash.
 
-### M0-10 Network layer `[todo]`
-- [ ] ENet server and client: connect, handshake with protocol version, clean disconnect.
-- [ ] Client-to-server input messages and server-to-client snapshots at 60 Hz, each with a sequence number.
-- [ ] Headless server plus 2 headless clients on one machine: the server log shows 60 ± 1 snapshots per second per client for 60 s.
+### M0-10 Network layer `[done]`
+- [x] ENet server and client: connect, handshake with protocol version, clean disconnect.
+- [x] Client-to-server input messages and server-to-client snapshots at 60 Hz, each with a sequence number.
+- [x] Headless server plus 2 headless clients on one machine: the server log shows 60 ± 1 snapshots per second per client for 60 s.
 
-### M0-11 Latency and packet-loss simulator `[todo]`
-- [ ] A network shim that adds delay (0 to 300 ms), jitter (0 to 50 ms) and loss (0 to 10%), set from the command line.
-- [ ] Measured round-trip time matches the setting within 10%.
+### M0-11 Latency and packet-loss simulator `[done]`
+- [x] A network shim that adds delay (0 to 300 ms), jitter (0 to 50 ms) and loss (0 to 10%), set from the command line.
+- [x] Measured round-trip time matches the setting within 10%, on top of the local base round trip (about 10 ms; see DECISIONS.md). Checked at 150 ms (168 ms measured) and 300 ms (316 ms).
 
-### M0-12 Movement with prediction `[todo]`
-- [ ] Server-authoritative movement: 7 m/s run, jump, collision with floor and walls.
-- [ ] Client-side prediction and reconciliation for the local player; interpolation 50 ms (3 ticks) behind for others.
-- [ ] At 150 ms latency and 2% loss, over a 60 s bot run: largest correction under 0.5 m, average correction under 0.1 m.
+### M0-12 Movement with prediction `[done]`
+- [x] Server-authoritative movement: 7 m/s run, jump, collision with floor and walls.
+- [x] Client-side prediction and reconciliation for the local player; interpolation 50 ms (3 ticks) behind for others.
+- [x] At 150 ms latency and 2% loss, over a 60 s bot run: largest correction under 0.5 m, average correction under 0.1 m.
 
-### M0-13 Targeting and auto-attack `[todo]`
-- [ ] Tab targeting (nearest enemy in front), click targeting and focus target, handled by the server.
-- [ ] Melee auto-attack: range 5 m, swing every 2.0 s, damage from `tuning.json`.
-- [ ] Unit tests for range and swing timer; the bot log shows swings only when in range.
+### M0-13 Targeting and auto-attack `[done]`
+- [x] Tab targeting (nearest enemy in front), click targeting and focus target, handled by the server.
+- [x] Melee auto-attack: range 5 m, swing every 2.0 s, damage from `tuning.json`.
+- [x] Unit tests for range and swing timer; the bot log shows swings only when in range.
 
-### M0-14 Bot harness and M0 gate `[todo]`
-- [ ] Headless bot client using the same protocol as players, with basic behaviors: wander, chase target, auto-attack.
-- [ ] `tools/sim/run_match.py --bots 2 --minutes 5` starts a server and bots and writes a match summary JSON.
-- [ ] **Gate:** 5 minutes with 2 bots, zero errors or warnings in server and client logs.
+### M0-14 Bot harness and M0 gate `[done]`
+- [x] Headless bot client using the same protocol as players, with basic behaviors: wander, chase target, auto-attack.
+- [x] `tools/sim/run_match.py --bots 2 --minutes 5` starts a server and bots and writes a match summary JSON.
+- [x] **Gate:** 5 minutes with 2 bots, zero errors or warnings in server and client logs.
 
 ### M0-15 Blender pipeline smoke test `[done]`
 - [x] `tools/blender/common.py`: reset scene, metric units, glTF export, preview camera rig, contact-sheet renderer (front, side, back, three-quarter).

@@ -2,6 +2,13 @@
 
 One entry per build-loop iteration, newest first. Format: date, backlog ID, what changed, how it was checked.
 
+## 2026-09-29 — M0-10 to M0-14 Networking, movement, targeting, bots; M0 exit gate passed
+- Added the network layer: binary protocol (`game/net/protocol.gd`), ENet transport with a latency, jitter and loss simulator (`transport.gd`), authoritative server (`server.gd`), client with prediction, reconciliation and interpolation (`client.gd`), and bots (`bot_brain.gd`, `scenes/bot_main.tscn`).
+- Added `tools/sim/run_match.py`, which runs a server and bots as separate processes and checks logs, snapshot rate, round trip and prediction corrections. `check_all` now includes a 30 s match with and without simulated lag.
+- Fixed from test runs: first-contact spawn placement was counted as an 18 m correction (teleports now excluded); round trip was 46 ms locally because the network was polled only once per tick (now every frame, 8 to 10 ms); dropped and repeated inputs caused 0.93 m corrections and lost targeting under lag (now exactly-once input handling, 0 corrections); a post-shutdown network poll logged errors.
+- **M0 exit gate passed:** 2 bots for 5 minutes, 18,180 ticks (average 0.078 ms, p95 0.12 ms), 262 hits and 4 kills with respawns, 60.0 snapshots per second per bot, 0 prediction corrections, 0 errors or warnings. Report: `docs/reports/m0_gate_2026-09-29.json`.
+- At 150 ms lag, 30 ms jitter and 2% loss: 0 corrections, 58.8 snapshots per second (60 minus the 2% loss), 168 ms round trip. Report: `docs/reports/lag150_2026-09-29.json`.
+
 ## 2026-09-29 — M0-04 Screenshot capture without a GPU
 - Added a `Capture` autoload (any scene can be captured with `-- --screenshot out.png --frames N`) and `tools/screenshot.sh`.
 - Checked: `previews/shots/lit_test.png` at 1920×1080 shows the imported crate, shadows, volumetric fog and a glowing brazier. Noted a color-balance issue for M1-15.

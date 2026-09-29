@@ -45,6 +45,12 @@ def main() -> int:
     if shutil.which("godot"):
         checks.append(("godot project loads", ["tools/godot_smoke.sh"], ""))
         checks.append(("godot unit tests", ["tools/run_tests.sh"], ""))
+        if not args.quick:
+            checks.append(("network match, 30 s", [sys.executable, "tools/sim/run_match.py", "--bots", "2",
+                           "--seconds", "30", "--port", "24611", "--out", "previews/matches/check"], ""))
+            checks.append(("network match at 150 ms, 2% loss", [sys.executable, "tools/sim/run_match.py",
+                           "--bots", "2", "--seconds", "30", "--port", "24612", "--lag-ms", "150",
+                           "--jitter-ms", "30", "--loss", "0.02", "--out", "previews/matches/check_lag"], ""))
     else:
         checks.append(("godot project loads", None, "godot not installed (see tools/env/setup_cloud.sh)"))
         checks.append(("godot unit tests", None, "godot not installed"))

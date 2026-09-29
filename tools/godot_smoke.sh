@@ -19,7 +19,7 @@ for role in client server; do
   fi
   grep -q "\[$role\]" "$LOG.$role" || { echo "$role: role marker missing from log"; fail=1; }
 done
-grep -q "server: ready" "$LOG.server" || { echo "server scene did not start"; fail=1; }
+grep -q "server: listening" "$LOG.server" || { echo "server scene did not start"; fail=1; }
 grep -q "client: main menu ready" "$LOG.client" || { echo "client scene did not start"; fail=1; }
 rm -f "$LOG" "$LOG.client" "$LOG.server"
 exit $fail

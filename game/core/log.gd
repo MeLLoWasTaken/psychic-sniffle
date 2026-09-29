@@ -7,12 +7,18 @@ enum Level { DEBUG, INFO, WARN, ERROR }
 
 var min_level: Level = Level.INFO
 var role: String = "client"
+var warn_count: int = 0
+var error_count: int = 0
 var _file: FileAccess
 
 
 func _ready() -> void:
-	if "--server" in OS.get_cmdline_user_args():
+	var args: PackedStringArray = OS.get_cmdline_user_args()
+	if "--server" in args:
 		role = "server"
+	elif "--bot" in args:
+		var i: int = args.find("--name")
+		role = args[i + 1] if i != -1 and i + 1 < args.size() else "bot"
 	DirAccess.make_dir_recursive_absolute("user://logs")
 	_file = FileAccess.open("user://logs/%s.log" % role, FileAccess.WRITE)
 
@@ -26,11 +32,13 @@ func info(msg: String) -> void:
 
 
 func warn(msg: String) -> void:
+	warn_count += 1
 	_write(Level.WARN, msg)
 	push_warning(msg)
 
 
 func error(msg: String) -> void:
+	error_count += 1
 	_write(Level.ERROR, msg)
 	push_error(msg)
 

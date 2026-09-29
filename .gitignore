@@ -13,3 +13,4 @@ previews/**/_*.png
 # Local tool builds
 tools/env/cache/
 game/reports/
+previews/matches/

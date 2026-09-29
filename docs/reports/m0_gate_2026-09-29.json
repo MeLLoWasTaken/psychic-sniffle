@@ -1,0 +1,75 @@
+{
+  "seconds": 300.0,
+  "bots": {
+    "bot1": {
+      "correction_avg_m": 0.0,
+      "correction_max_m": 0.0,
+      "corrections": 0,
+      "events_received": 262,
+      "inputs_sent": 18000,
+      "log_errors": 0,
+      "log_warnings": 0,
+      "name": "bot1",
+      "rtt_avg_ms": 11.56768,
+      "rtt_samples": 300,
+      "simulated_jitter_ms": 0.0,
+      "simulated_lag_ms": 0.0,
+      "simulated_loss": 0.0,
+      "snapshot_rate_hz": 59.9908726672277,
+      "snapshots": 17997,
+      "stale_snapshots": 0,
+      "teleports": 2,
+      "unit_id": 1
+    },
+    "bot2": {
+      "correction_avg_m": 0.0,
+      "correction_max_m": 0.0,
+      "corrections": 0,
+      "events_received": 262,
+      "inputs_sent": 17999,
+      "log_errors": 0,
+      "log_warnings": 0,
+      "name": "bot2",
+      "rtt_avg_ms": 11.1519633333333,
+      "rtt_samples": 300,
+      "simulated_jitter_ms": 0.0,
+      "simulated_lag_ms": 0.0,
+      "simulated_loss": 0.0,
+      "snapshot_rate_hz": 59.9977327670847,
+      "snapshots": 17998,
+      "stale_snapshots": 0,
+      "teleports": 2,
+      "unit_id": 2
+    }
+  },
+  "server": {
+    "bytes_sent": 3705150,
+    "clients": {
+      "bot1": {
+        "seconds": 300.016666666667,
+        "snapshot_rate_hz": 60.0,
+        "snapshots_sent": 18001,
+        "starved_ticks": 4
+      },
+      "bot2": {
+        "seconds": 299.983333333333,
+        "snapshot_rate_hz": 60.0,
+        "snapshots_sent": 17999,
+        "starved_ticks": 6
+      }
+    },
+    "damage_events": 262,
+    "kills": 4,
+    "log_errors": 0,
+    "log_warnings": 0,
+    "sim_seconds": 303.0,
+    "state_hash": "c009daad50031c5ec77f37508d9eb04dde3b165bca007f493be42e90e0b69eff",
+    "tick_ms": {
+      "avg": 0.0778434543454345,
+      "max": 4.147,
+      "p95": 0.12
+    },
+    "tick_rate_hz": 60,
+    "ticks": 18180
+  }
+}
