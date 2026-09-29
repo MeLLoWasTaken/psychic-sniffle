@@ -186,10 +186,11 @@ The slice specs are Warblade Carnage (melee, rage), Arcanist Rime (casting, inte
 
 **Characters**
 
-### M1-16 Standard skeleton and parametric body `[todo]`
-- [ ] One humanoid skeleton with fixed bone names, written to `docs/ART_BIBLE.md`.
+### M1-16 Standard skeleton and parametric body `[doing]` (started early while M0 waited on the Godot build)
+- [x] One humanoid skeleton with fixed bone names, written to `docs/ART_BIBLE.md`.
 - [ ] Heavy and lean body builds from the Skin-modifier method, about 7 heads tall with oversized hands, feet and shoulders.
 - [ ] Asset validation passes; contact sheets reviewed.
+- [ ] Status 2026-09-29: skeleton, armature and automatic weights work (pose test deforms cleanly). Body v2 uses metaball masses; heavy build is chunky but reads as a segmented mannequin; lean build is broken (masses shrink without moving, leaving gaps). Next: fuller blending between masses, build-specific offsets for lean, then a head with real features.
 
 ### M1-17 Hand-painted texture bake `[todo]`
 - [ ] Bake pipeline producing 2048 px base color (light from above, darkened crevices, lightened edges), plus normal and roughness maps.
