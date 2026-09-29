@@ -14,7 +14,7 @@
   "effects": [
     {
       "type": "heal",
-      "base": 4000,
+      "base": 5500,
       "affects": "allies_in_radius",
       "radius_m": 12
     }

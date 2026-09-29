@@ -1,7 +1,7 @@
 {
   "id": "pommel_crack",
   "name": "Pommel Crack",
-  "description": "Stun the target for 4 s.",
+  "description": "Stun the target for 3 s.",
   "owner": "warblade_carnage",
   "kit_slot": "cc",
   "school": "physical",

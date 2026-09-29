@@ -1,0 +1,135 @@
+{
+  "id": "oracle_grace",
+  "behavior": {
+    "preferred_range_m": [
+      12,
+      28
+    ],
+    "target_priority": "lowest_health",
+    "reaction_ms": [
+      300,
+      700
+    ],
+    "kite_melee": true,
+    "stay_near_allies_m": 25,
+    "break_los_below_pct": 30,
+    "kite_distance_m": 10
+  },
+  "priorities": [
+    {
+      "ability": "hush",
+      "on": "enemy_caster",
+      "when": {
+        "target_casting": true
+      }
+    },
+    {
+      "ability": "break_free",
+      "on": "self",
+      "when": {
+        "self_hard_cc": true,
+        "self_health_below_pct": 80
+      }
+    },
+    {
+      "ability": "veil_of_faith_ab",
+      "on": "lowest_ally",
+      "when": {
+        "ally_health_below_pct": 35
+      }
+    },
+    {
+      "ability": "waning_light_ab",
+      "on": "self",
+      "when": {
+        "self_health_below_pct": 50
+      }
+    },
+    {
+      "ability": "absolve",
+      "on": "cc_ally",
+      "when": {
+        "ally_hard_cc": true
+      }
+    },
+    {
+      "ability": "chains_of_awe",
+      "on": "ally_attacker",
+      "when": {
+        "ally_health_below_pct": 45,
+        "target_not_cc": true
+      }
+    },
+    {
+      "ability": "psalm_of_dread",
+      "on": "self",
+      "when": {
+        "enemies_within_m": [
+          8,
+          1
+        ]
+      }
+    },
+    {
+      "ability": "seraphic_surge_ab",
+      "on": "self",
+      "when": {
+        "ally_health_below_pct": 45
+      }
+    },
+    {
+      "ability": "swift_benediction",
+      "on": "lowest_ally",
+      "when": {
+        "ally_health_below_pct": 40
+      }
+    },
+    {
+      "ability": "chorus_of_mending",
+      "on": "lowest_ally",
+      "when": {
+        "ally_health_below_pct": 70
+      }
+    },
+    {
+      "ability": "mending_light",
+      "on": "lowest_ally",
+      "when": {
+        "ally_health_below_pct": 75,
+        "no_free_melee_within_m": 6
+      }
+    },
+    {
+      "ability": "lingering_grace_ab",
+      "on": "lowest_ally",
+      "when": {
+        "ally_health_below_pct": 95,
+        "target_not_has_aura": "lingering_grace"
+      }
+    },
+    {
+      "ability": "chains_of_awe",
+      "on": "enemy_caster",
+      "when": {
+        "target_casting": true
+      }
+    },
+    {
+      "ability": "winged_stride_ab",
+      "on": "self",
+      "when": {
+        "enemies_within_m": [
+          6,
+          1
+        ]
+      }
+    },
+    {
+      "ability": "castigate",
+      "when": {
+        "target_health_below_pct": 100,
+        "no_free_melee_within_m": 6
+      }
+    }
+  ]
+}

@@ -1,0 +1,162 @@
+{
+  "id": "arcanist_rime",
+  "behavior": {
+    "preferred_range_m": [
+      18,
+      30
+    ],
+    "target_priority": "healer_first",
+    "reaction_ms": [
+      250,
+      600
+    ],
+    "kite_melee": true,
+    "break_los_below_pct": 30,
+    "kite_distance_m": 18,
+    "kill_window_pct": 40
+  },
+  "priorities": [
+    {
+      "ability": "spellsever",
+      "on": "enemy_caster",
+      "when": {
+        "target_casting": true
+      }
+    },
+    {
+      "ability": "rime_sepulcher_ab",
+      "on": "self",
+      "when": {
+        "self_health_below_pct": 25
+      }
+    },
+    {
+      "ability": "frost_step",
+      "on": "self",
+      "when": {
+        "self_hard_cc": true
+      }
+    },
+    {
+      "ability": "break_free",
+      "on": "self",
+      "when": {
+        "self_hard_cc": true,
+        "self_health_below_pct": 60
+      }
+    },
+    {
+      "ability": "glacier_shield_ab",
+      "on": "self",
+      "when": {
+        "self_not_has_aura": "glacier_shield",
+        "self_health_below_pct": 85
+      }
+    },
+    {
+      "ability": "rimebind",
+      "on": "self",
+      "when": {
+        "enemies_within_m": [
+          9,
+          1
+        ]
+      }
+    },
+    {
+      "ability": "frost_step",
+      "on": "self",
+      "when": {
+        "enemies_within_m": [
+          5,
+          1
+        ],
+        "self_health_below_pct": 70
+      }
+    },
+    {
+      "ability": "frost_effigy",
+      "on": "ally_attacker",
+      "when": {
+        "ally_health_below_pct": 55,
+        "target_not_cc": true
+      }
+    },
+    {
+      "ability": "heartfreeze",
+      "on": "ally_attacker",
+      "when": {
+        "target_cc": [
+          "root",
+          "stun"
+        ]
+      }
+    },
+    {
+      "ability": "heartfreeze",
+      "when": {
+        "target_cc": [
+          "root",
+          "stun"
+        ]
+      }
+    },
+    {
+      "ability": "shiver_lance",
+      "when": {
+        "target_cc": [
+          "root",
+          "stun"
+        ],
+        "target_distance_above_m": 10
+      }
+    },
+    {
+      "ability": "frost_effigy",
+      "on": "enemy_healer",
+      "when": {
+        "target_not_cc": true,
+        "no_free_melee_within_m": 12,
+        "focus_health_below_pct": 70
+      }
+    },
+    {
+      "ability": "deep_winter_ab",
+      "on": "self",
+      "when": {
+        "target_health_below_pct": 90
+      }
+    },
+    {
+      "ability": "unravel",
+      "when": {
+        "has_dispellable": true
+      }
+    },
+    {
+      "ability": "hailstorm",
+      "when": {
+        "no_free_melee_within_m": 12
+      }
+    },
+    {
+      "ability": "winters_lash"
+    },
+    {
+      "ability": "rime_fan",
+      "on": "self",
+      "when": {
+        "enemies_within_m": [
+          10,
+          1
+        ]
+      }
+    },
+    {
+      "ability": "rime_bolt",
+      "when": {
+        "no_free_melee_within_m": 12
+      }
+    }
+  ]
+}

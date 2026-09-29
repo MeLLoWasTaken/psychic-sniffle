@@ -3,7 +3,7 @@
   "name": "Skull Rattled",
   "description": "Stunned.",
   "kind": "debuff",
-  "duration_s": 4,
+  "duration_s": 3,
   "dispel_type": "none",
   "cc_category": "stun",
   "hud_priority": "cc",

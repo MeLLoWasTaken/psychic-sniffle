@@ -14,7 +14,7 @@
   "effects": [
     {
       "type": "damage",
-      "base": 2800
+      "base": 2200
     }
   ],
   "icon": {

@@ -19,6 +19,8 @@ var input_source: Callable  ## returns {move, yaw, jump, tab} for this tick
 var player_name: String = "player"
 var spec_id: String = "warblade_carnage"
 var unit_id: int = -1
+var map_id: String = ""
+var geometry: ArenaGeometry
 var connected: bool = false
 var quit_after_s: float = 0.0
 var stats_path: String = ""
@@ -42,8 +44,11 @@ var _synced: bool = false
 var _finished: bool = false  ## set once we start shutting down; later network events are ignored
 var _last_server_pos: Vector3 = Vector3.ZERO
 var _stats: Dictionary = {"snapshots": 0, "corrections": 0, "correction_sum": 0.0, "teleports": 0,
-	"correction_max": 0.0, "rtt_ms": [], "stale_snapshots": 0, "inputs_sent": 0}
+	"correction_max": 0.0, "rtt_ms": [], "stale_snapshots": 0, "inputs_sent": 0,
+	"effect_corrections": 0, "effect_correction_max": 0.0, "correction_log": []}
 var _start_usec: int = 0
+var _match_ended_usec: int = 0
+var quit_on_match_end: bool = false  ## test bots leave one second after an arena match ends
 var _snap_window_start_usec: int = 0
 var _next_ping_usec: int = 0
 
@@ -109,14 +114,17 @@ func _physics_process(_delta: float) -> void:
 		transport.send(server_peer, Protocol.CH_RELIABLE, Protocol.ping(now), true)
 	if quit_after_s > 0.0 and (now - _start_usec) / 1e6 >= quit_after_s:
 		_finish(0)
+	elif quit_on_match_end and _match_ended_usec > 0 and now - _match_ended_usec >= 1_000_000:
+		_finish(0)  # the arena match is over; leave before the server closes
 
 
 func _on_packet(msg: Dictionary) -> void:
 	match msg.get("type", 0):
 		Protocol.Msg.WELCOME:
 			unit_id = msg["unit_id"]
-			var geo: ArenaGeometry = ArenaGeometry.from_map(Data.maps.get(msg["map"], {}))
-			movement = Movement.new(Data.tuning, geo)
+			map_id = msg["map"]
+			geometry = ArenaGeometry.from_map(Data.maps.get(map_id, {}))
+			movement = Movement.new(Data.tuning, geometry)
 			predicted = Unit.new(unit_id, 0, spec_id)
 			_snap_window_start_usec = Time.get_ticks_usec()
 			Log.info("client: welcomed as unit %d on map %s" % [unit_id, msg["map"]])
@@ -142,6 +150,9 @@ func _on_snapshot(snap: Dictionary) -> void:
 		_stats["stale_snapshots"] += 1  # arrived out of order; a newer one was already applied
 		return
 	latest_tick = snap["tick"]
+	if int(snap["match"]["phase"]) == ArenaMatch.Phase.ENDED and _match_ended_usec == 0:
+		_match_ended_usec = Time.get_ticks_usec()
+		Log.info("client: match over, winner team %d" % snap["match"]["winner"])
 	_stats["snapshots"] += 1
 	snapshots.append(snap)
 	if snapshots.size() > SNAPSHOT_BUFFER:
@@ -170,12 +181,17 @@ func _reconcile(snap: Dictionary) -> void:
 	predicted.max_health = mine["max_health"]
 	predicted.target_id = mine["target_id"]
 	predicted.team = mine["team"]
+	var effect_changed: bool = _movement_effects_changed(own_auras, mine["auras"], int(snap["tick"]))
 	own_auras = mine["auras"]
 	while not _pending.is_empty() and int(_pending[0]["seq"]) <= int(snap["ack_seq"]):
 		_pending.pop_front()
+	if int(snap["match"]["phase"]) == ArenaMatch.Phase.ENDED:
+		_pending.clear()  # the match is over and the server has frozen every unit
+		return
 	if predicted.is_alive():
-		for inp: Dictionary in _pending:
-			_predict_move(inp)
+		# the server applies pending input k at tick snap.tick + k (one input per tick)
+		for k: int in _pending.size():
+			_predict_move(_pending[k], int(snap["tick"]) + k)
 	else:
 		_pending.clear()
 	var server_pos: Vector3 = predicted.position
@@ -187,9 +203,44 @@ func _reconcile(snap: Dictionary) -> void:
 		return  # spawns and respawns are not prediction errors
 	var corr: float = before.distance_to(predicted.position)
 	if corr > 0.0005 and predicted.is_alive():
+		if effect_changed:
+			# a stun, root, slow or fear the server applied or ended early (damage broke it, a
+			# dispel, a trinket): no client can foresee these, so they are counted separately
+			_stats["effect_corrections"] += 1
+			_stats["effect_correction_max"] = maxf(_stats["effect_correction_max"], corr)
+			return
 		_stats["corrections"] += 1
 		_stats["correction_sum"] += corr
 		_stats["correction_max"] = maxf(_stats["correction_max"], corr)
+		if _stats["correction_log"].size() < 20:
+			_stats["correction_log"].append({"tick": snap["tick"], "m": corr, "pending": _pending.size(),
+				"auras": own_auras.map(func(a: Dictionary) -> String: return "%s@%d" % [a["id"], a["expires_tick"]])})
+
+
+## True when the movement-affecting auras in a new snapshot differ from what the previous one
+## predicted: something was applied, refreshed or removed before its natural expiry.
+static func _movement_effects_changed(before: Array, after: Array, snap_tick: int) -> bool:
+	var expected: Array = []
+	for a: Dictionary in before:
+		if _affects_movement(a["id"]) and (int(a["expires_tick"]) == 0 or int(a["expires_tick"]) >= snap_tick):
+			expected.append("%s@%d" % [a["id"], a["expires_tick"]])
+	var now: Array = []
+	for a: Dictionary in after:
+		if _affects_movement(a["id"]):
+			now.append("%s@%d" % [a["id"], a["expires_tick"]])
+	expected.sort()
+	now.sort()
+	return expected != now
+
+
+static func _affects_movement(aura_id: String) -> bool:
+	var data: Dictionary = Data.auras.get(aura_id, {})
+	if data.get("cc_category", "none") in ["root", "stun", "incapacitate", "disorient"]:
+		return true
+	for m: Dictionary in data.get("modifiers", []):
+		if m["stat"] == "move_speed":
+			return true
+	return false
 
 
 func _send_and_predict_input() -> void:
@@ -203,18 +254,36 @@ func _send_and_predict_input() -> void:
 	transport.send(server_peer, Protocol.CH_UNRELIABLE, Protocol.input_packet(_recent_inputs), false)
 	_stats["inputs_sent"] += 1
 	_pending.append(inp)
-	if predicted.is_alive():
-		_predict_move(inp)
+	if predicted.is_alive() and _match_ended_usec == 0:
+		_predict_move(inp, latest_tick + _pending.size() - 1)
 
 
-## Predict our own movement with the same rules the server uses, including roots, stuns and
-## slows from our known auras (feared movement is decided by the server, so we stand still).
-func _predict_move(inp: Dictionary) -> void:
-	var mult: float = Combat.speed_multiplier_from(own_auras, Data.auras)
+## Predict our own movement with the same rules the server uses, including roots, stuns, slows
+## and fear from our known auras. `tick` is the server tick this input will be applied on, so
+## effects that expire partway through the replay stop affecting it on time (the server moves a
+## unit on the tick an aura expires, then removes the aura).
+func _predict_move(inp: Dictionary, tick: int) -> void:
+	var active: Array = own_auras.filter(func(a: Dictionary) -> bool:
+		return int(a["expires_tick"]) == 0 or tick <= int(a["expires_tick"]))
+	var mult: float = Combat.speed_multiplier_from(active, Data.auras)
 	var use: Dictionary = inp
-	if Combat.is_forced_from(own_auras, Data.auras):
+	var fear_from: Vector3 = _fear_source(active)
+	if fear_from.x != INF:
+		var away: Vector3 = predicted.position - fear_from
+		away.y = 0.0
+		var yaw: float = atan2(-away.x, -away.z) if away.length() > 0.01 else predicted.facing
+		use = {"move": Vector2(0, 1), "yaw": yaw, "jump": false}
+	elif Combat.is_forced_from(active, Data.auras):
 		use = {"move": Vector2.ZERO, "yaw": predicted.facing, "jump": false}
 	movement.apply(predicted, use, 1.0 / Data.tick_rate(), mult)
+
+
+## Where the unit that feared us stands (newest snapshot), or INF when we are not feared.
+func _fear_source(active: Array) -> Vector3:
+	for a: Dictionary in active:
+		if Data.auras.get(a["id"], {}).get("cc_category", "") == "disorient":
+			return _unit_pos(snapshots[-1], int(a["source"])) if not snapshots.is_empty() else Vector3.ZERO
+	return Vector3(INF, 0, 0)
 
 
 ## Position of another unit, drawn `delay_ticks` behind the newest snapshot and interpolated
@@ -244,6 +313,30 @@ func world_view() -> Dictionary:
 	return snapshots[-1] if not snapshots.is_empty() else {}
 
 
+## The world in the shape BotBrain reads (the same shape MatchRunner.view_for builds on the
+## server): other units from the newest snapshot, our own unit at its predicted position, plus
+## our cooldowns, global cooldown and school locks. Empty until the first snapshot with our unit.
+func bot_view() -> Dictionary:
+	if snapshots.is_empty() or predicted == null:
+		return {}
+	var snap: Dictionary = snapshots[-1]
+	var me: Dictionary = {}
+	var units: Array = []
+	for u: Dictionary in snap["units"]:
+		var copy: Dictionary = u.duplicate()
+		if int(u["id"]) == unit_id:
+			copy["position"] = predicted.position
+			copy["facing"] = predicted.facing
+			me = copy
+		units.append(copy)
+	if me.is_empty():
+		return {}
+	var own: Dictionary = snap.get("own", {})
+	return {"tick": snap["tick"], "tick_rate": Data.tick_rate(), "me": me, "units": units,
+		"gcd_ready_tick": int(own.get("gcd_ready_tick", 0)), "cooldowns": own.get("cooldowns", {}),
+		"school_locks": own.get("school_locks", {}), "match": snap["match"], "map": map_id}
+
+
 func stats() -> Dictionary:
 	var secs: float = (Time.get_ticks_usec() - _snap_window_start_usec) / 1e6
 	var rtts: Array = _stats["rtt_ms"]
@@ -259,6 +352,8 @@ func stats() -> Dictionary:
 		"correction_max_m": _stats["correction_max"], "rtt_avg_ms": rtt_avg, "rtt_samples": rtts.size(),
 		"events_received": events_received, "simulated_lag_ms": transport.lag_ms,
 		"simulated_jitter_ms": transport.jitter_ms, "simulated_loss": transport.loss,
+		"effect_corrections": _stats["effect_corrections"],
+		"effect_correction_max_m": _stats["effect_correction_max"], "correction_log": _stats["correction_log"],
 		"log_warnings": Log.warn_count, "log_errors": Log.error_count}
 
 

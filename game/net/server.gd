@@ -16,9 +16,8 @@ const RESPAWN_S: float = 5.0
 const END_LINGER_S: float = 3.0
 
 var transport: NetTransport = NetTransport.new()
+var runner: MatchRunner
 var sim: Sim
-var geometry: ArenaGeometry
-var movement: Movement
 var combat: Combat
 var arena: ArenaMatch
 var map: Dictionary
@@ -29,7 +28,6 @@ var respawn: bool = false
 var summary_path: String = ""
 
 var clients: Dictionary = {}  ## peer instance id -> client record
-var _next_unit_id: int = 1
 var _tick_usec: PackedInt64Array = []
 var _stats: Dictionary = {"damage_events": 0, "kills": 0, "heals": 0, "casts": 0, "interrupts": 0,
 	"snapshots_sent": 0, "by_unit": {}}
@@ -55,17 +53,13 @@ func _ready() -> void:
 		return
 	Engine.physics_ticks_per_second = Data.tick_rate()
 	Engine.max_fps = 240  # poll the network often (accurate latency), without spinning the CPU
-	sim = Sim.new(int(_arg(args, "--seed", "1")), Data.tick_rate())
-	geometry = ArenaGeometry.from_map(map)
-	movement = Movement.new(Data.tuning, geometry)
-	combat = Combat.new(sim, Data.tuning, Data.abilities, Data.auras, Data.specs, Data.classes, geometry)
-	if mode == "arena":
-		var tuning: Dictionary = Data.tuning.duplicate(true)
-		tuning["arena"]["prep_phase_s"] = float(_arg(args, "--prep-seconds", str(tuning["arena"]["prep_phase_s"])))
-		arena = ArenaMatch.new(tuning, _arg(args, "--bracket", "2v2"), sim.tick_rate, geometry, sim.tick)
-		combat.arena = arena
+	var prep: float = float(_arg(args, "--prep-seconds", "-1"))
+	runner = MatchRunner.new(map, mode, _arg(args, "--bracket", "2v2"), prep, int(_arg(args, "--seed", "1")))
+	sim = runner.sim
+	combat = runner.combat
+	arena = runner.arena
 	sim.add_system(_system_inputs_and_movement)
-	sim.add_system(_system_combat)
+	sim.add_system(runner.system_combat_and_rules)
 	sim.add_system(_system_rules)
 	var err: Error = transport.start_server(port)
 	if err != OK:
@@ -150,14 +144,7 @@ func _client_stats(c: Dictionary) -> Dictionary:
 
 func _add_client(peer: ENetPacketPeer, key: int, player_name: String, spec_id: String) -> void:
 	var team: int = clients.size() % 2
-	var unit: Unit = Unit.new(_next_unit_id, team, spec_id)
-	_next_unit_id += 1
-	combat.init_unit(unit)
-	var spawns: Array = map["spawns"]["team_a" if team == 0 else "team_b"]
-	var sp: Array = spawns[(clients.size() / 2) % spawns.size()]
-	unit.position = Vector3(sp[0], sp[1], sp[2])
-	unit.facing = -PI / 2 if team == 0 else PI / 2  # face the other team across the arena
-	sim.add_unit(unit)
+	var unit: Unit = runner.add_unit(spec_id, team)
 	clients[key] = {"peer": peer, "name": player_name, "spec": spec_id, "unit_id": unit.id, "inputs": [],
 		"last_received_seq": 0, "ack_seq": 0, "snapshots": 0, "starved_ticks": 0, "joined_tick": sim.tick}
 	transport.send(peer, Protocol.CH_RELIABLE, Protocol.welcome(unit.id, sim.tick, sim.tick_rate, map["id"]), true)
@@ -165,10 +152,7 @@ func _add_client(peer: ENetPacketPeer, key: int, player_name: String, spec_id: S
 
 
 func _match_state() -> Dictionary:
-	if arena == null:
-		return {"phase": ArenaMatch.Phase.ACTIVE, "start_tick": 0, "dampening_pct": 0, "winner": -1}
-	return {"phase": arena.phase, "start_tick": arena.start_tick, "dampening_pct": arena.dampening_pct(sim.tick),
-		"winner": arena.winner_team}
+	return runner.match_state()
 
 
 func _send_snapshots() -> void:
@@ -200,34 +184,14 @@ func _system_inputs_and_movement(s: Sim, _inputs: Dictionary) -> void:
 		for i: int in count:
 			var inp: Dictionary = queue.pop_front()
 			c["ack_seq"] = inp["seq"]
-			if not unit.is_alive() or (arena and arena.phase == ArenaMatch.Phase.ENDED):
-				continue
-			var forced: Dictionary = combat.forced_input(unit)
-			var before: Vector3 = unit.position
-			movement.apply(unit, forced if not forced.is_empty() else inp, s.dt(), combat.speed_multiplier(unit))
-			if Vector2(unit.position.x - before.x, unit.position.z - before.z).length() > 0.001:
-				unit.moved_this_tick = true
-			if inp.get("tab", false):
-				unit.target_id = combat.tab_target(unit)
-			if inp.get("ability", "") != "":
-				combat.press(unit, inp["ability"], int(inp.get("target", -1)))
-
-
-func _system_combat(s: Sim, _inputs: Dictionary) -> void:
-	combat.tick()
+			runner.apply_input(unit, inp)
 
 
 func _system_rules(s: Sim, _inputs: Dictionary) -> void:
-	if arena:
-		arena.update(s.tick, s.units)
-		if arena.phase == ArenaMatch.Phase.ENDED and _ended_tick < 0:
-			_ended_tick = s.tick
-			Log.info("server: match ended, winner %d" % arena.winner_team)
-	var evs: Array = combat.events.duplicate()
-	if arena:
-		evs.append_array(arena.events)
-		arena.events.clear()
-	combat.events.clear()
+	if runner.ended() and _ended_tick < 0:
+		_ended_tick = s.tick
+		Log.info("server: match ended, winner %d" % arena.winner_team)
+	var evs: Array = runner.take_events()
 	for ev: Dictionary in evs:
 		_count_event(s, ev)
 	if not evs.is_empty() and not clients.is_empty():

@@ -14,7 +14,7 @@
   "effects": [
     {
       "type": "heal",
-      "base": 9000
+      "base": 11500
     }
   ],
   "icon": {

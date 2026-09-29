@@ -9,8 +9,12 @@ Checks (exit code 1 if any fails):
   - no ERROR or WARNING lines in any log (after removing known harmless lines)
   - each bot receives snapshots at the tick rate (within 1 Hz)
   - combat happened (at least one damage event) when the match lasts 30 s or more
+  - with --mode arena: the match ends with a winning team
   - with --lag-ms set: measured round trip within 10% of the setting,
-    largest prediction correction under 0.5 m and average under 0.1 m
+    largest prediction correction under 0.5 m and average under 0.1 m. Corrections that arrive
+    with an unforeseeable change to the bot's own movement effects (a stun, root, slow or fear
+    applied, or ended early by damage or a dispel) are reported separately and not limited:
+    no client can predict them (DECISIONS.md, "prediction corrections").
 Writes <out>/summary.json, <out>/<bot>.json and all logs.
 """
 from __future__ import annotations
@@ -59,6 +63,10 @@ def main() -> int:
     ap.add_argument("--lag-ms", type=float, default=0)
     ap.add_argument("--jitter-ms", type=float, default=0)
     ap.add_argument("--loss", type=float, default=0)
+    ap.add_argument("--specs", default="warblade_carnage,arcanist_rime,oracle_grace,oracle_grace",
+                    help="comma-separated specs, assigned to bots in join order (cycled)")
+    ap.add_argument("--mode", choices=["skirmish", "arena"], default="skirmish",
+                    help="arena: real match rules (gates, dampening, win on kill); bots quit when it ends")
     ap.add_argument("--out", type=Path, default=REPO / "previews" / "matches" / "latest")
     args = ap.parse_args()
     seconds = args.minutes * 60 if args.minutes else args.seconds
@@ -71,8 +79,13 @@ def main() -> int:
     base = [g, "--headless", "--path", game]
 
     server_log = open(out / "server.log", "w")
-    server = subprocess.Popen(base + ["--", "--server", "--port", str(args.port), "--match-seconds",
-                                      str(seconds + 0.3 * args.bots + 10), "--respawn", "--summary", str(out / "summary.json")],
+    server_args = ["--", "--server", "--port", str(args.port), "--mode", args.mode, "--match-seconds",
+                   str(seconds + 0.3 * args.bots + 10), "--summary", str(out / "summary.json")]
+    if args.mode == "skirmish":
+        server_args.append("--respawn")
+    else:
+        server_args += ["--bracket", f"{args.bots // 2}v{args.bots // 2}", "--prep-seconds", "5"]
+    server = subprocess.Popen(base + server_args,
                               stdout=server_log, stderr=subprocess.STDOUT)
     deadline = time.time() + 30
     while "server: listening" not in (out / "server.log").read_text():
@@ -81,11 +94,13 @@ def main() -> int:
             return 1
         time.sleep(0.2)
 
+    specs = [x.strip() for x in args.specs.split(",") if x.strip()]
     bots = []
     for i in range(args.bots):
         name = f"bot{i + 1}"
         log = open(out / f"{name}.log", "w")
         cmd = base + ["--", "--bot", "--name", name, "--port", str(args.port), "--seconds", str(seconds),
+                      "--spec", specs[i % len(specs)],
                       "--stats", str(out / f"{name}.json")]
         if args.lag_ms or args.jitter_ms or args.loss:
             cmd += ["--lag-ms", str(args.lag_ms), "--jitter-ms", str(args.jitter_ms), "--loss", str(args.loss)]
@@ -136,6 +151,8 @@ def main() -> int:
                 failures.append(f"{name} largest correction {st['correction_max_m']:.3f} m (limit 0.5)")
             if st["correction_avg_m"] >= 0.1:
                 failures.append(f"{name} average correction {st['correction_avg_m']:.3f} m (limit 0.1)")
+    if args.mode == "arena" and summary and summary.get("winner_team", -1) == -1:
+        failures.append("arena match ended without a winner")
     if seconds >= 30 and summary.get("damage_events", 0) == 0:
         failures.append("no combat happened (0 damage events)")
 
@@ -145,7 +162,8 @@ def main() -> int:
           f"max {t.get('max', 0):.3f} ms; {summary.get('damage_events', 0)} damage events, {summary.get('kills', 0)} kills")
     for name, st in report["bots"].items():
         print(f"{name}: {st['snapshot_rate_hz']:.2f} snapshots/s, rtt {st['rtt_avg_ms']:.1f} ms, "
-              f"corrections {st['corrections']} (avg {st['correction_avg_m']:.3f} m, max {st['correction_max_m']:.3f} m)")
+              f"corrections {st['corrections']} (avg {st['correction_avg_m']:.3f} m, max {st['correction_max_m']:.3f} m); "
+              f"{st.get('effect_corrections', 0)} from server-applied effects (max {st.get('effect_correction_max_m', 0):.3f} m)")
     if failures:
         for f in failures:
             print(f"FAIL {f}")

@@ -14,7 +14,7 @@
   "effects": [
     {
       "type": "damage",
-      "base": 5200
+      "base": 6200
     },
     {
       "type": "apply_aura",

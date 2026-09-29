@@ -15,6 +15,7 @@ const NO_ID: int = 0xFFFF
 
 enum Msg { HELLO = 1, WELCOME = 2, INPUT = 3, SNAPSHOT = 4, PING = 5, PONG = 6, EVENTS = 7, REJECT = 8 }
 
+const CC_CATEGORIES: Array[String] = ["stun", "incapacitate", "disorient", "silence", "root", "disarm"]
 const FLAG_JUMP: int = 1
 const FLAG_TAB: int = 2
 
@@ -151,11 +152,18 @@ static func snapshot(tick: int, ack_seq: int, units: Array, match_state: Diction
 			b.put_u32(u.cast["end_tick"])
 		else:
 			b.put_u16(NO_ID)
+		var drs: Array = u.dr.keys().filter(func(k: String) -> bool: return int(u.dr[k]["reset_tick"]) > tick)
+		b.put_u8(drs.size())
+		for k: String in drs:
+			b.put_u8(CC_CATEGORIES.find(k))
+			b.put_u8(int(u.dr[k]["count"]))
+			b.put_u16(clampi(int(u.dr[k]["reset_tick"]) - tick, 0, 65535))
 		b.put_u8(mini(u.auras.size(), 32))
 		for a: Dictionary in u.auras.slice(0, 32):
 			b.put_u16(index_of("auras", a["id"]))
-			var left: int = int(a["expires_tick"]) - tick if int(a["expires_tick"]) > 0 else 0
-			b.put_u16(clampi(left, 0, 65535))
+			# 0 = permanent; a timed aura sends (ticks left + 1) so "expires this tick" stays timed
+			var left: int = clampi(int(a["expires_tick"]) - tick, 0, 65533) + 1 if int(a["expires_tick"]) > 0 else 0
+			b.put_u16(left)
 			b.put_u8(a["stacks"])
 			b.put_u8(clampi(int(a["source"]), 0, 255))
 	if own:
@@ -174,6 +182,11 @@ static func snapshot(tick: int, ack_seq: int, units: Array, match_state: Diction
 		for k: String in cds:
 			b.put_u16(index_of("abilities", k))
 			b.put_u32(own.cooldowns[k])
+		var locks: Array = own.school_locks.keys().filter(func(k: String) -> bool: return int(own.school_locks[k]) > tick)
+		b.put_u8(locks.size())
+		for k: String in locks:
+			b.put_utf8_string(k)
+			b.put_u32(own.school_locks[k])
 	else:
 		b.put_u8(0)
 	return b.data_array
@@ -258,11 +271,17 @@ static func decode(data: PackedByteArray) -> Dictionary:
 				var ci: int = b.get_u16()
 				if ci != NO_ID:
 					u["cast"] = {"ability": id_at("abilities", ci), "start_tick": b.get_u32(), "end_tick": b.get_u32()}
+				u["dr"] = {}
+				var nd: int = b.get_u8()
+				for j: int in nd:
+					var cat: String = CC_CATEGORIES[b.get_u8()]
+					var cnt: int = b.get_u8()
+					u["dr"][cat] = {"count": cnt, "reset_tick": snap["tick"] + b.get_u16()}
 				var na: int = b.get_u8()
 				for j: int in na:
 					var aid: String = id_at("auras", b.get_u16())
 					var left: int = b.get_u16()
-					u["auras"].append({"id": aid, "expires_tick": snap["tick"] + left if left > 0 else 0,
+					u["auras"].append({"id": aid, "expires_tick": snap["tick"] + left - 1 if left > 0 else 0,
 						"stacks": b.get_u8(), "source": b.get_u8()})
 				snap["units"].append(u)
 			if b.get_u8() == 1:
@@ -273,6 +292,11 @@ static func decode(data: PackedByteArray) -> Dictionary:
 				for j: int in nc:
 					var ab_id: String = id_at("abilities", b.get_u16())
 					own["cooldowns"][ab_id] = b.get_u32()
+				own["school_locks"] = {}
+				var nl: int = b.get_u8()
+				for j: int in nl:
+					var school: String = b.get_utf8_string()
+					own["school_locks"][school] = b.get_u32()
 				snap["own"] = own
 			return snap
 		Msg.PING, Msg.PONG:

@@ -1,7 +1,7 @@
 {
   "id": "gashing_blow",
   "name": "Gashing Blow",
-  "description": "A ragged cut that festers: healing on the target is reduced by 30% for 10 s.",
+  "description": "A ragged cut that festers: healing on the target is reduced by 25% for 10 s.",
   "owner": "warblade_carnage",
   "kit_slot": "core",
   "school": "physical",
@@ -14,7 +14,7 @@
   "effects": [
     {
       "type": "damage",
-      "base": 3000
+      "base": 2400
     },
     {
       "type": "apply_aura",

@@ -1,0 +1,116 @@
+{
+  "id": "warblade_carnage",
+  "behavior": {
+    "preferred_range_m": [
+      0,
+      3.5
+    ],
+    "target_priority": "healer_first",
+    "reaction_ms": [
+      250,
+      600
+    ],
+    "break_los_below_pct": 25,
+    "kill_window_pct": 40
+  },
+  "priorities": [
+    {
+      "ability": "throat_punch",
+      "when": {
+        "target_casting": true,
+        "target_distance_below_m": 5.5
+      }
+    },
+    {
+      "ability": "break_free",
+      "on": "self",
+      "when": {
+        "self_hard_cc": true,
+        "self_health_below_pct": 70
+      }
+    },
+    {
+      "ability": "unbroken_stance_ab",
+      "on": "self",
+      "when": {
+        "self_health_below_pct": 40
+      }
+    },
+    {
+      "ability": "bloody_resolve",
+      "on": "self",
+      "when": {
+        "self_health_below_pct": 55
+      }
+    },
+    {
+      "ability": "warpath_charge",
+      "when": {
+        "target_distance_above_m": 8,
+        "target_distance_below_m": 25
+      }
+    },
+    {
+      "ability": "headsmans_verdict",
+      "when": {
+        "target_health_below_pct": 20
+      }
+    },
+    {
+      "ability": "red_mist_ab",
+      "on": "self",
+      "when": {
+        "target_health_below_pct": 80,
+        "target_distance_below_m": 5
+      }
+    },
+    {
+      "ability": "pommel_crack",
+      "when": {
+        "target_not_cc": true,
+        "target_health_below_pct": 70
+      }
+    },
+    {
+      "ability": "shield_breaker",
+      "when": {
+        "target_has_aura": "rime_sepulcher"
+      }
+    },
+    {
+      "ability": "gashing_blow",
+      "when": {
+        "target_not_has_aura": "gashed"
+      }
+    },
+    {
+      "ability": "crippling_slash",
+      "when": {
+        "target_not_has_aura": "crippled",
+        "target_not_cc": true
+      }
+    },
+    {
+      "ability": "dread_roar",
+      "on": "self",
+      "when": {
+        "enemies_within_m": [
+          8,
+          2
+        ]
+      }
+    },
+    {
+      "ability": "ruin_strike"
+    },
+    {
+      "ability": "wide_hew",
+      "when": {
+        "resource_at_least": 60
+      }
+    },
+    {
+      "ability": "grim_hack"
+    }
+  ]
+}

@@ -43,6 +43,11 @@ func _ready_all() -> void:
 		u.cooldowns.clear()
 
 
+## Base amount of an ability's first effect, so tests follow balance changes in data.
+func _base(ability: String) -> int:
+	return int(Data.abilities[ability]["effects"][0]["base"])
+
+
 func _fail() -> String:
 	for i: int in range(cb.events.size() - 1, -1, -1):
 		if cb.events[i]["type"] == "cast_failed":
@@ -63,12 +68,14 @@ func test_rage_is_built_then_spent() -> void:
 	cb.press(war, "wide_hew", 2)
 	assert_str(_fail()).is_equal("no_resource")
 	cb.press(war, "grim_hack", 2)
-	# 12 from the ability plus rage from dealing 2,800 x 0.9 cloth damage (8 per 1,000)
-	assert_float(war.resources["rage"]).is_equal_approx(12.0 + 2520 / 1000.0 * 8.0, 0.01)
+	# 12 from the ability plus rage from dealing its damage x 0.9 (cloth armor), 8 per 1,000
+	var hack: int = roundi(_base("grim_hack") * 0.9)
+	assert_float(war.resources["rage"]).is_equal_approx(12.0 + hack / 1000.0 * 8.0, 0.01)
 	_ready_all()
 	var before: float = war.resources["rage"]
 	cb.press(war, "wide_hew", 2)
-	assert_float(war.resources["rage"]).is_equal_approx(before - 20.0 + 3420 / 1000.0 * 8.0, 0.01)
+	var hew: int = roundi(_base("wide_hew") * 0.9)
+	assert_float(war.resources["rage"]).is_equal_approx(before - 20.0 + hew / 1000.0 * 8.0, 0.01)
 
 
 func test_headsmans_verdict_only_below_20_percent() -> void:
@@ -80,13 +87,15 @@ func test_headsmans_verdict_only_below_20_percent() -> void:
 	assert_bool(arc.is_alive()).is_false()
 
 
-func test_gashing_blow_cuts_healing_by_30_percent() -> void:
+func test_gashing_blow_cuts_healing() -> void:
 	war.resources["rage"] = 100.0
 	cb.press(war, "gashing_blow", 2)
 	arc.health = 30000
 	cb.press(ora, "swift_benediction", 2)
 	_run(roundi(1.3 * TR / 1.1) + 1)  # Oracle has 10% haste
-	assert_int(arc.health).is_equal(30000 + roundi(6000 * 0.7))
+	var mult: float = Data.auras["gashed"]["modifiers"][0]["value"]
+	assert_float(mult).is_less(1.0)
+	assert_int(arc.health).is_equal(30000 + roundi(_base("swift_benediction") * mult))
 
 
 func test_warpath_charge_closes_distance_and_stuns() -> void:
@@ -103,12 +112,12 @@ func test_shiver_lance_triples_on_frozen_targets() -> void:
 	arc.position = Vector3(0, 0, -20)
 	cb.press(arc, "shiver_lance", 1)
 	var normal: int = war.max_health - war.health
-	assert_int(normal).is_equal(2600)  # frost is magic: plate armor does not reduce it
+	assert_int(normal).is_equal(_base("shiver_lance"))  # frost is magic: plate armor does not reduce it
 	war.health = war.max_health
 	cb.apply_aura(arc, war, "rimebound")
 	_ready_all()
 	cb.press(arc, "shiver_lance", 1)
-	assert_int(war.max_health - war.health).is_equal(2600 * 3)
+	assert_int(war.max_health - war.health).is_equal(_base("shiver_lance") * 3)
 
 
 func test_heartfreeze_needs_a_frozen_target() -> void:
@@ -167,7 +176,7 @@ func test_healing_is_reduced_by_dampening() -> void:
 	arc.health = 20000
 	cb.press(ora, "mending_light", 2)
 	_run(roundi(2.0 * TR / 1.1) + 1)
-	assert_int(arc.health).is_equal(20000 + roundi(9000 * 0.9))
+	assert_int(arc.health).is_equal(20000 + roundi(_base("mending_light") * 0.9))
 
 
 func test_psalm_of_dread_makes_nearby_enemies_flee() -> void:

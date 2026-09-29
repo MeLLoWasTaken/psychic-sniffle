@@ -51,6 +51,9 @@ def main() -> int:
             checks.append(("network match at 150 ms, 2% loss", [sys.executable, "tools/sim/run_match.py",
                            "--bots", "2", "--seconds", "30", "--port", "24612", "--lag-ms", "150",
                            "--jitter-ms", "30", "--loss", "0.02", "--out", "previews/matches/check_lag"], ""))
+            checks.append(("network 2v2 arena to a kill", [sys.executable, "tools/sim/run_match.py",
+                           "--bots", "4", "--mode", "arena", "--seconds", "420", "--port", "24613",
+                           "--out", "previews/matches/check_arena"], ""))
     else:
         checks.append(("godot project loads", None, "godot not installed (see tools/env/setup_cloud.sh)"))
         checks.append(("godot unit tests", None, "godot not installed"))

@@ -6,7 +6,7 @@
   "kit_slot": "mobility",
   "school": "frost",
   "cast_type": "instant",
-  "cooldown_s": 15,
+  "cooldown_s": 12,
   "triggers_gcd": false,
   "range_m": 0,
   "requires_los": false,

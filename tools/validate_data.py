@@ -37,6 +37,7 @@ FOLDERS = {
     "maps": ("map.schema.json", "id"),
     "assets": ("asset.schema.json", "id"),
     "keybinds": ("keybind_profile.schema.json", "id"),
+    "bots": ("bot_profile.schema.json", "id"),
 }
 
 # Ability kit template (docs/DESIGN.md, "Ability kit template"): slot -> (min, max)
@@ -205,6 +206,17 @@ def validate(data_dir: Path) -> list[str]:
             report.error(rel, f"builder script tools/blender/{a['builder']} not found")
         if a["kind"] == "character" and a.get("spec") not in specs:
             report.error(rel, f"character asset needs a valid spec, got '{a.get('spec')}'")
+
+    # ---- bot profiles ------------------------------------------------------------
+    for bid, b in db["bots"].items():
+        rel = f"bots/{bid}.json"
+        if bid not in specs:
+            report.error(rel, f"no spec '{bid}'")
+            continue
+        known = set(specs[bid]["abilities"]) | set(classes.get(specs[bid]["class"], {}).get("shared_abilities", []))
+        for i, r in enumerate(b["priorities"]):
+            if r["ability"] not in known:
+                report.error(rel, f"priorities/{i}: '{r['ability']}' is not in the {bid} kit")
 
     # ---- keybinds ------------------------------------------------------------------
     for kid, k in db["keybinds"].items():

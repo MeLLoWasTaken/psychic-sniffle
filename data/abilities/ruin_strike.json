@@ -8,15 +8,34 @@
   "cast_type": "instant",
   "cooldown_s": 6,
   "triggers_gcd": true,
-  "cost": {"resource": "rage", "amount": 30},
+  "cost": {
+    "resource": "rage",
+    "amount": 30
+  },
   "range_m": 5,
   "requires_los": true,
   "target": "enemy",
   "effects": [
-    {"type": "damage", "base": 6000, "power_coefficient": 1.0, "school": "physical"},
-    {"type": "apply_aura", "aura": "ruin_bleed"}
+    {
+      "type": "damage",
+      "base": 4800,
+      "power_coefficient": 1.0,
+      "school": "physical"
+    },
+    {
+      "type": "apply_aura",
+      "aura": "ruin_bleed"
+    }
   ],
-  "vfx": {"impact": "vfx_heavy_slash"},
-  "sfx": {"release": "sfx_heavy_swing", "impact": "sfx_flesh_impact"},
-  "icon": {"symbol": "cleaver_blood", "school": "physical"}
+  "vfx": {
+    "impact": "vfx_heavy_slash"
+  },
+  "sfx": {
+    "release": "sfx_heavy_swing",
+    "impact": "sfx_flesh_impact"
+  },
+  "icon": {
+    "symbol": "cleaver_blood",
+    "school": "physical"
+  }
 }

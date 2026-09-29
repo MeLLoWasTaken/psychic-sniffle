@@ -40,6 +40,10 @@ func test_snapshot_round_trip() -> void:
 	u.resource_max = {"mana": 50000.0}
 	u.cast = {"ability": "ruin_strike", "start_tick": 990, "end_tick": 1110}
 	u.auras.append({"id": "ruin_bleed", "source": 1, "expires_tick": 1500, "stacks": 2})
+	u.auras.append({"id": "crippled", "source": 1, "expires_tick": 999, "stacks": 1})  # expires this tick
+	u.auras.append({"id": "chilled", "source": 1, "expires_tick": 0, "stacks": 1})  # permanent
+	u.dr = {"stun": {"count": 2, "reset_tick": 1300}}
+	u.school_locks = {"holy": 1100}
 	u.cooldowns = {"ruin_strike": 1200}
 	u.gcd_ready_tick = 1050
 	var snap: Dictionary = Protocol.decode(Protocol.snapshot(999, 77, [u],
@@ -56,6 +60,12 @@ func test_snapshot_round_trip() -> void:
 	assert_int(d["cast"]["end_tick"]).is_equal(1110)
 	assert_str(d["auras"][0]["id"]).is_equal("ruin_bleed")
 	assert_int(d["auras"][0]["stacks"]).is_equal(2)
+	assert_int(d["auras"][0]["expires_tick"]).is_equal(1500)
+	assert_int(d["auras"][1]["expires_tick"]).is_equal(999)
+	assert_int(d["auras"][2]["expires_tick"]).is_equal(0)
+	assert_int(d["dr"]["stun"]["count"]).is_equal(2)
+	assert_int(d["dr"]["stun"]["reset_tick"]).is_equal(1300)
+	assert_int(snap["own"]["school_locks"]["holy"]).is_equal(1100)
 	assert_int(snap["match"]["dampening_pct"]).is_equal(4)
 	assert_int(snap["own"]["gcd_ready_tick"]).is_equal(1050)
 	assert_int(snap["own"]["cooldowns"]["ruin_strike"]).is_equal(1200)

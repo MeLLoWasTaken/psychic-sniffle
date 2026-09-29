@@ -1,7 +1,7 @@
 {
   "id": "winters_lash",
   "name": "Winter's Lash",
-  "description": "A whip of cold that can be cast while moving.",
+  "description": "A whip of cold that can be cast while moving. Leaves frostbite: healing taken reduced by 25% for 8 s.",
   "owner": "arcanist_rime",
   "kit_slot": "core",
   "school": "frost",
@@ -19,6 +19,10 @@
     {
       "type": "apply_aura",
       "aura": "chilled"
+    },
+    {
+      "type": "apply_aura",
+      "aura": "frostbitten"
     }
   ],
   "icon": {

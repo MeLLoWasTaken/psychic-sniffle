@@ -1,0 +1,182 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "bot_profile.schema.json",
+  "title": "Bot profile",
+  "description": "How a test bot plays a spec: movement behaviour and an ability priority list.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "id",
+    "behavior",
+    "priorities"
+  ],
+  "properties": {
+    "id": {
+      "$ref": "common.schema.json#/$defs/id",
+      "description": "Spec id this profile plays."
+    },
+    "behavior": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "preferred_range_m",
+        "target_priority",
+        "reaction_ms"
+      ],
+      "properties": {
+        "preferred_range_m": {
+          "type": "array",
+          "items": {
+            "type": "number"
+          },
+          "minItems": 2,
+          "maxItems": 2,
+          "description": "[min, max] distance to keep from the target."
+        },
+        "target_priority": {
+          "enum": [
+            "healer_first",
+            "lowest_health",
+            "nearest"
+          ]
+        },
+        "reaction_ms": {
+          "type": "array",
+          "items": {
+            "type": "number"
+          },
+          "minItems": 2,
+          "maxItems": 2
+        },
+        "kite_melee": {
+          "type": "boolean",
+          "description": "Move away from enemy melee when not casting."
+        },
+        "stay_near_allies_m": {
+          "type": "number",
+          "description": "Healers: stay within this distance of the lowest ally."
+        },
+        "break_los_below_pct": {
+          "type": "number",
+          "description": "Hide behind a pillar below this health when no defensive is ready."
+        },
+        "kite_distance_m": {
+          "type": "number",
+          "description": "Casters: back away from uncontrolled enemy melee until this far."
+        },
+        "kill_window_pct": {
+          "type": "number",
+          "description": "Switch to (and stay on) any enemy below this health that can be attacked."
+        }
+      }
+    },
+    "priorities": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "ability"
+        ],
+        "properties": {
+          "ability": {
+            "type": "string"
+          },
+          "on": {
+            "enum": [
+              "target",
+              "self",
+              "lowest_ally",
+              "enemy_caster",
+              "cc_ally",
+              "enemy_healer",
+              "ally_attacker"
+            ],
+            "default": "target"
+          },
+          "when": {
+            "type": "object",
+            "additionalProperties": false,
+            "properties": {
+              "self_health_below_pct": {
+                "type": "number"
+              },
+              "target_health_below_pct": {
+                "type": "number"
+              },
+              "target_health_above_pct": {
+                "type": "number"
+              },
+              "ally_health_below_pct": {
+                "type": "number"
+              },
+              "target_casting": {
+                "type": "boolean",
+                "description": "Target is casting something interruptible (after the bot's reaction time)."
+              },
+              "target_not_cc": {
+                "type": "boolean"
+              },
+              "target_cc": {
+                "type": "array",
+                "items": {
+                  "type": "string"
+                }
+              },
+              "target_has_aura": {
+                "type": "string"
+              },
+              "target_not_has_aura": {
+                "type": "string"
+              },
+              "self_has_aura": {
+                "type": "string"
+              },
+              "self_not_has_aura": {
+                "type": "string"
+              },
+              "self_hard_cc": {
+                "type": "boolean"
+              },
+              "enemies_within_m": {
+                "type": "array",
+                "items": {
+                  "type": "number"
+                },
+                "minItems": 2,
+                "maxItems": 2,
+                "description": "[distance, count]: at least count enemies within distance."
+              },
+              "target_distance_above_m": {
+                "type": "number"
+              },
+              "target_distance_below_m": {
+                "type": "number"
+              },
+              "resource_at_least": {
+                "type": "number"
+              },
+              "has_dispellable": {
+                "type": "boolean",
+                "description": "The chosen unit has an effect this ability can remove."
+              },
+              "ally_hard_cc": {
+                "type": "boolean",
+                "description": "An ally is under hard crowd control."
+              },
+              "no_free_melee_within_m": {
+                "type": "number",
+                "description": "No enemy melee within this distance unless it is rooted, stunned, incapacitated or feared."
+              },
+              "focus_health_below_pct": {
+                "type": "number",
+                "description": "The bot's own kill target is below this health."
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+}

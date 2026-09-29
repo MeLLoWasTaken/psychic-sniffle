@@ -8,7 +8,7 @@
   "cc_category": "root",
   "hud_priority": "cc",
   "breaks_on_damage": "threshold",
-  "damage_threshold_pct": 12,
+  "damage_threshold_pct": 20,
   "icon": {
     "symbol": "ice_feet",
     "school": "frost"

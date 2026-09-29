@@ -11,7 +11,7 @@
     "interval_s": 3,
     "effect": {
       "type": "heal",
-      "base": 1500,
+      "base": 2000,
       "school": "holy"
     }
   },
