@@ -3,17 +3,40 @@ extends RefCounted
 ## Binary wire format. Every packet starts with a one-byte message type.
 ## Inputs are quantized here, and the client predicts with the quantized values, so client
 ## prediction and the server see exactly the same input.
+## Abilities, auras and specs travel as small indexes into their sorted id lists (both sides
+## load the same data, and the protocol version changes whenever that could differ).
 
-const VERSION: int = 1
+const VERSION: int = 2
 const CH_RELIABLE: int = 0
 const CH_UNRELIABLE: int = 1
 const CHANNELS: int = 2
 const INPUT_REDUNDANCY: int = 3  ## each input packet repeats the last N inputs to survive loss
+const NO_ID: int = 0xFFFF
 
-enum Msg { HELLO = 1, WELCOME = 2, INPUT = 3, SNAPSHOT = 4, PING = 5, PONG = 6, EVENT = 7, REJECT = 8 }
+enum Msg { HELLO = 1, WELCOME = 2, INPUT = 3, SNAPSHOT = 4, PING = 5, PONG = 6, EVENTS = 7, REJECT = 8 }
 
 const FLAG_JUMP: int = 1
 const FLAG_TAB: int = 2
+
+static var _index_cache: Dictionary = {}
+
+
+## Stable index of an id within a data table (sorted keys). -1 when unknown.
+static func index_of(table: String, id: String) -> int:
+	return _ids(table).find(id)
+
+
+static func id_at(table: String, index: int) -> String:
+	var ids: Array = _ids(table)
+	return ids[index] if index >= 0 and index < ids.size() else ""
+
+
+static func _ids(table: String) -> Array:
+	if not _index_cache.has(table):
+		var keys: Array = (Data.get(table) as Dictionary).keys()
+		keys.sort()
+		_index_cache[table] = keys
+	return _index_cache[table]
 
 
 static func _buf() -> StreamPeerBuffer:
@@ -67,6 +90,8 @@ static func quantize_input(input: Dictionary) -> Dictionary:
 		"yaw": qyaw / 65535.0 * TAU,
 		"jump": bool(input.get("jump", false)),
 		"tab": bool(input.get("tab", false)),
+		"ability": str(input.get("ability", "")),
+		"target": int(input.get("target", -1)),
 	}
 
 
@@ -82,33 +107,75 @@ static func input_packet(inputs: Array) -> PackedByteArray:
 		b.put_8(roundi(mv.y * 127.0))
 		b.put_u16(roundi(fposmod(inp["yaw"], TAU) / TAU * 65535.0) % 65536)
 		b.put_u8((FLAG_JUMP if inp["jump"] else 0) | (FLAG_TAB if inp["tab"] else 0))
+		var ai: int = index_of("abilities", inp.get("ability", "")) if inp.get("ability", "") != "" else -1
+		b.put_u16(ai if ai >= 0 else NO_ID)
+		b.put_u16(int(inp.get("target", -1)) if int(inp.get("target", -1)) >= 0 else NO_ID)
 	return b.data_array
 
 
 # ------------------------------------------------------------------ snapshot
 
-## One snapshot per client: world tick, the last input sequence the server applied for that
-## client, and every unit's state. (Delta compression is a later optimisation.)
-static func snapshot(tick: int, ack_seq: int, units: Array) -> PackedByteArray:
+## One snapshot per client: world tick, the last input the server applied for that client,
+## match state, every unit's state, and the receiving player's own cooldowns.
+## `match_state` = {phase, start_tick, dampening_pct, winner}. (Delta compression: backlog F-01.)
+static func snapshot(tick: int, ack_seq: int, units: Array, match_state: Dictionary = {},
+		own: Unit = null) -> PackedByteArray:
 	var b: StreamPeerBuffer = _buf()
 	b.put_u8(Msg.SNAPSHOT)
 	b.put_u32(tick)
 	b.put_u32(ack_seq)
+	b.put_u8(int(match_state.get("phase", 1)))
+	b.put_u32(int(match_state.get("start_tick", 0)))
+	b.put_u8(int(match_state.get("dampening_pct", 0)))
+	b.put_8(int(match_state.get("winner", -1)))
 	b.put_u8(units.size())
 	for u: Unit in units:
-		b.put_u16(u.id)
+		# Compact encoding (bandwidth budget): positions in centimetres (16 bits, +/-327 m),
+		# facing in 16 bits, unit ids and sources in 8 bits, aura time as ticks remaining.
+		b.put_u8(u.id)
 		b.put_u8(u.team)
-		b.put_float(u.position.x)
-		b.put_float(u.position.y)
-		b.put_float(u.position.z)
-		b.put_float(u.velocity.x)
-		b.put_float(u.velocity.y)
-		b.put_float(u.velocity.z)
-		b.put_float(u.facing)
+		var si: int = index_of("specs", u.spec_id)
+		b.put_u8(si if si >= 0 else 255)
+		b.put_16(clampi(roundi(u.position.x * 100.0), -32767, 32767))
+		b.put_16(clampi(roundi(u.position.y * 100.0), -32767, 32767))
+		b.put_16(clampi(roundi(u.position.z * 100.0), -32767, 32767))
+		b.put_u16(roundi(fposmod(u.facing, TAU) / TAU * 65535.0) % 65536)
 		b.put_32(u.health)
 		b.put_32(u.max_health)
-		b.put_16(u.target_id)
-		b.put_float(u.swing_timer)
+		b.put_u8(u.target_id if u.target_id >= 0 and u.target_id < 255 else 255)
+		b.put_u16(clampi(roundi(float(u.resources.get(u.primary_resource, 0.0))), 0, 65535))
+		b.put_u16(clampi(roundi(float(u.resource_max.get(u.primary_resource, 0.0))), 0, 65535))
+		if u.is_casting():
+			b.put_u16(index_of("abilities", u.cast["ability"]))
+			b.put_u32(u.cast["start_tick"])
+			b.put_u32(u.cast["end_tick"])
+		else:
+			b.put_u16(NO_ID)
+		b.put_u8(mini(u.auras.size(), 32))
+		for a: Dictionary in u.auras.slice(0, 32):
+			b.put_u16(index_of("auras", a["id"]))
+			var left: int = int(a["expires_tick"]) - tick if int(a["expires_tick"]) > 0 else 0
+			b.put_u16(clampi(left, 0, 65535))
+			b.put_u8(a["stacks"])
+			b.put_u8(clampi(int(a["source"]), 0, 255))
+	if own:
+		# The receiving player's own unit at full precision, for prediction and the HUD.
+		b.put_u8(1)
+		b.put_float(own.position.x)
+		b.put_float(own.position.y)
+		b.put_float(own.position.z)
+		b.put_float(own.velocity.x)
+		b.put_float(own.velocity.y)
+		b.put_float(own.velocity.z)
+		b.put_float(own.swing_timer)
+		b.put_u32(own.gcd_ready_tick)
+		var cds: Array = own.cooldowns.keys().filter(func(k: String) -> bool: return int(own.cooldowns[k]) > tick)
+		b.put_u8(cds.size())
+		for k: String in cds:
+			b.put_u16(index_of("abilities", k))
+			b.put_u32(own.cooldowns[k])
+	else:
+		b.put_u8(0)
 	return b.data_array
 
 
@@ -128,10 +195,11 @@ static func pong(t_usec: int) -> PackedByteArray:
 	return b.data_array
 
 
-static func event(ev: Dictionary) -> PackedByteArray:
+## A tick's combat log entries, sent reliably as one packet.
+static func events(evs: Array) -> PackedByteArray:
 	var b: StreamPeerBuffer = _buf()
-	b.put_u8(Msg.EVENT)
-	b.put_var(ev)
+	b.put_u8(Msg.EVENTS)
+	b.put_var(evs)
 	return b.data_array
 
 
@@ -161,23 +229,54 @@ static func decode(data: PackedByteArray) -> Dictionary:
 				var my: int = b.get_8()
 				var qyaw: int = b.get_u16()
 				var flags: int = b.get_u8()
+				var ai: int = b.get_u16()
+				var ti: int = b.get_u16()
 				inputs.append({"seq": seq, "move": Vector2(mx / 127.0, my / 127.0),
 					"yaw": qyaw / 65535.0 * TAU, "jump": flags & FLAG_JUMP != 0,
-					"tab": flags & FLAG_TAB != 0})
+					"tab": flags & FLAG_TAB != 0, "ability": id_at("abilities", ai) if ai != NO_ID else "",
+					"target": ti if ti != NO_ID else -1})
 			return {"type": t, "inputs": inputs}
 		Msg.SNAPSHOT:
-			var snap: Dictionary = {"type": t, "tick": b.get_u32(), "ack_seq": b.get_u32(), "units": []}
+			var snap: Dictionary = {"type": t, "tick": b.get_u32(), "ack_seq": b.get_u32(),
+				"match": {"phase": b.get_u8(), "start_tick": b.get_u32(), "dampening_pct": b.get_u8(),
+					"winner": b.get_8()}, "units": []}
 			var count: int = b.get_u8()
 			for i: int in count:
-				snap["units"].append({
-					"id": b.get_u16(), "team": b.get_u8(),
-					"position": Vector3(b.get_float(), b.get_float(), b.get_float()),
-					"velocity": Vector3(b.get_float(), b.get_float(), b.get_float()),
-					"facing": b.get_float(), "health": b.get_32(), "max_health": b.get_32(),
-					"target_id": b.get_16(), "swing_timer": b.get_float()})
+				var u: Dictionary = {"id": b.get_u8(), "team": b.get_u8(), "spec": id_at("specs", b.get_u8())}
+				u["position"] = Vector3(b.get_16() / 100.0, b.get_16() / 100.0, b.get_16() / 100.0)
+				u["facing"] = b.get_u16() / 65535.0 * TAU
+				u["health"] = b.get_32()
+				u["max_health"] = b.get_32()
+				var tgt: int = b.get_u8()
+				u["target_id"] = tgt if tgt != 255 else -1
+				u["resource"] = float(b.get_u16())
+				u["resource_max"] = float(b.get_u16())
+				u["velocity"] = Vector3.ZERO
+				u["swing_timer"] = 0.0
+				u["cast"] = {}
+				u["auras"] = []
+				var ci: int = b.get_u16()
+				if ci != NO_ID:
+					u["cast"] = {"ability": id_at("abilities", ci), "start_tick": b.get_u32(), "end_tick": b.get_u32()}
+				var na: int = b.get_u8()
+				for j: int in na:
+					var aid: String = id_at("auras", b.get_u16())
+					var left: int = b.get_u16()
+					u["auras"].append({"id": aid, "expires_tick": snap["tick"] + left if left > 0 else 0,
+						"stacks": b.get_u8(), "source": b.get_u8()})
+				snap["units"].append(u)
+			if b.get_u8() == 1:
+				var own: Dictionary = {"position": Vector3(b.get_float(), b.get_float(), b.get_float()),
+					"velocity": Vector3(b.get_float(), b.get_float(), b.get_float()), "swing_timer": b.get_float(),
+					"gcd_ready_tick": b.get_u32(), "cooldowns": {}}
+				var nc: int = b.get_u8()
+				for j: int in nc:
+					var ab_id: String = id_at("abilities", b.get_u16())
+					own["cooldowns"][ab_id] = b.get_u32()
+				snap["own"] = own
 			return snap
 		Msg.PING, Msg.PONG:
 			return {"type": t, "t_usec": b.get_u64()}
-		Msg.EVENT:
-			return {"type": t, "event": b.get_var()}
+		Msg.EVENTS:
+			return {"type": t, "events": b.get_var()}
 	return {"type": t}

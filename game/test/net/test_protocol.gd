@@ -15,7 +15,8 @@ func test_hello_and_welcome_round_trip() -> void:
 
 
 func test_quantized_input_survives_encoding_exactly() -> void:
-	var raw: Dictionary = {"seq": 42, "move": Vector2(0.3, -0.77), "yaw": 2.345, "jump": true, "tab": false}
+	var raw: Dictionary = {"seq": 42, "move": Vector2(0.3, -0.77), "yaw": 2.345, "jump": true, "tab": false,
+		"ability": "ruin_strike", "target": 7}
 	var q: Dictionary = Protocol.quantize_input(raw)
 	var decoded: Dictionary = Protocol.decode(Protocol.input_packet([q]))["inputs"][0]
 	assert_int(decoded["seq"]).is_equal(42)
@@ -23,6 +24,8 @@ func test_quantized_input_survives_encoding_exactly() -> void:
 	assert_float(decoded["yaw"]).is_equal(q["yaw"])
 	assert_bool(decoded["jump"]).is_true()
 	assert_bool(decoded["tab"]).is_false()
+	assert_str(decoded["ability"]).is_equal("ruin_strike")
+	assert_int(decoded["target"]).is_equal(7)
 
 
 func test_snapshot_round_trip() -> void:
@@ -32,7 +35,15 @@ func test_snapshot_round_trip() -> void:
 	u.facing = 1.2
 	u.health = 43210
 	u.target_id = 5
-	var snap: Dictionary = Protocol.decode(Protocol.snapshot(999, 77, [u]))
+	u.primary_resource = "mana"
+	u.resources = {"mana": 1234.0}
+	u.resource_max = {"mana": 50000.0}
+	u.cast = {"ability": "ruin_strike", "start_tick": 990, "end_tick": 1110}
+	u.auras.append({"id": "ruin_bleed", "source": 1, "expires_tick": 1500, "stacks": 2})
+	u.cooldowns = {"ruin_strike": 1200}
+	u.gcd_ready_tick = 1050
+	var snap: Dictionary = Protocol.decode(Protocol.snapshot(999, 77, [u],
+		{"phase": 1, "start_tick": 600, "dampening_pct": 4, "winner": -1}, u))
 	assert_int(snap["tick"]).is_equal(999)
 	assert_int(snap["ack_seq"]).is_equal(77)
 	var d: Dictionary = snap["units"][0]
@@ -40,12 +51,24 @@ func test_snapshot_round_trip() -> void:
 	assert_vector(d["position"]).is_equal(u.position)
 	assert_int(d["health"]).is_equal(43210)
 	assert_int(d["target_id"]).is_equal(5)
+	assert_float(d["resource"]).is_equal(1234.0)
+	assert_str(d["cast"]["ability"]).is_equal("ruin_strike")
+	assert_int(d["cast"]["end_tick"]).is_equal(1110)
+	assert_str(d["auras"][0]["id"]).is_equal("ruin_bleed")
+	assert_int(d["auras"][0]["stacks"]).is_equal(2)
+	assert_int(snap["match"]["dampening_pct"]).is_equal(4)
+	assert_int(snap["own"]["gcd_ready_tick"]).is_equal(1050)
+	assert_int(snap["own"]["cooldowns"]["ruin_strike"]).is_equal(1200)
 
 
 func test_snapshot_size_fits_bandwidth_budget() -> void:
-	# 20 units at 60 Hz must stay under the 96 KB/s design budget even before delta compression.
+	# 20 units, each with 4 auras, at 60 Hz must stay under the 96 KB/s design budget even
+	# before delta compression.
 	var units: Array = []
 	for i: int in 20:
-		units.append(Unit.new(i, i % 2))
+		var u: Unit = Unit.new(i, i % 2)
+		for k: int in 4:
+			u.auras.append({"id": "ruin_bleed", "source": 1, "expires_tick": 100, "stacks": 1})
+		units.append(u)
 	var bytes_per_second: int = Protocol.snapshot(1, 1, units).size() * 60
 	assert_int(bytes_per_second).is_less(96 * 1024)

@@ -9,6 +9,7 @@ extends Node
 
 signal welcomed(unit_id: int)
 signal snapshot_received(snap: Dictionary)
+signal events_received_signal(evs: Array)
 
 const SNAPSHOT_BUFFER: int = 64
 
@@ -32,6 +33,8 @@ var _recent_inputs: Array[Dictionary] = []
 var snapshots: Array[Dictionary] = []  ## newest last
 var latest_tick: int = -1
 var events_received: int = 0
+var recent_events: Array = []  ## last 200 combat log entries, for the HUD
+var own_auras: Array = []  ## our unit's auras from the newest snapshot (prediction uses them)
 
 const TELEPORT_M: float = 5.0  ## server moves larger than this in one snapshot are teleports
 
@@ -125,8 +128,13 @@ func _on_packet(msg: Dictionary) -> void:
 			_on_snapshot(msg)
 		Protocol.Msg.PONG:
 			_stats["rtt_ms"].append((Time.get_ticks_usec() - int(msg["t_usec"])) / 1000.0)
-		Protocol.Msg.EVENT:
-			events_received += 1
+		Protocol.Msg.EVENTS:
+			var evs: Array = msg["events"]
+			events_received += evs.size()
+			recent_events.append_array(evs)
+			if recent_events.size() > 200:
+				recent_events = recent_events.slice(recent_events.size() - 200)
+			events_received_signal.emit(evs)
 
 
 func _on_snapshot(snap: Dictionary) -> void:
@@ -155,20 +163,22 @@ func _reconcile(snap: Dictionary) -> void:
 	if mine.is_empty():
 		return
 	var before: Vector3 = predicted.position
-	predicted.position = mine["position"]
-	predicted.velocity = mine["velocity"]
+	var own: Dictionary = snap.get("own", {})
+	predicted.position = own.get("position", mine["position"])  # full precision for our unit
+	predicted.velocity = own.get("velocity", Vector3.ZERO)
 	predicted.health = mine["health"]
 	predicted.max_health = mine["max_health"]
 	predicted.target_id = mine["target_id"]
 	predicted.team = mine["team"]
+	own_auras = mine["auras"]
 	while not _pending.is_empty() and int(_pending[0]["seq"]) <= int(snap["ack_seq"]):
 		_pending.pop_front()
 	if predicted.is_alive():
 		for inp: Dictionary in _pending:
-			movement.apply(predicted, inp, 1.0 / Data.tick_rate())
+			_predict_move(inp)
 	else:
 		_pending.clear()
-	var server_pos: Vector3 = mine["position"]
+	var server_pos: Vector3 = predicted.position
 	var teleported: bool = _synced and server_pos.distance_to(_last_server_pos) > TELEPORT_M
 	_last_server_pos = server_pos
 	if not _synced or teleported:
@@ -194,7 +204,17 @@ func _send_and_predict_input() -> void:
 	_stats["inputs_sent"] += 1
 	_pending.append(inp)
 	if predicted.is_alive():
-		movement.apply(predicted, inp, 1.0 / Data.tick_rate())
+		_predict_move(inp)
+
+
+## Predict our own movement with the same rules the server uses, including roots, stuns and
+## slows from our known auras (feared movement is decided by the server, so we stand still).
+func _predict_move(inp: Dictionary) -> void:
+	var mult: float = Combat.speed_multiplier_from(own_auras, Data.auras)
+	var use: Dictionary = inp
+	if Combat.is_forced_from(own_auras, Data.auras):
+		use = {"move": Vector2.ZERO, "yaw": predicted.facing, "jump": false}
+	movement.apply(predicted, use, 1.0 / Data.tick_rate(), mult)
 
 
 ## Position of another unit, drawn `delay_ticks` behind the newest snapshot and interpolated

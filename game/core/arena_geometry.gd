@@ -8,7 +8,8 @@ const UNIT_RADIUS: float = 0.45  ## collision radius of a player
 
 var bounds_half: float = 20.0
 var circles: Array[Dictionary] = []  ## {center: Vector2, radius: float, height: float, los: bool}
-var boxes: Array[Dictionary] = []  ## {min: Vector2, max: Vector2, height: float, los: bool}
+var boxes: Array[Dictionary] = []  ## {min: Vector2, max: Vector2, height: float, los: bool, gate: bool}
+var gates_open: bool = true  ## gate boxes block only while closed (arena preparation phase)
 
 
 static func from_map(map: Dictionary) -> ArenaGeometry:
@@ -22,7 +23,8 @@ static func from_map(map: Dictionary) -> ArenaGeometry:
 				"radius": float(c["radius"]), "height": h, "los": los})
 		else:
 			g.boxes.append({"min": Vector2(c["min"][0], c["min"][1]),
-				"max": Vector2(c["max"][0], c["max"][1]), "height": h, "los": los})
+				"max": Vector2(c["max"][0], c["max"][1]), "height": h, "los": los,
+				"gate": bool(c.get("gate", false))})
 	return g
 
 
@@ -37,7 +39,7 @@ func resolve(pos: Vector3) -> Vector3:
 		if d.length_squared() < min_dist * min_dist:
 			p = c["center"] + (d.normalized() if d.length_squared() > 1e-12 else Vector2.RIGHT) * min_dist
 	for b: Dictionary in boxes:
-		if pos.y >= b["height"]:
+		if pos.y >= b["height"] or (b["gate"] and gates_open):
 			continue
 		var lo: Vector2 = b["min"] - Vector2.ONE * UNIT_RADIUS
 		var hi: Vector2 = b["max"] + Vector2.ONE * UNIT_RADIUS
@@ -66,6 +68,8 @@ func has_line_of_sight(from: Vector3, to: Vector3) -> bool:
 		if c["los"] and c["height"] > low and _segment_hits_circle(a, b, c["center"], c["radius"]):
 			return false
 	for bx: Dictionary in boxes:
+		if bx["gate"] and gates_open:
+			continue
 		if bx["los"] and bx["height"] > low and _segment_hits_box(a, b, bx["min"], bx["max"]):
 			return false
 	return true

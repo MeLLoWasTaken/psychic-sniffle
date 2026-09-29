@@ -143,6 +143,10 @@
           },
           "blocks_los": {
             "type": "boolean"
+          },
+          "gate": {
+            "type": "boolean",
+            "description": "Gate: blocks only during the preparation phase, then opens."
           }
         },
         "allOf": [

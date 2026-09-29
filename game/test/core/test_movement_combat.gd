@@ -67,8 +67,16 @@ func test_line_of_sight_blocked_by_pillar() -> void:
 	assert_bool(geo.has_line_of_sight(Vector3(-15, 0, 12) + eye, Vector3(15, 0, 12) + eye)).is_true()
 
 
+func _combat_with(units: Array) -> Combat:
+	var sim: Sim = Sim.new(1, 60)
+	for u: Unit in units:
+		sim.add_unit(u)
+	var t: Dictionary = tuning.duplicate(true)
+	t["combat"]["crit_chance"] = 0.0
+	return Combat.new(sim, t, Data.abilities, Data.auras, Data.specs, Data.classes, null)
+
+
 func test_tab_picks_nearest_enemy_in_front() -> void:
-	var cb: CombatBasic = CombatBasic.new(tuning, null)
 	var me: Unit = Unit.new(1, 0)
 	var behind: Unit = Unit.new(2, 1)
 	behind.position = Vector3(0, 0, 3)  # behind (yaw 0 faces -Z), closer
@@ -76,23 +84,27 @@ func test_tab_picks_nearest_enemy_in_front() -> void:
 	front.position = Vector3(0, 0, -8)
 	var ally: Unit = Unit.new(4, 0)
 	ally.position = Vector3(0, 0, -2)
-	var units: Dictionary = {1: me, 2: behind, 3: front, 4: ally}
-	assert_int(cb.tab_target(me, units)).is_equal(3)
+	var cb: Combat = _combat_with([me, behind, front, ally])
+	assert_int(cb.tab_target(me)).is_equal(3)
 
 
 func test_auto_attack_swings_every_2_seconds_in_range_only() -> void:
-	var cb: CombatBasic = CombatBasic.new(tuning, null)
 	var me: Unit = Unit.new(1, 0)
+	me.stats = {"power_bonus": 0.0, "haste": 0.0, "crit_chance": 0.0}
 	var foe: Unit = Unit.new(2, 1)
+	foe.armor = "cloth"
 	foe.position = Vector3(0, 0, -4)
 	me.target_id = 2
-	var units: Dictionary = {1: me, 2: foe}
+	var cb: Combat = _combat_with([me, foe])
 	for t: int in 600:  # 10 s in range
-		cb.update_auto_attack(me, units, DT, t)
-	assert_int(cb.events.size()).is_equal(5)
-	assert_int(foe.health).is_equal(60000 - 5 * 1200)
+		cb.tick()
+		cb.sim.tick += 1
+	var hits: Array = cb.events.filter(func(e: Dictionary) -> bool: return e["type"] == "damage")
+	assert_int(hits.size()).is_equal(5)
+	assert_int(foe.health).is_equal(60000 - 5 * roundi(1200 * 0.9))  # cloth takes 10% less physical
 	cb.events.clear()
 	foe.position = Vector3(0, 0, -6)  # out of 5 m range
 	for t: int in 600:
-		cb.update_auto_attack(me, units, DT, t)
-	assert_int(cb.events.size()).is_equal(0)
+		cb.tick()
+		cb.sim.tick += 1
+	assert_int(cb.events.filter(func(e: Dictionary) -> bool: return e["type"] == "damage").size()).is_equal(0)

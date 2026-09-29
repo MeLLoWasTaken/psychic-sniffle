@@ -26,7 +26,6 @@
   },
   "damage": {
     "crit_multiplier": 1.5,
-    "base_crit_chance": 0.1,
     "armor_reduction": {
       "cloth": 0.1,
       "leather": 0.2,
@@ -47,8 +46,8 @@
     "rage": {
       "max": 100,
       "decay_per_s_out_of_combat": 2,
-      "gain_per_damage_dealt_pct": 0.05,
-      "gain_per_damage_taken_pct": 0.08
+      "per_1000_damage_dealt": 8,
+      "per_1000_damage_taken": 6
     },
     "energy": {
       "max": 100,
@@ -147,5 +146,12 @@
       "spear": "impact_pierce",
       "bow": "impact_pierce"
     }
+  },
+  "combat": {
+    "in_combat_s": 5,
+    "power_bonus": 0.0,
+    "haste": 0.0,
+    "crit_chance": 0.1,
+    "melee_leeway_m": 1.0
   }
 }

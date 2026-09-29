@@ -89,6 +89,26 @@
           ]
         }
       }
+    },
+    "stats": {
+      "type": "object",
+      "additionalProperties": false,
+      "description": "Fixed stat template (there is no gear). Omitted values use tuning defaults.",
+      "properties": {
+        "power_bonus": {
+          "type": "number",
+          "minimum": 0
+        },
+        "haste": {
+          "type": "number",
+          "minimum": 0
+        },
+        "crit_chance": {
+          "type": "number",
+          "minimum": 0,
+          "maximum": 1
+        }
+      }
     }
   }
 }

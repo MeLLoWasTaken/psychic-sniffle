@@ -97,6 +97,34 @@
       ],
       "height": 3.5,
       "blocks_los": true
+    },
+    {
+      "type": "box",
+      "min": [
+        -15.5,
+        -20
+      ],
+      "max": [
+        -14.5,
+        20
+      ],
+      "height": 5,
+      "blocks_los": true,
+      "gate": true
+    },
+    {
+      "type": "box",
+      "min": [
+        14.5,
+        -20
+      ],
+      "max": [
+        15.5,
+        20
+      ],
+      "height": 5,
+      "blocks_los": true,
+      "gate": true
     }
   ],
   "status": "draft"

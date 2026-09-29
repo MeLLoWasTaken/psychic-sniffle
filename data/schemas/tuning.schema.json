@@ -18,7 +18,8 @@
     "battleground",
     "rating",
     "talents",
-    "audio"
+    "audio",
+    "combat"
   ],
   "properties": {
     "simulation": {
@@ -130,15 +131,11 @@
       "additionalProperties": false,
       "required": [
         "crit_multiplier",
-        "base_crit_chance",
         "armor_reduction",
         "auto_attack"
       ],
       "properties": {
         "crit_multiplier": {
-          "type": "number"
-        },
-        "base_crit_chance": {
           "type": "number"
         },
         "armor_reduction": {
@@ -427,6 +424,35 @@
               "impact_pierce"
             ]
           }
+        }
+      }
+    },
+    "combat": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "in_combat_s",
+        "power_bonus",
+        "haste",
+        "crit_chance",
+        "melee_leeway_m"
+      ],
+      "properties": {
+        "in_combat_s": {
+          "type": "number"
+        },
+        "power_bonus": {
+          "type": "number"
+        },
+        "haste": {
+          "type": "number"
+        },
+        "crit_chance": {
+          "type": "number"
+        },
+        "melee_leeway_m": {
+          "type": "number",
+          "description": "Extra melee range granted while both units move, compensating for latency."
         }
       }
     }

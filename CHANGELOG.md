@@ -2,6 +2,13 @@
 
 One entry per build-loop iteration, newest first. Format: date, backlog ID, what changed, how it was checked.
 
+## 2026-09-29 — M1-01 to M1-09 Combat core
+- Added `game/core/combat.gd`: data-driven abilities (instant, cast, channel), GCD with haste and a 0.75 s floor, 400 ms spell queue, cooldowns and costs, mana and rage, auras (periodic effects, stacking, refresh rules, modifiers, absorbs, immunities), the damage and healing formula with armor and crits, casting rules (moving cancels, re-checks at completion), interrupts with school locks, crowd control with diminishing returns (100/50/25/immune, 18 s reset, 8 s cap), break-on-damage, Break Free, fear movement, roots and slows, dispels, knockbacks, blinks, area effects, line of sight at cast start and finish, and auto-attack.
+- Added `game/core/arena_match.gd`: 60 s preparation behind gate colliders, dampening from 3:00 (1:00 in 1v1), win on elimination, draw at 20:00.
+- Server rebuilt on the combat system with `skirmish` and `arena` modes; inputs carry ability presses; snapshots carry spec, resource, cast bar, auras, match state and the player's own cooldowns; combat events go out batched and reliable. Protocol version 2.
+- Fixed from tests: casts completed one tick late (off by one); 20 players with 4 auras each needed 110 KB/s, over the 96 KB/s budget, so snapshots now use compact encoding (positions in centimetres, 8-bit ids, aura time as ticks remaining; the player's own unit stays full precision).
+- Checked: 47 Godot tests pass (26 new combat and arena tests covering every M1-01..M1-09 criterion); clean and 150 ms lag matches still show 0 prediction corrections.
+
 ## 2026-09-29 — Weapon-type impacts and a lower heal ring (human feedback)
 - Feedback: the v2 hit sounded blunt; a sword should sound like a slash. The single hit became three families, each with three seeded variations and a Godot `AudioStreamRandomizer` (slight pitch and volume changes per play): `impact_blunt` (the v2 hit: maces, hammers, staves, fists), `impact_slash` (swords, axes, polearms: a smooth bright-to-dark swish, a short metal edge, a wet cut, a light thud) and `impact_pierce` (daggers, spears, arrows: a tight noise thunk and a sharp tip click).
 - Specs now declare a weapon (`type`, `hands`); `tuning.json` maps weapon types to impact sounds, and the validator requires a sound for every weapon type used.

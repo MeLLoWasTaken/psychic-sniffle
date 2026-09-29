@@ -114,45 +114,45 @@ The slice specs are Warblade Carnage (melee, rage), Arcanist Rime (casting, inte
 **Combat core**
 - [x] Report: `docs/reports/review_01.md`.
 
-### M1-01 Data-driven ability system `[todo]`
-- [ ] Ability fields: id, school, cast type (instant, cast, channel), cast time, cooldown, charges, triggers GCD, cost, range, needs line of sight, target type, effect list.
-- [ ] Three test abilities defined only in data (instant damage, 2.0 s cast, 3 s channel with ticks) work with no ability-specific code.
-- [ ] Unit tests cover each cast type.
+### M1-01 Data-driven ability system `[done]`
+- [x] Ability fields: id, school, cast type (instant, cast, channel), cast time, cooldown, charges, triggers GCD, cost, range, needs line of sight, target type, effect list.
+- [x] Three test abilities defined only in data (instant damage, 2.0 s cast, 3 s channel with ticks) work with no ability-specific code.
+- [x] Unit tests cover each cast type.
 
-### M1-02 Global cooldown and spell queue `[todo]`
-- [ ] GCD 1.5 s with haste down to a 0.75 s floor; fixed 1.0 s option for energy specs.
-- [ ] A press within the 400 ms queue window fires on the first tick after the GCD ends. Tests cover press times of 500, 400 and 100 ms before the GCD ends.
+### M1-02 Global cooldown and spell queue `[done]`
+- [x] GCD 1.5 s with haste down to a 0.75 s floor; fixed 1.0 s option for energy specs.
+- [x] A press within the 400 ms queue window fires on the first tick after the GCD ends. Tests cover press times of 500, 400 and 100 ms before the GCD ends.
 
-### M1-03 Resources: mana and rage `[todo]`
-- [ ] Mana with regeneration; rage built from dealing and taking damage, decaying out of combat. Values from `tuning.json`.
-- [ ] Abilities fail with a clear reason when the cost can't be paid. Unit tests for each resource.
+### M1-03 Resources: mana and rage `[done]`
+- [x] Mana with regeneration; rage built from dealing and taking damage, decaying out of combat. Values from `tuning.json`.
+- [x] Abilities fail with a clear reason when the cost can't be paid. Unit tests for each resource.
 
-### M1-04 Aura system `[todo]`
-- [ ] Buffs and debuffs with duration, stacks, periodic ticks, dispel type and source.
-- [ ] Refresh and stacking rules defined in data. Unit tests for expiry, stacking, periodic damage and dispel.
+### M1-04 Aura system `[done]`
+- [x] Buffs and debuffs with duration, stacks, periodic ticks, dispel type and source.
+- [x] Refresh and stacking rules defined in data. Unit tests for expiry, stacking, periodic damage and dispel.
 
-### M1-05 Damage, healing and combat log `[todo]`
-- [ ] Formula from DESIGN.md: base, power, crit ×1.5, armor or resistance, target modifiers, PvP modifier.
-- [ ] Every hit, heal, aura change and interrupt writes a combat log event.
-- [ ] Unit tests with hand-calculated expected numbers for each armor type.
+### M1-05 Damage, healing and combat log `[done]`
+- [x] Formula from DESIGN.md: base, power, crit ×1.5, armor or resistance, target modifiers, PvP modifier.
+- [x] Every hit, heal, aura change and interrupt writes a combat log event.
+- [x] Unit tests with hand-calculated expected numbers for each armor type.
 
-### M1-06 Casting rules and interrupts `[todo]`
-- [ ] Moving cancels casts unless the ability is `castable_while_moving`.
-- [ ] Interrupts end the cast and lock that school for the duration in data (3 to 4 s). Tests cover the lock and a cast from a different school going through.
+### M1-06 Casting rules and interrupts `[done]`
+- [x] Moving cancels casts unless the ability is `castable_while_moving`.
+- [x] Interrupts end the cast and lock that school for the duration in data (3 to 4 s). Tests cover the lock and a cast from a different school going through.
 
-### M1-07 Crowd control, diminishing returns and Break Free `[todo]`
-- [ ] CC categories needed by the slice: stun, incapacitate, disorient, silence, root. Break-on-damage rules per category.
-- [ ] Diminishing returns 100%, 50%, 25%, immune, resetting 18 s after the last CC in that category ends; 8 s cap on any single CC.
-- [ ] Break Free removes all CC, 90 s cooldown. Unit tests for the full DR sequence, the reset timer and Break Free.
+### M1-07 Crowd control, diminishing returns and Break Free `[done]`
+- [x] CC categories needed by the slice: stun, incapacitate, disorient, silence, root. Break-on-damage rules per category.
+- [x] Diminishing returns 100%, 50%, 25%, immune, resetting 18 s after the last CC in that category ends; 8 s cap on any single CC.
+- [x] Break Free removes all CC, 90 s cooldown. Unit tests for the full DR sequence, the reset timer and Break Free.
 
-### M1-08 Line of sight `[todo]`
-- [ ] A ray from caster eye to target chest against the `los_blocker` layer, checked at cast start and cast finish.
-- [ ] Test: a cast finishing after the target steps behind a pillar fails with "out of line of sight".
+### M1-08 Line of sight `[done]`
+- [x] A ray from caster eye to target chest against the `los_blocker` layer, checked at cast start and cast finish.
+- [x] Test: a cast finishing after the target steps behind a pillar fails with "out of line of sight".
 
-### M1-09 Arena match rules `[todo]`
-- [ ] 60 s preparation phase with closed gates, then gates open.
-- [ ] Dampening from 3:00: healing reduced 1% every 10 s. Draw at 20:00. Win when a team is fully dead.
-- [ ] Tests run the rules with sim time sped up.
+### M1-09 Arena match rules `[done]`
+- [x] 60 s preparation phase with closed gates, then gates open.
+- [x] Dampening from 3:00: healing reduced 1% every 10 s. Draw at 20:00. Win when a team is fully dead.
+- [x] Tests run the rules with sim time sped up.
 
 **Specs and bots**
 
