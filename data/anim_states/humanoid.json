@@ -64,5 +64,46 @@
     "disorient": "feared_run"
   },
   "death": "death",
-  "victory": "victory"
+  "victory": "victory",
+  "rig_modifiers": {
+    "look_at": {
+      "bones": [
+        {"bone": "chest", "share": 0.25, "yaw_limit_deg": 40, "pitch_limit_deg": 15},
+        {"bone": "neck", "share": 0.45, "yaw_limit_deg": 45, "pitch_limit_deg": 20},
+        {"bone": "head", "share": 1.0, "yaw_limit_deg": 55, "pitch_limit_deg": 30}
+      ],
+      "max_yaw_deg": 70,
+      "max_pitch_up_deg": 30,
+      "max_pitch_down_deg": 35,
+      "give_up_deg": 120,
+      "target_height_m": 1.55,
+      "min_target_distance_m": 0.6,
+      "marker_distance_m": 4.0,
+      "turn_s": 0.15,
+      "blend_in_s": 0.35,
+      "blend_out_s": 0.12,
+      "moving": {"share": 0.5, "max_deg": 100, "min_speed_mps": 0.5},
+      "suppress": ["stunned", "feared_run", "death", "victory", "hit", "attack_1", "attack_2", "attack_3"]
+    },
+    "foot_ik": {
+      "pelvis": "pelvis",
+      "legs": [
+        {"upper": "thigh_l", "lower": "calf_l", "foot": "foot_l"},
+        {"upper": "thigh_r", "lower": "calf_r", "foot": "foot_r"}
+      ],
+      "ground_layers": [1],
+      "ray_up_m": 0.5,
+      "ray_down_m": 0.5,
+      "max_raise_m": 0.35,
+      "max_drop_m": 0.35,
+      "max_pelvis_drop_m": 0.3,
+      "dead_zone_m": 0.005,
+      "smoothing_s": 0.06,
+      "pelvis_smoothing_s": 0.1,
+      "slope_tilt_max_deg": 25,
+      "blend_s": 0.15,
+      "foot_lock": {"enabled": true, "max_slide_m": 0.16, "max_turn_deg": 30, "release_s": 0.15},
+      "suppress": ["death"]
+    }
+  }
 }

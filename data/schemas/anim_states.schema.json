@@ -144,6 +144,96 @@
       "additionalProperties": {"$ref": "#/$defs/clip"}
     },
     "death": {"$ref": "#/$defs/clip"},
-    "victory": {"$ref": "#/$defs/clip"}
+    "victory": {"$ref": "#/$defs/clip"},
+    "rig_modifiers": {
+      "type": "object",
+      "additionalProperties": false,
+      "description": "Runtime polish from Godot's skeleton modifiers on top of the clips (backlog X-02, game/client/rig_modifiers.gd). Either section may be left out to skip it",
+      "properties": {
+        "look_at": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["bones", "max_yaw_deg", "max_pitch_up_deg", "max_pitch_down_deg", "give_up_deg", "target_height_m",
+            "min_target_distance_m", "marker_distance_m", "turn_s", "blend_in_s", "blend_out_s", "moving", "suppress"],
+          "description": "Head, neck and chest turn toward the target (its position plus target_height_m), else ahead leaning into the movement. The look direction is limited to max_yaw/pitch around the body's facing; a target more than give_up_deg to the side is ignored (look ahead)",
+          "properties": {
+            "bones": {
+              "type": "array", "minItems": 1, "maxItems": 4,
+              "description": "One LookAtModifier3D per bone, parents first, each turning its bone by its share of what remains toward the look direction, within its own limits (degrees either side of the animated pose). The last bone is the head: the look starts at its position",
+              "items": {
+                "type": "object", "additionalProperties": false,
+                "required": ["bone", "share", "yaw_limit_deg", "pitch_limit_deg"],
+                "properties": {
+                  "bone": {"type": "string"},
+                  "share": {"type": "number", "exclusiveMinimum": 0, "maximum": 1},
+                  "yaw_limit_deg": {"type": "number", "exclusiveMinimum": 0, "maximum": 90},
+                  "pitch_limit_deg": {"type": "number", "exclusiveMinimum": 0, "maximum": 90}
+                }
+              }
+            },
+            "max_yaw_deg": {"type": "number", "exclusiveMinimum": 0, "maximum": 120},
+            "max_pitch_up_deg": {"type": "number", "minimum": 0, "maximum": 80},
+            "max_pitch_down_deg": {"type": "number", "minimum": 0, "maximum": 80},
+            "give_up_deg": {"type": "number", "exclusiveMinimum": 0, "maximum": 180},
+            "target_height_m": {"type": "number", "minimum": 0, "maximum": 3, "description": "Look at this height above the target's feet (about head height)"},
+            "min_target_distance_m": {"type": "number", "minimum": 0, "description": "A target closer than this (ground distance from the eyes) is not looked at"},
+            "marker_distance_m": {"type": "number", "exclusiveMinimum": 0, "description": "The look marker sits this far from the head along the eased look direction"},
+            "turn_s": {"type": "number", "minimum": 0, "maximum": 2, "description": "Time constant of the look direction following its goal (no neck snapping)"},
+            "blend_in_s": {"type": "number", "minimum": 0, "maximum": 2, "description": "Look-at fading back in after a suppressing clip"},
+            "blend_out_s": {"type": "number", "minimum": 0, "maximum": 2, "description": "Look-at fading out when a suppressing clip starts"},
+            "moving": {
+              "type": "object", "additionalProperties": false, "required": ["share", "max_deg", "min_speed_mps"],
+              "description": "Without a target, the look turns this share of the way toward the direction of movement when it is within max_deg of the facing (strafes yes, backpedal no)",
+              "properties": {
+                "share": {"type": "number", "minimum": 0, "maximum": 1},
+                "max_deg": {"type": "number", "minimum": 0, "maximum": 180},
+                "min_speed_mps": {"type": "number", "minimum": 0}
+              }
+            },
+            "suppress": {"type": "array", "items": {"$ref": "#/$defs/clip"}, "uniqueItems": true,
+              "description": "While the override or action layer plays one of these clips, the look-at blends to 0 (it would fight the animation)"}
+          }
+        },
+        "foot_ik": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["pelvis", "legs", "ground_layers", "ray_up_m", "ray_down_m", "max_raise_m", "max_drop_m", "max_pelvis_drop_m",
+            "dead_zone_m", "smoothing_s", "pelvis_smoothing_s", "slope_tilt_max_deg", "blend_s", "foot_lock", "suppress"],
+          "description": "Feet on the actual floor: a ray down at each animated ankle measures the floor against the character's origin; the pelvis lowers for the lower foot and TwoBoneIK3D bends each leg to its offset. Level floors give offsets of 0, and then nothing runs",
+          "properties": {
+            "pelvis": {"type": "string"},
+            "legs": {
+              "type": "array", "minItems": 2, "maxItems": 2,
+              "items": {"type": "object", "additionalProperties": false, "required": ["upper", "lower", "foot"],
+                "properties": {"upper": {"type": "string"}, "lower": {"type": "string"}, "foot": {"type": "string"}}}
+            },
+            "ground_layers": {"type": "array", "items": {"type": "integer", "minimum": 1, "maximum": 32}, "minItems": 1, "uniqueItems": true,
+              "description": "Physics layers the foot rays hit (1 = world)"},
+            "ray_up_m": {"type": "number", "exclusiveMinimum": 0, "description": "Rays start this far above the origin's floor level"},
+            "ray_down_m": {"type": "number", "exclusiveMinimum": 0, "description": "and end this far below it"},
+            "max_raise_m": {"type": "number", "minimum": 0},
+            "max_drop_m": {"type": "number", "minimum": 0},
+            "max_pelvis_drop_m": {"type": "number", "minimum": 0},
+            "dead_zone_m": {"type": "number", "minimum": 0, "maximum": 0.05, "description": "Floor offsets smaller than this count as level"},
+            "smoothing_s": {"type": "number", "minimum": 0, "maximum": 1, "description": "Time constant of each foot's offset following the floor"},
+            "pelvis_smoothing_s": {"type": "number", "minimum": 0, "maximum": 1},
+            "slope_tilt_max_deg": {"type": "number", "minimum": 0, "maximum": 60, "description": "Feet tilt to the floor's slope up to this angle"},
+            "blend_s": {"type": "number", "minimum": 0, "maximum": 2, "description": "Grounding fading in on landing and out on take-off or a suppressing clip"},
+            "foot_lock": {
+              "type": "object", "additionalProperties": false, "required": ["enabled", "max_slide_m", "max_turn_deg", "release_s"],
+              "description": "Standing still, the feet hold their place and rotation while the body turns; past max_slide_m or max_turn_deg the foot farthest off lets go and eases back to its animated place over release_s, one foot at a time",
+              "properties": {
+                "enabled": {"type": "boolean"},
+                "max_slide_m": {"type": "number", "exclusiveMinimum": 0},
+                "max_turn_deg": {"type": "number", "exclusiveMinimum": 0, "maximum": 90},
+                "release_s": {"type": "number", "exclusiveMinimum": 0, "maximum": 1}
+              }
+            },
+            "suppress": {"type": "array", "items": {"$ref": "#/$defs/clip"}, "uniqueItems": true,
+              "description": "While the override or action layer plays one of these clips, grounding blends to 0"}
+          }
+        }
+      }
+    }
   }
 }

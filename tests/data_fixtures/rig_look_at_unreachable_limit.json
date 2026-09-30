@@ -1,0 +1,1 @@
+{"description": "Look-at limit the bones cannot reach", "file": "anim_states/humanoid.json", "set": {"/rig_modifiers/look_at/bones/1/yaw_limit_deg": 10, "/rig_modifiers/look_at/bones/2/yaw_limit_deg": 10}, "expect": "yaw limits add up to 60"}

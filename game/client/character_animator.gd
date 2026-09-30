@@ -20,7 +20,9 @@ extends Node
 ## they stay in step.
 ##
 ## The tree is advanced manually by update(), so a paused scene holds its pose and headless
-## tests are deterministic.
+## tests are deterministic. On top of the tree, RigModifiers (X-02, the states data's
+## rig_modifiers) turns the head toward the target and grounds the feet with Godot's skeleton
+## modifiers; update() drives it after the tree, with rig_state().
 ##   var anim: CharacterAnimator = CharacterAnimator.create(player, unit_id, team)
 ##   anim.push_event(ev)                       # combat events (cast_success, damage)
 ##   anim.update(unit_view, view, velocity, delta)
@@ -30,6 +32,7 @@ const TREE_NAME: String = "AnimationTree"
 var states: Dictionary = {}  ## data/anim_states/<set>.json
 var player: AnimationPlayer
 var tree: AnimationTree
+var rig: RigModifiers  ## look-at and foot grounding on top of the tree (X-02), or null
 var unit_id: int = -1
 var team: int = -1
 
@@ -88,6 +91,7 @@ static func create(p_player: AnimationPlayer, p_unit_id: int, p_team: int, set_i
 	a.player = p_player
 	p_player.get_parent().add_child(a)
 	a._build()
+	a.rig = RigModifiers.create(p_player, a.states.get("rig_modifiers", {}))
 	return a
 
 
@@ -165,6 +169,17 @@ func update(u: Dictionary, view: Dictionary, velocity: Vector3, delta: float) ->
 		state_changes += 1
 	seen_states[state()] = true
 	tree.advance(delta)
+	if rig != null:
+		rig.update(u, view, rig_state(), delta)
+
+
+## What the rig modifiers need from the animation state: the clips that may suppress them
+## (override and action, "" when none), airborne, standing still on the legs' own clips, and the
+## smoothed ground velocity.
+func rig_state() -> Dictionary:
+	var standing: bool = not airborne and override == "" and blend_target == Vector2.ZERO \
+		and blend_position.length() < 0.1 and lower_weight < 0.5
+	return {"clips": [override, action], "airborne": airborne, "standing": standing, "velocity": _last_velocity}
 
 
 ## What counts as a state change: the override while one applies (whatever runs beneath it),

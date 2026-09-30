@@ -142,6 +142,83 @@ def _check_anim_states(report: Report, rel: str, st: dict, db: dict, schemas: di
     speed = loco["speed_scale"]
     if speed["min"] > 1.0 or speed["max"] < 1.0:
         report.error(rel, "speed_scale must include 1.0 (full speed plays clips as authored)")
+    if "rig_modifiers" in st:
+        _check_rig_modifiers(report, rel, st["rig_modifiers"], clips)
+
+
+def _humanoid_parents() -> dict[str, str | None]:
+    """Bone -> parent from tools/blender/humanoid.py BONES (read as text, like _humanoid_bones)."""
+    import ast
+    tree = ast.parse((REPO / "tools" / "blender" / "humanoid.py").read_text())
+    for node in tree.body:
+        if isinstance(node, ast.Assign) and any(getattr(t, "id", "") == "BONES" for t in node.targets):
+            return {row[0]: row[3] for row in ast.literal_eval(node.value)}
+    return {}
+
+
+def _is_ancestor(parents: dict, ancestor: str, bone: str) -> bool:
+    node = parents.get(bone)
+    while node is not None:
+        if node == ancestor:
+            return True
+        node = parents.get(node)
+    return False
+
+
+def _check_rig_modifiers(report: Report, rel: str, rig: dict, clips: set) -> None:
+    """Rig modifiers (backlog X-02): standard bones in parent-to-child chains, clips that exist,
+    limits the look-at chain can actually reach, foot correction the pelvis can follow."""
+    parents = _humanoid_parents()
+    look = rig.get("look_at")
+    if look is not None:
+        names = [b["bone"] for b in look["bones"]]
+        for bone in names:
+            if bone not in parents:
+                report.error(rel, f"rig_modifiers.look_at: unknown bone '{bone}'")
+        if len(set(names)) != len(names):
+            report.error(rel, "rig_modifiers.look_at: a bone is listed twice")
+        for a, b in zip(names, names[1:]):
+            if a in parents and b in parents and not _is_ancestor(parents, a, b):
+                report.error(rel, f"rig_modifiers.look_at: '{a}' must be a parent (or ancestor) of '{b}' (parents first)")
+        if look["bones"] and look["bones"][-1]["share"] != 1.0:
+            report.error(rel, "rig_modifiers.look_at: the last bone (the head) must have share 1.0, or it never faces the look direction")
+        for axis, limit_key, bone_key in (("yaw", "max_yaw_deg", "yaw_limit_deg"),
+                                           ("pitch", "max_pitch_down_deg", "pitch_limit_deg"),
+                                           ("pitch", "max_pitch_up_deg", "pitch_limit_deg")):
+            reach = sum(b[bone_key] for b in look["bones"])
+            if reach < look[limit_key]:
+                report.error(rel, f"rig_modifiers.look_at: the bones' {axis} limits add up to {reach} degrees, less than {limit_key} {look[limit_key]}")
+        if look["give_up_deg"] < look["max_yaw_deg"]:
+            report.error(rel, "rig_modifiers.look_at: give_up_deg must be at least max_yaw_deg")
+        for clip in look["suppress"]:
+            if clip not in clips:
+                report.error(rel, f"rig_modifiers.look_at: suppress clip '{clip}' is not in the animation set")
+    feet = rig.get("foot_ik")
+    if feet is not None:
+        pelvis = feet["pelvis"]
+        if pelvis not in parents:
+            report.error(rel, f"rig_modifiers.foot_ik: unknown pelvis bone '{pelvis}'")
+        for i, leg in enumerate(feet["legs"]):
+            chain = [leg["upper"], leg["lower"], leg["foot"]]
+            unknown = [b for b in chain if b not in parents]
+            for bone in unknown:
+                report.error(rel, f"rig_modifiers.foot_ik: unknown bone '{bone}' in leg {i}")
+            if unknown:
+                continue
+            if parents[leg["lower"]] != leg["upper"] or parents[leg["foot"]] != leg["lower"]:
+                report.error(rel, f"rig_modifiers.foot_ik: leg {i} must be a chain (upper -> lower -> foot)")
+            if pelvis in parents and not _is_ancestor(parents, pelvis, leg["upper"]):
+                report.error(rel, f"rig_modifiers.foot_ik: pelvis '{pelvis}' must be an ancestor of '{leg['upper']}'")
+        feet_bones = [leg["foot"] for leg in feet["legs"]]
+        if len(set(feet_bones)) != len(feet_bones):
+            report.error(rel, "rig_modifiers.foot_ik: both legs end in the same foot")
+        if feet["max_pelvis_drop_m"] > feet["max_drop_m"]:
+            report.error(rel, "rig_modifiers.foot_ik: max_pelvis_drop_m must not exceed max_drop_m")
+        if feet["ray_up_m"] < feet["max_raise_m"] or feet["ray_down_m"] < feet["max_drop_m"]:
+            report.error(rel, "rig_modifiers.foot_ik: the rays must reach max_raise_m above and max_drop_m below the origin")
+        for clip in feet["suppress"]:
+            if clip not in clips:
+                report.error(rel, f"rig_modifiers.foot_ik: suppress clip '{clip}' is not in the animation set")
 
 
 def validate(data_dir: Path) -> list[str]:

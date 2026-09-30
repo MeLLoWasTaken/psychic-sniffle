@@ -1,0 +1,1 @@
+{"description": "Foot IK leg that is not a bone chain", "file": "anim_states/humanoid.json", "set": {"/rig_modifiers/foot_ik/legs/0/lower": "calf_r"}, "expect": "leg 0 must be a chain"}

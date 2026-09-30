@@ -1,0 +1,1 @@
+{"description": "Look-at bones out of parent-to-child order", "file": "anim_states/humanoid.json", "set": {"/rig_modifiers/look_at/bones/0/bone": "head", "/rig_modifiers/look_at/bones/2/bone": "chest"}, "expect": "must be a parent (or ancestor) of"}
