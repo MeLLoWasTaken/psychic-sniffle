@@ -1,6 +1,6 @@
 {
   "id": "hit_mace_plate",
-  "description": "Mace on plate: blunt crack. Sharp broadband crack, falling low thud with sub, crunching plates, short resonant clang (the approved impact_blunt, as data). Kept unprocessed: approved by the human before X-04; a processed alternative waits for the listening pass.",
+  "description": "Mace on plate: blunt crack. Sharp broadband crack, falling low thud with sub, crunching plates, short resonant clang (the approved impact_blunt, as data). Pitched about 3.5 semitones lower in processing (human feedback: lower).",
   "category": "impact",
   "peak_dbfs": -3.0,
   "variants": 3,
@@ -110,5 +110,5 @@
       "brightness": 3500
     }
   },
-  "processing": "none"
+  "processing": "impact_low"
 }

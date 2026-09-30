@@ -1,6 +1,6 @@
 {
   "id": "hit_mace_cloth",
-  "description": "Mace into cloth and body: blunt crack, duller. A smaller crack, heavier meaty thud, a bone-like crunch; no clang.",
+  "description": "Mace into cloth and body: blunt crack, duller. A smaller crack, heavier meaty thud, a bone-like crunch; no clang. Pitched about 3.5 semitones lower in processing (human feedback: lower).",
   "category": "impact",
   "peak_dbfs": -3.0,
   "variants": 3,
@@ -69,5 +69,6 @@
       "mix": 0.08,
       "brightness": 3000
     }
-  }
+  },
+  "processing": "impact_low"
 }

@@ -6,7 +6,7 @@
       "description": "Hits: rumble removed, low-mid body lifted and thickened by parallel saturation, glued by a slow-attack compressor, then the onset sharpened and the ring shortened again by a transient shaper, the top 3.5 dB of the crack trimmed so the body stays loud under the same peak, the 3 kHz bite eased, and each variation pitched slightly apart.",
       "effects": [
         {"fx": "highpass", "hz": 32, "order": 2},
-        {"fx": "peak", "hz": 190, "gain_db": 3.5, "q": 0.7},
+        {"fx": "peak", "hz": 190, "gain_db": 4.0, "q": 0.7},
         {"fx": "saturate", "band": [80, 320], "drive_db": 12, "mix": 0.45},
         {"fx": "compressor", "threshold_db": -18, "ratio": 2.0, "attack_ms": 10, "release_ms": 60},
         {"fx": "transient", "attack_db": 3.0, "sustain_db": -2.5, "fast_ms": 1.0, "slow_ms": 40},
@@ -23,6 +23,42 @@
         {"fx": "transient", "attack_db": 3.0, "sustain_db": -3.0, "fast_ms": 1.0, "slow_ms": 40},
         {"fx": "limiter", "threshold_db": -6, "release_ms": 30},
         {"fx": "varispeed", "semitones": [-0.6, 0.6]}
+      ]
+    },
+    "impact_tight": {
+      "description": "Very short, spiky hits (dagger, arrow): the light chain with firmer compression and a lower limiter, so a 30 ms thunk is not far quieter than other hits at the same peak.",
+      "effects": [
+        {"fx": "highpass", "hz": 40, "order": 2},
+        {"fx": "compressor", "threshold_db": -26, "ratio": 3.0, "attack_ms": 2, "release_ms": 50},
+        {"fx": "transient", "attack_db": 1.5, "sustain_db": 0.0, "fast_ms": 1.0, "slow_ms": 30},
+        {"fx": "limiter", "threshold_db": -9, "release_ms": 25},
+        {"fx": "varispeed", "semitones": [-0.6, 0.6]}
+      ]
+    },
+    "impact_low": {
+      "description": "Blunt hits pitched lower (human feedback on the mace: lower): the impact chain, then a tape-style resampling about 3.5 semitones down, which also stretches the hit by about a quarter for more weight.",
+      "effects": [
+        {"fx": "highpass", "hz": 28, "order": 2},
+        {"fx": "peak", "hz": 170, "gain_db": 3.0, "q": 0.7},
+        {"fx": "saturate", "band": [70, 300], "drive_db": 12, "mix": 0.45},
+        {"fx": "compressor", "threshold_db": -18, "ratio": 2.0, "attack_ms": 10, "release_ms": 60},
+        {"fx": "transient", "attack_db": 3.0, "sustain_db": -3.0, "fast_ms": 1.0, "slow_ms": 40},
+        {"fx": "limiter", "threshold_db": -5, "release_ms": 30},
+        {"fx": "peak", "hz": 3200, "gain_db": -1.5, "q": 1.0},
+        {"fx": "varispeed", "semitones": [-4.0, -3.0]}
+      ]
+    },
+    "slash": {
+      "description": "Edged hits (human feedback: a sword must sound like a slash): no low-mid boost, the draw and scrape lifted with a presence peak and an air shelf, the onset sharpened while the draw's sustain is kept, a short bright plate above 1.5 kHz so the cut rings into the room, each variation pitched slightly apart.",
+      "effects": [
+        {"fx": "highpass", "hz": 90, "order": 2},
+        {"fx": "peak", "hz": 4500, "gain_db": 2.5, "q": 0.8},
+        {"fx": "high_shelf", "hz": 8000, "gain_db": 2.0, "q": 0.7},
+        {"fx": "compressor", "threshold_db": -16, "ratio": 2.0, "attack_ms": 5, "release_ms": 80},
+        {"fx": "transient", "attack_db": 2.0, "sustain_db": 0.0, "fast_ms": 1.0, "slow_ms": 30},
+        {"fx": "limiter", "threshold_db": -5, "release_ms": 30},
+        {"fx": "plate", "decay_s": 0.35, "predelay_ms": 8, "damping_hz": 7000, "wet": 0.12, "above_hz": 1500},
+        {"fx": "varispeed", "semitones": [-0.5, 0.5]}
       ]
     },
     "cast": {
@@ -142,7 +178,7 @@
   },
   "dry_categories": ["interface", "warning"],
   "loudness": {
-    "impact": {"plr_lu": [10, 26], "max_spread_lu": 3.3},
+    "impact": {"plr_lu": [10, 26], "max_spread_lu": 3.0},
     "cast": {"plr_lu": [10.5, 14], "max_spread_lu": 1.0},
     "loop": {"plr_lu": [9, 11.5], "max_spread_lu": 0.8},
     "release": {"plr_lu": [9.5, 20.5], "max_spread_lu": 2.5},

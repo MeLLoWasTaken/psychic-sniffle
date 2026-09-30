@@ -2,6 +2,19 @@
 
 One entry per build-loop iteration, newest first. Format: date, backlog ID, what changed, how it was checked.
 
+## 2026-09-30 — Sound feedback, X-05
+- The human preferred the processed versions of all four approved sounds, so every sound is now processed.
+- Slash v3 (impact_slash and both greatsword hits), after human feedback that it still did not sound like a slash:
+  - A contact tick, then a bright draw that sweeps downward and fades over about 0.2 s, a grainy scrape, a short edge ring and a fibrous tear.
+  - Plate adds a clang; cloth adds a heavier tear.
+  - A new `slash` chain brightens it; the spectrograms show the falling sweep.
+- The mace and blunt hits are pitched 3-4 semitones lower (`impact_low` chain), after human feedback.
+- The dagger hit got denser (`impact_tight`), which brought the impact category's loudness spread back under its limit.
+- The default impact chain's body lift went from 3.5 to 4.0 dB.
+- Each impact chain now has its own goal test; 490 audio tests pass, including weapon and armour identity.
+- X-05 mesh quality: pymeshlab, pyfqmr and Taubin smoothing were measured on every character piece at equal triangle budgets. None kept: cleaner triangles, but they lost detail. Follow-up X-11.
+- scikit-image added to the pinned requirements (it was used but not listed).
+
 ## 2026-09-30 — X-01: motion-capture run and idle
 - New capture pipeline:
   - `tools/blender/mocap.py` reads CMU BVH files.

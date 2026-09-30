@@ -376,7 +376,10 @@ def _mean(sids, fn, processed_flag):
 
 @pytest.fixture(scope="module")
 def impact_features():
-    sids = [sid for sid, r in RECIPES.items() if r["category"] == "impact" and r.get("processing") != "none"]
+    # the default impact chain's goal (body and punch); the other impact chains have their own
+    # goals, tested below (slash: brighter, human feedback that a sword must sound like a slash;
+    # impact_low: lower, human feedback on the mace; light and tight: onset only)
+    sids = [sid for sid, r in RECIPES.items() if r["category"] == "impact" and r.get("processing", "impact") == "impact"]
     feats = {"low_mid": analysis.low_mid_share, "crest": analysis.crest_factor_db, "mud": analysis.mud_share,
              "harsh": analysis.harsh_share, "momentary": analysis.momentary_max, "decay": analysis.decay_time}
     return {k: (_mean(sids, fn, False), _mean(sids, fn, True)) for k, fn in feats.items()}
@@ -394,6 +397,28 @@ def test_processing_gives_impacts_body_and_punch_without_mud_or_harshness(impact
     assert f["mud"][1] <= f["mud"][0] + 0.015, f["mud"]
     assert f["harsh"][1] < f["harsh"][0], f["harsh"]
     assert f["decay"][1] <= f["decay"][0] * 1.3, f["decay"]
+
+
+def _chain_sids(chain):
+    return [sid for sid, r in RECIPES.items() if r.get("processing") == chain]
+
+
+def test_slash_chain_brightens_and_keeps_the_draw():
+    """Slashes: more energy above 2 kHz after processing, and the draw is not shortened."""
+    sids = _chain_sids("slash")
+    assert sids
+    high = [_mean(sids, lambda x, sr: analysis.band_share(x, sr, 24000, 2000), p) for p in (False, True)]
+    decay = [_mean(sids, analysis.decay_time, p) for p in (False, True)]
+    assert high[1] >= high[0], high
+    assert decay[1] >= decay[0] * 0.9, decay
+
+
+def test_low_impact_chain_lowers_the_pitch():
+    """impact_low (the mace): the spectral centroid drops by at least 2 semitones."""
+    sids = _chain_sids("impact_low")
+    assert sids
+    c = [_mean(sids, lambda x, sr: np.log2(analysis.spectral_centroid(x, sr)), p) for p in (False, True)]
+    assert c[0] - c[1] > 2 / 12, c
 
 
 def test_processing_gives_casts_space_and_keeps_their_low_end_dry():

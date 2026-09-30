@@ -68,7 +68,7 @@
                   "wet": {"$ref": "#/$defs/mix"}}, "additionalProperties": false}},
         {"if": {"properties": {"fx": {"const": "varispeed"}}},
          "then": {"required": ["semitones"], "properties": {"fx": true,
-                  "semitones": {"type": "array", "items": {"type": "number", "minimum": -3, "maximum": 3}, "minItems": 2, "maxItems": 2}},
+                  "semitones": {"type": "array", "items": {"type": "number", "minimum": -12, "maximum": 12, "description": "Per-variation range; a range away from 0 pitches the whole sound (impact_low)."}, "minItems": 2, "maxItems": 2}},
                   "additionalProperties": false}}
       ]
     },

@@ -1,9 +1,9 @@
 {
   "id": "impact_blunt",
-  "description": "Blunt weapon on armour (v2, human-approved): crack, low thud, crunch, short resonant clang. Fallback hit for blunt weapon types without their own sounds. Kept unprocessed: approved by the human before X-04; a processed alternative waits for the listening pass.",
+  "description": "Blunt weapon on armour (v2, human-approved): crack, low thud, crunch, short resonant clang. Fallback hit for blunt weapon types without their own sounds. Pitched about 3.5 semitones lower in processing (human feedback: lower).",
   "category": "impact",
   "peak_dbfs": -3.0,
   "variants": 3,
   "builtin": "impact_blunt",
-  "processing": "none"
+  "processing": "impact_low"
 }

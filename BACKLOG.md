@@ -324,14 +324,18 @@ The human asked to incorporate any readily available offering that improves the 
 - [x] Add pedalboard (PyPI) effects to the sound build: convolution or algorithmic reverb, compression, saturation, EQ; an arena reverb on the world buses in Godot.
 - [x] All existing audio tests still pass (peaks, tonality, clicks, CC warning loudest); spectrogram review; list for the human's listening pass.
 
-### X-05 Mesh quality pass `[todo]`
-- [ ] Try isotropic remeshing (pymeshlab) and quadric simplification that preserves UVs and normals (pyfqmr) on the SDF-extracted pieces; keep it only if shading is cleaner at the same triangle budget (before-and-after close-ups).
+### X-05 Mesh quality pass `[done]` (no change kept)
+- [x] Tried pymeshlab quadric and isotropic remeshing, pyfqmr and Taubin smoothing on all 69 character pieces at equal triangle budgets (slivers, normal error, Hausdorff shape error, time, close-ups). Blender Decimate stays: the others have cleaner triangles but lose shape and detail (DECISIONS 2026-09-30).
+
+### X-11 Body smoothing shrink `[todo]`
+- [ ] The body's Corrective Smooth shrinks it by 4-7 mm RMS and blurs the face, knuckles and knees. Widen the Oracle's mask and coif offsets (skin pokes through at the chin and ear without the smooth), drop the smooth, rerun the clipping gate and compare close-ups.
 
 ### X-06 Continuous integration on GitHub Actions `[doing]`
 - [ ] Run tools/check_all on every push, and a nightly job on a multi-core runner for the balance simulations and the 20-player performance profile (the workspace has 2 cores, which skews those numbers).
 
 ### X-09 Follow-ups from X-03 and X-04 `[todo]`
-- [ ] Human listening pass on the processed sounds (start with `cc_warning`, `hit_mace_plate`, `hit_greatsword_plate`, `break_free`, `rime_bolt_release`, `frost_cast_start`, `red_mist`, `holy_heal`, then a practice fight in Gallows Courtyard for the room and the duck), and a choice for the three approved sounds kept unprocessed: approved original or processed alternative (`previews/audio/x04/listening_ab/`).
+- [x] Listening pass on the approved sounds: the human preferred every processed version; the slash still did not read as a slash (redone as v3) and the mace should be lower (impact_low).
+- [ ] Human listening pass on slash v3 and the lowered mace (`impact_slash`, `hit_greatsword_plate`, `hit_greatsword_cloth`, `hit_mace_plate`, `impact_blunt`), then the rest of the processed sounds (start with `cc_warning`, `hit_mace_plate`, `hit_greatsword_plate`, `break_free`, `rime_bolt_release`, `frost_cast_start`, `red_mist`, `holy_heal`, then a practice fight in Gallows Courtyard for the room and the duck), and a choice for the three approved sounds kept unprocessed: approved original or processed alternative (`previews/audio/x04/listening_ab/`).
 - [ ] Tune the world duck under the CC warning by ear; acoustics file for every new map; model the reverb's stereo spread in the numpy check.
 - [ ] Lighter out-of-range tint on action buttons (the red covers the glyph); spec icons for unit-frame portraits; regenerate the combat-text review screenshot.
 

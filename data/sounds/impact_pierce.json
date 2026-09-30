@@ -3,7 +3,7 @@
   "description": "Piercing weapon strike: tight thunk and sharp tip click. Fallback hit for daggers, spears, bows.",
   "category": "impact",
   "peak_dbfs": -3.0,
-  "processing": "impact_light",
+  "processing": "impact_tight",
   "variants": 3,
   "builtin": "impact_pierce"
 }
