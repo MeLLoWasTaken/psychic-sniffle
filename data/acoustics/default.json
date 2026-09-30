@@ -1,0 +1,14 @@
+{
+  "id": "default",
+  "description": "Maps without their own acoustics, and scenes without a map: a small, well-damped outdoor space. The tail sits about 22 dB under a hit, so sounds keep some air but no room character.",
+  "reverb": {
+    "room_size": 0.3,
+    "damping": 0.6,
+    "spread": 0.6,
+    "hipass": 0.06,
+    "dry": 1.0,
+    "wet": 0.08,
+    "predelay_ms": 25,
+    "predelay_feedback": 0.1
+  }
+}

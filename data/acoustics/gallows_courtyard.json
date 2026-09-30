@@ -1,0 +1,14 @@
+{
+  "id": "gallows_courtyard",
+  "description": "Walled stone execution yard, open to the sky (39 by 36 m, 6 m walls, four pillars): hard walls give a bright tail (low damping) of medium length; the open top keeps it from building into a hall. The tail sits about 12 dB under a hit (wet/dry energy, tools/audio/arena.py) and has faded 60 dB about 0.7 s after it. A faint flutter echo every 45 ms between the parallel walls; the lowest octaves stay out of the tail (no mud).",
+  "reverb": {
+    "room_size": 0.55,
+    "damping": 0.35,
+    "spread": 0.8,
+    "hipass": 0.04,
+    "dry": 1.0,
+    "wet": 0.18,
+    "predelay_ms": 45,
+    "predelay_feedback": 0.25
+  }
+}

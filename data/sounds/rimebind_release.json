@@ -3,6 +3,7 @@
   "description": "Rimebind: ice spreading over the ground around the caster, crunching and creaking.",
   "category": "release",
   "peak_dbfs": -4.0,
+  "processing": "magic_release",
   "duration_s": 1.35,
   "layers": [
     {

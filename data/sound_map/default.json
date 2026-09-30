@@ -14,7 +14,16 @@
     "allies": "EffectsAllies",
     "enemies": "EffectsEnemies",
     "interface": "Interface",
-    "warning": "Interface"
+    "warning": "Interface",
+    "world": "Effects"
+  },
+  "ducking": {
+    "bus": "Effects",
+    "sidechain": "Interface",
+    "threshold_db": -6,
+    "ratio": 2,
+    "attack_us": 500,
+    "release_ms": 300
   },
   "attenuation": {
     "world": {

@@ -2,7 +2,8 @@ class_name SoundBank
 extends RefCounted
 ## The game's sound data (backlog M1-26): recipes in data/sounds (levels, category, playback
 ## overrides) and the sound map data/sound_map/default.json (which sound plays when, buses,
-## attenuation, voice limits), plus the generated streams in assets/audio/sfx.
+## attenuation, voice limits, ducking), the room sound of each map (data/acoustics, X-04), plus
+## the generated streams in assets/audio/sfx.
 ##
 ## Sound references in the map are sound ids, or "@weapon_swing" / "@weapon_hit", which resolve
 ## from the caster's spec weapon (data/specs weapon type and hands) and the target's class armor.
@@ -12,12 +13,14 @@ extends RefCounted
 
 const SOUNDS_DIR: String = "res://data/sounds"
 const MAP_DIR: String = "res://data/sound_map"
+const ACOUSTICS_DIR: String = "res://data/acoustics"
 const SFX_DIR: String = "res://assets/audio/sfx"
 
 static var _shared: SoundBank = null
 
 var sounds: Dictionary = {}  ## id -> recipe (data/sounds/<id>.json)
 var map: Dictionary = {}  ## the sound map
+var acoustics: Dictionary = {}  ## map id (or "default") -> room sound (data/acoustics, backlog X-04)
 var _streams: Dictionary = {}
 var _lengths: Dictionary = {}
 var _playback: Dictionary = {}
@@ -45,6 +48,18 @@ func _init(map_id: String = "default") -> void:
 		map = parsed
 	else:
 		Log.error("sound_bank: cannot read sound map '%s'" % map_id)
+	var adir: DirAccess = DirAccess.open(ACOUSTICS_DIR)
+	if adir != null:
+		for f: String in adir.get_files():
+			if f.ends_with(".json"):
+				var a: Variant = JSON.parse_string(FileAccess.get_file_as_string(ACOUSTICS_DIR.path_join(f)))
+				if a is Dictionary:
+					acoustics[str(a["id"])] = a
+
+
+## The room sound of a map: its data/acoustics file, else "default" ({} if neither exists).
+func acoustics_for(map_id: String) -> Dictionary:
+	return acoustics.get(map_id, acoustics.get("default", {}))
 
 
 ## True when the sound has a recipe (and so a generated file).

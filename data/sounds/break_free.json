@@ -3,6 +3,7 @@
   "description": "Break Free (any class): chains snapping - a burst of metal clanks and a release of force.",
   "category": "release",
   "peak_dbfs": -4.0,
+  "processing": "impact",
   "duration_s": 0.8,
   "layers": [
     {

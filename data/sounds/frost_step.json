@@ -3,6 +3,7 @@
   "description": "Frost Step (blink): a rising rush of cold air, cut off by a pop where the caster reappears.",
   "category": "release",
   "peak_dbfs": -5.0,
+  "processing": "magic_release",
   "duration_s": 0.75,
   "layers": [
     {

@@ -8,6 +8,13 @@
   - recipe rules that can be read from the text (tools/audio/layers.py static_problems):
     impacts hold no pure tone above 200 Hz, no layer is cut off while still loud;
   - levels: only warnings may peak above -2 dBFS, and the CC warning has the highest peak.
+Backlog X-04 adds:
+  - processing chains (data/sound_processing, tools/audio/processing.py problems): every
+    category and "processing" reference names a chain, chains start with a high-pass, loops use
+    no time-varying effect, interface and warning chains are dry;
+  - acoustics (data/acoustics) are named after maps, and a default exists;
+  - the world bus that carries the arena reverb is not the interface or warning bus, and the
+    ducking compressor listens to the warning bus.
 """
 from __future__ import annotations
 
@@ -147,3 +154,30 @@ def check(error: Callable[[str, str], None], db: dict[str, dict], data_dir: Path
                     error(rel, f"weapons/{key}: no hit for armor '{armor}' (add it or 'default')")
         for name in ("click", "target", "error"):
             need(m["interface"][name], f"interface/{name}")
+
+        # ---- world bus, arena reverb and ducking (backlog X-04) ---------------------------
+        b = m["buses"]
+        world = b.get("world")
+        if world is not None and world in (b["interface"], b["warning"]):
+            error(rel, f"buses/world: '{world}' carries the arena reverb; interface and warning sounds must stay dry")
+        duck = m.get("ducking")
+        if duck is not None:
+            if duck["sidechain"] != b["warning"]:
+                error(rel, f"ducking/sidechain: must be the warning bus '{b['warning']}' (the world dips under the warning)")
+            if duck["bus"] in (b["interface"], b["warning"]):
+                error(rel, "ducking/bus: the warning must not duck itself")
+
+    # ---- processing chains and acoustics (backlog X-04) -------------------------------
+    import processing
+    procs: dict = db.get("sound_processing", {})
+    if "default" not in procs:
+        error("sound_processing", "missing data/sound_processing/default.json (the build's processing chains)")
+    else:
+        for where, problem in processing.problems(procs["default"], sounds):
+            error(where, problem)
+    acoustics: dict = db.get("acoustics", {})
+    if "default" not in acoustics:
+        error("acoustics", "missing data/acoustics/default.json (the reverb for maps without their own)")
+    for aid in acoustics:
+        if aid != "default" and aid not in db.get("maps", {}):
+            error(f"acoustics/{aid}.json", f"no map '{aid}' (acoustics files are named after maps, or 'default')")

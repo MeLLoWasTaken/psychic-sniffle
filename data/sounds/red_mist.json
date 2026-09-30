@@ -3,6 +3,7 @@
   "description": "Red Mist (rage buff): a rising low rumble, heartbeats and a growl of blood rushing.",
   "category": "buff",
   "peak_dbfs": -5.0,
+  "processing": "buff_physical",
   "duration_s": 2.4,
   "layers": [
     {

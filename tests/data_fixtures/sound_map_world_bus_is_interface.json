@@ -1,0 +1,1 @@
+{"description": "The arena reverb is put on the Interface bus, so the CC warning would get reverb (X-04)", "file": "sound_map/default.json", "set": {"/buses/world": "Interface"}, "expect": "interface and warning sounds must stay dry"}

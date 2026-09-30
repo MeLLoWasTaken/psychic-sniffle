@@ -1,0 +1,1 @@
+{"description": "A sound names a processing chain that does not exist (X-04)", "file": "sounds/red_mist.json", "set": {"/processing": "rage_chain"}, "expect": "processing: unknown chain 'rage_chain'"}

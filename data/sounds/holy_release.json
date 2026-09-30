@@ -3,6 +3,7 @@
   "description": "Holy spell released (Castigate): a bright burst of light with a short sparkle.",
   "category": "release",
   "peak_dbfs": -5.0,
+  "processing": "magic_release",
   "duration_s": 1.0,
   "layers": [
     {

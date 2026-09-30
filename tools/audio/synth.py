@@ -9,7 +9,9 @@ Every game sound is described by a data file, data/sounds/<id>.json (backlog M1-
 list of layers (tools/audio/layers.py) or "builtin", the name of a Python recipe below (the
 first sounds, kept exactly as the human approved them). The data file also gives the peak
 level, loop flag, number of seeded variations and the seed, so every file can be rebuilt from
-text.
+text. The mix then goes through its studio processing chain (backlog X-04,
+tools/audio/processing.py, data/sound_processing/default.json) before it is normalised and
+encoded.
 
 Usage:
   python3 tools/audio/synth.py --list                 # data sounds and builtin recipes
@@ -365,22 +367,35 @@ def load_sound_data(data_dir: Path = DATA_DIR) -> dict[str, dict]:
 
 
 def recipe_hash(recipe: dict) -> str:
-    """Changes when the recipe text or the generator code changes."""
+    """Changes when the recipe text, its processing chain (data/sound_processing) or the generator
+    code changes."""
     import hashlib
     import json
+    sys.path.insert(0, str(Path(__file__).parent))
+    import processing
     h = hashlib.sha1(json.dumps(recipe, sort_keys=True).encode())
-    for src in ("synth.py", "layers.py"):
+    h.update(json.dumps(processing.chain_for(recipe), sort_keys=True).encode())
+    for src in ("synth.py", "layers.py", "processing.py"):
         h.update((Path(__file__).parent / src).read_bytes())
     return h.hexdigest()[:16]
 
 
-def signal_for(recipe: dict, seed: int) -> np.ndarray:
-    """The unnormalised signal of a data recipe for one seed."""
+def signal_for(recipe: dict, seed: int, processed: bool = True) -> np.ndarray:
+    """The unnormalised signal of a data recipe for one seed: its layers (or builtin recipe), then
+    its processing chain (backlog X-04; processed=False gives the raw mix, for comparisons)."""
     rng = np.random.default_rng(seed)
     if "builtin" in recipe:
-        return RECIPES[recipe["builtin"]][0](rng)
-    import layers
-    return layers.render(recipe, rng)
+        x = RECIPES[recipe["builtin"]][0](rng)
+    else:
+        sys.path.insert(0, str(Path(__file__).parent))
+        import layers
+        x = layers.render(recipe, rng)
+    if not processed:
+        return x
+    import processing
+    # its own generator, so the layers draw the same numbers with or without processing
+    return processing.apply_chain(x, processing.chain_for(recipe), np.random.default_rng([seed, 4]),
+                                  bool(recipe.get("loops", False)), recipe["id"])
 
 
 def output_stems(recipe: dict) -> list[str]:

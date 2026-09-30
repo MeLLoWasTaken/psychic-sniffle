@@ -1,0 +1,117 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "sound_processing.schema.json",
+  "title": "Sound processing chains",
+  "description": "Studio processing of generated sounds (backlog X-04): named chains of effects that tools/audio/synth.py applies after mixing a recipe's layers and before normalising and encoding it (tools/audio/processing.py documents every effect). Levels are relative to the sound's peak before processing.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["id", "description", "chains", "categories", "loudness"],
+  "$defs": {
+    "hz": {"type": "number", "exclusiveMinimum": 0, "maximum": 20000},
+    "db": {"type": "number", "minimum": -24, "maximum": 24},
+    "mix": {"type": "number", "minimum": 0, "maximum": 1},
+    "ms": {"type": "number", "exclusiveMinimum": 0, "maximum": 2000},
+    "effect": {
+      "type": "object",
+      "required": ["fx"],
+      "properties": {
+        "fx": {"enum": ["highpass", "lowpass", "low_shelf", "high_shelf", "peak", "saturate", "transient", "compressor",
+                        "limiter", "chorus", "phaser", "room", "plate", "varispeed"]},
+        "mix": {"$ref": "#/$defs/mix", "description": "Blend of processed and dry (not for saturate, room, plate, varispeed)"},
+        "above_hz": {"$ref": "#/$defs/hz", "description": "Process only the band above this frequency; the rest passes untouched"}
+      },
+      "allOf": [
+        {"if": {"properties": {"fx": {"enum": ["highpass", "lowpass"]}}},
+         "then": {"required": ["hz"], "properties": {"fx": true, "mix": true, "above_hz": true, "hz": {"$ref": "#/$defs/hz"},
+                  "order": {"type": "integer", "minimum": 1, "maximum": 8}}, "additionalProperties": false}},
+        {"if": {"properties": {"fx": {"enum": ["low_shelf", "high_shelf", "peak"]}}},
+         "then": {"required": ["hz", "gain_db"], "properties": {"fx": true, "mix": true, "above_hz": true, "hz": {"$ref": "#/$defs/hz"},
+                  "gain_db": {"type": "number", "minimum": -12, "maximum": 12}, "q": {"type": "number", "minimum": 0.1, "maximum": 10}},
+                  "additionalProperties": false}},
+        {"if": {"properties": {"fx": {"const": "saturate"}}},
+         "then": {"required": ["drive_db", "mix"], "properties": {"fx": true, "mix": true, "above_hz": true,
+                  "drive_db": {"type": "number", "minimum": 0, "maximum": 30},
+                  "band": {"type": "array", "items": {"$ref": "#/$defs/hz"}, "minItems": 2, "maxItems": 2}},
+                  "additionalProperties": false}},
+        {"if": {"properties": {"fx": {"const": "transient"}}},
+         "then": {"properties": {"fx": true, "mix": true, "above_hz": true, "attack_db": {"$ref": "#/$defs/db"},
+                  "sustain_db": {"$ref": "#/$defs/db"}, "fast_ms": {"$ref": "#/$defs/ms"}, "slow_ms": {"$ref": "#/$defs/ms"}},
+                  "additionalProperties": false}},
+        {"if": {"properties": {"fx": {"const": "compressor"}}},
+         "then": {"required": ["threshold_db", "ratio", "attack_ms", "release_ms"], "properties": {"fx": true, "mix": true,
+                  "above_hz": true, "threshold_db": {"type": "number", "minimum": -60, "maximum": 0},
+                  "ratio": {"type": "number", "minimum": 1, "maximum": 20}, "attack_ms": {"$ref": "#/$defs/ms"},
+                  "release_ms": {"$ref": "#/$defs/ms"}}, "additionalProperties": false}},
+        {"if": {"properties": {"fx": {"const": "limiter"}}},
+         "then": {"required": ["threshold_db", "release_ms"], "properties": {"fx": true, "mix": true, "above_hz": true,
+                  "threshold_db": {"type": "number", "minimum": -12, "maximum": 0}, "release_ms": {"$ref": "#/$defs/ms"},
+                  "lookahead_ms": {"type": "number", "minimum": 0.1, "maximum": 10}},
+                  "additionalProperties": false}},
+        {"if": {"properties": {"fx": {"const": "chorus"}}},
+         "then": {"required": ["rate_hz", "depth"], "properties": {"fx": true, "mix": true, "above_hz": true,
+                  "rate_hz": {"type": "number", "exclusiveMinimum": 0, "maximum": 10}, "depth": {"$ref": "#/$defs/mix"},
+                  "centre_delay_ms": {"type": "number", "minimum": 1, "maximum": 30},
+                  "feedback": {"type": "number", "minimum": -0.9, "maximum": 0.9}}, "additionalProperties": false}},
+        {"if": {"properties": {"fx": {"const": "phaser"}}},
+         "then": {"required": ["rate_hz", "depth"], "properties": {"fx": true, "mix": true, "above_hz": true,
+                  "rate_hz": {"type": "number", "exclusiveMinimum": 0, "maximum": 10}, "depth": {"$ref": "#/$defs/mix"},
+                  "centre_hz": {"$ref": "#/$defs/hz"}, "feedback": {"type": "number", "minimum": -0.9, "maximum": 0.9}},
+                  "additionalProperties": false}},
+        {"if": {"properties": {"fx": {"const": "room"}}},
+         "then": {"required": ["room_size", "damping", "wet"], "properties": {"fx": true, "above_hz": true,
+                  "room_size": {"$ref": "#/$defs/mix"}, "damping": {"$ref": "#/$defs/mix"}, "wet": {"$ref": "#/$defs/mix"},
+                  "dry": {"$ref": "#/$defs/mix"}}, "additionalProperties": false}},
+        {"if": {"properties": {"fx": {"const": "plate"}}},
+         "then": {"required": ["decay_s", "wet"], "properties": {"fx": true, "above_hz": true,
+                  "decay_s": {"type": "number", "minimum": 0.1, "maximum": 4},
+                  "predelay_ms": {"type": "number", "minimum": 0, "maximum": 100}, "damping_hz": {"$ref": "#/$defs/hz"},
+                  "wet": {"$ref": "#/$defs/mix"}}, "additionalProperties": false}},
+        {"if": {"properties": {"fx": {"const": "varispeed"}}},
+         "then": {"required": ["semitones"], "properties": {"fx": true,
+                  "semitones": {"type": "array", "items": {"type": "number", "minimum": -3, "maximum": 3}, "minItems": 2, "maxItems": 2}},
+                  "additionalProperties": false}}
+      ]
+    },
+    "category": {"enum": ["impact", "heal", "buff", "cast", "loop", "release", "swing", "footstep", "interface", "warning"]}
+  },
+  "properties": {
+    "id": {"$ref": "common.schema.json#/$defs/id"},
+    "description": {"type": "string"},
+    "chains": {
+      "type": "object",
+      "minProperties": 1,
+      "propertyNames": {"$ref": "common.schema.json#/$defs/id"},
+      "additionalProperties": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["description", "effects"],
+        "properties": {
+          "description": {"type": "string", "description": "What the chain does to the sound (for the human listening pass)"},
+          "dry": {"type": "boolean", "description": "No reverb, chorus, phaser or pitch change: required for the dry categories"},
+          "effects": {"type": "array", "items": {"$ref": "#/$defs/effect"}, "minItems": 1}
+        }
+      }
+    },
+    "categories": {
+      "type": "object",
+      "description": "Default chain per sound category (\"none\" for no processing)",
+      "propertyNames": {"$ref": "#/$defs/category"},
+      "additionalProperties": {"type": "string"}
+    },
+    "dry_categories": {"type": "array", "items": {"$ref": "#/$defs/category"}, "description": "Categories whose chains must be marked dry (interface sounds and warnings stay dry and on top)"},
+    "loudness": {
+      "type": "object",
+      "description": "Loudness windows per category, checked on every generated file by tests/test_audio.py. plr_lu: peak-to-loudness ratio, the recipe's peak_dbfs minus the file's loudest 400 ms (BS.1770 momentary loudness): how dense a sound is under its peak, independent of the level the recipe chose. max_spread_lu: the largest allowed standard deviation of that ratio within the category (consistent punch)",
+      "propertyNames": {"$ref": "#/$defs/category"},
+      "additionalProperties": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["plr_lu", "max_spread_lu"],
+        "properties": {
+          "plr_lu": {"type": "array", "items": {"type": "number", "minimum": 0, "maximum": 40}, "minItems": 2, "maxItems": 2},
+          "max_spread_lu": {"type": "number", "exclusiveMinimum": 0, "maximum": 10}
+        }
+      }
+    }
+  }
+}
