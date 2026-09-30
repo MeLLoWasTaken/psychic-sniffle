@@ -19,7 +19,8 @@
   ],
   "icon": {
     "symbol": "glow",
-    "school": "holy"
+    "school": "holy",
+    "image": "delapouite/sparkles"
   },
   "cost": {
     "resource": "mana",

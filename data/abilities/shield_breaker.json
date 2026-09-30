@@ -27,6 +27,7 @@
   ],
   "icon": {
     "symbol": "thrown_blade",
-    "school": "physical"
+    "school": "physical",
+    "image": "lorc/broken-shield"
   }
 }

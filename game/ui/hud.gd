@@ -61,6 +61,7 @@ func _init(settings: Dictionary = {}, layout_id: String = "") -> void:
 	root = Control.new()
 	root.name = "HudRoot"
 	root.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	root.texture_filter = CanvasItem.TEXTURE_FILTER_LINEAR_WITH_MIPMAPS  # 128 px icon art drawn at 20-60 px
 	root.set_anchors_preset(Control.PRESET_FULL_RECT)
 	add_child(root)
 	_build()

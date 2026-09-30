@@ -10,6 +10,7 @@
   "breaks_on_damage": "any",
   "icon": {
     "symbol": "ice_statue",
-    "school": "frost"
+    "school": "frost",
+    "image": "delapouite/frozen-body"
   }
 }

@@ -21,6 +21,7 @@
   ],
   "icon": {
     "symbol": "blizzard_eye",
-    "school": "frost"
+    "school": "frost",
+    "image": "delapouite/ice-iris"
   }
 }

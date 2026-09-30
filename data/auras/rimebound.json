@@ -11,6 +11,7 @@
   "damage_threshold_pct": 20,
   "icon": {
     "symbol": "ice_feet",
-    "school": "frost"
+    "school": "frost",
+    "image": "lorc/icicles-fence"
   }
 }

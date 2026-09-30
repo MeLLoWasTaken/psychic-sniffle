@@ -21,6 +21,7 @@
   ],
   "icon": {
     "symbol": "scream",
-    "school": "shadow"
+    "school": "shadow",
+    "image": "lorc/screaming"
   }
 }

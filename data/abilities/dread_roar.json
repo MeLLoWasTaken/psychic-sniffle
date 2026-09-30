@@ -21,6 +21,7 @@
   ],
   "icon": {
     "symbol": "roar",
-    "school": "physical"
+    "school": "physical",
+    "image": "lorc/shouting"
   }
 }

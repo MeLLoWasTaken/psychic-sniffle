@@ -19,7 +19,8 @@
   ],
   "icon": {
     "symbol": "axe_block",
-    "school": "physical"
+    "school": "physical",
+    "image": "delapouite/executioner-hood"
   },
   "cost": {
     "resource": "rage",

@@ -27,7 +27,8 @@
   ],
   "icon": {
     "symbol": "ice_whip",
-    "school": "frost"
+    "school": "frost",
+    "image": "lorc/whip"
   },
   "castable_while_moving": true,
   "cost": {

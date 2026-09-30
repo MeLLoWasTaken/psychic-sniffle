@@ -22,7 +22,8 @@
   ],
   "icon": {
     "symbol": "charge",
-    "school": "physical"
+    "school": "physical",
+    "image": "delapouite/charging-bull"
   },
   "min_range_m": 8,
   "generates": {

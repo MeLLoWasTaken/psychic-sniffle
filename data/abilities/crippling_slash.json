@@ -23,7 +23,8 @@
   ],
   "icon": {
     "symbol": "cut_tendon",
-    "school": "physical"
+    "school": "physical",
+    "image": "delapouite/achilles-heel"
   },
   "cost": {
     "resource": "rage",

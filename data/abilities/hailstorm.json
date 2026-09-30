@@ -19,7 +19,8 @@
   ],
   "icon": {
     "symbol": "hail",
-    "school": "frost"
+    "school": "frost",
+    "image": "lorc/heavy-rain"
   },
   "cast_time_s": 3.0,
   "channel_ticks": 3,

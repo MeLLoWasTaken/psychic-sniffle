@@ -16,6 +16,7 @@
   ],
   "icon": {
     "symbol": "gash",
-    "school": "physical"
+    "school": "physical",
+    "image": "lorc/ragged-wound"
   }
 }

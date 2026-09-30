@@ -19,7 +19,8 @@
   ],
   "icon": {
     "symbol": "warm_hands",
-    "school": "holy"
+    "school": "holy",
+    "image": "lorc/glowing-hands"
   },
   "cast_time_s": 2.0,
   "cost": {

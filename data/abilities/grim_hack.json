@@ -19,7 +19,8 @@
   ],
   "icon": {
     "symbol": "hatchet",
-    "school": "physical"
+    "school": "physical",
+    "image": "delapouite/hatchet"
   },
   "generates": {
     "resource": "rage",

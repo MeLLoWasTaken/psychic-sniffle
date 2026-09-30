@@ -23,7 +23,8 @@
   ],
   "icon": {
     "symbol": "cleansing_hand",
-    "school": "holy"
+    "school": "holy",
+    "image": "delapouite/hand-of-god"
   },
   "cost": {
     "resource": "mana",

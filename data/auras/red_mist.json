@@ -21,6 +21,7 @@
   ],
   "icon": {
     "symbol": "red_eye",
-    "school": "blood"
+    "school": "blood",
+    "image": "lorc/bleeding-eye"
   }
 }

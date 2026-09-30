@@ -2,8 +2,9 @@ class_name ActionBar
 extends Control
 ## One action bar of up to 12 buttons (backlog M1-27), drawn in a single control: ability icon,
 ## cooldown sweep and seconds, GCD sweep, tinting (red out of range, blue short of resource, gray
-## when unusable), a bright border when a conditional ability (execute) becomes usable, and the
-## keybind label from the keybind profile. A left click on a button emits slot_pressed.
+## when unusable), a pulsing gold glow while a conditional ability (execute) is usable, a
+## school-colored glow when a cooldown comes off (X-03), and the keybind label from the keybind
+## profile. A left click on a button emits slot_pressed.
 ##
 ## Size, columns and spacing come from the layout element (data/hud_layouts); the slot's
 ## keybind action is <action_prefix><n>, or the ability's own action when the profile binds one
@@ -12,6 +13,7 @@ extends Control
 signal slot_pressed(index: int)
 
 const FLASH_S: float = 0.18
+const READY_GLOW_S: float = 0.7
 
 var style: HudStyle
 var element: Dictionary
@@ -20,6 +22,9 @@ var button_px: float = 50.0
 var spacing: float = 5.0
 var columns: int = 12
 var _flash: Dictionary = {}  ## slot index -> seconds left
+var _ready_glow: Dictionary = {}  ## slot index -> seconds left of the off-cooldown glow
+var _cooling: Dictionary = {}  ## slot index -> true while its own cooldown ran at the last refresh
+var _time: float = 0.0  ## seconds, for the highlight pulse
 
 
 func setup(p_style: HudStyle, p_element: Dictionary, abilities: Array) -> void:
@@ -54,8 +59,13 @@ func actions() -> Dictionary:
 
 ## Recompute every button from the view (`target` is the player's target unit, or {}).
 func refresh(view: Dictionary, target: Dictionary, cd_starts: Dictionary) -> void:
-	for s: Dictionary in slots:
+	for i: int in slots.size():
+		var s: Dictionary = slots[i]
 		s["state"] = HudLogic.slot_state(s["ability"], view, target, cd_starts) if s["ability"] != "" else {}
+		var cooling: bool = float((s["state"] as Dictionary).get("cd_left_s", 0.0)) > 0.0
+		if bool(_cooling.get(i, false)) and not cooling:
+			_ready_glow[i] = READY_GLOW_S  # the cooldown just came off
+		_cooling[i] = cooling
 	queue_redraw()
 
 
@@ -66,11 +76,20 @@ func flash(ability: String) -> void:
 			_flash[i] = FLASH_S
 
 
+## Seconds left of slot `i`'s off-cooldown glow (0 when none).
+func ready_glow(i: int) -> float:
+	return float(_ready_glow.get(i, 0.0))
+
+
 func tick_flash(delta: float) -> void:
-	for i: int in _flash.keys():
-		_flash[i] = float(_flash[i]) - delta
-		if float(_flash[i]) <= 0.0:
-			_flash.erase(i)
+	_time += delta
+	for d: Dictionary in [_flash, _ready_glow]:
+		for i: int in d.keys():
+			d[i] = float(d[i]) - delta
+			if float(d[i]) <= 0.0:
+				d.erase(i)
+	if not _ready_glow.is_empty():
+		queue_redraw()
 
 
 func slot_rect(i: int) -> Rect2:
@@ -132,12 +151,30 @@ func _draw_slot(i: int, s: Dictionary) -> void:
 		HudStyle.sweep(self, r.grow(-1.0), float(st["cd_frac"]), Color(0, 0, 0, 0.7))
 	if cd_left > 0.0 and cd_left > float(st.get("gcd_left_s", 0.0)):
 		var fsz: int = style.fs("large") if cd_left < 100.0 else style.fs("normal")
-		style.text_in(self, r, HudStyle.countdown(cd_left, 0.0), fsz, Color(1.0, 0.95, 0.75))
+		style.text_in(self, r, HudStyle.countdown(cd_left, 0.0), fsz, Color(1.0, 0.95, 0.75), HORIZONTAL_ALIGNMENT_CENTER,
+			0.0, &"display")
 	if bool(st.get("highlight", false)) and cd_left <= 0.0:
+		# a usable conditional ability (execute): a gold border with a pulsing outer glow
+		var pulse: float = 0.5 + 0.5 * sin(_time * TAU * 1.4)
+		_glow(r, Color(1.0, 0.82, 0.3), 0.45 + 0.4 * pulse)
 		draw_rect(r.grow(-1.0), Color(1.0, 0.85, 0.3), false, 3.0)
+	if _ready_glow.has(i) and cd_left <= 0.0:
+		# off cooldown: a bright school-colored glow that fades out and spreads
+		var k: float = clampf(float(_ready_glow[i]) / READY_GLOW_S, 0.0, 1.0)
+		var gc: Color = style.icon_base(ab.get("icon", {}), str(ab.get("name", ""))).lerp(Color.WHITE, 0.45)
+		_glow(r.grow((1.0 - k) * 3.0), gc, k)
+		draw_rect(r, Color(1, 1, 1, 0.22 * k * k))
 	if _flash.has(i):
 		draw_rect(r, Color(1, 1, 1, 0.35 * float(_flash[i]) / FLASH_S))
 	_label(r, s, not bool(st.get("range", true)))
+
+
+## A soft glow around `r`: rings fading outward, `strength` 0..1.
+func _glow(r: Rect2, col: Color, strength: float) -> void:
+	for j: int in 4:
+		var c: Color = col
+		c.a = strength * (0.85 - j * 0.2)
+		draw_rect(r.grow(1.0 + j * 1.5), c, false, 2.0)
 
 
 func _label(r: Rect2, s: Dictionary, out_of_range: bool) -> void:

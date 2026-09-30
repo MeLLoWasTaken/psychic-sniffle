@@ -1,0 +1,6 @@
+{
+  "description": "The HUD layout names a font file that is not in game/assets/fonts.",
+  "file": "hud_layouts/default.json",
+  "set": {"/style/fonts/display/file": "cinzel/Missing.ttf"},
+  "expect": "font file 'cinzel/Missing.ttf' not found"
+}

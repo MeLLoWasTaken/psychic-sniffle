@@ -26,7 +26,8 @@
   ],
   "icon": {
     "symbol": "ice_lance",
-    "school": "frost"
+    "school": "frost",
+    "image": "lorc/frozen-arrow"
   },
   "cost": {
     "resource": "mana",

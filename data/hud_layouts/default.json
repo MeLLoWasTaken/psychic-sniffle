@@ -5,6 +5,11 @@
   "base_resolution": [1920, 1080],
   "style": {
     "font_px": {"small": 14, "normal": 16, "large": 19, "timer": 28, "alert": 32, "combat_text": 24, "combat_text_crit": 36},
+    "fonts": {
+      "display": {"file": "cinzel/Cinzel-Variable.ttf", "weight": 700},
+      "text": {"file": "firasans/FiraSans-SemiBold.ttf"}
+    },
+    "icon_art": {"glyphs": "glyphs", "frame": "frame.png", "shade": "shade.png"},
     "text": "#efe6d2",
     "text_dim": "#b3a68e",
     "frame_bg": "#120f0ce0",

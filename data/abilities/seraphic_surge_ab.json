@@ -19,6 +19,7 @@
   ],
   "icon": {
     "symbol": "wings",
-    "school": "holy"
+    "school": "holy",
+    "image": "lorc/angel-wings"
   }
 }

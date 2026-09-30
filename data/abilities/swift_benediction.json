@@ -19,7 +19,8 @@
   ],
   "icon": {
     "symbol": "quick_prayer",
-    "school": "holy"
+    "school": "holy",
+    "image": "lorc/prayer"
   },
   "cast_time_s": 1.3,
   "cost": {

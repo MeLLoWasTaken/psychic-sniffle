@@ -1,21 +1,30 @@
 class_name HudStyle
 extends RefCounted
-## Look of the HUD (backlog M1-27), read from a HUD layout's "style", "crowd_control",
+## Look of the HUD (backlog M1-27, X-03), read from a HUD layout's "style", "crowd_control",
 ## "icon_glyphs" and "key_label_abbreviations" (data/hud_layouts/<id>.json), plus the drawing
 ## helpers every HUD element shares: outlined text, iron-framed panels, bars, cooldown sweeps and
-## the placeholder icons.
+## the ability icons.
 ##
-## Icons are original placeholders drawn from data, no image files: the ability's school color
-## (effect palette) as a painted gradient, a glyph picked from the icon symbol by the layout's
-## rules (crystal, blade, shield...), and the ability's initials. M3's Blender icon generator
-## replaces them; the icon data (symbol, school) stays the same.
+## Typefaces come from style.fonts (game/assets/fonts): a display face for names, titles and big
+## numbers, and a text face for small text, numbers and the cast bar. Text helpers take the face.
+##
+## Icons: the ability's school color (effect palette) as a painted gradient, then the layers from
+## style.icon_art (game/assets/icons, built by tools/build_icons.py): a neutral shade, the
+## game-icons.net glyph named by icon.image (engraved tone, outline, shadow) and a bevelled iron
+## frame. An icon without an image falls back to a placeholder glyph picked from the icon symbol
+## by the layout's rules (crystal, blade, shield...) and the name's initials.
 
 const GLYPHS: Array[String] = ["crystal", "shield", "drop", "wing", "chain", "rays", "fist", "wave", "arrow",
 	"heart", "pillar", "rune", "blade", "orb", "star", "diamond", "spiral", "cross", "slash", "bars"]
 const OUTLINE: Color = Color(0.0, 0.0, 0.0, 0.92)
+const FONT_DIR: String = "res://assets/fonts/"
+const ICON_DIR: String = "res://assets/icons/"
 
 var layout: Dictionary
-var font: Font
+var _textures: Dictionary = {}  ## res path -> Texture2D, or null when missing (Godot caches the loads)
+var font: Font  ## the text face (small text, numbers, cast bar)
+var display_font: Font  ## the display face (names, titles, big numbers)
+var icon_art: Dictionary = {}  ## style.icon_art: glyph folder, frame and shade files
 var colors: Dictionary = {}  ## style key -> Color
 var resource_colors: Dictionary = {}  ## resource -> Color
 var font_px: Dictionary = {}  ## size name -> logical pixels
@@ -26,8 +35,11 @@ var _glyph_rules: Array = []  ## [RegEx, glyph]
 
 func _init(p_layout: Dictionary) -> void:
 	layout = p_layout
-	font = ThemeDB.fallback_font
 	var style: Dictionary = layout.get("style", {})
+	var fonts: Dictionary = style.get("fonts", {})
+	font = load_font(fonts.get("text", {}))
+	display_font = load_font(fonts.get("display", {}))
+	icon_art = style.get("icon_art", {})
 	for key: String in style:
 		if style[key] is String:
 			colors[key] = Color.html(style[key])
@@ -53,6 +65,55 @@ func color(key: String) -> Color:
 ## Font size in logical pixels for a size name ("small", "normal", "timer"...).
 func fs(size_name: String) -> int:
 	return int(font_px.get(size_name, 16))
+
+
+## The font of a face name: "display" or "text".
+func face(face_name: StringName) -> Font:
+	return display_font if face_name == &"display" else font
+
+
+## A font from a style.fonts entry ({file, weight}); the engine's default font when the entry is
+## empty or the file is missing. A weight picks an instance of a variable font.
+static func load_font(spec: Dictionary) -> Font:
+	if spec.is_empty():
+		return ThemeDB.fallback_font
+	var path: String = FONT_DIR + str(spec.get("file", ""))
+	if not ResourceLoader.exists(path):
+		Log.error("hud: font %s not found" % path)
+		return ThemeDB.fallback_font
+	var file: Font = load(path)
+	if not spec.has("weight"):
+		return file
+	var v: FontVariation = FontVariation.new()
+	v.base_font = file
+	v.variation_opentype = {TextServerManager.get_primary_interface().name_to_tag("wght"): int(spec["weight"])}
+	return v
+
+
+## A texture under game/assets/icons by relative path, cached; null when missing.
+func icon_layer(rel: String) -> Texture2D:
+	var path: String = ICON_DIR + rel
+	if not _textures.has(path):
+		_textures[path] = load(path) if rel != "" and ResourceLoader.exists(path) else null
+	return _textures[path]
+
+
+## The glyph texture of an ability or aura icon (icon.image), or null (placeholder glyph).
+func icon_texture(icon_data: Dictionary) -> Texture2D:
+	var img: String = str(icon_data.get("image", ""))
+	if img == "" or icon_art.is_empty():
+		return null
+	return icon_layer("%s/%s.png" % [icon_art.get("glyphs", "glyphs"), img])
+
+
+## The painted base color of an icon: the school color from the palette (physical, which has
+## none, in the layout's worn bronze), shifted a little in value per symbol so icons of one
+## school do not all look the same.
+func icon_base(icon_data: Dictionary, name: String = "") -> Color:
+	var school: String = str(icon_data.get("school", "physical"))
+	var base: Color = colors["icon_physical"] if school == "physical" and colors.has("icon_physical") else school_color(school)
+	var shade: int = absi(hash(str(icon_data.get("symbol", name)))) % 5 - 2
+	return base.lightened(shade * 0.06) if shade > 0 else base.darkened(-shade * 0.06)
 
 
 ## The smallest font size the layout uses (for the min_text_px floor).
@@ -130,23 +191,26 @@ static func countdown(seconds: float, decimals_below: float = 3.0) -> String:
 ## Text with a dark outline. `pos` is the left end of the baseline (or the box's left edge when
 ## `width` > 0 with an alignment).
 func text(ci: CanvasItem, pos: Vector2, s: String, size: int, col: Color,
-		align: HorizontalAlignment = HORIZONTAL_ALIGNMENT_LEFT, width: float = -1.0, outline: int = -1) -> void:
+		align: HorizontalAlignment = HORIZONTAL_ALIGNMENT_LEFT, width: float = -1.0, outline: int = -1,
+		face_name: StringName = &"text") -> void:
+	var f: Font = face(face_name)
 	var o: int = outline if outline >= 0 else maxi(2, size / 6)
 	var oc: Color = OUTLINE
 	oc.a *= col.a
-	ci.draw_string_outline(font, pos, s, align, width, size, o, oc)
-	ci.draw_string(font, pos, s, align, width, size, col)
+	ci.draw_string_outline(f, pos, s, align, width, size, o, oc)
+	ci.draw_string(f, pos, s, align, width, size, col)
 
 
 ## Text centered in a box, vertically by the font's ascent and descent.
 func text_in(ci: CanvasItem, box: Rect2, s: String, size: int, col: Color,
-		align: HorizontalAlignment = HORIZONTAL_ALIGNMENT_CENTER, pad: float = 0.0) -> void:
-	var baseline: float = box.position.y + (box.size.y + font.get_ascent(size) - font.get_descent(size)) * 0.5
-	text(ci, Vector2(box.position.x + pad, baseline), s, size, col, align, box.size.x - pad * 2.0)
+		align: HorizontalAlignment = HORIZONTAL_ALIGNMENT_CENTER, pad: float = 0.0, face_name: StringName = &"text") -> void:
+	var f: Font = face(face_name)
+	var baseline: float = box.position.y + (box.size.y + f.get_ascent(size) - f.get_descent(size)) * 0.5
+	text(ci, Vector2(box.position.x + pad, baseline), s, size, col, align, box.size.x - pad * 2.0, -1, face_name)
 
 
-func text_width(s: String, size: int) -> float:
-	return font.get_string_size(s, HORIZONTAL_ALIGNMENT_LEFT, -1, size).x
+func text_width(s: String, size: int, face_name: StringName = &"text") -> float:
+	return face(face_name).get_string_size(s, HORIZONTAL_ALIGNMENT_LEFT, -1, size).x
 
 
 ## A dark iron-framed panel: black outer line, bronze inner line.
@@ -188,15 +252,16 @@ static func sweep(ci: CanvasItem, r: Rect2, elapsed: float, col: Color) -> void:
 	ci.draw_colored_polygon(pts, col)
 
 
-## A square icon: school gradient, glyph, initials, bevel. `dim` darkens (unusable), `tint`
-## multiplies (out of range, no resource).
+## A square icon: school gradient, then the shade, glyph and frame layers when the icon names an
+## image, else the placeholder glyph, initials and a plain bevel. `tint` multiplies (gray when
+## unusable, red out of range, blue short of resource).
 func icon(ci: CanvasItem, r: Rect2, icon_data: Dictionary, name: String, tint: Color = Color.WHITE,
 		show_initials: bool = true) -> void:
-	var school: String = str(icon_data.get("school", "physical"))
-	var base: Color = colors["icon_physical"] if school == "physical" and colors.has("icon_physical") else school_color(school)
-	# a small per-symbol shift in value, so icons of one school do not all look the same
-	var shade: int = absi(hash(str(icon_data.get("symbol", name)))) % 5 - 2
-	base = base.lightened(shade * 0.06) if shade > 0 else base.darkened(-shade * 0.06)
+	var base: Color = icon_base(icon_data, name)
+	var glyph_tex: Texture2D = icon_texture(icon_data)
+	if glyph_tex != null:
+		_icon_layers(ci, r, base, glyph_tex, tint)
+		return
 	var top: Color = base.lerp(Color.WHITE, 0.1).darkened(0.12) * tint
 	var bottom: Color = base.darkened(0.68) * tint
 	top.a = 1.0
@@ -216,6 +281,30 @@ func icon(ci: CanvasItem, r: Rect2, icon_data: Dictionary, name: String, tint: C
 			HORIZONTAL_ALIGNMENT_LEFT, -1, 3)
 	ci.draw_rect(r, Color(0, 0, 0, 0.9), false, 2.0)
 	ci.draw_rect(r.grow(-2.0), Color(1, 1, 1, 0.1), false, 1.0)
+
+
+func _icon_layers(ci: CanvasItem, r: Rect2, base: Color, glyph_tex: Texture2D, tint: Color) -> void:
+	# bright schools (holy, fel) are held down so the light glyph keeps its contrast
+	var top: Color = base.darkened(0.08 + 0.3 * base.get_luminance()) * tint
+	var bottom: Color = base.darkened(0.72) * tint
+	top.a = 1.0
+	bottom.a = 1.0
+	var p: Vector2 = r.position
+	var s: Vector2 = r.size
+	ci.draw_polygon(PackedVector2Array([p, p + Vector2(s.x, 0), p + s, p + Vector2(0, s.y)]),
+		PackedColorArray([top, top.darkened(0.25), bottom, bottom.lightened(0.04)]))
+	var shade_tex: Texture2D = icon_layer(str(icon_art.get("shade", "")))
+	if shade_tex != null:
+		ci.draw_texture_rect(shade_tex, r, false)
+	# the engraved glyph: warm bone, taking a little of the school's light
+	var glyph_col: Color = Color.WHITE.lerp(base.lightened(0.55), 0.3) * tint
+	glyph_col.a = 1.0
+	ci.draw_texture_rect(glyph_tex, r, false, glyph_col)
+	var frame_tex: Texture2D = icon_layer(str(icon_art.get("frame", "")))
+	if frame_tex != null:
+		ci.draw_texture_rect(frame_tex, r, false, Color.WHITE.lerp(tint, 0.35))
+	else:
+		ci.draw_rect(r, Color(0, 0, 0, 0.9), false, 2.0)
 
 
 ## A CC glyph icon (loss of control, portraits, DR tracker): CC color, category shape, and the

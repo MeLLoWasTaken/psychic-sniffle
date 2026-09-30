@@ -22,7 +22,8 @@
   ],
   "icon": {
     "symbol": "unravel",
-    "school": "frost"
+    "school": "frost",
+    "image": "lorc/magic-swirl"
   },
   "cost": {
     "resource": "mana",

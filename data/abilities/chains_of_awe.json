@@ -19,7 +19,8 @@
   ],
   "icon": {
     "symbol": "chains",
-    "school": "holy"
+    "school": "holy",
+    "image": "lorc/crossed-chains"
   },
   "cost": {
     "resource": "mana",

@@ -19,6 +19,7 @@
   ],
   "icon": {
     "symbol": "veil",
-    "school": "holy"
+    "school": "holy",
+    "image": "lorc/bell-shield"
   }
 }

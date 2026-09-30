@@ -9,6 +9,7 @@
   "hud_priority": "cc",
   "icon": {
     "symbol": "charge",
-    "school": "physical"
+    "school": "physical",
+    "image": "delapouite/charging-bull"
   }
 }

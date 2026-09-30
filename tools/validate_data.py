@@ -262,6 +262,7 @@ def validate(data_dir: Path) -> list[str]:
             report.error(rel, f"missing required clips: {', '.join(missing)}")
     _check_effects(report, db, schemas)
     _check_hud_layouts(report, db)
+    _check_icons_and_fonts(report, db, data_dir)
     sys.path.insert(0, str(REPO / "tools" / "audio"))
     import sound_data  # sounds and the sound map (backlog M1-26); weapon sounds per spec
 
@@ -405,6 +406,51 @@ def _check_hud_layouts(report: Report, db: dict) -> None:
         for eid, e in elements.items():
             if e["type"] == "combat_text" and e.get("lifetime_s", 1) > 5:
                 report.error(rel, f"elements/{eid}: combat text lifetime over 5 s clutters the screen")
+
+
+def _check_icons_and_fonts(report: Report, db: dict, data_dir: Path) -> None:
+    """Icons and typefaces (backlog X-03): every icon.image names a game-icons.net SVG copied into
+    game/assets/icons/game-icons, rendered to a glyph PNG and credited in ATTRIBUTION.md; every
+    HUD font file exists next to its OFL.txt; the icon layers exist."""
+    game = data_dir.parent / "game"
+    if not game.is_dir():  # a copy of /data alone (validator tests): check against the repo
+        game = REPO / "game"
+    icons = game / "assets" / "icons"
+    credited: set[str] = set()
+    attribution = icons / "game-icons" / "ATTRIBUTION.md"
+    if attribution.exists():
+        for line in attribution.read_text().splitlines():
+            cells = [c.strip() for c in line.strip().strip("|").split("|")]
+            if len(cells) >= 3 and cells[0] not in ("Icon", "---"):
+                credited.add(f"{cells[1].lower().replace(' ', '-')}/{cells[0]}")
+    for folder in ("abilities", "auras"):
+        for oid, obj in db[folder].items():
+            img = obj.get("icon", {}).get("image")
+            if not img:
+                continue
+            rel = f"{folder}/{oid}.json"
+            if not (icons / "game-icons" / f"{img}.svg").exists():
+                report.error(rel, f"icon image '{img}' not found (game/assets/icons/game-icons/{img}.svg)")
+            elif not (icons / "glyphs" / f"{img}.png").exists():
+                report.error(rel, f"icon image '{img}' has no rendered glyph (run tools/build_icons.py)")
+            elif img not in credited:
+                report.error(rel, f"icon image '{img}' is not credited in game-icons/ATTRIBUTION.md (run tools/build_icons.py)")
+    for lid, lay in db["hud_layouts"].items():
+        rel = f"hud_layouts/{lid}.json"
+        style = lay["style"]
+        for face, spec in style.get("fonts", {}).items():
+            path = game / "assets" / "fonts" / spec["file"]
+            if not path.exists():
+                report.error(rel, f"style.fonts.{face}: font file '{spec['file']}' not found in game/assets/fonts")
+            elif not (path.parent / "OFL.txt").exists():
+                report.error(rel, f"style.fonts.{face}: no licence (OFL.txt) next to '{spec['file']}'")
+        art = style.get("icon_art")
+        if art:
+            if not (icons / art["glyphs"]).is_dir():
+                report.error(rel, f"style.icon_art.glyphs: folder '{art['glyphs']}' not found in game/assets/icons")
+            for key in ("frame", "shade"):
+                if not (icons / art[key]).exists():
+                    report.error(rel, f"style.icon_art.{key}: '{art[key]}' not found in game/assets/icons")
 
 
 def _check_effects(report: Report, db: dict, schemas: dict) -> None:

@@ -23,7 +23,8 @@
   ],
   "icon": {
     "symbol": "ice_heart",
-    "school": "frost"
+    "school": "frost",
+    "image": "lorc/cold-heart"
   },
   "usable_if": {
     "target_cc": [

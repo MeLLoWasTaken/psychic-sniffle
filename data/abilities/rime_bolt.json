@@ -23,7 +23,8 @@
   ],
   "icon": {
     "symbol": "ice_bolt",
-    "school": "frost"
+    "school": "frost",
+    "image": "lorc/ice-bolt"
   },
   "cast_time_s": 1.8,
   "cost": {

@@ -19,6 +19,7 @@
   ],
   "icon": {
     "symbol": "fist",
-    "school": "physical"
+    "school": "physical",
+    "image": "lorc/punch"
   }
 }

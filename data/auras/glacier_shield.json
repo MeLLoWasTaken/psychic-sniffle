@@ -10,6 +10,7 @@
   "absorb": 12000,
   "icon": {
     "symbol": "ice_shield",
-    "school": "frost"
+    "school": "frost",
+    "image": "lorc/ice-shield"
   }
 }

@@ -21,7 +21,8 @@
   ],
   "icon": {
     "symbol": "ice_feet",
-    "school": "frost"
+    "school": "frost",
+    "image": "lorc/icicles-fence"
   },
   "cost": {
     "resource": "mana",

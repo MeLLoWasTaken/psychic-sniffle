@@ -11,6 +11,7 @@
   "damage_threshold_pct": 10,
   "icon": {
     "symbol": "scream",
-    "school": "shadow"
+    "school": "shadow",
+    "image": "lorc/screaming"
   }
 }

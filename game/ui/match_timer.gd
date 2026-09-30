@@ -57,10 +57,10 @@ func _draw() -> void:
 	var bottom: Rect2 = Rect2(0, size.y * 0.56, size.x, size.y * 0.44)
 	var sfs: int = style.fs("small")
 	if phase == ArenaMatch.Phase.PREP:
-		style.text_in(self, top, time_text(), style.fs("timer"), Color(1.0, 0.85, 0.45))
+		style.text_in(self, top, time_text(), style.fs("timer"), Color(1.0, 0.85, 0.45), HORIZONTAL_ALIGNMENT_CENTER, 0.0, &"display")
 		style.text_in(self, bottom, "Gates open in", sfs, style.color("text_dim"))
 		return
-	style.text_in(self, top, time_text(), style.fs("timer"), style.color("text"))
+	style.text_in(self, top, time_text(), style.fs("timer"), style.color("text"), HORIZONTAL_ALIGNMENT_CENTER, 0.0, &"display")
 	var damp_col: Color = style.color("text_dim") if dampening_pct == 0 else Color(1.0, 0.55 - dampening_pct * 0.004, 0.35)
 	var label: String = dampening_text()
 	if phase == ArenaMatch.Phase.ENDED:
