@@ -146,6 +146,19 @@ def main() -> int:
     if len(res.get("pids_started", [])) != 4:
         failures.append(f"expected 4 processes started (server and 3 bots), got {res.get('pids_started')}")
 
+    # M1-29: the match's input log replays to the server's final state hash
+    log_path = summary.get("input_log", "")
+    replay = {}
+    if not log_path or not Path(log_path).exists():
+        failures.append("the match wrote no input log")
+    else:
+        rp = subprocess.run([godot, "--headless", "--path", str(REPO / "game"), "-s", "res://tools/replay.gd", "--",
+                             "--log", log_path], capture_output=True, text=True, timeout=600)
+        line = next((ln for ln in rp.stdout.splitlines() if ln.startswith("REPLAY ")), "")
+        replay = json.loads(line[len("REPLAY "):]) if line else {"ok": False, "error": rp.stdout[-400:]}
+        if not replay.get("ok") or replay.get("hash") != summary.get("state_hash"):
+            failures.append(f"the replay did not reproduce the final state hash: {replay}")
+
     scene = res.get("scene", {})
     client = res.get("client", {})
     if int(scene.get("held_draw_ticks", 0)) > 0.02 * ticks_total(scene):
@@ -154,7 +167,7 @@ def main() -> int:
               "match_seconds": res.get("match_seconds"), "scoreboard": board, "server_by_unit": by_unit,
               "server_tick_ms": summary.get("tick_ms"), "pilot": pilot, "scene": scene,
               "client_snapshot_rate_hz": client.get("snapshot_rate_hz"), "clicks": rep.get("clicks"),
-              "failures": failures}
+              "replay": replay, "failures": failures}
     (out / "report.json").write_text(json.dumps(report, indent=2))
     print(f"flow {res.get('history')} in {took:.0f} s; {res.get('outcome')} after {res.get('match_seconds', 0):.0f} s "
           f"of match time; server tick avg {summary.get('tick_ms', {}).get('avg', 0):.3f} ms")

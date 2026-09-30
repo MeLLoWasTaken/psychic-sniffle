@@ -10,6 +10,7 @@ var tick_rate: int
 var tick: int = 0
 var rng: RandomNumberGenerator = RandomNumberGenerator.new()
 var units: Dictionary = {}  ## unit id -> Unit
+var stepping: bool = false  ## true while the systems of a tick run (the input log records it)
 
 var _accumulator: float = 0.0
 var _seed: int = 0
@@ -84,8 +85,10 @@ func advance(delta: float, inputs_provider: Callable = Callable()) -> int:
 
 ## Run exactly one tick. `inputs` maps unit id -> that unit's input for this tick.
 func step(inputs: Dictionary = {}) -> void:
+	stepping = true
 	for system: Callable in _systems:
 		system.call(self, inputs)
+	stepping = false
 	tick += 1
 
 

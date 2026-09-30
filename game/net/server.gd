@@ -41,6 +41,7 @@ var respawn: bool = false
 var summary_path: String = ""
 
 var clients: Dictionary = {}  ## peer instance id -> client record
+var input_log_path: String = ""  ## --input-log: write the match's input log here on finish (M1-29)
 var _tick_usec: PackedInt64Array = []
 var _stats: Dictionary = {"damage_events": 0, "kills": 0, "heals": 0, "casts": 0, "interrupts": 0,
 	"snapshots_sent": 0, "by_unit": {}}
@@ -77,6 +78,9 @@ func _ready() -> void:
 	Engine.max_fps = 240  # poll the network often (accurate latency), without spinning the CPU
 	var prep: float = float(_arg(args, "--prep-seconds", "-1"))
 	runner = MatchRunner.new(map, mode, _arg(args, "--bracket", "2v2"), prep, int(_arg(args, "--seed", "1")))
+	input_log_path = _arg(args, "--input-log", "")
+	if input_log_path != "":
+		runner.record()  # every input and world edit, for the replay test (M1-29)
 	sim = runner.sim
 	combat = runner.combat
 	arena = runner.arena
@@ -121,7 +125,7 @@ func _physics_process(_delta: float) -> void:
 	if _check_host():
 		return
 	if arena and not roster.is_empty() and clients.size() < roster.size():
-		arena.hold_prep(sim.tick)  # preparation starts when everyone is in
+		runner.hold_prep()  # preparation starts when everyone is in
 	var t0: int = Time.get_ticks_usec()
 	sim.step()
 	_tick_usec.append(Time.get_ticks_usec() - t0)
@@ -170,7 +174,7 @@ func _handle_network() -> void:
 					Log.info("server: %s disconnected" % c["name"])
 					_departed[c["name"]] = _client_stats(c)
 					if mode != "arena":
-						sim.units.erase(c["unit_id"])  # arena keeps the unit so the match can finish
+						runner.remove_unit(int(c["unit_id"]))  # arena keeps the unit so the match can finish
 					clients.erase(key)
 					if host_name != "" and c["name"] == host_name and not _finished:
 						Log.info("server: the host left; finishing")
@@ -312,10 +316,8 @@ func _system_rules(s: Sim, _inputs: Dictionary) -> void:
 				var u: Unit = s.units.get(uid)
 				_dead_since.erase(uid)
 				if u:
-					combat.init_unit(u)
-					u.target_id = -1
 					var sp: Array = map["spawns"]["team_a" if u.team == 0 else "team_b"][0]
-					u.position = Vector3(sp[0], sp[1], sp[2])
+					runner.respawn_unit(u, Vector3(sp[0], sp[1], sp[2]))
 
 
 func _count_event(s: Sim, ev: Dictionary) -> void:
@@ -383,6 +385,11 @@ func _finish() -> void:
 		"bytes_sent": transport.bytes_sent, "state_hash": sim.state_hash(),
 		"log_warnings": Log.warn_count, "log_errors": Log.error_count,
 	}
+	if runner.input_log and input_log_path != "":
+		runner.input_log.finish(sim)
+		summary["input_log"] = input_log_path
+		if runner.input_log.save(input_log_path) != OK:
+			Log.error("server: cannot write the input log to %s" % input_log_path)
 	if summary_path != "":
 		var f: FileAccess = FileAccess.open(summary_path, FileAccess.WRITE)
 		f.store_string(JSON.stringify(summary, "  "))

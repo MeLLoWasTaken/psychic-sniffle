@@ -13,8 +13,10 @@ var geometry: ArenaGeometry
 var movement: Movement
 var combat: Combat
 var arena: ArenaMatch
+var input_log: InputLog = null  ## set by record(): every input and world edit (M1-29)
 var _next_unit_id: int = 1
 var _spawn_count: Dictionary = {0: 0, 1: 0}
+var _header: Dictionary = {}  ## what Replay needs to rebuild this match
 
 
 func _init(p_map: Dictionary, p_mode: String = "skirmish", bracket: String = "2v2",
@@ -31,10 +33,25 @@ func _init(p_map: Dictionary, p_mode: String = "skirmish", bracket: String = "2v
 			tuning["arena"]["prep_phase_s"] = prep_s
 		arena = ArenaMatch.new(tuning, bracket, sim.tick_rate, geometry, sim.tick)
 		combat.arena = arena
+	_header = {"map": map["id"], "mode": mode, "bracket": bracket, "prep_s": prep_s, "seed": seed_value,
+		"tick_rate": sim.tick_rate}
+
+
+## Start recording this match's input log (call before the first unit is added).
+func record() -> InputLog:
+	input_log = InputLog.new()
+	input_log.header = _header.duplicate()
+	return input_log
+
+
+func _log(kind: String, payload: Variant) -> void:
+	if input_log:
+		input_log.add(sim.tick, sim.stepping, kind, payload)
 
 
 ## Create a unit for a spec on a team at the team's next spawn point.
 func add_unit(spec_id: String, team: int) -> Unit:
+	_log("add", [spec_id, team])
 	var unit: Unit = Unit.new(_next_unit_id, team, spec_id)
 	_next_unit_id += 1
 	combat.init_unit(unit)
@@ -54,6 +71,7 @@ func ended() -> bool:
 ## Apply one player input to a unit: movement (crowd control overrides it), targeting, and an
 ## ability press. Call from inside a simulation system, before combat runs.
 func apply_input(unit: Unit, inp: Dictionary) -> void:
+	_log("in", [unit.id, inp.duplicate(true)])
 	if not unit.is_alive() or ended():
 		return
 	var forced: Dictionary = combat.forced_input(unit)
@@ -71,6 +89,27 @@ func apply_input(unit: Unit, inp: Dictionary) -> void:
 		unit.target_id = tid  # pressing an ability on an enemy (or clicking one) targets it
 	if str(inp.get("ability", "")) != "":
 		combat.press(unit, inp["ability"], tid)
+
+
+## Hold the arena in preparation (the countdown restarts) while players are still joining.
+func hold_prep() -> void:
+	if arena:
+		_log("hold", null)
+		arena.hold_prep(sim.tick)
+
+
+## A unit leaves the world (a player disconnected outside arena mode).
+func remove_unit(unit_id: int) -> void:
+	_log("leave", unit_id)
+	sim.units.erase(unit_id)
+
+
+## Bring a dead unit back at full health at a position (skirmish respawns).
+func respawn_unit(unit: Unit, pos: Vector3) -> void:
+	_log("respawn", [unit.id, pos])
+	combat.init_unit(unit)
+	unit.target_id = -1
+	unit.position = pos
 
 
 ## A simulation system that drives bots: every bot decides from the same start-of-tick world,

@@ -10,6 +10,7 @@ Checks (exit code 1 if any fails):
   - each bot receives snapshots at the tick rate (within 1 Hz)
   - combat happened (at least one damage event) when the match lasts 30 s or more
   - with --mode arena: the match ends with a winning team
+  - the server's input log replays to its final state hash (backlog M1-29)
   - with --lag-ms set: measured round trip within 10% of the setting,
     largest prediction correction under 0.5 m and average under 0.1 m. Corrections that arrive
     with an unforeseeable change to the bot's own movement effects (a stun, root, slow or fear
@@ -80,7 +81,8 @@ def main() -> int:
 
     server_log = open(out / "server.log", "w")
     server_args = ["--", "--server", "--port", str(args.port), "--mode", args.mode, "--match-seconds",
-                   str(seconds + 0.3 * args.bots + 10), "--summary", str(out / "summary.json")]
+                   str(seconds + 0.3 * args.bots + 10), "--summary", str(out / "summary.json"),
+                   "--input-log", str(out / "match.inputlog")]
     if args.mode == "skirmish":
         server_args.append("--respawn")
     else:
@@ -155,6 +157,21 @@ def main() -> int:
         failures.append("arena match ended without a winner")
     if seconds >= 30 and summary.get("damage_events", 0) == 0:
         failures.append("no combat happened (0 damage events)")
+
+    # M1-29: the recorded input log must replay to the server's final state hash
+    if summary and (out / "match.inputlog").exists():
+        rp = subprocess.run(base + ["-s", "res://tools/replay.gd", "--", "--log", str(out / "match.inputlog")],
+                            capture_output=True, text=True, timeout=600)
+        line = next((ln for ln in rp.stdout.splitlines() if ln.startswith("REPLAY ")), "")
+        replay = json.loads(line[len("REPLAY "):]) if line else {"ok": False, "error": rp.stdout[-500:]}
+        report["replay"] = replay
+        if not replay.get("ok") or replay.get("hash") != summary.get("state_hash"):
+            failures.append(f"replay did not reproduce the final state hash: {replay}")
+        else:
+            print(f"replay: {replay['entries']} log entries, {replay['ticks']} ticks in {replay['seconds']:.1f} s, "
+                  f"hash matches")
+    elif summary:
+        failures.append("server wrote no input log")
 
     (out / "report.json").write_text(json.dumps(report, indent=2))
     t = summary.get("tick_ms", {})

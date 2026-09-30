@@ -2,6 +2,26 @@
 
 One entry per build-loop iteration, newest first. Format: date, backlog ID, what changed, how it was checked.
 
+## 2026-09-30 — M1-29: replay test
+- Every match records an input log: every applied input and every world edit (join, leave, preparation hold, respawn), with its tick. The server writes it on finish; Play vs bots always records.
+- `Replay.run` rebuilds the match from the log. Every networked match in check_all, and the end-to-end match, now replays its log and must reach the server's final state hash.
+- A 2v2 fought to a kill (5,513 ticks, 21,260 entries) replays in 1 s with the same hash.
+- 4 GdUnit tests: exact replay, one changed input changes the hash, world edits, floats exact through the file.
+
+## 2026-09-30 — M1-28: match flow
+- Main menu:
+  - Spec cards, then Play 2v2 vs bots, Practice, Settings (read-only) and Quit, styled with the HUD's fonts and named in `data/menus`.
+  - Play starts a local match server and three bots and joins over the network.
+- Match screens: loading, preparation countdown behind the gates, the fight with the HUD, a Victory/Defeat banner, then a scoreboard (damage, healing, kills, interrupts per unit and team) and back to the menu. An Escape menu and failure screens complete the set.
+- Fixes found on the way:
+  - The player's unit faced yaw 0 on joining.
+  - The renderer skipped about 6% of ticks.
+  - The local server asked Godot about processes it had already reaped.
+- Checked:
+  - `tools/match_flow_e2e.py` plays a full match through the real buttons and keyboard and mouse events, and checks the scoreboard against the server's totals.
+  - 11 MatchFlow tests and 4 networked tests (server killed, leaving, a server that cannot start, port probe).
+  - Screenshots at 1920×1080 and 1280×720 in `previews/match_flow/`.
+
 ## 2026-09-30 — Sound feedback, X-05
 - The human preferred the processed versions of all four approved sounds, so every sound is now processed.
 - Slash v3 (impact_slash and both greatsword hits), after human feedback that it still did not sound like a slash:

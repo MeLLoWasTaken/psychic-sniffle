@@ -272,14 +272,19 @@ The slice specs are Warblade Carnage (melee, rage), Arcanist Rime (casting, inte
 
 **Match flow and verification**
 
-### M1-28 Match flow `[todo]`
-- [ ] Menu → "Play 2v2 vs bots" → preparation room → gates open → fight → end screen with damage and healing scoreboard → back to menu.
-- [ ] A human player can play a full match with a bot partner against two bots.
-- Starting point (M1-23): `scenes/game/practice.tscn` already plays a 2v2 in-process (`LocalMatch`); `WorldRenderer` and `PlayerController` read only the world view, so the networked version feeds them `NetClient.bot_view()` and sends the controller's input through `NetClient.input_source`.
-- M1-24: animation also needs the combat events: feed the client's event stream to `WorldRenderer.push_events` (same dictionaries as `MatchRunner.take_events`), or casts release and swings never play.
+### M1-28 Match flow `[done]`
+- [x] Menu → "Play 2v2 vs bots" → preparation room → gates open → fight → end screen with damage and healing scoreboard → back to menu (`game/ui/main_menu.gd`, `game/client/match_flow.gd`, `local_server.gd`, `match_scoreboard.gd`; menus in `data/menus`).
+- [x] A human player can play a full match with a bot partner against two bots: `tools/match_flow_e2e.py` clicks the real buttons and plays to a kill through keyboard and mouse events (259 s, in check_all full mode); the scoreboard equals the server's totals. Failure paths (server lost, cannot start, leaving) end at the menu.
 
-### M1-29 Replay test `[todo]`
-- [ ] Every match records its input log; replaying it reproduces the same final state hash.
+### M1-32 Match flow follow-ups `[todo]`
+- [ ] The preparation camera sits very close in the small starting room: pull it back or raise it.
+- [ ] Hide the action bars once the match has ended; bots log a warning when the player leaves mid-match; `LocalServer.stop()` blocks up to 2 s.
+- [ ] The server tick peaked once at 43 ms (average 0.30 ms): find the spike (M1-31 profile).
+- [ ] The game has no name yet; the menu says "Arena PvP" (working title in `data/menus/main.json`). Ask the human.
+
+### M1-29 Replay test `[done]`
+- [x] Every match records its input log (`game/core/input_log.gd`: every applied input and every world edit, joining, leaving, preparation hold and respawn, with its tick and phase; Godot binary format so floats stay exact). The server writes it with `--input-log`; Play vs bots always does.
+- [x] Replaying it reproduces the same final state hash (`game/core/replay.gd`, `godot -s res://tools/replay.gd -- --log <file>`): checked after every networked match in `tools/sim/run_match.py` (all three check_all network matches, including 150 ms and 2% loss) and in the end-to-end match; a networked 2v2 fought to a kill (5,513 ticks, 21,260 entries) replays in 1 s. GdUnit: a bot arena match replays exactly, one changed input changes the hash, world edits replay, floats survive the file.
 
 ### M1-30 Network test `[todo]`
 - [ ] A full bot 2v2 at 150 ms latency, 2% loss and 30 ms jitter completes without desync or stuck casts.

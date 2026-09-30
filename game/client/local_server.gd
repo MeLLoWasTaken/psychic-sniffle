@@ -35,6 +35,7 @@ var session_dir: String = ""  ## absolute folder for the server's ready file and
 var summary_path: String = ""
 var start_timeout_s: float = 30.0
 var extra_server_args: PackedStringArray = []
+var input_log_path: String = ""  ## the match's input log, written by the server when it finishes
 var _bots: Array = []
 var _ready_file: String = ""
 var _started_usec: int = 0
@@ -56,7 +57,8 @@ func start(map_id: String, bracket: String, host_name: String, bots: Array, prep
 	DirAccess.make_dir_recursive_absolute(session_dir)
 	_ready_file = session_dir.path_join("ready")
 	summary_path = session_dir.path_join("summary.json")
-	for f: String in [_ready_file, summary_path]:
+	input_log_path = session_dir.path_join("match.inputlog")  # every match records its inputs (M1-29)
+	for f: String in [_ready_file, summary_path, input_log_path]:
 		if FileAccess.file_exists(f):
 			DirAccess.remove_absolute(f)
 	_bots = bots
@@ -65,7 +67,7 @@ func start(map_id: String, bracket: String, host_name: String, bots: Array, prep
 		roster.append("%s:%d" % [b["name"], int(b["team"])])
 	var args: PackedStringArray = ["--server", "--mode", "arena", "--bracket", bracket, "--map", map_id,
 		"--port", str(port), "--roster", ",".join(roster), "--host", host_name,
-		"--ready-file", _ready_file, "--summary", summary_path,
+		"--ready-file", _ready_file, "--summary", summary_path, "--input-log", input_log_path,
 		"--seed", str(seed_value if seed_value > 0 else randi_range(1, 1_000_000))]
 	if prep_s >= 0.0:
 		args.append_array(["--prep-seconds", str(prep_s)])
