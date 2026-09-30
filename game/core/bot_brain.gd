@@ -30,6 +30,12 @@ var _wander_goal: Vector3 = Vector3.ZERO
 var _progress_pos: Vector3 = Vector3(INF, 0, INF)
 var _progress_tick: int = 0
 var _movement_impaired: bool = false
+var _hide_since: int = -1  ## tick the current hiding spell began, or -1
+var _hide_blocked_until: int = -1
+
+const HIDE_MAX_S: float = 8.0
+const MELEE_CLOSE_M: float = 5.0
+const HIDE_COOLDOWN_S: float = 6.0
 var stuck_count: int = 0
 var stuck_log: Array = []  ## where and toward what the bot got stuck (explain mode only)  ## times this bot stopped making progress toward a goal (for reports)
 var explain: bool = false  ## record why each priority rule was skipped (for traces)
@@ -371,11 +377,24 @@ func _cc_allowed(me: Dictionary, ab: Dictionary) -> bool:
 func _movement_goal(view: Dictionary, me: Dictionary, target: Dictionary, enemies: Array, allies: Array) -> Vector3:
 	var b: Dictionary = profile["behavior"]
 	var pos: Vector3 = me["position"]
-	# hide behind a pillar when low
-	if b.has("break_los_below_pct") and _pct(me) < float(b["break_los_below_pct"]):
-		var hide: Variant = _hide_spot(pos, _nearest(me, enemies)["position"])
-		if hide != null:
-			return hide
+	# hide behind a pillar when low, but only when it can help (see _hiding_helps), and never for
+	# longer than HIDE_MAX_S at a time, so two bots cannot hide from each other for the whole match
+	var tick: int = view["tick"]
+	var threats: Array = _threats(me, enemies)
+	var want_hide: bool = b.has("break_los_below_pct") and _pct(me) < float(b["break_los_below_pct"]) \
+		and tick >= _hide_blocked_until and not threats.is_empty() and _has_healer(allies)
+	if want_hide:
+		if _hide_since < 0:
+			_hide_since = tick
+		if tick - _hide_since > int(HIDE_MAX_S * 60):
+			_hide_since = -1
+			_hide_blocked_until = tick + int(HIDE_COOLDOWN_S * 60)
+		else:
+			var hide: Variant = _hide_spot(pos, threats)
+			if hide != null:
+				return hide
+	else:
+		_hide_since = -1
 	# healers stay near the ally who needs them
 	if b.has("stay_near_allies_m"):
 		var ally: Dictionary = _lowest(allies)
@@ -404,6 +423,28 @@ func _movement_goal(view: Dictionary, me: Dictionary, target: Dictionary, enemie
 func _reset_progress(pos: Vector3, tick: int) -> void:
 	_progress_pos = pos
 	_progress_tick = tick
+
+
+## Enemies worth breaking line of sight from: those who see the bot and attack from range, or a
+## melee enemy still more than MELEE_CLOSE_M from a ranged bot (a pillar denies its charge). A
+## melee enemy on a melee bot just follows round the pillar, so it is not one.
+func _threats(me: Dictionary, enemies: Array) -> Array:
+	var i_am_ranged: bool = Data.specs.get(me["spec"], {}).get("range", "") != "melee"
+	return enemies.filter(func(e: Dictionary) -> bool:
+		if not _sees(e, me):
+			return false
+		if Data.specs.get(e["spec"], {}).get("range", "") != "melee":
+			return true
+		return i_am_ranged and _dist(me, e) > MELEE_CLOSE_M)
+
+
+## Hiding only buys time: it helps while a living healer (an ally, or the bot itself) can heal
+## the bot out of the enemies' sight.
+static func _has_healer(allies: Array) -> bool:
+	for a: Dictionary in allies:
+		if Data.specs.get(a["spec"], {}).get("role", "") == "healer":
+			return true
+	return false
 
 
 ## Where to run from a melee threat: the most open direction that still gains distance, so a
@@ -478,24 +519,31 @@ func _steer_point(pos: Vector3, goal: Vector3, tick: int) -> Vector3:
 	return _path[0] if not _path.is_empty() else goal
 
 
-## A spot on the far side of the nearest line-of-sight blocker from `threat`, or null.
-func _hide_spot(pos: Vector3, threat: Vector3) -> Variant:
+## The spot behind a line-of-sight blocker that the fewest threats can see (then the nearest),
+## or null when there is no blocker.
+func _hide_spot(pos: Vector3, threats: Array) -> Variant:
 	if geometry == null:
 		return null
 	var best: Variant = null
-	var best_d: float = INF
+	var best_score: float = INF
 	for c: Dictionary in geometry.circles:
 		if not c["los"]:
 			continue
 		var centre: Vector3 = Vector3(c["center"].x, 0, c["center"].y)
-		var dir: Vector3 = centre - Vector3(threat.x, 0, threat.z)
-		if dir.length() < 0.01:
-			continue
-		var spot: Vector3 = centre + dir.normalized() * (float(c["radius"]) + 1.0)
-		var d: float = pos.distance_to(spot)
-		if d < best_d:
-			best_d = d
-			best = spot
+		for t: Dictionary in threats:
+			var dir: Vector3 = centre - Vector3(t["position"].x, 0, t["position"].z)
+			if dir.length() < 0.01:
+				continue
+			var spot: Vector3 = centre + dir.normalized() * (float(c["radius"]) + 1.0)
+			var seen: int = 0
+			for u: Dictionary in threats:
+				if geometry.has_line_of_sight(u["position"] + Vector3.UP * Combat.EYE_HEIGHT,
+						spot + Vector3.UP * Combat.CHEST_HEIGHT):
+					seen += 1
+			var score: float = seen * 1000.0 + pos.distance_to(spot)
+			if score < best_score:
+				best_score = score
+				best = spot
 	return best
 
 

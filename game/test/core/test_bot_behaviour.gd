@@ -116,3 +116,31 @@ func test_losing_caster_breaks_line_of_sight() -> void:
 	assert_bool(runner.geometry.has_line_of_sight(war.position + eye, arc.position + chest)).is_true()
 	_run(4 * runner.sim.tick_rate)
 	assert_bool(runner.geometry.has_line_of_sight(war.position + eye, arc.position + chest)).is_false()
+
+
+## Regression (review pass 2): two low-health Warblades in a 1v1 circled a pillar for the whole
+## match, each "hiding" from the other. Hiding from a melee enemy is pointless for a melee bot,
+## and without a healer there is nothing to wait for, so they fight it out.
+func test_low_health_melee_duel_keeps_fighting() -> void:
+	var duel: MatchRunner = MatchRunner.new(Data.maps["gallows_courtyard"], "arena", "1v1", 0.0, 7)
+	var a: Unit = duel.add_unit("warblade_carnage", 0)
+	var b: Unit = duel.add_unit("warblade_carnage", 1)
+	var duel_brains: Dictionary = {}
+	duel.sim.add_system(duel.bot_system(duel_brains))
+	duel.sim.add_system(duel.system_combat_and_rules)
+	duel.sim.step()
+	for u: Unit in [a, b]:
+		duel_brains[u.id] = BotBrain.new(u.spec_id, 3 + u.id, duel.geometry)
+		u.health = roundi(u.max_health * 0.2)
+	a.position = Vector3(-6, 0, -6)  # beside a pillar
+	b.position = Vector3(-4, 0, -6)
+	# from a fifth of their health a real fight ends within seconds; the stalemate never ended
+	var ended_s: float = -1.0
+	for i: int in 30 * duel.sim.tick_rate:
+		duel.sim.step()
+		duel.take_events()
+		if a.health <= 0 or b.health <= 0:
+			ended_s = float(i) / duel.sim.tick_rate
+			break
+	assert_float(ended_s).override_failure_message("the duel stalled: nobody died in 30 s").is_greater_equal(0.0)
+	duel.sim._systems.clear()

@@ -127,7 +127,6 @@
     {
       "ability": "castigate",
       "when": {
-        "target_health_below_pct": 100,
         "no_free_melee_within_m": 6
       }
     }
