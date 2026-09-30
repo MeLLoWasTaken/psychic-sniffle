@@ -1,0 +1,31 @@
+{
+  "id": "gallows_skyline_houses_b",
+  "kind": "environment_kit",
+  "builder": "build_kit_gallows.py",
+  "seed": 39,
+  "tri_budget": {
+    "min": 500,
+    "max": 5000
+  },
+  "texture_size": 512,
+  "palette": {
+    "stone": "#6d6961",
+    "flag": "#5b5852",
+    "mortar": "#2c2a27",
+    "wood": "#86613f",
+    "dark_wood": "#664a3a",
+    "iron": "#3c3f44",
+    "rope": "#8a7654",
+    "emblem": "#d8ccb0",
+    "far_stone": "#4d4b46",
+    "far_roof": "#34383f",
+    "plaster": "#5a5650",
+    "void": "#17140f"
+  },
+  "params": {
+    "width_m": 21.0,
+    "piece": "skyline_houses"
+  },
+  "out": "game/assets/kits/gallows/gallows_skyline_houses_b.glb",
+  "status": "draft"
+}

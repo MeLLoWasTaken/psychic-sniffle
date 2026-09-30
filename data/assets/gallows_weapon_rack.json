@@ -1,0 +1,26 @@
+{
+  "id": "gallows_weapon_rack",
+  "kind": "prop",
+  "builder": "build_kit_gallows.py",
+  "seed": 46,
+  "tri_budget": {
+    "min": 500,
+    "max": 5000
+  },
+  "texture_size": 512,
+  "palette": {
+    "stone": "#6d6961",
+    "flag": "#5b5852",
+    "mortar": "#2c2a27",
+    "wood": "#86613f",
+    "dark_wood": "#6a4a33",
+    "iron": "#3c3f44",
+    "rope": "#8a7654",
+    "emblem": "#d8ccb0"
+  },
+  "params": {
+    "piece": "weapon_rack"
+  },
+  "out": "game/assets/kits/gallows/gallows_weapon_rack.glb",
+  "status": "draft"
+}

@@ -1,0 +1,38 @@
+{
+  "id": "gallows_wall_outer",
+  "kind": "environment_kit",
+  "builder": "build_kit_gallows.py",
+  "seed": 14,
+  "tri_budget": {
+    "min": 300,
+    "max": 2000
+  },
+  "texture_size": 512,
+  "palette": {
+    "stone": "#6d6961",
+    "flag": "#5b5852",
+    "mortar": "#2c2a27",
+    "wood": "#6b4a30",
+    "dark_wood": "#46301f",
+    "iron": "#3c3f44",
+    "rope": "#8a7654",
+    "emblem": "#d8ccb0"
+  },
+  "params": {
+    "width_m": 4.0,
+    "height_m": 6.0,
+    "piece": "wall",
+    "course_m": [
+      0.8,
+      1.1
+    ],
+    "stone_m": [
+      1.6,
+      2.6
+    ],
+    "bevel_segments": 1
+  },
+  "out": "game/assets/kits/gallows/gallows_wall_outer.glb",
+  "status": "draft",
+  "pivot": "face"
+}

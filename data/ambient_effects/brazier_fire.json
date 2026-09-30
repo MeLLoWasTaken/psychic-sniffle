@@ -1,0 +1,52 @@
+{
+  "id": "brazier_fire",
+  "description": "Fire in an iron brazier bowl: three flame tongues over the coals, a few embers, a thin smoke plume and a warm flickering light (backlog F-05).",
+  "offset": [0, 1.2, 0],
+  "flame": {
+    "height_m": 0.95,
+    "width_m": 0.72,
+    "tongues": 3,
+    "spread_m": 0.14,
+    "intensity": 1.9,
+    "speed": 1.0,
+    "colors": {
+      "core": [1.0, 0.82, 0.46],
+      "outer": [1.0, 0.34, 0.06]
+    }
+  },
+  "embers": {
+    "count": 14,
+    "lifetime_s": 1.6,
+    "radius_m": 0.22,
+    "rise_mps": [0.9, 1.7],
+    "spread_deg": 25,
+    "buoyancy": 0.3,
+    "damping": 0.3,
+    "size_m": 0.05,
+    "color": [1.0, 0.5, 0.16, 1.0]
+  },
+  "smoke": {
+    "count": 8,
+    "lifetime_s": 2.8,
+    "radius_m": 0.15,
+    "rise_mps": [0.5, 0.8],
+    "spread_deg": 12,
+    "buoyancy": 0.15,
+    "damping": 0.1,
+    "size_m": 0.7,
+    "grow": 2.5,
+    "color": [0.13, 0.125, 0.12, 0.28]
+  },
+  "light": {
+    "color": [1.0, 0.56, 0.24],
+    "energy": 2.2,
+    "range_m": 9.0,
+    "attenuation": 1.4,
+    "fog_energy": 0.6,
+    "y_m": 0.3,
+    "flicker": {
+      "amount": 0.22,
+      "speed_hz": 5.5
+    }
+  }
+}

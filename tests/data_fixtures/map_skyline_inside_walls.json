@@ -1,0 +1,8 @@
+{
+  "description": "a skyline silhouette placed inside the arena walls",
+  "file": "maps/gallows_courtyard.json",
+  "expect": "is inside the walls",
+  "set": {
+    "/dressing/skyline/pieces/0/pos": [10.0, 5.0]
+  }
+}

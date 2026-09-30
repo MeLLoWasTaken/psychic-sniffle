@@ -1,7 +1,7 @@
 extends Node3D
 ## Review views of an arena for screenshots (backlog M1-14):
 ##   tools/screenshot.sh res://scenes/tests/map_view.tscn previews/maps/top.png -- \
-##     (arguments after the scene: --map gallows_courtyard --view top|overview|player|lineup|character --gates open|closed --anim run --anim-time 0.18)
+##     (arguments after the scene: --map gallows_courtyard --view top|overview|player|room_a|room_b|lineup|character --gates open|closed --anim run --anim-time 0.18)
 ## Places players at the spawns and in the courtyard so scale reads in every view: the built
 ## character model when one exists (the Warblade for now), otherwise a team-colored capsule.
 ## View "character" frames the player's character up close. Characters are animated and hold
@@ -28,7 +28,7 @@ func _ready() -> void:
 	builder = scene.instantiate()
 	builder.map_id = map_id
 	add_child(builder)
-	builder.set_gates_open(_arg(args, "--gates", "open" if view == "player" else "closed") == "open", 0.0)
+	builder.set_gates_open(_arg(args, "--gates", "open" if view in ["player", "room_a", "room_b"] else "closed") == "open", 0.0)
 	for team: int in 2:
 		var spawns: Array = map["spawns"]["team_a" if team == 0 else "team_b"]
 		for i: int in spawns.size():
@@ -113,6 +113,12 @@ func _camera(view: String) -> void:
 			cam.fov = 70.0
 			cam.position = Vector3(-21.2, 2.9, 0.6)
 			cam.look_at(Vector3(0, 1.4, 0.3))
+		"room_a", "room_b":
+			# from the back of a starting room, through the open gate into the courtyard
+			var s: float = -1.0 if view == "room_a" else 1.0
+			cam.fov = 70.0
+			cam.position = Vector3(s * 24.6, 2.6, 0.4)
+			cam.look_at(Vector3(s * 6.0, 2.2, 0.0))
 		"lineup":
 			cam.fov = 38.0
 			cam.position = Vector3(-10.2, 1.6, 0.0)
