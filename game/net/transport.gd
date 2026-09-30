@@ -18,6 +18,7 @@ var _out_queue: Array[Dictionary] = []
 var _in_queue: Array[Dictionary] = []
 var _last_release: Dictionary = {}  ## "<direction>:<channel>" -> last release time for reliable order
 var _jitter_offset: Dictionary = {"in": 0.0, "out": 0.0}  ## current jitter per direction, ms
+var _open: bool = false
 
 
 func configure_conditions(p_lag_ms: float, p_jitter_ms: float, p_loss: float, seed_value: int = 1) -> void:
@@ -38,13 +39,16 @@ static func disable_throttle(peer: ENetPacketPeer) -> void:
 
 
 func start_server(port: int, max_peers: int = 32) -> Error:
-	return host.create_host_bound("127.0.0.1", port, max_peers, Protocol.CHANNELS)
+	var err: Error = host.create_host_bound("127.0.0.1", port, max_peers, Protocol.CHANNELS)
+	_open = err == OK
+	return err
 
 
 func start_client(address: String, port: int) -> ENetPacketPeer:
 	var err: Error = host.create_host(1, Protocol.CHANNELS)
 	if err != OK:
 		return null
+	_open = true
 	# The throttle is configured on the connect event (see poll); configuring it before the
 	# handshake completes makes ENet drop the connection.
 	return host.connect_to_host(address, port, Protocol.CHANNELS)
@@ -135,5 +139,14 @@ func _release_time(direction: String, channel: int, reliable: bool) -> float:
 	return t
 
 
+## Tell every connected peer we are leaving (so they see a disconnect at once instead of after
+## ENet's timeout), then destroy the host.
 func close() -> void:
+	if not _open:
+		return
+	_open = false
+	for peer: ENetPacketPeer in host.get_peers():
+		if peer.get_state() == ENetPacketPeer.STATE_CONNECTED:
+			peer.peer_disconnect_now()
+	host.flush()
 	host.destroy()

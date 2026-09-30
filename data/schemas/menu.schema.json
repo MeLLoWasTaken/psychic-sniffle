@@ -1,0 +1,96 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "menu.schema.json",
+  "title": "Client menu",
+  "description": "Main menu buttons, the spec picker, the 'Play vs bots' preset (map, bracket, bot comps per player spec) and the match flow text and colors (backlog M1-28).",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["id", "name", "title", "buttons", "spec_picker", "play_bots", "text", "scoreboard_columns", "style"],
+  "$defs": {
+    "color": {"type": "string", "pattern": "^#([0-9a-fA-F]{6}|[0-9a-fA-F]{8})$"}
+  },
+  "properties": {
+    "id": {"$ref": "common.schema.json#/$defs/id"},
+    "name": {"type": "string"},
+    "description": {"type": "string"},
+    "title": {"type": "string", "minLength": 1},
+    "subtitle": {"type": "string"},
+    "buttons": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["id", "label", "action"],
+        "properties": {
+          "id": {"$ref": "common.schema.json#/$defs/id"},
+          "label": {"type": "string", "minLength": 1},
+          "action": {"enum": ["play_bots", "practice", "settings", "quit"], "description": "What the button does; the client routes each action (GameFlow)"},
+          "enabled": {"type": "boolean", "default": true},
+          "hint": {"type": "string"}
+        }
+      }
+    },
+    "spec_picker": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["label", "specs", "default"],
+      "properties": {
+        "label": {"type": "string"},
+        "specs": {"type": "array", "minItems": 1, "items": {"$ref": "common.schema.json#/$defs/id"}, "uniqueItems": true},
+        "default": {"$ref": "common.schema.json#/$defs/id"}
+      }
+    },
+    "play_bots": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["map", "bracket", "host_name", "port_range", "comps", "bot_names", "server_start_timeout_s", "end_banner_s"],
+      "properties": {
+        "map": {"$ref": "common.schema.json#/$defs/id"},
+        "bracket": {"enum": ["1v1", "2v2", "3v3"]},
+        "host_name": {"type": "string", "minLength": 1, "description": "The player's client name on the server (the server's --host)"},
+        "port_range": {"type": "array", "items": {"type": "integer", "minimum": 1024, "maximum": 65535}, "minItems": 2, "maxItems": 2},
+        "comps": {
+          "type": "object",
+          "description": "Player spec -> the bots' specs: one partner per ally slot and the enemy team",
+          "additionalProperties": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": ["partner", "enemies"],
+            "properties": {
+              "partner": {"$ref": "common.schema.json#/$defs/id"},
+              "enemies": {"type": "array", "minItems": 1, "items": {"$ref": "common.schema.json#/$defs/id"}}
+            }
+          }
+        },
+        "bot_names": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["partner", "enemies"],
+          "properties": {
+            "partner": {"type": "string", "minLength": 1},
+            "enemies": {"type": "array", "items": {"type": "string", "minLength": 1}, "uniqueItems": true}
+          }
+        },
+        "server_start_timeout_s": {"type": "number", "exclusiveMinimum": 0},
+        "end_banner_s": {"type": "number", "minimum": 0, "description": "Seconds the Victory/Defeat banner shows over the arena before the end screen"}
+      }
+    },
+    "controls_hint": {"type": "string"},
+    "text": {"type": "object", "additionalProperties": {"type": "string"}},
+    "scoreboard_columns": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["id", "label"],
+        "properties": {
+          "id": {"enum": ["damage", "healing", "kills", "interrupts", "deaths"]},
+          "label": {"type": "string"}
+        }
+      }
+    },
+    "style": {"type": "object", "additionalProperties": {"$ref": "#/$defs/color"}}
+  }
+}

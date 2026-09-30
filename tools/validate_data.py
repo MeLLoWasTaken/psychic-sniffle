@@ -53,6 +53,7 @@ FOLDERS = {
     "sounds": ("sound.schema.json", "id"),
     "sound_map": ("sound_map.schema.json", "id"),
     "hud_layouts": ("hud_layout.schema.json", "id"),
+    "menus": ("menu.schema.json", "id"),
 }
 
 # Ability kit template (docs/DESIGN.md, "Ability kit template"): slot -> (min, max)
@@ -262,6 +263,7 @@ def validate(data_dir: Path) -> list[str]:
             report.error(rel, f"missing required clips: {', '.join(missing)}")
     _check_effects(report, db, schemas)
     _check_hud_layouts(report, db)
+    _check_menus(report, db)
     sys.path.insert(0, str(REPO / "tools" / "audio"))
     import sound_data  # sounds and the sound map (backlog M1-26); weapon sounds per spec
 
@@ -340,6 +342,67 @@ def validate(data_dir: Path) -> list[str]:
 EFFECT_STAGES = ("cast", "projectile", "impact", "ground", "melee", "displacement", "auras")
 CC_AURA_STYLES = {"stun", "disorient", "root", "silence", "ice_block"}
 UNIT_TARGETS = ("enemy", "ally", "any_unit")
+
+
+# Text keys the client reads from a menu (game/ui/main_menu.gd, match_overlay.gd, end_screen.gd).
+MENU_TEXT_KEYS = [
+    "starting_server", "loading_arena", "connecting", "waiting", "preparation", "gates_in", "gates_open",
+    "victory", "defeat", "draw", "reason_team_eliminated", "reason_time_limit", "failed", "back_to_menu",
+    "resume", "leave_match", "leave_practice", "quit_game", "your_team", "enemy_team", "you", "partner",
+    "enemy", "total", "match_time", "settings_title", "close",
+]
+
+
+def _check_menus(report: Report, db: dict) -> None:
+    """Menus (backlog M1-28): picker specs are finished kits with a bot comp each, comps fill the
+    bracket with existing finished specs that have bot profiles, the map exists, every text key the
+    client reads is present."""
+    specs, bots = db["specs"], db["bots"]
+    for mid, m in db["menus"].items():
+        rel = f"menus/{mid}.json"
+        picker = m["spec_picker"]
+        if picker["default"] not in picker["specs"]:
+            report.error(rel, f"spec_picker.default '{picker['default']}' is not in spec_picker.specs")
+        pb = m["play_bots"]
+        if pb["map"] not in db["maps"]:
+            report.error(rel, f"play_bots.map '{pb['map']}' not found in maps")
+        lo, hi = pb["port_range"]
+        if lo > hi:
+            report.error(rel, "play_bots.port_range must be [low, high]")
+        size = int(pb["bracket"][0])
+        if size != 2:
+            report.error(rel, f"play_bots supports 2v2 (one partner); bracket is {pb['bracket']}")
+        if len(pb["bot_names"]["enemies"]) < size:
+            report.error(rel, f"play_bots.bot_names.enemies needs {size} names")
+        if pb["host_name"] == pb["bot_names"]["partner"] or pb["host_name"] in pb["bot_names"]["enemies"]:
+            report.error(rel, "play_bots.host_name must differ from every bot name")
+
+        def playable(sid: str, where: str, need_bot: bool) -> None:
+            if sid not in specs:
+                report.error(rel, f"{where}: unknown spec '{sid}'")
+            elif specs[sid].get("kit_status") != "complete":
+                report.error(rel, f"{where}: spec '{sid}' is not a complete kit")
+            elif need_bot and sid not in bots:
+                report.error(rel, f"{where}: spec '{sid}' has no bot profile")
+
+        for sid in picker["specs"]:
+            playable(sid, "spec_picker", False)
+            if sid not in pb["comps"]:
+                report.error(rel, f"play_bots.comps has no comp for picker spec '{sid}'")
+        for sid, comp in pb["comps"].items():
+            playable(sid, f"play_bots.comps.{sid}", False)
+            playable(comp["partner"], f"play_bots.comps.{sid}.partner", True)
+            if len(comp["enemies"]) != size:
+                report.error(rel, f"play_bots.comps.{sid}.enemies must have {size} specs for {pb['bracket']}")
+            for e in comp["enemies"]:
+                playable(e, f"play_bots.comps.{sid}.enemies", True)
+        for key in MENU_TEXT_KEYS:
+            if key not in m["text"]:
+                report.error(rel, f"text is missing '{key}'")
+        actions = {b["action"] for b in m["buttons"]}
+        for needed in ("play_bots", "quit"):
+            if needed not in actions:
+                report.error(rel, f"no button with action '{needed}'")
 
 
 def _check_hud_layouts(report: Report, db: dict) -> None:

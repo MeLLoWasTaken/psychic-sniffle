@@ -1,0 +1,6 @@
+{
+  "description": "menu picker spec without a bot comp",
+  "file": "menus/main.json",
+  "expect": "has no comp for picker spec 'oracle_grace'",
+  "delete": ["/play_bots/comps/oracle_grace"]
+}

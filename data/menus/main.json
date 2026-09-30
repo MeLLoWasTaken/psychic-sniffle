@@ -1,0 +1,88 @@
+{
+  "id": "main",
+  "name": "Main menu",
+  "description": "Client main menu and match flow text (backlog M1-28). Buttons route by action; the Play preset picks the local server's map, bracket and the bots filling the other slots for each spec the player can choose.",
+  "title": "ARENA PVP",
+  "subtitle": "Gallows Courtyard  -  2v2 vertical slice",
+  "buttons": [
+    {"id": "play_bots", "label": "Play 2v2 vs bots", "action": "play_bots", "hint": "You and a bot partner against two bots, on a server started on this machine."},
+    {"id": "practice", "label": "Practice", "action": "practice", "hint": "The offline practice arena: same fight, no server, no end screen."},
+    {"id": "settings", "label": "Settings", "action": "settings", "hint": "Keybinding, interface, gameplay, graphics, audio and accessibility pages arrive in M2."},
+    {"id": "quit", "label": "Quit", "action": "quit", "hint": "Close the game."}
+  ],
+  "spec_picker": {
+    "label": "Your specialization",
+    "specs": ["warblade_carnage", "arcanist_rime", "oracle_grace"],
+    "default": "warblade_carnage"
+  },
+  "play_bots": {
+    "map": "gallows_courtyard",
+    "bracket": "2v2",
+    "host_name": "player",
+    "port_range": [24700, 24799],
+    "comps": {
+      "warblade_carnage": {"partner": "oracle_grace", "enemies": ["arcanist_rime", "oracle_grace"]},
+      "arcanist_rime": {"partner": "oracle_grace", "enemies": ["warblade_carnage", "oracle_grace"]},
+      "oracle_grace": {"partner": "warblade_carnage", "enemies": ["arcanist_rime", "oracle_grace"]}
+    },
+    "bot_names": {"partner": "partner", "enemies": ["enemy1", "enemy2"]},
+    "server_start_timeout_s": 30,
+    "end_banner_s": 3.0
+  },
+  "controls_hint": "W/S move  -  A/D turn  -  Q/E strafe  -  Right-drag steer  -  Tab target  -  1..= and Shift+1..= abilities  -  Shift+R Break Free  -  Esc clears the target, then opens the menu",
+  "text": {
+    "starting_server": "Starting the match server...",
+    "loading_arena": "Building the arena...",
+    "connecting": "Joining the match...",
+    "waiting": "Waiting for players  {joined}/{total}",
+    "preparation": "Preparation",
+    "gates_in": "Gates open in {seconds}",
+    "gates_open": "The gates are open!",
+    "victory": "Victory",
+    "defeat": "Defeat",
+    "draw": "Draw",
+    "reason_team_eliminated": "The losing team was eliminated",
+    "reason_time_limit": "Time limit reached",
+    "failed": "The match ended unexpectedly",
+    "back_to_menu": "Back to menu",
+    "resume": "Resume",
+    "leave_match": "Leave match",
+    "leave_practice": "Leave to menu",
+    "quit_game": "Quit game",
+    "your_team": "Your team",
+    "enemy_team": "Enemy team",
+    "you": "You",
+    "partner": "Partner",
+    "enemy": "Enemy",
+    "total": "Team total",
+    "match_time": "Match time {time}",
+    "settings_title": "Settings",
+    "close": "Close"
+  },
+  "scoreboard_columns": [
+    {"id": "damage", "label": "Damage"},
+    {"id": "healing", "label": "Healing"},
+    {"id": "kills", "label": "Kills"},
+    {"id": "interrupts", "label": "Interrupts"}
+  ],
+  "style": {
+    "background_top": "#16110d",
+    "background_bottom": "#060505",
+    "title": "#e3c68a",
+    "subtitle": "#a8987c",
+    "text": "#efe6d2",
+    "text_dim": "#a8987c",
+    "button_bg": "#1c1611f0",
+    "button_hover": "#2d2318f0",
+    "button_pressed": "#3b2c1bf0",
+    "button_disabled": "#14110ec0",
+    "button_border": "#7a6443",
+    "button_border_hover": "#c9a462",
+    "accent": "#c9a462",
+    "victory": "#e8c860",
+    "defeat": "#d0463a",
+    "draw": "#b3a68e",
+    "panel_bg": "#100d0af0",
+    "dim": "#000000a8"
+  }
+}
