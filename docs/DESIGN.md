@@ -558,9 +558,9 @@ The full roster means roughly 600 abilities, 2,500 talent nodes (13 class trees,
 | Decision | Default in this document | Alternatives | Decide by |
 | --- | --- | --- | --- |
 | Game engine | Godot 4 | Unreal Engine 5 (stronger visuals, much harder for a model to drive from text and scripts); Unity | Decided: Godot 4.7 |
-| Character art source | Fully scripted in headless Blender | Allow CC0 base meshes or artist-made hero models if the slice falls short | End of M1 |
-| Animation source | Keyframed by script | Retarget CC0 motion-capture data onto the standard skeleton | End of M1 |
-| Sound effects | Synthesized by script, plus CC0 libraries | AI audio tools, a hired sound designer | Start of M0 |
+| Character art source | Fully scripted in headless Blender | Allow CC0 base meshes or artist-made hero models if the slice falls short | Decided at the M1 art gate: fully scripted, improved by iteration (human, 2026-09-30) |
+| Animation source | Keyframed by script | Retarget CC0 motion-capture data onto the standard skeleton | Decided: hybrid. Locomotion from retargeted CMU motion capture (commercial use allowed), stylised by data; combat, casts and crowd control scripted; foot IK and look-at in game (delegated by the human, 2026-09-30) |
+| Sound effects | Synthesized by script, plus CC0 libraries | AI audio tools, a hired sound designer | Decided: synthesized by script with data-driven studio processing; the human reviews by ear |
 | Music | Licensed or CC0 tracks | Commissioned composer | M5 |
 | Playable races | None; two body builds per class | Races with cosmetic differences only | M3 |
 | Final names | Placeholders in this document | A naming pass with trademark checks | Before any public release |

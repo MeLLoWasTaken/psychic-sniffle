@@ -36,6 +36,7 @@ var _hide_blocked_until: int = -1
 const HIDE_MAX_S: float = 8.0
 const MELEE_CLOSE_M: float = 5.0
 const HIDE_COOLDOWN_S: float = 6.0
+const TIE_PCT: float = 3.0  ## health shares this close count as a tie (see _lowest)
 var stuck_count: int = 0
 var stuck_log: Array = []  ## where and toward what the bot got stuck (explain mode only)  ## times this bot stopped making progress toward a goal (for reports)
 var explain: bool = false  ## record why each priority rule was skipped (for traces)
@@ -117,14 +118,14 @@ func _choose_target(view: Dictionary, me: Dictionary, enemies: Array, tick: int)
 		match profile["behavior"]["target_priority"]:
 			"healer_first":
 				var healers: Array = candidates.filter(func(e: Dictionary) -> bool: return Data.specs.get(e["spec"], {}).get("role", "") == "healer")
-				var pool: Array = healers if not healers.is_empty() and _sees(me, healers[0]) else candidates
-				best = _lowest(pool)
+				var seen: Array = healers.filter(func(e: Dictionary) -> bool: return _sees(me, e))
+				best = _lowest(seen if not seen.is_empty() else candidates, me)
 			"dps_first":
 				var dps: Array = candidates.filter(func(e: Dictionary) -> bool: return Data.specs.get(e["spec"], {}).get("role", "") != "healer")
 				var pool_d: Array = dps.filter(func(e: Dictionary) -> bool: return _sees(me, e))
-				best = _lowest(pool_d if not pool_d.is_empty() else (dps if not dps.is_empty() else candidates))
+				best = _lowest(pool_d if not pool_d.is_empty() else (dps if not dps.is_empty() else candidates), me)
 			"lowest_health":
-				best = _lowest(candidates)
+				best = _lowest(candidates, me)
 			_:
 				best = _nearest(me, candidates)
 		target_id = best["id"]
@@ -233,12 +234,12 @@ func _pick_on(on: String, view: Dictionary, me: Dictionary, target: Dictionary, 
 		"target":
 			return target
 		"lowest_ally":
-			return _lowest(allies)
+			return _lowest(allies, me)
 		"enemy_healer":
 			var h: Array = enemies.filter(func(e: Dictionary) -> bool: return Data.specs.get(e["spec"], {}).get("role", "") == "healer")
 			return h[0] if not h.is_empty() else {}
 		"ally_attacker":
-			var low: Dictionary = _lowest(allies)
+			var low: Dictionary = _lowest(allies, me)
 			for e: Dictionary in enemies:
 				if int(e["target_id"]) == int(low["id"]) and _dist(e, low) < 8.0:
 					return e
@@ -277,7 +278,7 @@ func _conditions(w: Dictionary, view: Dictionary, me: Dictionary, on: Dictionary
 		return false
 	if w.has("target_health_above_pct") and _pct(on) <= float(w["target_health_above_pct"]):
 		return false
-	if w.has("ally_health_below_pct") and _pct(_lowest(allies)) >= float(w["ally_health_below_pct"]):
+	if w.has("ally_health_below_pct") and _pct(_lowest(allies, me)) >= float(w["ally_health_below_pct"]):
 		return false
 	if w.get("target_casting", false) and not _casting_interruptible(on, tick, view):
 		return false
@@ -397,7 +398,7 @@ func _movement_goal(view: Dictionary, me: Dictionary, target: Dictionary, enemie
 		_hide_since = -1
 	# healers stay near the ally who needs them
 	if b.has("stay_near_allies_m"):
-		var ally: Dictionary = _lowest(allies)
+		var ally: Dictionary = _lowest(allies, me)
 		if ally["id"] != me["id"] and (_dist(me, ally) > float(b["stay_near_allies_m"]) or not _sees(me, ally)):
 			return ally["position"]
 	# casters back away from melee: always from a free one close in, and from a controlled one
@@ -581,12 +582,41 @@ static func _pct(u: Dictionary) -> float:
 	return 100.0 * float(u["health"]) / maxf(1.0, float(u["max_health"]))
 
 
-static func _lowest(units: Array) -> Dictionary:
-	var best: Dictionary = units[0]
+## The unit with the lowest health share. Shares within TIE_PCT of the lowest count as a tie,
+## broken by what a player would pick, never by unit id alone (review pass 3: with every enemy at
+## full health the first unit in id order was always chosen, so how a team was listed decided
+## whether its plate or its cloth member took the focus, and flipped matchups from 12% to 92%):
+## the lighter armor (less damage reduction, from tuning), then the nearer unit (when `me` is
+## given), then the id.
+static func _lowest(units: Array, me: Dictionary = {}) -> Dictionary:
+	var lo: float = INF
 	for u: Dictionary in units:
-		if _pct(u) < _pct(best):
+		lo = minf(lo, _pct(u))
+	var best: Dictionary = {}
+	for u: Dictionary in units:
+		if _pct(u) > lo + TIE_PCT:
+			continue
+		if best.is_empty() or _tie_before(u, best, me):
 			best = u
 	return best
+
+
+static func _tie_before(a: Dictionary, b: Dictionary, me: Dictionary) -> bool:
+	var ra: float = _armor_reduction(a)
+	var rb: float = _armor_reduction(b)
+	if not is_equal_approx(ra, rb):
+		return ra < rb
+	if not me.is_empty():
+		var da: float = _dist(me, a)
+		var db: float = _dist(me, b)
+		if absf(da - db) > 0.01:
+			return da < db
+	return int(a["id"]) < int(b["id"])
+
+
+static func _armor_reduction(u: Dictionary) -> float:
+	var cls: Dictionary = Data.classes.get(Data.specs.get(u["spec"], {}).get("class", ""), {})
+	return float(Data.tuning["damage"]["armor_reduction"].get(cls.get("armor", "plate"), 0.0))
 
 
 static func _nearest(me: Dictionary, units: Array) -> Dictionary:
