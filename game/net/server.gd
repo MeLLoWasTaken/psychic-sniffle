@@ -41,6 +41,7 @@ var respawn: bool = false
 var summary_path: String = ""
 
 var clients: Dictionary = {}  ## peer instance id -> client record
+var _end_states: Dictionary = {}  ## tick -> unit id -> health, from the match end on (M1-30)
 var input_log_path: String = ""  ## --input-log: write the match's input log here on finish (M1-29)
 var _tick_usec: PackedInt64Array = []
 var _stats: Dictionary = {"damage_events": 0, "kills": 0, "heals": 0, "casts": 0, "interrupts": 0,
@@ -129,6 +130,13 @@ func _physics_process(_delta: float) -> void:
 	var t0: int = Time.get_ticks_usec()
 	sim.step()
 	_tick_usec.append(Time.get_ticks_usec() - t0)
+	if _ended_tick >= 0:
+		# every unit's health on each tick after the end, so clients' last views can be checked
+		# against the server at the same tick (backlog M1-30)
+		var health: Dictionary = {}
+		for u: Unit in sim.units.values():
+			health[str(u.id)] = u.health
+		_end_states[str(sim.tick)] = health
 	_send_snapshots()
 	if sim.tick - _last_report_tick >= sim.tick_rate * 10:
 		_last_report_tick = sim.tick
@@ -382,7 +390,7 @@ func _finish() -> void:
 		"interrupts": _stats["interrupts"], "by_unit": _stats["by_unit"],
 		"winner_team": arena.winner_team if arena else -1, "end_reason": end_reason,
 		"match_seconds": arena.match_seconds(sim.tick) if arena else sim.time_s(),
-		"bytes_sent": transport.bytes_sent, "state_hash": sim.state_hash(),
+		"bytes_sent": transport.bytes_sent, "state_hash": sim.state_hash(), "end_states": _end_states,
 		"log_warnings": Log.warn_count, "log_errors": Log.error_count,
 	}
 	if runner.input_log and input_log_path != "":

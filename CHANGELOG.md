@@ -2,6 +2,15 @@
 
 One entry per build-loop iteration, newest first. Format: date, backlog ID, what changed, how it was checked.
 
+## 2026-09-30 — M1-30: network test
+- New full-mode check: a 2v2 arena of bots at 150 ms latency, 30 ms jitter and 2% loss must reach a kill with:
+  - no stuck casts (a cast shown more than 0.25 s past its end);
+  - every client's view of the ended match equal to the server's unit health at the same tick;
+  - own-movement corrections within limits;
+  - an exact replay.
+- First run: 4.8 minutes of match time, 434 casts, 0 stuck; all four clients agree with the server; corrections at most 0.125 m.
+- 2 tests prove the stuck-cast detector and the end-of-match record.
+
 ## 2026-09-30 — M1-29: replay test
 - Every match records an input log: every applied input and every world edit (join, leave, preparation hold, respawn), with its tick. The server writes it on finish; Play vs bots always records.
 - `Replay.run` rebuilds the match from the log. Every networked match in check_all, and the end-to-end match, now replays its log and must reach the server's final state hash.

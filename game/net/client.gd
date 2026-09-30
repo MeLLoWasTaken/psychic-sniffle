@@ -52,6 +52,9 @@ var recent_events: Array = []  ## last 200 combat log entries, for the HUD
 var own_auras: Array = []  ## our unit's auras from the newest snapshot (prediction uses them)
 
 const TELEPORT_M: float = 5.0  ## server moves larger than this in one snapshot are teleports
+const STUCK_CAST_TICKS: int = 15  ## a cast shown this long past its end tick is stuck (M1-30)
+var _stuck_casts: Dictionary = {}  ## "unit:start_tick" -> the stuck cast
+var _end_view: Dictionary = {}  ## the first snapshot of the ended match: tick and every unit's health
 
 var _synced: bool = false
 var _finished: bool = false  ## set once we start shutting down; later network events are ignored
@@ -198,12 +201,32 @@ func _on_snapshot(snap: Dictionary) -> void:
 	if int(snap["match"]["phase"]) == ArenaMatch.Phase.ENDED and _match_ended_usec == 0:
 		_match_ended_usec = Time.get_ticks_usec()
 		Log.info("client: match over, winner team %d" % snap["match"]["winner"])
+	_check_casts(snap)
+	if int(snap["match"]["phase"]) == ArenaMatch.Phase.ENDED and _end_view.is_empty():
+		var health: Dictionary = {}
+		for u: Dictionary in snap["units"]:
+			health[str(u["id"])] = int(u["health"])
+		_end_view = {"tick": int(snap["tick"]), "health": health}
 	_stats["snapshots"] += 1
 	snapshots.append(snap)
 	if snapshots.size() > SNAPSHOT_BUFFER:
 		snapshots.pop_front()
 	_reconcile(snap)
 	snapshot_received.emit(snap)
+
+
+## A cast still shown well past its end tick is stuck (backlog M1-30): the server ends every
+## cast by its end tick, so a snapshot showing it later means a lost or wrong update.
+func _check_casts(snap: Dictionary) -> void:
+	for u: Dictionary in snap["units"]:
+		var c: Dictionary = u.get("cast", {})
+		if c.is_empty() or int(snap["tick"]) <= int(c["end_tick"]) + STUCK_CAST_TICKS:
+			continue
+		var key: String = "%d:%d" % [int(u["id"]), int(c["start_tick"])]
+		if not _stuck_casts.has(key):
+			_stuck_casts[key] = {"unit": int(u["id"]), "ability": str(c["ability"]), "start_tick": int(c["start_tick"]),
+				"end_tick": int(c["end_tick"]), "seen_tick": int(snap["tick"])}
+			Log.warn("client: stuck cast %s" % str(_stuck_casts[key]))
 
 
 ## Reset our predicted unit to the server's state, then replay the inputs the server has not
@@ -454,6 +477,7 @@ func stats() -> Dictionary:
 		"simulated_jitter_ms": transport.jitter_ms, "simulated_loss": transport.loss,
 		"effect_corrections": _stats["effect_corrections"],
 		"effect_correction_max_m": _stats["effect_correction_max"], "correction_log": _stats["correction_log"],
+		"stuck_casts": _stuck_casts.values(), "end_view": _end_view,
 		"log_warnings": Log.warn_count, "log_errors": Log.error_count}
 
 

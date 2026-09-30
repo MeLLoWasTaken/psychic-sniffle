@@ -286,8 +286,8 @@ The slice specs are Warblade Carnage (melee, rage), Arcanist Rime (casting, inte
 - [x] Every match records its input log (`game/core/input_log.gd`: every applied input and every world edit, joining, leaving, preparation hold and respawn, with its tick and phase; Godot binary format so floats stay exact). The server writes it with `--input-log`; Play vs bots always does.
 - [x] Replaying it reproduces the same final state hash (`game/core/replay.gd`, `godot -s res://tools/replay.gd -- --log <file>`): checked after every networked match in `tools/sim/run_match.py` (all three check_all network matches, including 150 ms and 2% loss) and in the end-to-end match; a networked 2v2 fought to a kill (5,513 ticks, 21,260 entries) replays in 1 s. GdUnit: a bot arena match replays exactly, one changed input changes the hash, world edits replay, floats survive the file.
 
-### M1-30 Network test `[todo]`
-- [ ] A full bot 2v2 at 150 ms latency, 2% loss and 30 ms jitter completes without desync or stuck casts.
+### M1-30 Network test `[done]`
+- [x] A full bot 2v2 at 150 ms latency, 2% loss and 30 ms jitter completes without desync or stuck casts: new check_all (full) check "network 2v2 arena at 150 ms, 30 ms jitter, 2% loss". First run: 17,345 ticks (4.8 min of match time) to a kill; every client's first view of the ended match equals the server's health for every unit at that tick; no cast shown past its end tick (detector tested); own-movement corrections at most 0.125 m; the input log replays to the same hash.
 
 ### M1-31 Performance baseline and M1 gate review `[todo]`
 - [ ] Server tick time for a 4-player match recorded (target well under 8 ms).

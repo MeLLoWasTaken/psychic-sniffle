@@ -11,6 +11,8 @@ Checks (exit code 1 if any fails):
   - combat happened (at least one damage event) when the match lasts 30 s or more
   - with --mode arena: the match ends with a winning team
   - the server's input log replays to its final state hash (backlog M1-29)
+  - no client sees a cast past its end tick, and in arena mode every client's first view of the
+    ended match equals the server's unit health at that tick (backlog M1-30)
   - with --lag-ms set: measured round trip within 10% of the setting,
     largest prediction correction under 0.5 m and average under 0.1 m. Corrections that arrive
     with an unforeseeable change to the bot's own movement effects (a stun, root, slow or fear
@@ -153,6 +155,22 @@ def main() -> int:
                 failures.append(f"{name} largest correction {st['correction_max_m']:.3f} m (limit 0.5)")
             if st["correction_avg_m"] >= 0.1:
                 failures.append(f"{name} average correction {st['correction_avg_m']:.3f} m (limit 0.1)")
+    # M1-30: no cast stays on screen past its end, and every client's view of the ended match
+    # equals the server's state at the same tick
+    for name, st in report["bots"].items():
+        for c in st.get("stuck_casts", []):
+            failures.append(f"{name} saw a stuck cast: {c}")
+        ev = st.get("end_view") or {}
+        if args.mode == "arena" and ev:
+            server_health = summary.get("end_states", {}).get(str(ev["tick"]))
+            if server_health is None:
+                failures.append(f"{name} ended at tick {ev['tick']}, which the server did not record")
+            elif server_health != ev["health"]:
+                failures.append(f"{name} desync at tick {ev['tick']}: client {ev['health']} server {server_health}")
+            else:
+                st["end_view_matches_server"] = True
+        elif args.mode == "arena" and summary.get("winner_team", -1) != -1:
+            failures.append(f"{name} never saw the match end")
     if args.mode == "arena" and summary and summary.get("winner_team", -1) == -1:
         failures.append("arena match ended without a winner")
     if seconds >= 30 and summary.get("damage_events", 0) == 0:
