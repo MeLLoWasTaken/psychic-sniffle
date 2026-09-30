@@ -291,6 +291,33 @@ The slice specs are Warblade Carnage (melee, rage), Arcanist Rime (casting, inte
 
 ---
 
+## Improvements from available tools (decided 2026-09-30)
+
+The human asked to incorporate any readily available offering that improves the end result, in every area. Checked from the cloud workspace: PyPI and GitHub (git) are reachable; asset websites and Hugging Face are not; no GPU. Licences recorded in CREDITS.md.
+
+### X-01 Motion-capture locomotion from the CMU database `[todo]`
+- [ ] Import CMU BVH clips (git: una-dinosauria/cmu-mocap; "free for use in research and commercial projects") in Blender, retarget to the standard skeleton, and bake run, strafe left/right, backpedal, idle and jump for both builds, cut to seamless loops with exact frame counts.
+- [ ] Stylise on top of the capture (data: per-clip exaggeration of arm swing, torso lean and bounce) so it matches the heroic look; the weapon holds, wrist rules and clipping gate apply unchanged.
+- [ ] Pose sheets compared side by side with the scripted versions; keep whichever reads better per clip and record it.
+
+### X-02 Runtime character polish from Godot's built-in modifiers `[todo]`
+- [ ] Foot planting with TwoBoneIK3D (feet stay on the ground on idle and stop sliding on turns), head and chest turning toward the target with LookAtModifier3D (limited angles), SpringBoneSimulator3D on loose cloth (hood tip, stole ends, sash tail, tabard) with collision capsules.
+- [ ] All tunable in data; tests; screenshots.
+
+### X-03 Ability icons and typography `[todo]`
+- [ ] Ability icons from game-icons.net (CC BY 3.0, attribution in CREDITS.md), chosen per ability in data and rendered in the game's style (school-colour gradient, bevelled iron frame, glow for off-cooldown), replacing the initials glyphs.
+- [ ] HUD and menu fonts from Google Fonts (SIL Open Font License): a display face for titles and names and a readable face for numbers and small text; minimum sizes kept.
+
+### X-04 Studio-grade sound processing `[todo]`
+- [ ] Add pedalboard (PyPI) effects to the sound build: convolution or algorithmic reverb, compression, saturation, EQ; an arena reverb on the world buses in Godot.
+- [ ] All existing audio tests still pass (peaks, tonality, clicks, CC warning loudest); spectrogram review; list for the human's listening pass.
+
+### X-05 Mesh quality pass `[todo]`
+- [ ] Try isotropic remeshing (pymeshlab) and quadric simplification that preserves UVs and normals (pyfqmr) on the SDF-extracted pieces; keep it only if shading is cleaner at the same triangle budget (before-and-after close-ups).
+
+### X-06 Continuous integration on GitHub Actions `[todo]`
+- [ ] Run tools/check_all on every push, and a nightly job on a multi-core runner for the balance simulations and the 20-player performance profile (the workspace has 2 cores, which skews those numbers).
+
 ## Follow-ups from review pass 1
 
 ### F-01 Delta-compressed snapshots and distance-based send rates `[todo]`
