@@ -6,7 +6,7 @@ extends RefCounted
 ## Abilities, auras and specs travel as small indexes into their sorted id lists (both sides
 ## load the same data, and the protocol version changes whenever that could differ).
 
-const VERSION: int = 3
+const VERSION: int = 4
 const CH_RELIABLE: int = 0
 const CH_UNRELIABLE: int = 1
 const CHANNELS: int = 2
@@ -18,6 +18,7 @@ enum Msg { HELLO = 1, WELCOME = 2, INPUT = 3, SNAPSHOT = 4, PING = 5, PONG = 6, 
 const CC_CATEGORIES: Array[String] = ["stun", "incapacitate", "disorient", "silence", "root", "disarm"]
 const FLAG_JUMP: int = 1
 const FLAG_TAB: int = 2
+const FLAG_CLEAR_TARGET: int = 4  ## the player has no enemy target (cleared, or an ally selected)
 
 static var _index_cache: Dictionary = {}
 
@@ -91,6 +92,7 @@ static func quantize_input(input: Dictionary) -> Dictionary:
 		"yaw": qyaw / 65535.0 * TAU,
 		"jump": bool(input.get("jump", false)),
 		"tab": bool(input.get("tab", false)),
+		"clear_target": bool(input.get("clear_target", false)),
 		"ability": str(input.get("ability", "")),
 		"target": int(input.get("target", -1)),
 	}
@@ -107,7 +109,8 @@ static func input_packet(inputs: Array) -> PackedByteArray:
 		b.put_8(roundi(mv.x * 127.0))
 		b.put_8(roundi(mv.y * 127.0))
 		b.put_u16(roundi(fposmod(inp["yaw"], TAU) / TAU * 65535.0) % 65536)
-		b.put_u8((FLAG_JUMP if inp["jump"] else 0) | (FLAG_TAB if inp["tab"] else 0))
+		b.put_u8((FLAG_JUMP if inp["jump"] else 0) | (FLAG_TAB if inp["tab"] else 0)
+			| (FLAG_CLEAR_TARGET if inp.get("clear_target", false) else 0))
 		var ai: int = index_of("abilities", inp.get("ability", "")) if inp.get("ability", "") != "" else -1
 		b.put_u16(ai if ai >= 0 else NO_ID)
 		b.put_u16(int(inp.get("target", -1)) if int(inp.get("target", -1)) >= 0 else NO_ID)
@@ -247,7 +250,8 @@ static func decode(data: PackedByteArray) -> Dictionary:
 				var ti: int = b.get_u16()
 				inputs.append({"seq": seq, "move": Vector2(mx / 127.0, my / 127.0),
 					"yaw": qyaw / 65535.0 * TAU, "jump": flags & FLAG_JUMP != 0,
-					"tab": flags & FLAG_TAB != 0, "ability": id_at("abilities", ai) if ai != NO_ID else "",
+					"tab": flags & FLAG_TAB != 0, "clear_target": flags & FLAG_CLEAR_TARGET != 0,
+					"ability": id_at("abilities", ai) if ai != NO_ID else "",
 					"target": ti if ti != NO_ID else -1})
 			return {"type": t, "inputs": inputs}
 		Msg.SNAPSHOT:

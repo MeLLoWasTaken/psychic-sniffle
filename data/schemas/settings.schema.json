@@ -1,0 +1,63 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "settings.schema.json",
+  "title": "Gameplay settings profile",
+  "description": "Camera, mouse and targeting settings (docs/DESIGN.md, settings suite, Gameplay page). The settings screen (M2) edits a copy of this profile; the game falls back to these defaults.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["id", "name", "mouse", "movement", "camera", "targeting"],
+  "properties": {
+    "id": {"$ref": "common.schema.json#/$defs/id"},
+    "name": {"type": "string"},
+    "mouse": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["sensitivity_deg_per_px", "invert_y", "click_max_drag_px"],
+      "properties": {
+        "sensitivity_deg_per_px": {"type": "number", "exclusiveMinimum": 0, "maximum": 5, "description": "Degrees the camera or character turns per pixel of mouse travel"},
+        "invert_y": {"type": "boolean"},
+        "click_max_drag_px": {"type": "number", "minimum": 0, "description": "A button press that moves less than this before release is a click (targets), not a drag"}
+      }
+    },
+    "movement": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["keyboard_turn_deg_s"],
+      "properties": {
+        "keyboard_turn_deg_s": {"type": "number", "exclusiveMinimum": 0, "description": "Turn speed with the turn keys (A/D by default)"}
+      }
+    },
+    "camera": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["min_distance_m", "max_distance_m", "default_distance_m", "zoom_step_ratio", "zoom_smoothing_per_s",
+        "pitch_min_deg", "pitch_max_deg", "default_pitch_deg", "pivot_height_m", "collision_radius_m", "fov_deg"],
+      "properties": {
+        "min_distance_m": {"type": "number", "exclusiveMinimum": 0},
+        "max_distance_m": {"type": "number", "exclusiveMinimum": 0},
+        "default_distance_m": {"type": "number", "exclusiveMinimum": 0},
+        "zoom_step_ratio": {"type": "number", "exclusiveMinimum": 0, "maximum": 1, "description": "Each wheel notch changes the distance by this fraction (at least 0.5 m)"},
+        "zoom_smoothing_per_s": {"type": "number", "exclusiveMinimum": 0, "description": "Exponential approach rate of the shown distance toward the zoom target"},
+        "pitch_min_deg": {"type": "number", "minimum": -89, "maximum": 89, "description": "Lowest camera elevation above the pivot (negative = below, looking up)"},
+        "pitch_max_deg": {"type": "number", "minimum": -89, "maximum": 89},
+        "default_pitch_deg": {"type": "number", "minimum": -89, "maximum": 89},
+        "pivot_height_m": {"type": "number", "minimum": 0, "description": "Height above the character's feet the camera orbits and looks at (shoulder height)"},
+        "collision_radius_m": {"type": "number", "minimum": 0, "description": "The camera stays this far from walls, pillars and the floor"},
+        "fov_deg": {"type": "number", "minimum": 30, "maximum": 120}
+      }
+    },
+    "targeting": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["tab_range_m", "tab_max_angle_deg", "tab_angle_band_deg", "click_empty_clears_target", "pick_height_m", "pick_radius_m"],
+      "properties": {
+        "tab_range_m": {"type": "number", "exclusiveMinimum": 0},
+        "tab_max_angle_deg": {"type": "number", "exclusiveMinimum": 0, "maximum": 180, "description": "Enemies within this angle of the screen centre count as in front of the camera"},
+        "tab_angle_band_deg": {"type": "number", "exclusiveMinimum": 0, "description": "Tab order: by angle from the screen centre in bands this wide, then by distance within a band"},
+        "click_empty_clears_target": {"type": "boolean", "description": "Clicking empty ground clears the target (false keeps it, the MMO convention)"},
+        "pick_height_m": {"type": "number", "exclusiveMinimum": 0, "description": "Height of the capsule a click must hit to select a unit"},
+        "pick_radius_m": {"type": "number", "exclusiveMinimum": 0}
+      }
+    }
+  }
+}

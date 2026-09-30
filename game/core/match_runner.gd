@@ -61,6 +61,8 @@ func apply_input(unit: Unit, inp: Dictionary) -> void:
 	movement.apply(unit, forced if not forced.is_empty() else inp, sim.dt(), combat.speed_multiplier(unit))
 	if Vector2(unit.position.x - before.x, unit.position.z - before.z).length() > 0.001:
 		unit.moved_this_tick = true
+	if inp.get("clear_target", false):
+		unit.target_id = -1  # the player cleared their target or selected an ally (stops auto-attack)
 	if inp.get("tab", false):
 		unit.target_id = combat.tab_target(unit)
 	var tid: int = int(inp.get("target", -1))

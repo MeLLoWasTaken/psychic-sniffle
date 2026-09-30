@@ -41,6 +41,7 @@ FOLDERS = {
     "bots": ("bot_profile.schema.json", "id"),
     "lighting": ("lighting.schema.json", "id"),
     "animations": ("animation_set.schema.json", "id"),
+    "settings": ("settings.schema.json", "id"),
 }
 
 # Ability kit template (docs/DESIGN.md, "Ability kit template"): slot -> (min, max)

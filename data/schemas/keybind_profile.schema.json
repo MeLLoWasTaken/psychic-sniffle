@@ -16,7 +16,7 @@
         "required": ["action", "key"],
         "properties": {
           "action": {"type": "string", "description": "e.g. bar1_slot1, move_forward, target_nearest_enemy, toggle_edit_mode"},
-          "key": {"type": "string", "description": "Godot key or mouse button name, e.g. KEY_1, KEY_W, MOUSE_BUTTON_4"},
+          "key": {"type": "string", "pattern": "^(KEY_[A-Z0-9_]+|MOUSE_BUTTON_(LEFT|RIGHT|MIDDLE|WHEEL_UP|WHEEL_DOWN|WHEEL_LEFT|WHEEL_RIGHT|XBUTTON1|XBUTTON2|[1-5]))$", "description": "Godot key name (KEY_W, KEY_ESCAPE) or mouse button: MOUSE_BUTTON_LEFT, _RIGHT, _MIDDLE, _WHEEL_UP, _WHEEL_DOWN, _XBUTTON1, _XBUTTON2, or MOUSE_BUTTON_1 to _5 (left, right, middle, side 1, side 2)"},
           "modifiers": {"type": "array", "items": {"enum": ["shift", "ctrl", "alt"]}, "uniqueItems": true},
           "target_mode": {"enum": ["default", "target", "focus", "mouseover", "self", "arena1", "arena2", "arena3", "party1", "party2", "party3", "party4"]}
         }
