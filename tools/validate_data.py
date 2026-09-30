@@ -58,6 +58,7 @@ FOLDERS = {
     "capture_sources": ("capture_source.schema.json", "id"),
     "captures": ("capture.schema.json", "id"),
     "menus": ("menu.schema.json", "id"),
+    "ambient_effects": ("ambient_effect.schema.json", "id"),
 }
 
 # Ability kit template (docs/DESIGN.md, "Ability kit template"): slot -> (min, max)
@@ -402,10 +403,26 @@ def validate(data_dir: Path) -> list[str]:
             needed = {"gate" if n == "gate" else n for n in needed}
             if any(c.get("gate") for c in m["colliders"]):
                 needed.add("gate_lintel")
+            # dressing (backlog F-05): every piece it names must have a spec
+            dr = m.get("dressing", {})
+            needed |= {v for k, v in dr.get("wall_top", {}).items() if isinstance(v, str)}
+            if dr.get("gatehouse"):
+                needed.add(dr["gatehouse"]["piece"])
+            for base, table in dr.get("variants", {}).items():
+                needed |= {base} | set(table)
+            needed |= {s["piece"] for s in dr.get("skyline", {}).get("pieces", [])}
             for piece in sorted(needed):
                 if f"{m['kit']}_{piece}" not in db["assets"]:
                     report.error(rel, f"kit '{m['kit']}' has no asset spec for piece '{piece}' "
                                       f"(expected assets/{m['kit']}_{piece}.json)")
+        for i, dec in enumerate(m.get("decor", [])):
+            if dec.get("effect") and dec["effect"] not in db["ambient_effects"]:
+                report.error(rel, f"decor/{i}: unknown ambient effect '{dec['effect']}'")
+        margin = 1.0  # the skyline stands beyond the walls: never inside the playable square
+        for i, s in enumerate(m.get("dressing", {}).get("skyline", {}).get("pieces", [])):
+            if max(abs(s["pos"][0]), abs(s["pos"][1])) < m["bounds_half_m"] + margin:
+                report.error(rel, f"dressing/skyline/pieces/{i}: '{s['piece']}' at {s['pos']} is inside the "
+                                  f"walls (bounds {m['bounds_half_m']} m)")
         if m.get("lighting_preset") and m["lighting_preset"] not in db["lighting"]:
             report.error(rel, f"unknown lighting preset '{m['lighting_preset']}'")
         need = max(BRACKET_SIZE[b] for b in m["brackets"])

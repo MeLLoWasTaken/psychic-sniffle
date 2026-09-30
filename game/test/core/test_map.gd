@@ -124,3 +124,124 @@ func test_dressed_arena_stays_under_the_triangle_budget() -> void:
 	print("arena visible triangles: %d" % tris)
 	assert_int(tris).override_failure_message("%d visible triangles" % tris).is_less(1_500_000)
 	assert_int(tris).is_greater(100_000)  # the kit really is there
+
+
+# ------------------------------------------------------------------ dressing (backlog F-05)
+
+## Guard: dressing must never change gameplay collision. When a collider change is deliberate,
+## check bot navigation and balance, then update this fingerprint.
+const COLLIDERS_MD5: String = "3d94e803c690d86cb92abb42e5631ae4"
+
+
+func _dressed_builder() -> MapBuilder:
+	var builder: MapBuilder = auto_free(MapBuilder.new())
+	builder.map_id = MAP_ID
+	builder.build_lighting = false
+	add_child(builder)
+	return builder
+
+
+func test_gameplay_colliders_are_unchanged() -> void:
+	var md5: String = JSON.stringify(map["colliders"]).md5_text()
+	assert_str(md5).override_failure_message("map colliders changed (md5 %s): gameplay collision must only change deliberately" % md5).is_equal(COLLIDERS_MD5)
+
+
+func test_dressing_adds_no_collision() -> void:
+	var builder: MapBuilder = _dressed_builder()
+	assert_bool(builder.has_kit()).is_true()
+	var bodies: Array[Node] = builder.find_children("*", "CollisionObject3D", true, false)
+	# one body per map collider, plus the floor and the four perimeter walls; all on greybox meshes
+	assert_int(bodies.size()).is_equal(map["colliders"].size() + 5)
+	for b: Node in bodies:
+		assert_bool(b.get_parent().has_meta("greybox")).override_failure_message("%s is not a greybox body" % b.get_path()).is_true()
+	for root: String in ["Kit", "Skyline"]:
+		assert_int(builder.get_node(root).find_children("*", "CollisionObject3D", true, false).size()).is_equal(0)
+
+
+func test_skyline_stands_outside_the_walls_and_casts_no_shadow() -> void:
+	var builder: MapBuilder = _dressed_builder()
+	var sky: Node3D = builder.get_node("Skyline")
+	var bounds: float = float(map["bounds_half_m"])
+	var drawn: int = 0
+	for n: Node in sky.find_children("*", "MultiMeshInstance3D", true, false):
+		var mmi: MultiMeshInstance3D = n
+		assert_int(mmi.cast_shadow).is_equal(GeometryInstance3D.SHADOW_CASTING_SETTING_OFF)
+		drawn += mmi.multimesh.instance_count
+	# placements (headless multimeshes do not keep their instance transforms)
+	var placed: int = 0
+	for piece: String in builder.skyline_placements:
+		for xf: Transform3D in builder.skyline_placements[piece]:
+			var box: AABB = xf * builder._piece_aabb(piece)
+			var nearest: float = maxf(minf(absf(box.position.x), absf(box.end.x)) if box.position.x * box.end.x > 0.0 else 0.0,
+				minf(absf(box.position.z), absf(box.end.z)) if box.position.z * box.end.z > 0.0 else 0.0)
+			assert_float(nearest).override_failure_message("%s reaches to %.1f m from the centre" % [piece, nearest]).is_greater(bounds + 2.0)
+			placed += 1
+	assert_int(placed).is_equal(map["dressing"]["skyline"]["pieces"].size())
+	assert_int(drawn).is_greater_equal(placed)
+
+
+func test_every_dressing_piece_is_built() -> void:
+	var builder: MapBuilder = _dressed_builder()
+	var pieces: Dictionary = {}
+	for d: Dictionary in map["decor"]:
+		pieces[d["piece"]] = true
+	var dr: Dictionary = map["dressing"]
+	for s: Dictionary in dr["skyline"]["pieces"]:
+		pieces[s["piece"]] = true
+	pieces[dr["gatehouse"]["piece"]] = true
+	for key: String in ["walk", "parapet", "outer_wall"]:
+		if dr["wall_top"].has(key):
+			pieces[dr["wall_top"][key]] = true
+	for base: String in dr["variants"]:
+		for v: String in dr["variants"][base]:
+			pieces[v] = true
+	for p: String in pieces:
+		assert_object(builder._kit_piece(p)).override_failure_message("kit piece %s is not built" % p).is_not_null()
+
+
+func test_gatehouses_hide_the_raised_portcullis() -> void:
+	var builder: MapBuilder = _dressed_builder()
+	builder.set_gates_open(true, 0.0)
+	var box: AABB = builder._piece_aabb(map["dressing"]["gatehouse"]["piece"])
+	for i: int in builder.gates.size():
+		var g: Node3D = builder.gates[i]
+		var house: Node3D = builder.get_node("Kit/Gatehouse%d" % i)
+		var height: float = float(g.get_meta("collider").get("height", 5.0))
+		var grille_top: float = g.position.y + height  # the raised portcullis
+		var world: AABB = house.global_transform * box
+		assert_float(world.end.y).is_greater(grille_top + 0.3)
+		# it spans the gate: the gate's centre line lies inside the gatehouse footprint
+		assert_bool(world.grow(0.01).has_point(Vector3(g.position.x, grille_top - 0.5, g.position.z))).is_true()
+
+
+func test_braziers_burn_with_a_flickering_light() -> void:
+	var builder: MapBuilder = _dressed_builder()
+	var fires: Array[Node] = builder.find_children("Fx_*", "Node3D", true, false).filter(func(n: Node) -> bool: return n is AmbientFx)
+	var braziers: int = map["decor"].filter(func(d: Dictionary) -> bool: return d.get("effect", "") == "brazier_fire").size()
+	assert_int(braziers).is_greater(0)
+	assert_int(fires.size()).is_equal(braziers)
+	var fx: AmbientFx = fires[0]
+	assert_int(fx.flames.size()).is_greater(0)
+	assert_object(fx.light).is_not_null()
+	var energies: Dictionary = {}
+	for k: int in 12:
+		fx.advance(0.05)
+		energies[snappedf(fx.light.light_energy, 0.001)] = true
+	assert_int(energies.size()).is_greater(6)  # it flickers
+	var base: float = float(Data.ambient_effects["brazier_fire"]["light"]["energy"])
+	assert_float(fx.light.light_energy).is_between(base * 0.6, base * 1.4)
+
+
+func test_floor_tiles_stop_at_the_bounds() -> void:
+	var builder: MapBuilder = _dressed_builder()
+	var bounds: float = float(map["bounds_half_m"])
+	var checked: int = 0
+	for piece: String in builder._placements:
+		if not piece.begins_with("floor_tile"):
+			continue
+		for xf: Transform3D in builder._placements[piece]:
+			var world: AABB = xf * builder._piece_aabb(piece)
+			assert_float(maxf(maxf(absf(world.position.x), absf(world.end.x)), maxf(absf(world.position.z), absf(world.end.z)))).is_less_equal(bounds + 0.05)
+			checked += 1
+	assert_int(checked).is_greater(50)
+	assert_bool(builder._placements.has("floor_tile_worn")).override_failure_message("no worn tile variants placed").is_true()

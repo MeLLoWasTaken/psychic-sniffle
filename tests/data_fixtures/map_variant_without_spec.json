@@ -1,0 +1,8 @@
+{
+  "description": "a dressing variant with no asset spec",
+  "file": "maps/gallows_courtyard.json",
+  "expect": "has no asset spec for piece 'floor_tile_mossy'",
+  "set": {
+    "/dressing/variants/floor_tile/floor_tile_mossy": 1
+  }
+}

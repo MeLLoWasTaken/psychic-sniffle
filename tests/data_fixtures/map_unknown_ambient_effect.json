@@ -1,0 +1,8 @@
+{
+  "description": "a brazier naming an ambient effect that does not exist",
+  "file": "maps/gallows_courtyard.json",
+  "expect": "unknown ambient effect",
+  "set": {
+    "/decor/0/effect": "brazier_fyre"
+  }
+}

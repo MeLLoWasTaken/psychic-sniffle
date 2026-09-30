@@ -76,6 +76,10 @@ Every humanoid clip is authored as a few key poses in `data/animations/humanoid.
 
 - Warm key light plus warm fog plus a brown sky horizon turned whole scenes orange-brown. Keep the sun warm, but make the sky horizon, fog and ambient light cool (blue-grey), and keep stone base colors neutral grey. The shadow side of stone should read cool.
 - A dark wood color on a block that sits in shadow reads as a black hole from the player camera; set wood base colors to about 0.4 value or brighter.
+- The empty dusk sky above 6 m walls made the arena look unfinished from the player camera; a skyline of towers, rooftops and a keep 35 to 70 m out fills the upper third of the frame without competing with the players, as long as it stays darker than the arena stone.
+- Judge floor decals in the top view, not the player view: at the player camera's grazing angle a 2 m grime band along a wall 15 m away is only a few pixels tall, which made a correct first pass look missing. Check placement and coverage with a loud debug color first; the grime that reads is 2 to 3 m wide with a plateau near the wall.
+- Banner pieces start at their hem (lowest point at z = 0), so a decor entry's `y` is the hem height, not the bracket height.
+- In Blender scripts, an object's matrix only refreshes when the view layer updates: setting `.location` and then baking with `matrix_world` silently drops the move. Update the view layer first (`apply_xf` in the dressing builder), and bake a primitive's own placement before moving a group of parts.
 
 ## Lighting presets
 
@@ -83,13 +87,18 @@ Presets live in `data/lighting/<id>.json` (sun, fill, sky, ambient light, fog, p
 
 ## Arena greybox
 
-`scenes/maps/map_builder.gd` builds every arena from its map data, so art always matches gameplay collision. Colliders carry a `tag` (pillar, wall, gate, gallows, prop); the art kit (M1-15) replaces the greybox shape for each tag. Team colors: crimson for team A (west room), steel blue for team B (east room), shown on the gates and room floors. Review views: `tools/screenshot.sh res://scenes/tests/map_view.tscn <out.png> 1920 1080 60 --view top|overview|player`.
+`scenes/maps/map_builder.gd` builds every arena from its map data, so art always matches gameplay collision. Colliders carry a `tag` (pillar, wall, gate, gallows, prop); the art kit (M1-15) replaces the greybox shape for each tag. Team colors: crimson for team A (west room), steel blue for team B (east room), shown on the gates and room floors. Review views: `tools/screenshot.sh res://scenes/tests/map_view.tscn <out.png> 1920 1080 60 --view top|overview|player|room_a|room_b` (the room views look out of each starting room through the open gate).
 
 ## Environment kits
 
 - One asset spec per piece (`data/assets/<kit>_<piece>.json`), built by `tools/blender/build_kit_<kit>.py`. Standard sizes: floor tiles and wall segments 4 m wide, walls 6 m tall, so the map builder can tile and stretch them slightly to fit colliders.
 - Stones, planks and bars are separate beveled parts with slight random offsets, each with its own tint, then joined and baked. Keep shapes chunky; detail comes from the gaps and bevels, not texture noise.
 - Pieces that mount on a surface use the "face" pivot (the mounting face on y = 0).
+- Dressing (F-05) is map data under `dressing`, placed by the map builder, never hand-placed: ramparts crown every facade segment (`wall_top.parapet`), wall tops use their own long-slab walk piece so they never read as courtyard floor, the outside of the walls gets facades too (`outer_facades`), and a gatehouse on the wall top hides each raised portcullis. `variants` swaps repeated pieces for look-alikes by weight (worn floor tiles, broken merlons, a second wall coursing) so a 4 m repeat does not show.
+- Skyline: low-detail silhouettes (a few hundred to 5,000 triangles) standing at least 10 m beyond the bounds, with no collision, no shadows and no bounced light. Keep them darker and cooler than the arena stone (far stone about #4d4b46, roofs #34383f) so they recede; a quarter or fewer of their windows glow warm.
+- Props are visual only. They hug a wall (within about 0.9 m of its face) or sit in a room corner, stay under 2.5 m, and never stand in the lanes between pillars; anything meant to block movement or sight must be a collider in the map data instead. Repeated props are batched (one multimesh per piece).
+- Floor variation without texture noise: worn tile variants, grime decals along every wall base and around pillars, broad faint stains across the open floor, a few drains, and puddle decals (dark, glossy). Decal textures are generated from smooth shapes (gradients and overlapping round blobs).
+- Fixture fire is data (`data/ambient_effects/<id>.json`): flame tongues from a noise shader, a dozen embers, a thin smoke plume and a light that flickers from a sum of unrelated sines, so braziers never pulse together.
 
 ## Spell effects
 

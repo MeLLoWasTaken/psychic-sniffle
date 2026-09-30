@@ -1,0 +1,31 @@
+{
+  "id": "gallows_banner_long_crimson",
+  "kind": "prop",
+  "builder": "build_kit_gallows.py",
+  "seed": 48,
+  "tri_budget": {
+    "min": 300,
+    "max": 3500
+  },
+  "texture_size": 512,
+  "palette": {
+    "stone": "#6d6961",
+    "flag": "#5b5852",
+    "mortar": "#2c2a27",
+    "wood": "#86613f",
+    "dark_wood": "#6a4a33",
+    "iron": "#3c3f44",
+    "rope": "#8a7654",
+    "emblem": "#d8ccb0",
+    "cloth": "#7a1414"
+  },
+  "params": {
+    "length_m": 4.2,
+    "width_m": 1.5,
+    "top_m": 6.3,
+    "piece": "banner"
+  },
+  "out": "game/assets/kits/gallows/gallows_banner_long_crimson.glb",
+  "status": "draft",
+  "pivot": "face"
+}

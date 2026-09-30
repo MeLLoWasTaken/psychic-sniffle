@@ -231,7 +231,7 @@
         -17.6,
         -16.1
       ],
-      "light": true
+      "effect": "brazier_fire"
     },
     {
       "piece": "brazier",
@@ -239,7 +239,7 @@
         -17.6,
         16.1
       ],
-      "light": true
+      "effect": "brazier_fire"
     },
     {
       "piece": "brazier",
@@ -247,7 +247,7 @@
         -24.0,
         -3.1
       ],
-      "light": true
+      "effect": "brazier_fire"
     },
     {
       "piece": "brazier",
@@ -255,7 +255,7 @@
         17.6,
         -16.1
       ],
-      "light": true
+      "effect": "brazier_fire"
     },
     {
       "piece": "brazier",
@@ -263,7 +263,7 @@
         17.6,
         16.1
       ],
-      "light": true
+      "effect": "brazier_fire"
     },
     {
       "piece": "brazier",
@@ -271,7 +271,7 @@
         24.0,
         -3.1
       ],
-      "light": true
+      "effect": "brazier_fire"
     },
     {
       "piece": "banner_crimson",
@@ -279,7 +279,8 @@
         -19.5,
         -6.5
       ],
-      "yaw_deg": 90
+      "yaw_deg": 90,
+      "y": 1.4
     },
     {
       "piece": "banner_crimson",
@@ -287,7 +288,8 @@
         -19.5,
         6.5
       ],
-      "yaw_deg": 90
+      "yaw_deg": 90,
+      "y": 1.4
     },
     {
       "piece": "banner_crimson",
@@ -295,7 +297,8 @@
         -25.0,
         0
       ],
-      "yaw_deg": 90
+      "yaw_deg": 90,
+      "y": 1.4
     },
     {
       "piece": "banner_steel",
@@ -303,7 +306,8 @@
         19.5,
         -6.5
       ],
-      "yaw_deg": -90
+      "yaw_deg": -90,
+      "y": 1.4
     },
     {
       "piece": "banner_steel",
@@ -311,7 +315,8 @@
         19.5,
         6.5
       ],
-      "yaw_deg": -90
+      "yaw_deg": -90,
+      "y": 1.4
     },
     {
       "piece": "banner_steel",
@@ -319,7 +324,684 @@
         25.0,
         0
       ],
+      "yaw_deg": -90,
+      "y": 1.4
+    },
+    {
+      "piece": "banner_crimson",
+      "pos": [
+        -19.5,
+        0
+      ],
+      "yaw_deg": 90,
+      "y": 6.3
+    },
+    {
+      "piece": "banner_steel",
+      "pos": [
+        19.5,
+        0
+      ],
+      "yaw_deg": -90,
+      "y": 6.3
+    },
+    {
+      "piece": "banner_long_crimson",
+      "pos": [
+        -12.0,
+        18.0
+      ],
+      "yaw_deg": 180,
+      "y": 1.9
+    },
+    {
+      "piece": "banner_long_steel",
+      "pos": [
+        12.0,
+        18.0
+      ],
+      "yaw_deg": 180,
+      "y": 1.9
+    },
+    {
+      "piece": "banner_long_crimson",
+      "pos": [
+        -12.0,
+        -18.0
+      ],
+      "y": 1.9
+    },
+    {
+      "piece": "banner_long_steel",
+      "pos": [
+        12.0,
+        -18.0
+      ],
+      "y": 1.9
+    },
+    {
+      "piece": "turret",
+      "pos": [
+        20.4,
+        18.9
+      ],
+      "yaw_deg": -135,
+      "y": 4.7
+    },
+    {
+      "piece": "turret",
+      "pos": [
+        -20.4,
+        18.9
+      ],
+      "yaw_deg": 135,
+      "y": 4.7
+    },
+    {
+      "piece": "turret",
+      "pos": [
+        20.4,
+        -18.9
+      ],
+      "yaw_deg": -45,
+      "y": 4.7
+    },
+    {
+      "piece": "turret",
+      "pos": [
+        -20.4,
+        -18.9
+      ],
+      "yaw_deg": 45,
+      "y": 4.7
+    },
+    {
+      "piece": "crate_stack",
+      "pos": [
+        -15.8,
+        17.4
+      ],
+      "yaw_deg": 184
+    },
+    {
+      "piece": "barrel_group",
+      "pos": [
+        -9.6,
+        17.35
+      ],
+      "yaw_deg": 170
+    },
+    {
+      "piece": "wall_chains",
+      "pos": [
+        -4.0,
+        18.0
+      ],
+      "yaw_deg": 180
+    },
+    {
+      "piece": "rubble",
+      "pos": [
+        3.2,
+        17.1
+      ],
+      "yaw_deg": 20
+    },
+    {
+      "piece": "weapon_rack",
+      "pos": [
+        6.6,
+        17.55
+      ],
+      "yaw_deg": 180
+    },
+    {
+      "piece": "crate",
+      "pos": [
+        14.4,
+        17.45
+      ],
+      "yaw_deg": 192
+    },
+    {
+      "piece": "weapon_rack",
+      "pos": [
+        -15.2,
+        -17.55
+      ]
+    },
+    {
+      "piece": "rubble",
+      "pos": [
+        -5.8,
+        -17.1
+      ],
+      "yaw_deg": 200
+    },
+    {
+      "piece": "wall_chains",
+      "pos": [
+        0.5,
+        -18.0
+      ]
+    },
+    {
+      "piece": "crate_stack",
+      "pos": [
+        6.8,
+        -17.4
+      ],
+      "yaw_deg": -6
+    },
+    {
+      "piece": "barrel_group",
+      "pos": [
+        15.2,
+        -17.35
+      ],
+      "yaw_deg": 12
+    },
+    {
+      "piece": "barrel_group",
+      "pos": [
+        -18.85,
+        -11.2
+      ],
+      "yaw_deg": 95
+    },
+    {
+      "piece": "crate",
+      "pos": [
+        -18.95,
+        11.6
+      ],
+      "yaw_deg": 84
+    },
+    {
+      "piece": "wall_chains",
+      "pos": [
+        -19.5,
+        -14.2
+      ],
+      "yaw_deg": 90
+    },
+    {
+      "piece": "rubble",
+      "pos": [
+        18.9,
+        11.2
+      ],
+      "yaw_deg": -80
+    },
+    {
+      "piece": "crate_stack",
+      "pos": [
+        18.9,
+        -11.6
+      ],
+      "yaw_deg": -92
+    },
+    {
+      "piece": "wall_chains",
+      "pos": [
+        19.5,
+        14.0
+      ],
       "yaw_deg": -90
+    },
+    {
+      "piece": "barrel_group",
+      "pos": [
+        -24.25,
+        3.3
+      ],
+      "yaw_deg": 200
+    },
+    {
+      "piece": "weapon_rack",
+      "pos": [
+        -22.6,
+        3.55
+      ],
+      "yaw_deg": 180
+    },
+    {
+      "piece": "crate",
+      "pos": [
+        -24.4,
+        -1.2
+      ],
+      "yaw_deg": 95
+    },
+    {
+      "piece": "barrel_group",
+      "pos": [
+        24.25,
+        3.3
+      ],
+      "yaw_deg": 160
+    },
+    {
+      "piece": "weapon_rack",
+      "pos": [
+        22.6,
+        3.55
+      ],
+      "yaw_deg": 180
+    },
+    {
+      "piece": "crate",
+      "pos": [
+        24.4,
+        -1.2
+      ],
+      "yaw_deg": -85
+    },
+    {
+      "piece": "drain",
+      "pos": [
+        0.0,
+        10.5
+      ],
+      "y": -0.1
+    },
+    {
+      "piece": "drain",
+      "pos": [
+        0.0,
+        -10.5
+      ],
+      "y": -0.1
+    },
+    {
+      "piece": "drain",
+      "pos": [
+        -10.2,
+        16.6
+      ],
+      "y": -0.1
+    },
+    {
+      "piece": "drain",
+      "pos": [
+        10.0,
+        -16.6
+      ],
+      "y": -0.1
     }
-  ]
+  ],
+  "dressing": {
+    "wall_top": {
+      "walk": "wall_walk",
+      "parapet": "rampart",
+      "outer_facades": true,
+      "outer_wall": "wall_outer"
+    },
+    "gatehouse": {
+      "piece": "gatehouse",
+      "front_m": 1.7,
+      "gate_width_m": 8.0
+    },
+    "variants": {
+      "floor_tile": {
+        "floor_tile": 3,
+        "floor_tile_worn": 2
+      },
+      "rampart": {
+        "rampart": 3,
+        "rampart_worn": 1
+      },
+      "wall": {
+        "wall": 1,
+        "wall_b": 1
+      }
+    },
+    "floor": {
+      "grime": {
+        "color": [
+          0.035,
+          0.032,
+          0.03
+        ],
+        "alpha": 0.7,
+        "width_m": [
+          2.0,
+          3.2
+        ]
+      },
+      "puddles": [
+        {
+          "pos": [
+            5.2,
+            11.2
+          ],
+          "size_m": [
+            2.8,
+            1.7
+          ],
+          "yaw_deg": 20,
+          "seed": 1
+        },
+        {
+          "pos": [
+            -7.0,
+            -12.3
+          ],
+          "size_m": [
+            2.2,
+            1.5
+          ],
+          "yaw_deg": -35,
+          "seed": 2
+        },
+        {
+          "pos": [
+            13.2,
+            -3.4
+          ],
+          "size_m": [
+            1.9,
+            1.3
+          ],
+          "yaw_deg": 70,
+          "seed": 3
+        },
+        {
+          "pos": [
+            -12.8,
+            3.6
+          ],
+          "size_m": [
+            2.4,
+            1.4
+          ],
+          "yaw_deg": 10,
+          "seed": 4
+        },
+        {
+          "pos": [
+            0.6,
+            11.4
+          ],
+          "size_m": [
+            1.5,
+            1.1
+          ],
+          "seed": 5
+        },
+        {
+          "pos": [
+            -0.4,
+            -11.3
+          ],
+          "size_m": [
+            1.7,
+            1.2
+          ],
+          "yaw_deg": 45,
+          "seed": 6
+        }
+      ],
+      "stains": [
+        {
+          "pos": [
+            -10.5,
+            -3.0
+          ],
+          "size_m": [
+            6.0,
+            4.0
+          ],
+          "yaw_deg": 30,
+          "seed": 1
+        },
+        {
+          "pos": [
+            11.0,
+            6.5
+          ],
+          "size_m": [
+            5.0,
+            3.5
+          ],
+          "yaw_deg": -20,
+          "seed": 2
+        },
+        {
+          "pos": [
+            2.5,
+            -6.5
+          ],
+          "size_m": [
+            4.5,
+            3.0
+          ],
+          "yaw_deg": 75,
+          "seed": 3,
+          "alpha": 0.4
+        },
+        {
+          "pos": [
+            -3.0,
+            6.0
+          ],
+          "size_m": [
+            4.0,
+            3.0
+          ],
+          "yaw_deg": 10,
+          "seed": 4,
+          "alpha": 0.4
+        },
+        {
+          "pos": [
+            0.0,
+            0.0
+          ],
+          "size_m": [
+            9.0,
+            9.0
+          ],
+          "seed": 5,
+          "alpha": 0.35
+        },
+        {
+          "pos": [
+            -15.0,
+            12.0
+          ],
+          "size_m": [
+            5.0,
+            4.0
+          ],
+          "yaw_deg": 50,
+          "seed": 6
+        },
+        {
+          "pos": [
+            15.5,
+            -11.0
+          ],
+          "size_m": [
+            5.0,
+            4.0
+          ],
+          "yaw_deg": -40,
+          "seed": 7
+        }
+      ],
+      "stain_color": [
+        0.04,
+        0.036,
+        0.032
+      ],
+      "puddle_color": [
+        0.03,
+        0.034,
+        0.04
+      ],
+      "puddle_alpha": 0.55
+    },
+    "skyline": {
+      "ground": {
+        "color": [
+          0.05,
+          0.05,
+          0.052
+        ],
+        "size_m": 260,
+        "y": -0.3
+      },
+      "pieces": [
+        {
+          "piece": "skyline_keep",
+          "pos": [
+            70.0,
+            -8.0
+          ],
+          "yaw_deg": -90
+        },
+        {
+          "piece": "skyline_tower",
+          "pos": [
+            50.0,
+            24.0
+          ]
+        },
+        {
+          "piece": "skyline_tower",
+          "pos": [
+            54.0,
+            -36.0
+          ],
+          "scale": 1.1
+        },
+        {
+          "piece": "skyline_tower",
+          "pos": [
+            -50.0,
+            -30.0
+          ],
+          "scale": 0.9
+        },
+        {
+          "piece": "skyline_tower",
+          "pos": [
+            -44.0,
+            46.0
+          ]
+        },
+        {
+          "piece": "skyline_spire",
+          "pos": [
+            -64.0,
+            8.0
+          ],
+          "yaw_deg": 15
+        },
+        {
+          "piece": "skyline_spire",
+          "pos": [
+            32.0,
+            -62.0
+          ],
+          "yaw_deg": -20
+        },
+        {
+          "piece": "skyline_houses",
+          "pos": [
+            36.0,
+            9.0
+          ],
+          "yaw_deg": -90,
+          "scale": 1.15
+        },
+        {
+          "piece": "skyline_houses_b",
+          "pos": [
+            38.0,
+            -15.0
+          ],
+          "yaw_deg": -90,
+          "scale": 1.1
+        },
+        {
+          "piece": "skyline_houses",
+          "pos": [
+            35.0,
+            32.0
+          ],
+          "yaw_deg": -120
+        },
+        {
+          "piece": "skyline_houses",
+          "pos": [
+            -36.0,
+            -10.0
+          ],
+          "yaw_deg": 90,
+          "scale": 1.1
+        },
+        {
+          "piece": "skyline_houses_b",
+          "pos": [
+            -37.0,
+            15.0
+          ],
+          "yaw_deg": 90,
+          "scale": 1.15
+        },
+        {
+          "piece": "skyline_houses_b",
+          "pos": [
+            -9.0,
+            37.0
+          ],
+          "yaw_deg": 180,
+          "scale": 1.1
+        },
+        {
+          "piece": "skyline_houses",
+          "pos": [
+            17.0,
+            39.0
+          ],
+          "yaw_deg": 180,
+          "scale": 1.2
+        },
+        {
+          "piece": "skyline_houses",
+          "pos": [
+            9.0,
+            -37.0
+          ],
+          "scale": 1.15
+        },
+        {
+          "piece": "skyline_houses_b",
+          "pos": [
+            -17.0,
+            -39.0
+          ],
+          "scale": 1.1
+        },
+        {
+          "piece": "skyline_houses",
+          "pos": [
+            -39.0,
+            -39.0
+          ],
+          "yaw_deg": 45
+        },
+        {
+          "piece": "skyline_houses_b",
+          "pos": [
+            39.0,
+            40.0
+          ],
+          "yaw_deg": -135
+        }
+      ]
+    }
+  }
 }

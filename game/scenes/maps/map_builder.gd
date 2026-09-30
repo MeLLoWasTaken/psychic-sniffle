@@ -7,6 +7,9 @@ extends Node3D
 ## kit (M1-15) swaps in Blender-built pieces by collider tag. Also builds the floor, perimeter
 ## walls, team-colored starting rooms, lighting from data/lighting/<preset>.json, and static
 ## collision on named physics layers for the camera and spell effects.
+## Dressing (backlog F-05, map data "dressing"): wall walks and ramparts, outer facades,
+## gatehouses, piece variants, floor grime and puddle decals, and a skyline beyond the walls;
+## decor pieces can carry looping effects (AmbientFx). None of it adds collision.
 
 const LAYER_WORLD: int = 1  ## physics layer 1, "world": anything solid
 const LAYER_LOS: int = 2  ## physics layer 2, "los_blocker": blocks line of sight
@@ -42,6 +45,12 @@ var _materials: Dictionary = {}
 var _kit: String = ""
 var _kit_scenes: Dictionary = {}
 var _rng: RandomNumberGenerator = RandomNumberGenerator.new()
+var _dressing: Dictionary = {}  ## map data "dressing" (backlog F-05)
+var _placements: Dictionary = {}  ## kit piece -> Array[Transform3D], drawn as one multimesh each
+var skyline_placements: Dictionary = {}  ## skyline piece -> Array[Transform3D] (kept for tests)
+var _grime_runs: Array = []  ## [a, b, outward normal] of every facade run: wall bases for grime decals
+var _aabbs: Dictionary = {}  ## kit piece -> AABB
+var _textures: Dictionary = {}  ## generated decal textures
 
 
 func _ready() -> void:
@@ -269,34 +278,39 @@ func _material(surface: String) -> ShaderMaterial:
 # ------------------------------------------------------------------ art kit
 
 ## Replace the greybox look with kit pieces. Collision stays on the greybox bodies, which match
-## the server's colliders exactly; only their meshes are hidden.
+## the server's colliders exactly; only their meshes are hidden. Everything the kit adds (walls,
+## ramparts, gatehouses, decor, the skyline, floor decals) is visual only: no collision bodies.
+## Repeated pieces are drawn as one multimesh per piece to keep draw calls low.
 func _dress_with_kit() -> void:
 	_rng.seed = hash(map_id)
+	_placements = {}
+	_grime_runs = []
+	_dressing = map.get("dressing", {})
 	for mi: Node in find_children("*", "MeshInstance3D", true, false):
 		if mi.has_meta("greybox"):
 			(mi as MeshInstance3D).visible = false
 	var kit_root: Node3D = Node3D.new()
 	kit_root.name = "Kit"
 	add_child(kit_root)
-	var tiles: Array[Transform3D] = []
-	var walls: Array[Transform3D] = []
-	var corners: Array[Transform3D] = []
 	var tile_top: float = _piece_aabb("floor_tile").end.y
 	var half: float = float(map["bounds_half_m"])
-	# courtyard and room floors: 4 m tiles, randomly turned, skipped where a wall fills them
-	var n_tiles: int = int(ceil(half * 2.0 / KIT_TILE_M))
+	# courtyard and room floors: 4 m tiles, stretched a little so the grid ends exactly at the
+	# bounds (nothing pokes out past the outer walls), randomly turned, skipped where a wall fills them
+	var n_tiles: int = maxi(1, roundi(half * 2.0 / KIT_TILE_M))
+	var step: float = half * 2.0 / n_tiles
+	var tile_scale: Basis = Basis.from_scale(Vector3(step / KIT_TILE_M, 1, step / KIT_TILE_M))
 	for ix: int in n_tiles:
 		for iz: int in n_tiles:
-			var cx: float = -half + KIT_TILE_M * (ix + 0.5)
-			var cz: float = -half + KIT_TILE_M * (iz + 0.5)
-			if _tile_buried(Vector2(cx, cz)):
+			var cx: float = -half + step * (ix + 0.5)
+			var cz: float = -half + step * (iz + 0.5)
+			if _tile_buried(Vector2(cx, cz), step * 0.5):
 				continue
-			var basis: Basis = Basis(Vector3.UP, _rng.randi_range(0, 3) * PI / 2)
-			tiles.append(Transform3D(basis, Vector3(cx, -tile_top, cz)))
+			var basis: Basis = Basis(Vector3.UP, _rng.randi_range(0, 3) * PI / 2) * tile_scale
+			_place("floor_tile", Transform3D(basis, Vector3(cx, -tile_top, cz)))
 	for c: Dictionary in map["colliders"]:
 		var tag: String = c.get("tag", "")
 		if c["type"] == "box" and tag == "wall":
-			_kit_wall_box(c, walls, corners, tiles, tile_top)
+			_kit_wall_box(c)
 		elif c["type"] == "box" and tag == "gallows":
 			_kit_place(kit_root, "gallows", _box_centre(c), 0.0, Vector3(_box_size(c).x / KIT_GALLOWS_SIZE_M, 1.0,
 				_box_size(c).y / KIT_GALLOWS_SIZE_M))
@@ -304,17 +318,46 @@ func _dress_with_kit() -> void:
 			var r: float = float(c["radius"]) / KIT_PILLAR_RADIUS_M
 			_kit_place(kit_root, "pillar", Vector3(c["center"][0], 0, c["center"][1]), _rng.randf() * TAU,
 				Vector3(r, float(c.get("height", 6.0)) / KIT_PILLAR_HEIGHT_M, r))
-	_kit_bounds_walls(walls)
+	_kit_bounds_walls()
+	if bool(_wall_top().get("outer_facades", false)):
+		_kit_outer_walls()
 	_kit_gates(kit_root)
 	_kit_decor(kit_root)
-	_multimesh(kit_root, "Tiles", "floor_tile", tiles)
-	_multimesh(kit_root, "Walls", "wall", walls)
-	_multimesh(kit_root, "Corners", "corner", corners)
+	for piece: String in _placements:
+		_multimesh(kit_root, piece.to_pascal_case(), piece, _placements[piece])
+	_kit_floor_dressing(kit_root)
+	_kit_skyline()
 
 
-## Facades on every open side of a wall block, quoins on its open corners, and a paved top.
-func _kit_wall_box(c: Dictionary, walls: Array[Transform3D], corners: Array[Transform3D],
-		tiles: Array[Transform3D], tile_top: float) -> void:
+## Queue a copy of a kit piece. With `variants`, the piece may be swapped for one of its variants
+## (map data dressing.variants: {piece: {variant: weight}}), when that variant is built.
+func _place(piece: String, xf: Transform3D, variants: bool = true) -> void:
+	var chosen: String = piece
+	var table: Dictionary = _dressing.get("variants", {}).get(piece, {}) if variants else {}
+	if not table.is_empty():
+		var total: float = 0.0
+		for v: String in table:
+			total += float(table[v]) if _kit_piece(v) != null else 0.0
+		var pick: float = _rng.randf() * total
+		for v: String in table:
+			if _kit_piece(v) == null:
+				continue
+			pick -= float(table[v])
+			if pick <= 0.0:
+				chosen = v
+				break
+	if not _placements.has(chosen):
+		_placements[chosen] = [] as Array[Transform3D]
+	(_placements[chosen] as Array[Transform3D]).append(xf)
+
+
+func _wall_top() -> Dictionary:
+	return _dressing.get("wall_top", {})
+
+
+## Facades on every open side of a wall block, quoins on its open corners, and its top: a wall
+## walk (dressing.wall_top.walk) or, without one, floor tiles.
+func _kit_wall_box(c: Dictionary) -> void:
 	var lo: Vector2 = Vector2(c["min"][0], c["min"][1])
 	var hi: Vector2 = Vector2(c["max"][0], c["max"][1])
 	var h: float = float(c.get("height", KIT_WALL_HEIGHT_M))
@@ -325,12 +368,16 @@ func _kit_wall_box(c: Dictionary, walls: Array[Transform3D], corners: Array[Tran
 		[Vector2(lo.x, hi.y), Vector2(lo.x, lo.y), Vector2(-1, 0)],
 	]
 	for side: Array in sides:
-		_facade_run(side[0], side[1], side[2], h, walls)
+		_facade_run(side[0], side[1], side[2], h)
 	for corner: Vector2 in [lo, Vector2(hi.x, lo.y), hi, Vector2(lo.x, hi.y)]:
 		var out: Vector2 = Vector2(signf(corner.x - (lo.x + hi.x) * 0.5), signf(corner.y - (lo.y + hi.y) * 0.5))
 		if _open_at(corner + out * 0.8) and _open_at(corner + Vector2(out.x, 0) * 0.8) and _open_at(corner + Vector2(0, out.y) * 0.8):
-			corners.append(Transform3D(Basis.from_scale(Vector3(1, h / KIT_WALL_HEIGHT_M, 1)), Vector3(corner.x, 0, corner.y)))
-	# paved top, tiles stretched to fit the block exactly
+			_place("corner", Transform3D(Basis.from_scale(Vector3(1, h / KIT_WALL_HEIGHT_M, 1)), Vector3(corner.x, 0, corner.y)))
+	# the top, pieces stretched to fit the block exactly
+	var walk: String = str(_wall_top().get("walk", "floor_tile"))
+	if _kit_piece(walk) == null:
+		walk = "floor_tile"
+	var walk_top: float = _piece_aabb(walk).end.y
 	var size: Vector2 = hi - lo
 	var nx: int = maxi(1, int(ceil(size.x / KIT_TILE_M - 0.01)))
 	var nz: int = maxi(1, int(ceil(size.y / KIT_TILE_M - 0.01)))
@@ -338,42 +385,112 @@ func _kit_wall_box(c: Dictionary, walls: Array[Transform3D], corners: Array[Tran
 	var sz: float = size.y / nz / KIT_TILE_M
 	for ix: int in nx:
 		for iz: int in nz:
-			var p: Vector3 = Vector3(lo.x + (ix + 0.5) * size.x / nx, h - tile_top, lo.y + (iz + 0.5) * size.y / nz)
-			tiles.append(Transform3D(Basis.from_scale(Vector3(sx, 1, sz)), p))
+			var p: Vector3 = Vector3(lo.x + (ix + 0.5) * size.x / nx, h - walk_top, lo.y + (iz + 0.5) * size.y / nz)
+			_place(walk, Transform3D(Basis.from_scale(Vector3(sx, 1, sz)), p))
 
 
-## Wall segments along a line, only where the ground beyond the line is open.
-func _facade_run(a: Vector2, b: Vector2, n: Vector2, h: float, walls: Array[Transform3D]) -> void:
-	var length: float = a.distance_to(b)
-	var count: int = maxi(1, int(ceil(length / KIT_TILE_M - 0.01)))
-	var seg: float = length / count
+## Wall segments along a line wherever the ground beyond it is open, each open stretch tiled on
+## its own so facades start and end where the open ground does. With dressing.wall_top.parapet,
+## each segment is crowned with a rampart; each also gets grime along its base (floor dressing).
+func _facade_run(a: Vector2, b: Vector2, n: Vector2, h: float) -> void:
 	var yaw: float = atan2(n.x, n.y)
-	for i: int in count:
-		var mid: Vector2 = a.lerp(b, (i + 0.5) / count)
-		if not _open_at(mid + n * 0.8):
+	var parapet: String = str(_wall_top().get("parapet", ""))
+	var length: float = a.distance_to(b)
+	for iv: Array in _intervals(a, b, func(p: Vector2) -> bool: return _open_at(p + n * 0.8)):
+		if not iv[2]:
 			continue
-		var basis: Basis = Basis(Vector3.UP, yaw) * Basis.from_scale(Vector3(seg / KIT_TILE_M, h / KIT_WALL_HEIGHT_M, 1))
-		walls.append(Transform3D(basis, Vector3(mid.x, 0, mid.y)))
+		var a2: Vector2 = a.lerp(b, iv[0])
+		var b2: Vector2 = a.lerp(b, iv[1])
+		var run: float = (float(iv[1]) - float(iv[0])) * length
+		if run < 0.3:
+			continue
+		var count: int = maxi(1, int(ceil(run / KIT_TILE_M - 0.01)))
+		var seg: float = run / count
+		for i: int in count:
+			var mid: Vector2 = a2.lerp(b2, (i + 0.5) / count)
+			var basis: Basis = Basis(Vector3.UP, yaw) * Basis.from_scale(Vector3(seg / KIT_TILE_M, h / KIT_WALL_HEIGHT_M, 1))
+			_place("wall", Transform3D(basis, Vector3(mid.x, 0, mid.y)))
+			if parapet != "":
+				_place(parapet, Transform3D(Basis(Vector3.UP, yaw) * Basis.from_scale(Vector3(seg / KIT_TILE_M, 1, 1)),
+					Vector3(mid.x, h, mid.y)))
+		_grime_runs.append([a2, b2, n])
+
+
+## Split the line a..b into stretches where probe(point) is the same: [[t0, t1, state], ...].
+static func _intervals(a: Vector2, b: Vector2, probe: Callable, step_m: float = 0.25) -> Array:
+	var steps: int = maxi(1, int(ceil(a.distance_to(b) / step_m)))
+	var out: Array = []
+	var start: float = 0.0
+	var state: bool = probe.call(a.lerp(b, 0.5 / steps))
+	for i: int in range(1, steps):
+		var s: bool = probe.call(a.lerp(b, (i + 0.5) / steps))
+		if s != state:
+			out.append([start, float(i) / steps, state])
+			start = float(i) / steps
+			state = s
+	out.append([start, 1.0, state])
+	return out
 
 
 ## The arena bounds get facades too wherever open ground reaches them (the back of each room).
-func _kit_bounds_walls(walls: Array[Transform3D]) -> void:
+func _kit_bounds_walls() -> void:
 	var b: float = float(map["bounds_half_m"])
 	var runs: Array = [
 		[Vector2(-b, -b), Vector2(b, -b), Vector2(0, 1)], [Vector2(b, -b), Vector2(b, b), Vector2(-1, 0)],
 		[Vector2(b, b), Vector2(-b, b), Vector2(0, -1)], [Vector2(-b, b), Vector2(-b, -b), Vector2(1, 0)],
 	]
 	for r: Array in runs:
-		_facade_run(r[0], r[1], r[2], KIT_WALL_HEIGHT_M, walls)
+		_facade_run(r[0], r[1], r[2], KIT_WALL_HEIGHT_M)
 
 
-## Portcullis in each gate (it moves with the gate node) and a stone lintel above it.
+## The outside of the arena walls, seen from high cameras: facades facing out along the bounds,
+## crowned with ramparts, and quoins on the four outer corners. Where a room reaches the bounds
+## its wall is only a facade thick, so the outer facade stands just behind that facade.
+func _kit_outer_walls() -> void:
+	var b: float = float(map["bounds_half_m"])
+	var facade: String = str(_wall_top().get("outer_wall", "wall"))  # a cheaper facade suits faces seen from afar
+	if _kit_piece(facade) == null:
+		facade = "wall"
+	var depth: float = -_piece_aabb(facade).position.z  # the wall piece reaches this far back
+	var parapet: String = str(_wall_top().get("parapet", ""))
+	var runs: Array = [
+		[Vector2(-b, -b), Vector2(b, -b), Vector2(0, -1)], [Vector2(b, -b), Vector2(b, b), Vector2(1, 0)],
+		[Vector2(b, b), Vector2(-b, b), Vector2(0, 1)], [Vector2(-b, b), Vector2(-b, -b), Vector2(-1, 0)],
+	]
+	for r: Array in runs:
+		var a: Vector2 = r[0]
+		var e: Vector2 = r[1]
+		var n: Vector2 = r[2]
+		var yaw: float = atan2(n.x, n.y)
+		var length: float = a.distance_to(e)
+		for iv: Array in _intervals(a, e, func(p: Vector2) -> bool: return _open_at(p - n * 0.8)):
+			var room: bool = iv[2]  # open ground just inside: a room's thin back wall
+			var run: float = (float(iv[1]) - float(iv[0])) * length
+			var count: int = maxi(1, int(ceil(run / KIT_TILE_M - 0.01)))
+			var seg: float = run / count
+			for i: int in count:
+				var mid: Vector2 = a.lerp(e, lerpf(iv[0], iv[1], (i + 0.5) / count)) + (n * depth if room else Vector2.ZERO)
+				var hs: float = 1.01 if room else 1.0  # its coping sits just above the room facade's
+				var basis: Basis = Basis(Vector3.UP, yaw) * Basis.from_scale(Vector3(seg / KIT_TILE_M, hs, 1))
+				_place(facade, Transform3D(basis, Vector3(mid.x, 0, mid.y)), false)
+				if parapet != "" and not room:
+					_place(parapet, Transform3D(Basis(Vector3.UP, yaw) * Basis.from_scale(Vector3(seg / KIT_TILE_M, 1, 1)),
+						Vector3(mid.x, KIT_WALL_HEIGHT_M, mid.y)))
+	for sx: float in [-1.0, 1.0]:
+		for sz: float in [-1.0, 1.0]:
+			_place("corner", Transform3D(Basis(), Vector3(sx * b, 0, sz * b)))
+
+
+## Portcullis in each gate (it moves with the gate node), a stone lintel above it and, with
+## dressing.gatehouse, a gatehouse on the wall top that hides the raised portcullis.
 func _kit_gates(kit_root: Node3D) -> void:
+	var gh: Dictionary = _dressing.get("gatehouse", {})
 	for g: Node3D in gates:
 		var c: Dictionary = g.get_meta("collider")
 		var size: Vector2 = _box_size(c)
 		var along_z: bool = size.y > size.x
 		var width: float = size.y if along_z else size.x
+		var thick: float = size.x if along_z else size.y
 		var h: float = float(c.get("height", 5.0))
 		var toward_centre: Vector2 = Vector2(-signf(g.position.x), 0) if along_z else Vector2(0, -signf(g.position.z))
 		var yaw: float = atan2(toward_centre.x, toward_centre.y)
@@ -386,22 +503,226 @@ func _kit_gates(kit_root: Node3D) -> void:
 		lintel.scale = Vector3((width + 1.0) / (KIT_GATE_SIZE.x + 1.0), 1, 1)
 		lintel.position = g.position + Vector3(0, h, 0) - Vector3(toward_centre.x, 0, toward_centre.y) * 0.5
 		kit_root.add_child(lintel)
+		if gh.is_empty():
+			continue
+		# the gatehouse's front (front_m ahead of its origin) lines up with the gate's courtyard face
+		var away: Vector3 = -Vector3(toward_centre.x, 0, toward_centre.y)
+		var pos: Vector3 = Vector3(g.position.x, h, g.position.z) - away * thick * 0.5 + away * float(gh.get("front_m", 1.7))
+		var house: Node3D = _kit_place(kit_root, str(gh.get("piece", "gatehouse")), pos, yaw,
+			Vector3(width / float(gh.get("gate_width_m", KIT_GATE_SIZE.x)), 1, 1))
+		if house:
+			house.name = "Gatehouse%d" % gates.find(g)
 
 
+## Decor pieces from the map data (no collision), batched per piece; a decor entry with an
+## "effect" gets that looping effect (data/ambient_effects) at its place.
 func _kit_decor(kit_root: Node3D) -> void:
+	var i: int = 0
 	for d: Dictionary in map.get("decor", []):
+		var piece: String = str(d["piece"])
 		var pos: Vector3 = Vector3(d["pos"][0], float(d.get("y", 0.0)), d["pos"][1])
-		var node: Node3D = _kit_place(kit_root, str(d["piece"]), pos, deg_to_rad(float(d.get("yaw_deg", 0.0))), Vector3.ONE)
-		if node and d.get("light", false):
-			var light: OmniLight3D = OmniLight3D.new()
-			light.name = "Fire"
-			light.light_color = Color(1.0, 0.56, 0.24)
-			light.light_energy = 2.2
-			light.omni_range = 9.0
-			light.omni_attenuation = 1.4
-			light.light_volumetric_fog_energy = 0.6
-			light.position = Vector3(0, 1.45, 0)
-			node.add_child(light)
+		var basis: Basis = Basis(Vector3.UP, deg_to_rad(float(d.get("yaw_deg", 0.0)))).scaled(Vector3.ONE * float(d.get("scale", 1.0)))
+		var xf: Transform3D = Transform3D(basis, pos)
+		if _kit_piece(piece) != null:
+			_place(piece, xf, false)
+		if d.has("effect") or d.get("light", false):
+			var anchor: Node3D = Node3D.new()
+			anchor.name = "Decor%d_%s" % [i, piece]
+			anchor.transform = xf
+			kit_root.add_child(anchor)
+			if d.has("effect"):
+				var fx: AmbientFx = AmbientFx.create(str(d["effect"]), hash(map_id) + i)
+				if fx:
+					anchor.add_child(fx)
+			else:
+				var light: OmniLight3D = OmniLight3D.new()
+				light.name = "Fire"
+				light.light_color = Color(1.0, 0.56, 0.24)
+				light.light_energy = 2.2
+				light.omni_range = 9.0
+				light.omni_attenuation = 1.4
+				light.light_volumetric_fog_energy = 0.6
+				light.position = Vector3(0, 1.45, 0)
+				anchor.add_child(light)
+		i += 1
+
+
+## Silhouettes beyond the walls (dressing.skyline): towers, rooftops and a keep against the dusk
+## sky, on a plain ground plane. No collision, no shadows and no bounced light: cheap backdrop.
+func _kit_skyline() -> void:
+	var sky: Dictionary = _dressing.get("skyline", {})
+	if sky.is_empty():
+		return
+	var root: Node3D = Node3D.new()
+	root.name = "Skyline"
+	add_child(root)
+	if sky.has("ground"):
+		var g: Dictionary = sky["ground"]
+		var plane: PlaneMesh = PlaneMesh.new()
+		plane.size = Vector2.ONE * float(g.get("size_m", 240.0))
+		var mat: StandardMaterial3D = StandardMaterial3D.new()
+		mat.albedo_color = _rgb(g.get("color", [0.1, 0.1, 0.1]))
+		mat.roughness = 1.0
+		var mi: MeshInstance3D = MeshInstance3D.new()
+		mi.name = "Ground"
+		mi.mesh = plane
+		mi.material_override = mat
+		mi.position.y = float(g.get("y", -0.3))  # below the floor tiles' mortar bed
+		mi.cast_shadow = GeometryInstance3D.SHADOW_CASTING_SETTING_OFF
+		mi.gi_mode = GeometryInstance3D.GI_MODE_DISABLED
+		root.add_child(mi)
+	var by_piece: Dictionary = skyline_placements
+	by_piece.clear()
+	for s: Dictionary in sky.get("pieces", []):
+		var piece: String = str(s["piece"])
+		var basis: Basis = Basis(Vector3.UP, deg_to_rad(float(s.get("yaw_deg", 0.0)))).scaled(Vector3.ONE * float(s.get("scale", 1.0)))
+		if not by_piece.has(piece):
+			by_piece[piece] = [] as Array[Transform3D]
+		(by_piece[piece] as Array[Transform3D]).append(Transform3D(basis, Vector3(s["pos"][0], float(s.get("y", 0.0)), s["pos"][1])))
+	for piece: String in by_piece:
+		_multimesh(root, piece.to_pascal_case(), piece, by_piece[piece], false)
+
+
+## Floor dressing (dressing.floor): soft grime decals along every wall base and around pillars
+## and the gallows, faint stains across the open floor, and puddle decals (dark, glossy). Textures are generated here from broad,
+## smooth shapes (no fine noise, per the art bible).
+func _kit_floor_dressing(kit_root: Node3D) -> void:
+	var fd: Dictionary = _dressing.get("floor", {})
+	if fd.is_empty():
+		return
+	var root: Node3D = Node3D.new()
+	root.name = "FloorDressing"
+	kit_root.add_child(root)
+	var grime: Dictionary = fd.get("grime", {})
+	if not grime.is_empty():
+		var col: Color = _rgb(grime.get("color", [0.05, 0.045, 0.04]))
+		var alpha: float = float(grime.get("alpha", 0.6))
+		var reach: Array = grime.get("width_m", [1.6, 2.6])
+		for run: Array in _grime_runs:
+			var a: Vector2 = run[0]
+			var b: Vector2 = run[1]
+			var n: Vector2 = run[2]
+			var length: float = a.distance_to(b)
+			var t: float = 0.0
+			while t < length - 0.01:  # overlapping patches of varied length, width and strength
+				var l: float = minf(_rng.randf_range(3.0, 5.5), length - t + 0.8)
+				var mid: Vector2 = a + (b - a).normalized() * (t + l * 0.5)
+				var w: float = _rng.randf_range(float(reach[0]), float(reach[1]))
+				_decal(root, "Grime", _grime_texture(_rng.randi_range(0, 3)), mid, n, Vector2(l + 0.8, w * 2.0),
+					col, alpha * _rng.randf_range(0.7, 1.0))
+				t += l * 0.8
+		for c: Dictionary in map["colliders"]:
+			if c["type"] == "circle":
+				var r: float = float(c["radius"]) + float(reach[1])
+				_decal(root, "Grime", _blob_texture(7), Vector2(c["center"][0], c["center"][1]), Vector2(0, 1),
+					Vector2(r * 2.0, r * 2.0), col, alpha * 0.8, _rng.randf() * TAU)
+			elif c.get("tag", "") == "gallows":
+				var sz: Vector2 = _box_size(c) + Vector2.ONE * float(reach[1]) * 1.4
+				var ctr: Vector3 = _box_centre(c)
+				_decal(root, "Grime", _blob_texture(3), Vector2(ctr.x, ctr.z), Vector2(0, 1), sz, col, alpha * 0.8)
+	var stain_col: Color = _rgb(fd.get("stain_color", [0.05, 0.045, 0.04]))
+	for p: Dictionary in fd.get("stains", []):  # broad, faint patches that break up the open floor
+		var sz: Array = p.get("size_m", [4.0, 3.0])
+		_decal(root, "Stain", _blob_texture(int(p.get("seed", 0)) + 20), Vector2(p["pos"][0], p["pos"][1]), Vector2(0, 1),
+			Vector2(float(sz[0]), float(sz[1])), stain_col, float(p.get("alpha", 0.45)), deg_to_rad(float(p.get("yaw_deg", 0.0))))
+	var i: int = 0
+	for p: Dictionary in fd.get("puddles", []):
+		var sz: Array = p.get("size_m", [2.0, 1.4])
+		var d: Decal = _decal(root, "Puddle", _puddle_texture(int(p.get("seed", i))), Vector2(p["pos"][0], p["pos"][1]),
+			Vector2(0, 1), Vector2(float(sz[0]), float(sz[1])), _rgb(fd.get("puddle_color", [0.03, 0.034, 0.04])),
+			float(fd.get("puddle_alpha", 0.7)), deg_to_rad(float(p.get("yaw_deg", 0.0))))
+		d.texture_orm = _puddle_orm()
+		i += 1
+
+
+## A decal lying on the floor, centred at `centre`, its local z along `n`, size (along, across).
+func _decal(parent: Node3D, node_name: String, tex: Texture2D, centre: Vector2, n: Vector2, size: Vector2,
+		color: Color, alpha: float, extra_yaw: float = 0.0) -> Decal:
+	var d: Decal = Decal.new()
+	d.name = node_name
+	d.texture_albedo = tex
+	d.modulate = Color(color.r, color.g, color.b, alpha)
+	d.size = Vector3(size.x, 1.2, size.y)
+	d.upper_fade = 0.6
+	d.lower_fade = 0.2
+	d.normal_fade = 0.0  # also darkens the foot of the walls (rising damp)
+	d.cull_mask = 1
+	d.position = Vector3(centre.x, 0.0, centre.y)
+	d.rotation.y = atan2(n.x, n.y) + extra_yaw
+	parent.add_child(d)
+	return d
+
+
+## Grime along a wall: full strength near the centre line (placed on the wall face, so half of it
+## lies under the wall), fading out over a width that swells and narrows gently along its length.
+func _grime_texture(variant: int) -> ImageTexture:
+	return _cached_texture("grime%d" % variant, func() -> Image:
+		var w: int = 256
+		var h: int = 128
+		var img: Image = Image.create(w, h, false, Image.FORMAT_RGBA8)
+		var ph: float = variant * 1.7
+		for x: int in w:
+			var u: float = (x + 0.5) / w
+			var ends: float = smoothstep(0.0, 0.2, u) * smoothstep(1.0, 0.8, u)
+			var reach: float = 0.6 + 0.4 * (0.5 + 0.5 * sin(u * TAU * 1.3 + ph)) * (0.5 + 0.5 * sin(u * TAU * 0.6 + 2.3 + ph))
+			for y: int in h:
+				var d: float = absf((y + 0.5) / h - 0.5) * 2.0
+				var a: float = 1.0 - smoothstep(reach * 0.35, reach, d)
+				img.set_pixel(x, y, Color(1, 1, 1, clampf(a * ends, 0.0, 1.0)))
+		return img)
+
+
+## A soft blob of overlapping round shapes (grime around pillars and the gallows block).
+func _blob_texture(seed_value: int) -> ImageTexture:
+	return _cached_texture("blob%d" % seed_value, func() -> Image:
+		return _field_image(seed_value, 128, 5, Vector2(0.3, 0.42), 0.08, 0.02, 0.3))
+
+
+## A puddle: a few overlapping round shapes with a soft rim.
+func _puddle_texture(seed_value: int) -> ImageTexture:
+	return _cached_texture("puddle%d" % seed_value, func() -> Image:
+		return _field_image(seed_value + 100, 128, 4, Vector2(0.2, 0.32), 0.16, 0.2, 0.45))
+
+
+## Glossy (low roughness) where the puddle is; decals mask it with the albedo alpha.
+func _puddle_orm() -> ImageTexture:
+	return _cached_texture("puddle_orm", func() -> Image:
+		var img: Image = Image.create(4, 4, false, Image.FORMAT_RGBA8)
+		img.fill(Color(1.0, 0.06, 0.0, 1.0))
+		return img)
+
+
+## Alpha from a sum of `blobs` smooth round bumps (radii in `radii`, centres up to `offset` from the
+## middle, in texture units) inside a circle, remapped from lo..hi.
+static func _field_image(seed_value: int, size: int, blobs: int, radii: Vector2, offset: float, lo: float,
+		hi: float) -> Image:
+	var rng: RandomNumberGenerator = RandomNumberGenerator.new()
+	rng.seed = seed_value
+	var centres: Array[Vector3] = []  # x, y, radius in 0..1 texture units
+	for i: int in blobs:
+		var a: float = rng.randf() * TAU
+		var d: float = rng.randf_range(0.0, offset) if i > 0 else 0.0
+		centres.append(Vector3(0.5 + cos(a) * d, 0.5 + sin(a) * d, rng.randf_range(radii.x, radii.y)))
+	var img: Image = Image.create(size, size, false, Image.FORMAT_RGBA8)
+	for x: int in size:
+		for y: int in size:
+			var p: Vector2 = Vector2((x + 0.5) / size, (y + 0.5) / size)
+			var f: float = 0.0
+			for c: Vector3 in centres:
+				var k: float = maxf(0.0, 1.0 - p.distance_squared_to(Vector2(c.x, c.y)) / (c.z * c.z))
+				f += k * k
+			var edge: float = 1.0 - smoothstep(0.38, 0.5, p.distance_to(Vector2(0.5, 0.5)))
+			var a: float = smoothstep(lo, hi, f)
+			img.set_pixel(x, y, Color(1, 1, 1, clampf(a * edge, 0.0, 1.0)))
+	return img
+
+
+func _cached_texture(key: String, make: Callable) -> ImageTexture:
+	if not _textures.has(key):
+		var img: Image = make.call()
+		img.generate_mipmaps()
+		_textures[key] = ImageTexture.create_from_image(img)
+	return _textures[key]
 
 
 func _kit_place(parent: Node3D, piece: String, pos: Vector3, yaw: float, scl: Vector3) -> Node3D:
@@ -431,6 +752,8 @@ func _kit_instance(piece: String) -> Node3D:
 
 ## Bounds of a piece's meshes, in the piece's own space.
 func _piece_aabb(piece: String) -> AABB:
+	if _aabbs.has(piece):
+		return _aabbs[piece]
 	var node: Node3D = _kit_instance(piece)
 	var box: AABB = AABB()
 	var first: bool = true
@@ -440,16 +763,19 @@ func _piece_aabb(piece: String) -> AABB:
 		box = b if first else box.merge(b)
 		first = false
 	node.free()
+	_aabbs[piece] = box
 	return box
 
 
-## Draw many copies of a piece in one batch.
-func _multimesh(parent: Node3D, node_name: String, piece: String, transforms: Array[Transform3D]) -> void:
+## Draw many copies of a piece in one batch (one multimesh per mesh of the piece).
+func _multimesh(parent: Node3D, node_name: String, piece: String, transforms: Array[Transform3D],
+		shadows: bool = true) -> void:
 	var node: Node3D = _kit_instance(piece)
 	if node == null or transforms.is_empty():
 		if node:
 			node.free()
 		return
+	var k: int = 0
 	for mi: Node in node.find_children("*", "MeshInstance3D", true, false):
 		var m: MeshInstance3D = mi
 		var mm: MultiMesh = MultiMesh.new()
@@ -459,8 +785,12 @@ func _multimesh(parent: Node3D, node_name: String, piece: String, transforms: Ar
 		for i: int in transforms.size():
 			mm.set_instance_transform(i, transforms[i] * m.transform)
 		var mmi: MultiMeshInstance3D = MultiMeshInstance3D.new()
-		mmi.name = node_name
+		mmi.name = node_name if k == 0 else "%s_%d" % [node_name, k]  # unique among siblings
+		k += 1
 		mmi.multimesh = mm
+		if not shadows:
+			mmi.cast_shadow = GeometryInstance3D.SHADOW_CASTING_SETTING_OFF
+			mmi.gi_mode = GeometryInstance3D.GI_MODE_DISABLED
 		parent.add_child(mmi)
 	node.free()
 
@@ -480,9 +810,8 @@ func _open_at(p: Vector2) -> bool:
 	return true
 
 
-## A floor tile is skipped when a wall block covers all of it.
-func _tile_buried(centre: Vector2) -> bool:
-	var h: float = KIT_TILE_M * 0.5
+## A floor tile (half-size `h`) is skipped when a wall block covers all of it.
+func _tile_buried(centre: Vector2, h: float = KIT_TILE_M * 0.5) -> bool:
 	for c: Dictionary in map["colliders"]:
 		if c["type"] != "box" or c.get("gate", false) or c.get("tag", "") != "wall":
 			continue

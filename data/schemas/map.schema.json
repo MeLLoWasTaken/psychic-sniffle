@@ -200,7 +200,7 @@
     },
     "decor": {
       "type": "array",
-      "description": "Decoration with no collision: braziers, banners, debris.",
+      "description": "Decoration with no collision: braziers, banners, props, turrets. Props must sit where players rarely stand (against walls, in corners) and never block sightlines: anything that should block is a collider instead.",
       "items": {
         "type": "object",
         "additionalProperties": false,
@@ -236,6 +236,294 @@
             "type": "boolean",
             "default": false,
             "description": "Add a warm fire light (braziers)."
+          },
+          "effect": {
+            "$ref": "common.schema.json#/$defs/id",
+            "description": "Looping effect on the piece (data/ambient_effects/<id>.json), e.g. brazier_fire."
+          },
+          "scale": {
+            "type": "number",
+            "exclusiveMinimum": 0,
+            "default": 1
+          }
+        }
+      }
+    },
+    "dressing": {
+      "type": "object",
+      "additionalProperties": false,
+      "description": "Visual dressing of the kit (backlog F-05). Nothing here adds collision or changes gameplay.",
+      "properties": {
+        "wall_top": {
+          "type": "object",
+          "additionalProperties": false,
+          "properties": {
+            "walk": {
+              "type": "string",
+              "pattern": "^[a-z0-9_]+$",
+              "description": "Kit piece paving the top of wall blocks (default floor_tile)."
+            },
+            "parapet": {
+              "type": "string",
+              "pattern": "^[a-z0-9_]+$",
+              "description": "Kit piece crowning every facade segment (a crenellated rampart)."
+            },
+            "outer_facades": {
+              "type": "boolean",
+              "default": false,
+              "description": "Face the outside of the walls along the bounds too."
+            },
+            "outer_wall": {
+              "type": "string",
+              "pattern": "^[a-z0-9_]+$",
+              "description": "Facade piece for the outside of the walls (default wall); a cheaper one suits faces seen only from afar."
+            }
+          }
+        },
+        "gatehouse": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "piece"
+          ],
+          "description": "A gatehouse on the wall top over each gate; it must hide the raised portcullis.",
+          "properties": {
+            "piece": {
+              "type": "string",
+              "pattern": "^[a-z0-9_]+$"
+            },
+            "front_m": {
+              "type": "number",
+              "minimum": 0,
+              "description": "Distance from the piece's origin to its front face, which lines up with the gate's courtyard face."
+            },
+            "gate_width_m": {
+              "type": "number",
+              "exclusiveMinimum": 0,
+              "description": "Gate width the piece is built for; it is stretched to other widths."
+            }
+          }
+        },
+        "variants": {
+          "type": "object",
+          "description": "Kit piece -> {variant piece: weight}: repeated pieces are drawn from these at random.",
+          "additionalProperties": {
+            "type": "object",
+            "additionalProperties": {
+              "type": "number",
+              "minimum": 0
+            },
+            "propertyNames": {
+              "pattern": "^[a-z0-9_]+$"
+            }
+          },
+          "propertyNames": {
+            "pattern": "^[a-z0-9_]+$"
+          }
+        },
+        "floor": {
+          "type": "object",
+          "additionalProperties": false,
+          "properties": {
+            "grime": {
+              "type": "object",
+              "additionalProperties": false,
+              "description": "Darker floor along every wall base and around pillars and the gallows (decals).",
+              "properties": {
+                "color": {
+                  "type": "array",
+                  "items": {
+                    "type": "number",
+                    "minimum": 0,
+                    "maximum": 1
+                  },
+                  "minItems": 3,
+                  "maxItems": 3
+                },
+                "alpha": {
+                  "type": "number",
+                  "minimum": 0,
+                  "maximum": 1
+                },
+                "width_m": {
+                  "type": "array",
+                  "items": {
+                    "type": "number",
+                    "exclusiveMinimum": 0
+                  },
+                  "minItems": 2,
+                  "maxItems": 2
+                }
+              }
+            },
+            "puddles": {
+              "type": "array",
+              "items": {
+                "type": "object",
+                "additionalProperties": false,
+                "required": [
+                  "pos"
+                ],
+                "properties": {
+                  "pos": {
+                    "type": "array",
+                    "items": {
+                      "type": "number"
+                    },
+                    "minItems": 2,
+                    "maxItems": 2
+                  },
+                  "size_m": {
+                    "type": "array",
+                    "items": {
+                      "type": "number",
+                      "exclusiveMinimum": 0
+                    },
+                    "minItems": 2,
+                    "maxItems": 2
+                  },
+                  "yaw_deg": {
+                    "type": "number"
+                  },
+                  "seed": {
+                    "type": "integer",
+                    "minimum": 0
+                  }
+                }
+              }
+            },
+            "puddle_color": {
+              "type": "array",
+              "items": {
+                "type": "number",
+                "minimum": 0,
+                "maximum": 1
+              },
+              "minItems": 3,
+              "maxItems": 3
+            },
+            "puddle_alpha": {
+              "type": "number",
+              "minimum": 0,
+              "maximum": 1
+            },
+            "stains": {
+              "type": "array",
+              "description": "Broad, faint darker patches across the open floor (decals).",
+              "items": {
+                "type": "object",
+                "additionalProperties": false,
+                "required": [
+                  "pos"
+                ],
+                "properties": {
+                  "pos": {
+                    "type": "array",
+                    "items": {
+                      "type": "number"
+                    },
+                    "minItems": 2,
+                    "maxItems": 2
+                  },
+                  "size_m": {
+                    "type": "array",
+                    "items": {
+                      "type": "number",
+                      "exclusiveMinimum": 0
+                    },
+                    "minItems": 2,
+                    "maxItems": 2
+                  },
+                  "yaw_deg": {
+                    "type": "number"
+                  },
+                  "seed": {
+                    "type": "integer",
+                    "minimum": 0
+                  },
+                  "alpha": {
+                    "type": "number",
+                    "minimum": 0,
+                    "maximum": 1
+                  }
+                }
+              }
+            },
+            "stain_color": {
+              "type": "array",
+              "items": {
+                "type": "number",
+                "minimum": 0,
+                "maximum": 1
+              },
+              "minItems": 3,
+              "maxItems": 3
+            }
+          }
+        },
+        "skyline": {
+          "type": "object",
+          "additionalProperties": false,
+          "description": "Silhouettes beyond the walls: no collision, no shadows; every piece stands outside the bounds.",
+          "properties": {
+            "ground": {
+              "type": "object",
+              "additionalProperties": false,
+              "properties": {
+                "color": {
+                  "type": "array",
+                  "items": {
+                    "type": "number",
+                    "minimum": 0,
+                    "maximum": 1
+                  },
+                  "minItems": 3,
+                  "maxItems": 3
+                },
+                "size_m": {
+                  "type": "number",
+                  "exclusiveMinimum": 0
+                },
+                "y": {
+                  "type": "number"
+                }
+              }
+            },
+            "pieces": {
+              "type": "array",
+              "items": {
+                "type": "object",
+                "additionalProperties": false,
+                "required": [
+                  "piece",
+                  "pos"
+                ],
+                "properties": {
+                  "piece": {
+                    "type": "string",
+                    "pattern": "^[a-z0-9_]+$"
+                  },
+                  "pos": {
+                    "type": "array",
+                    "items": {
+                      "type": "number"
+                    },
+                    "minItems": 2,
+                    "maxItems": 2
+                  },
+                  "y": {
+                    "type": "number"
+                  },
+                  "yaw_deg": {
+                    "type": "number"
+                  },
+                  "scale": {
+                    "type": "number",
+                    "exclusiveMinimum": 0
+                  }
+                }
+              }
+            }
           }
         }
       }

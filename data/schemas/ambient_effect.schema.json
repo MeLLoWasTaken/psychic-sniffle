@@ -1,0 +1,74 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "ambient_effect.schema.json",
+  "title": "Ambient effect",
+  "description": "A looping effect on a map fixture, such as fire in a brazier (backlog F-05). Maps attach one to a decor piece with \"effect\": \"<id>\". Built by game/client/effects/ambient_fx.gd from generic parts: flame tongues, embers, smoke and a flickering light.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["id"],
+  "$defs": {
+    "rgb": {"type": "array", "items": {"type": "number", "minimum": 0, "maximum": 4}, "minItems": 3, "maxItems": 3},
+    "rgba": {"type": "array", "items": {"type": "number", "minimum": 0, "maximum": 4}, "minItems": 3, "maxItems": 4},
+    "range": {"type": "array", "items": {"type": "number", "minimum": 0}, "minItems": 2, "maxItems": 2},
+    "particles": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "count": {"type": "integer", "minimum": 1, "maximum": 40, "description": "Particles alive at once; keep to a dozen or two (art bible)."},
+        "lifetime_s": {"type": "number", "exclusiveMinimum": 0, "maximum": 6},
+        "radius_m": {"type": "number", "minimum": 0},
+        "rise_mps": {"$ref": "#/$defs/range"},
+        "spread_deg": {"type": "number", "minimum": 0, "maximum": 180},
+        "buoyancy": {"type": "number", "description": "Upward acceleration, m/s^2."},
+        "damping": {"type": "number", "minimum": 0},
+        "size_m": {"type": "number", "exclusiveMinimum": 0, "maximum": 3},
+        "grow": {"type": "number", "exclusiveMinimum": 0, "description": "Size at the end of life relative to the start (above 1 grows, as smoke does)."},
+        "color": {"$ref": "#/$defs/rgba"}
+      }
+    }
+  },
+  "properties": {
+    "id": {"$ref": "common.schema.json#/$defs/id"},
+    "description": {"type": "string"},
+    "offset": {"type": "array", "items": {"type": "number"}, "minItems": 3, "maxItems": 3, "description": "Where the effect sits on the piece (x, y, z in metres; y up)."},
+    "flame": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "height_m": {"type": "number", "exclusiveMinimum": 0, "maximum": 5},
+        "width_m": {"type": "number", "exclusiveMinimum": 0, "maximum": 5},
+        "tongues": {"type": "integer", "minimum": 1, "maximum": 6},
+        "spread_m": {"type": "number", "minimum": 0},
+        "intensity": {"type": "number", "minimum": 0, "maximum": 6},
+        "speed": {"type": "number", "minimum": 0},
+        "colors": {
+          "type": "object",
+          "additionalProperties": false,
+          "properties": {"core": {"$ref": "#/$defs/rgb"}, "outer": {"$ref": "#/$defs/rgb"}}
+        }
+      }
+    },
+    "embers": {"$ref": "#/$defs/particles"},
+    "smoke": {"$ref": "#/$defs/particles"},
+    "light": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "color": {"$ref": "#/$defs/rgb"},
+        "energy": {"type": "number", "minimum": 0},
+        "range_m": {"type": "number", "exclusiveMinimum": 0},
+        "attenuation": {"type": "number", "minimum": 0},
+        "fog_energy": {"type": "number", "minimum": 0},
+        "y_m": {"type": "number"},
+        "flicker": {
+          "type": "object",
+          "additionalProperties": false,
+          "properties": {
+            "amount": {"type": "number", "minimum": 0, "maximum": 0.6, "description": "Energy swing as a fraction of the base energy."},
+            "speed_hz": {"type": "number", "exclusiveMinimum": 0, "maximum": 20}
+          }
+        }
+      }
+    }
+  }
+}

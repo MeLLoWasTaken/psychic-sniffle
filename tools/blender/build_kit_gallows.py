@@ -1,6 +1,7 @@
 """Gallows Courtyard environment kit (backlog M1-15): flagstone floor, stone wall facade and
 corner, pillar, iron portcullis and stone lintel, wooden gallows platform, brazier and team
-banners. One piece per asset spec (params.piece).
+banners, plus the F-05 dressing pieces in build_kit_gallows_dressing.py (ramparts, gatehouse,
+turret, skyline, props, worn floor). One piece per asset spec (params.piece).
 
 Usage:
   python3 tools/blender/build_kit_gallows.py --spec data/assets/gallows_pillar.json --previews previews/kit
@@ -23,6 +24,7 @@ sys.path.insert(0, str(Path(__file__).resolve().parent))
 import bpy  # noqa: E402
 import common  # noqa: E402
 import kit  # noqa: E402
+import build_kit_gallows_dressing as dressing  # noqa: E402  (F-05 pieces)
 from kit import block, cylinder, random_tint  # noqa: E402
 
 
@@ -86,8 +88,13 @@ def floor_tile(p: dict, m: dict, rng) -> list:
 
 
 def wall(p: dict, m: dict, rng) -> list:
-    """A 4 m wide, 6 m tall facade of coursed stone with a plinth course and coping."""
+    """A 4 m wide, 6 m tall facade of coursed stone with a plinth course and coping. course_m and
+    stone_m (min, max) set the stone sizes and bevel_segments their bevel; larger stones and one
+    segment make a cheap facade for faces only seen from afar (the outside of the arena walls)."""
     width, height = p.get("width_m", 4.0), p.get("height_m", 6.0)
+    course_lo, course_hi = p.get("course_m", (0.42, 0.6))
+    stone_lo, stone_hi = p.get("stone_m", (0.6, 1.3))
+    segs = p.get("bevel_segments", 2)
     half = width / 2
     gap = 0.04
     parts = [block("backing", (width, 0.4, height), (0, 0.45, height / 2), bevel=0, mat=m["mortar"])]
@@ -95,18 +102,18 @@ def wall(p: dict, m: dict, rng) -> list:
     course = 0
     while z < height - 0.55:
         plinth = course == 0
-        ch = 0.75 if plinth else rng.uniform(0.42, 0.6)
+        ch = 0.75 if plinth else rng.uniform(course_lo, course_hi)
         if height - 0.5 - (z + ch) < 0.35:
             ch = height - 0.5 - z
         depth = 0.34 if plinth else 0.3
         x = -half - (rng.uniform(0, 0.5) if course % 2 else 0)
         while x < half - 0.01:
-            w = rng.uniform(0.6, 1.3)
+            w = rng.uniform(stone_lo, stone_hi)
             x0, x1 = max(x, -half), min(x + w, half)
             if x1 - x0 > 0.12:
                 front = -rng.uniform(0.0, 0.025)  # slightly uneven face
                 s = block("stone", (x1 - x0 - gap, depth, ch - gap),
-                          ((x0 + x1) / 2, front + depth / 2, z + ch / 2), bevel=0.035, segments=2,
+                          ((x0 + x1) / 2, front + depth / 2, z + ch / 2), bevel=0.035, segments=segs,
                           mat=m["stone"], tint=random_tint(rng, 0.12, 0.04))
                 kit.jitter_vertices(s, rng, 0.012)
                 parts.append(s)
@@ -119,7 +126,7 @@ def wall(p: dict, m: dict, rng) -> list:
         w = min(rng.uniform(1.0, 1.6), half - x)
         if half - (x + w) < 0.4:
             w = half - x
-        s = block("coping", (w - gap, 0.62, 0.5), (x + w / 2, 0.21, height - 0.25), bevel=0.04, segments=2,
+        s = block("coping", (w - gap, 0.62, 0.5), (x + w / 2, 0.21, height - 0.25), bevel=0.04, segments=segs,
                   mat=m["stone"], tint=random_tint(rng, 0.08))
         kit.jitter_vertices(s, rng, 0.01)
         parts.append(s)
@@ -383,8 +390,8 @@ def banner(p: dict, m: dict, rng) -> list:
 
 
 PIECES = {"floor_tile": floor_tile, "wall": wall, "corner": corner, "pillar": pillar, "gate": gate,
-          "gate_lintel": gate_lintel, "gallows": gallows, "brazier": brazier, "banner": banner}
-BACK_ON_Y0 = {"wall", "gate_lintel", "banner"}
+          "gate_lintel": gate_lintel, "gallows": gallows, "brazier": brazier, "banner": banner, **dressing.PIECES}
+BACK_ON_Y0 = {"wall", "gate_lintel", "banner"} | dressing.BACK_ON_Y0
 
 
 def build(spec: dict, previews: Path | None) -> None:
@@ -393,6 +400,7 @@ def build(spec: dict, previews: Path | None) -> None:
     params = spec.get("params", {})
     piece = params["piece"]
     m = mats(spec.get("palette", {}))
+    m.update(dressing.extra_mats(spec.get("palette", {})))
     result = PIECES[piece](params, m, rng)
     parts, glow = result if isinstance(result, tuple) else (result, [])
     kit.apply_transforms(parts + glow)
@@ -423,11 +431,14 @@ def main() -> int:
     ap = argparse.ArgumentParser(description=__doc__)
     ap.add_argument("--spec", type=Path)
     ap.add_argument("--all", action="store_true")
+    ap.add_argument("--only", nargs="*", help="with --all: only these piece names")
     ap.add_argument("--previews", type=Path)
     args = ap.parse_args(argv)
     specs = sorted((common.REPO / "data" / "assets").glob("gallows_*.json")) if args.all else [args.spec]
     for path in specs:
         spec = json.loads(Path(path).read_text())
+        if args.only and spec["params"]["piece"] not in args.only and spec["id"] not in args.only:
+            continue
         build(spec, args.previews)
     return 0
 
