@@ -11,6 +11,7 @@ for a milestone gate.
 from __future__ import annotations
 
 import argparse
+import os
 import shutil
 import subprocess
 import sys
@@ -68,6 +69,10 @@ def main() -> int:
         if status == "FAIL":
             failed += 1
             print("      " + detail.replace("\n", "\n      "))
+            if os.environ.get("GITHUB_ACTIONS"):
+                # an annotation carries the failure's output to the run's API (job logs may not be reachable)
+                msg = detail[-6000:].replace("%", "%25").replace("\r", "").replace("\n", "%0A")
+                print(f"::error title=check_all: {name}::{msg}")
     print("ALL CHECKS PASSED" if not failed else f"{failed} CHECK(S) FAILED")
     return 1 if failed else 0
 
