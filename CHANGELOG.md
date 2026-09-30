@@ -2,6 +2,19 @@
 
 One entry per build-loop iteration, newest first. Format: date, backlog ID, what changed, how it was checked.
 
+## 2026-09-30 — F-05: Gallows Courtyard dressing; bot targeting fix
+- The arena now reads as a walled fortress in a town:
+  - a skyline of keep, towers, a bell tower and town houses;
+  - gatehouses that hide the raised portcullises, ramparts and a wall walk, and corner turrets;
+  - props, long team banners, drains, and worn, stained and grimy tiles with puddles;
+  - animated brazier fire with a flickering light.
+- 23 new kit pieces, all built by Blender scripts and placed from map data. Gameplay colliders are unchanged (fingerprint test).
+- The player view went from 87 to 182 draw calls and from 347k to 528k primitives.
+- Review pass 3 found that bot target choice depended on unit id order: how a team was listed flipped one matchup from 12% to 92%.
+  - Ties now go to the lighter armor, then the nearer enemy.
+  - Listing order no longer changes outcomes (7 vs 5 and 10 vs 7 wins of 24).
+  - 3 regression tests; the 2v2 balance sims are being rerun.
+
 ## 2026-09-30 — M1-30: network test
 - New full-mode check: a 2v2 arena of bots at 150 ms latency, 30 ms jitter and 2% loss must reach a kill with:
   - no stuck casts (a cast shown more than 0.25 s past its end);
