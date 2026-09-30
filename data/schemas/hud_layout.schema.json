@@ -63,7 +63,32 @@
           "required": ["small", "normal", "large", "timer", "alert", "combat_text", "combat_text_crit"],
           "additionalProperties": {"type": "number", "minimum": 8}
         },
-        "resource_colors": {"type": "object", "additionalProperties": {"$ref": "#/$defs/color"}}
+        "resource_colors": {"type": "object", "additionalProperties": {"$ref": "#/$defs/color"}},
+        "fonts": {
+          "type": "object",
+          "description": "Typefaces (backlog X-03): 'display' for names, titles and big numbers, 'text' for small text and numbers. file is under game/assets/fonts; weight picks an instance of a variable font.",
+          "required": ["display", "text"],
+          "additionalProperties": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": ["file"],
+            "properties": {
+              "file": {"type": "string", "pattern": "^[a-z0-9_]+/[A-Za-z0-9_.-]+\\.(ttf|otf)$"},
+              "weight": {"type": "integer", "minimum": 100, "maximum": 900}
+            }
+          }
+        },
+        "icon_art": {
+          "type": "object",
+          "description": "Icon layers (backlog X-03), under game/assets/icons: glyph folder (icon.image -> <glyphs>/<image>.png), frame and shade overlays.",
+          "additionalProperties": false,
+          "required": ["glyphs", "frame", "shade"],
+          "properties": {
+            "glyphs": {"type": "string"},
+            "frame": {"type": "string"},
+            "shade": {"type": "string"}
+          }
+        }
       },
       "additionalProperties": {"$ref": "#/$defs/color"}
     },

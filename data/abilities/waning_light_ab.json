@@ -19,6 +19,7 @@
   ],
   "icon": {
     "symbol": "fading",
-    "school": "holy"
+    "school": "holy",
+    "image": "delapouite/sunset"
   }
 }

@@ -16,5 +16,5 @@
   "effects": [
     {"type": "remove_cc"}
   ],
-  "icon": {"symbol": "broken_chain"}
+  "icon": {"symbol": "broken_chain", "image": "skoll/breaking-chain"}
 }

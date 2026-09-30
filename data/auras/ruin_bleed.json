@@ -12,5 +12,5 @@
     "effect": {"type": "damage", "base": 600, "can_crit": false, "school": "physical"}
   },
   "hud_priority": "normal",
-  "icon": {"symbol": "blood_drop", "school": "physical"}
+  "icon": {"symbol": "blood_drop", "school": "physical", "image": "lorc/drop"}
 }

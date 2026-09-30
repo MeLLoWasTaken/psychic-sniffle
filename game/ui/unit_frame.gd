@@ -99,7 +99,7 @@ func _draw() -> void:
 		var rem: float = float(cc["remaining_s"])
 		if rem != INF:
 			style.text_in(self, Rect2(pr.position, Vector2(pr.size.x, pr.size.y * 0.62)), HudStyle.countdown(rem, 10.0),
-				style.fs("large"), Color.WHITE)
+				style.fs("large"), Color.WHITE, HORIZONTAL_ALIGNMENT_CENTER, 0.0, &"display")
 		style.text_in(self, Rect2(pr.position + Vector2(0, pr.size.y * 0.6), Vector2(pr.size.x, pr.size.y * 0.4)),
 			str(style.cc[cc["category"]]["short"]), style.fs("small"), Color.WHITE)
 	else:
@@ -115,8 +115,10 @@ func _draw() -> void:
 	if prefix != "":
 		label = "%s  %s" % [prefix, label]
 	var nfs: int = style.fs("normal") if h >= 64.0 else style.fs("small")
-	style.text_in(self, Rect2(x0 + 2.0, 2.0, inner_w, name_h), CastBar._fit(style, label, nfs, inner_w - 4.0), nfs,
-		name_col, HORIZONTAL_ALIGNMENT_LEFT)
+	# names in the display face; on small frames the text face, whose lowercase stays legible at 720p
+	var nface: StringName = &"display" if nfs >= style.fs("normal") else &"text"
+	style.text_in(self, Rect2(x0 + 2.0, 2.0, inner_w, name_h), CastBar._fit(style, label, nfs, inner_w - 4.0, nface),
+		nfs, name_col, HORIZONTAL_ALIGNMENT_LEFT, 0.0, nface)
 	var hp_r: Rect2 = Rect2(x0, 2.0 + name_h, inner_w, hp_h)
 	var hp: float = float(unit.get("health", 0))
 	var hp_max: float = maxf(1.0, float(unit.get("max_health", 1)))
@@ -164,7 +166,8 @@ func _spec_portrait(r: Rect2, dead: bool) -> void:
 	draw_polygon(PackedVector2Array([p, p + Vector2(s.x, 0), p + s, p + Vector2(0, s.y)]),
 		PackedColorArray([c.darkened(0.2), c.darkened(0.35), c.darkened(0.8), c.darkened(0.7)]))
 	var spec: Dictionary = Data.specs.get(spec_id, {})
-	style.text_in(self, r, HudStyle.initials(str(spec.get("name", spec_id))), style.fs("large"), Color(1, 1, 1, 0.95))
+	style.text_in(self, r, HudStyle.initials(str(spec.get("name", spec_id))), style.fs("large"), Color(1, 1, 1, 0.95),
+		HORIZONTAL_ALIGNMENT_CENTER, 0.0, &"display")
 	var role: String = str(spec.get("role", ""))
 	var role_txt: String = {"healer": "HEAL", "tank": "TANK"}.get(role, "")
 	if role_txt != "":

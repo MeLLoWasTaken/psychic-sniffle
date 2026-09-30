@@ -19,7 +19,8 @@
   ],
   "icon": {
     "symbol": "ice_statue",
-    "school": "frost"
+    "school": "frost",
+    "image": "delapouite/frozen-body"
   },
   "cast_time_s": 1.5,
   "cost": {

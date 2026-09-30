@@ -19,6 +19,7 @@
   ],
   "icon": {
     "symbol": "feather",
-    "school": "holy"
+    "school": "holy",
+    "image": "lorc/feather"
   }
 }

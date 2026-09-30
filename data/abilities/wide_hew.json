@@ -19,7 +19,8 @@
   ],
   "icon": {
     "symbol": "arc_blade",
-    "school": "physical"
+    "school": "physical",
+    "image": "lorc/axe-swing"
   },
   "cost": {
     "resource": "rage",

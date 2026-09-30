@@ -84,9 +84,9 @@ static func draw_cast(ci: CanvasItem, st: HudStyle, r: Rect2, u: Dictionary, v: 
 
 
 ## `s` cut with "…" to fit `width` at font size `fsz`.
-static func _fit(st: HudStyle, s: String, fsz: int, width: float) -> String:
-	if st.text_width(s, fsz) <= width:
+static func _fit(st: HudStyle, s: String, fsz: int, width: float, face_name: StringName = &"text") -> String:
+	if st.text_width(s, fsz, face_name) <= width:
 		return s
-	while s.length() > 1 and st.text_width(s + "…", fsz) > width:
+	while s.length() > 1 and st.text_width(s + "…", fsz, face_name) > width:
 		s = s.substr(0, s.length() - 1)
 	return s + "…"

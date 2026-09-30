@@ -1,0 +1,6 @@
+{
+  "description": "An ability names a game-icons.net glyph that was never copied into the repo (the HUD would silently fall back to the placeholder).",
+  "file": "abilities/rime_bolt.json",
+  "set": {"/icon/image": "lorc/no-such-glyph"},
+  "expect": "icon image 'lorc/no-such-glyph' not found"
+}

@@ -20,6 +20,7 @@
   ],
   "icon": {
     "symbol": "bandage",
-    "school": "physical"
+    "school": "physical",
+    "image": "delapouite/hand-bandage"
   }
 }

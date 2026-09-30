@@ -22,7 +22,8 @@
   ],
   "icon": {
     "symbol": "frost_step",
-    "school": "frost"
+    "school": "frost",
+    "image": "lorc/sprint"
   },
   "usable_while_cc": [
     "stun",

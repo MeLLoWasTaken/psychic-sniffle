@@ -19,6 +19,7 @@
   ],
   "icon": {
     "symbol": "planted_sword",
-    "school": "physical"
+    "school": "physical",
+    "image": "lorc/sword-in-stone"
   }
 }

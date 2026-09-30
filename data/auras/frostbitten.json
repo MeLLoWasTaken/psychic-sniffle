@@ -16,6 +16,7 @@
   ],
   "icon": {
     "symbol": "frostbite",
-    "school": "frost"
+    "school": "frost",
+    "image": "lorc/brain-freeze"
   }
 }

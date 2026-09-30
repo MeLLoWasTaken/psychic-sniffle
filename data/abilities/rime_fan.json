@@ -27,7 +27,8 @@
   ],
   "icon": {
     "symbol": "ice_fan",
-    "school": "frost"
+    "school": "frost",
+    "image": "lorc/icicles-aura"
   },
   "cost": {
     "resource": "mana",

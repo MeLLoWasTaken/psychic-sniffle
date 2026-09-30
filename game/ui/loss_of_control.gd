@@ -47,9 +47,11 @@ func _draw() -> void:
 	var x0: float = h + 4.0
 	var tw: float = size.x - x0 - 12.0
 	var rem: float = float(current["remaining_s"])
-	style.text_in(self, Rect2(x0, 6, tw, h * 0.45), label(), style.fs("alert"), c.lightened(0.3), HORIZONTAL_ALIGNMENT_LEFT)
+	style.text_in(self, Rect2(x0, 6, tw, h * 0.45), label(), style.fs("alert"), c.lightened(0.3), HORIZONTAL_ALIGNMENT_LEFT,
+		0.0, &"display")
 	if rem != INF:
-		style.text_in(self, Rect2(x0, 6, tw, h * 0.45), "%.1f" % rem, style.fs("alert"), Color.WHITE, HORIZONTAL_ALIGNMENT_RIGHT)
+		style.text_in(self, Rect2(x0, 6, tw, h * 0.45), "%.1f" % rem, style.fs("alert"), Color.WHITE, HORIZONTAL_ALIGNMENT_RIGHT,
+			0.0, &"display")
 	style.text_in(self, Rect2(x0, h * 0.46, tw, h * 0.26), str(current["name"]), style.fs("normal"), style.color("text"),
 		HORIZONTAL_ALIGNMENT_LEFT)
 	var dur: float = maxf(0.01, float(current["duration_s"]))

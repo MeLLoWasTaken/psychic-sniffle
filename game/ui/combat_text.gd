@@ -96,10 +96,10 @@ func _draw() -> void:
 		var fsz: int = roundi(int(e["size"]) * ui_scale)
 		if bool(e["crit"]) and float(e["age"]) < 0.15:
 			fsz = roundi(fsz * lerpf(1.35, 1.0, float(e["age"]) / 0.15))
-		var w: float = style.text_width(str(e["text"]), fsz)
+		var w: float = style.text_width(str(e["text"]), fsz, &"display")
 		var pos: Vector2 = (sp as Vector2) - Vector2(w * 0.5, 0.0)
 		pos = _free_spot(pos, Vector2(w, fsz), placed)
-		style.text(self, pos, str(e["text"]), fsz, col, HORIZONTAL_ALIGNMENT_LEFT, -1.0, maxi(4, fsz / 6))
+		style.text(self, pos, str(e["text"]), fsz, col, HORIZONTAL_ALIGNMENT_LEFT, -1.0, maxi(4, fsz / 6), &"display")
 	var y: float = error_y
 	for e: Dictionary in errors:
 		var a: float = clampf((ERROR_S - float(e["age"])) / 0.4, 0.0, 1.0)

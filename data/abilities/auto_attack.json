@@ -15,5 +15,5 @@
   "effects": [
     {"type": "damage", "base": 1200, "power_coefficient": 0.0, "school": "physical"}
   ],
-  "icon": {"symbol": "crossed_swords", "school": "physical"}
+  "icon": {"symbol": "crossed_swords", "school": "physical", "image": "lorc/crossed-swords"}
 }

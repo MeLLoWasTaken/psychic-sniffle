@@ -19,6 +19,7 @@
   ],
   "icon": {
     "symbol": "red_eye",
-    "school": "physical"
+    "school": "physical",
+    "image": "lorc/bleeding-eye"
   }
 }

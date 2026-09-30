@@ -19,6 +19,7 @@
   ],
   "icon": {
     "symbol": "pommel",
-    "school": "physical"
+    "school": "physical",
+    "image": "lorc/sword-hilt"
   }
 }

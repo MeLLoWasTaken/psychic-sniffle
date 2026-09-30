@@ -22,7 +22,8 @@
   ],
   "icon": {
     "symbol": "unravel",
-    "school": "holy"
+    "school": "holy",
+    "image": "lorc/magic-swirl"
   },
   "cost": {
     "resource": "mana",

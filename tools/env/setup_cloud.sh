@@ -35,7 +35,7 @@ apt-get install -y -qq \
 
 log "python packages"
 pip install -q --break-system-packages \
-  "bpy==4.5.4" scons jsonschema pytest pillow numpy soundfile scipy matplotlib
+  "bpy==4.5.4" scons jsonschema pytest pillow numpy soundfile scipy matplotlib resvg-py
 
 log "Godot $GODOT_TAG"
 mkdir -p "$CACHE_DIR"

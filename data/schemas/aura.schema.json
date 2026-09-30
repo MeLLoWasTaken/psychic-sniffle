@@ -145,6 +145,11 @@
         "symbol": {
           "type": "string"
         },
+        "image": {
+          "type": "string",
+          "pattern": "^[a-z0-9-]+/[a-z0-9-]+$",
+          "description": "game-icons.net glyph as '<author>/<name>': game/assets/icons/game-icons/<image>.svg, rendered by tools/build_icons.py to game/assets/icons/glyphs/<image>.png. Without it the HUD draws the placeholder glyph and initials."
+        },
         "school": {
           "$ref": "common.schema.json#/$defs/school"
         }

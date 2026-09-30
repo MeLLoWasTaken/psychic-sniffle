@@ -16,6 +16,7 @@
   ],
   "icon": {
     "symbol": "snowflake",
-    "school": "frost"
+    "school": "frost",
+    "image": "delapouite/thermometer-cold"
   }
 }

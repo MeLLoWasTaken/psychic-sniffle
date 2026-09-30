@@ -36,6 +36,7 @@
   },
   "icon": {
     "symbol": "cleaver_blood",
-    "school": "physical"
+    "school": "physical",
+    "image": "lorc/bloody-sword"
   }
 }

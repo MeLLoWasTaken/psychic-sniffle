@@ -14,6 +14,7 @@
   "pacify": true,
   "icon": {
     "symbol": "ice_block",
-    "school": "frost"
+    "school": "frost",
+    "image": "lorc/ice-cube"
   }
 }
