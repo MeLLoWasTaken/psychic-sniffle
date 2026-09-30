@@ -35,5 +35,9 @@
     "ui_scale": 1.0,
     "min_text_px": 11,
     "combat_text": true
+  },
+  "graphics": {
+    "rig_modifiers": true,
+    "rig_modifier_max_distance_m": 35
   }
 }

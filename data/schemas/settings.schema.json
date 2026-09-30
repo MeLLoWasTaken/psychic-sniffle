@@ -69,6 +69,16 @@
         "min_text_px": {"type": "number", "minimum": 8, "maximum": 32, "description": "Smallest text height in screen pixels: at low resolutions the whole HUD grows until its smallest text reaches this"},
         "combat_text": {"type": "boolean", "description": "Floating combat text on or off"}
       }
+    },
+    "graphics": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["rig_modifiers", "rig_modifier_max_distance_m"],
+      "description": "Graphics page (DESIGN.md settings suite). Missing: the game uses these defaults",
+      "properties": {
+        "rig_modifiers": {"type": "boolean", "description": "Characters turn their heads toward their target and plant their feet on the floor (backlog X-02, RigModifiers); off saves a little CPU per character"},
+        "rig_modifier_max_distance_m": {"type": "number", "exclusiveMinimum": 0, "description": "Characters farther than this from the camera skip head turning and foot grounding (level of detail)"}
+      }
     }
   }
 }

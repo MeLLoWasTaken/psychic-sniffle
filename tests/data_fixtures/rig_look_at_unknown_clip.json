@@ -1,0 +1,1 @@
+{"description": "Look-at suppressed by a clip the set does not have", "file": "anim_states/humanoid.json", "set": {"/rig_modifiers/look_at/suppress/0": "backflip"}, "expect": "suppress clip 'backflip' is not in the animation set"}

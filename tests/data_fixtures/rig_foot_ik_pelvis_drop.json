@@ -1,0 +1,1 @@
+{"description": "Pelvis may drop further than a foot ever does", "file": "anim_states/humanoid.json", "set": {"/rig_modifiers/foot_ik/max_pelvis_drop_m": 0.5}, "expect": "max_pelvis_drop_m must not exceed max_drop_m"}

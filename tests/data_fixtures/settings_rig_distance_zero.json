@@ -1,0 +1,1 @@
+{"description": "Graphics setting with a zero distance", "file": "settings/default.json", "set": {"/graphics/rig_modifier_max_distance_m": 0}, "expect": "rig_modifier_max_distance_m"}
