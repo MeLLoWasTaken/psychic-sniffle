@@ -77,11 +77,13 @@ static func hold_of(asset: Dictionary) -> String:
 	return str(weapon.get("params", {}).get("hold", "forward"))
 
 
-## Library clip name for a data clip and hold: holds with wrist rules (weapon_grip.holds.<hold>.
-## wrist, e.g. an upright staff) have their own baked copy of every clip, "<clip>_<hold>".
+## Library clip name for a data clip and hold: holds with a hand rule (weapon_grip.holds.<hold>.
+## wrist, e.g. an upright staff, or second_hand, a two-handed sword) have their own baked copy of
+## every clip, "<clip>_<hold>".
 static func variant_name(set_data: Dictionary, clip: String, hold: String) -> String:
 	var holds: Dictionary = set_data.get("weapon_grip", {}).get("holds", {})
-	return "%s_%s" % [clip, hold] if holds.get(hold, {}).has("wrist") else clip
+	var h: Dictionary = holds.get(hold, {})
+	return "%s_%s" % [clip, hold] if h.has("wrist") or h.has("second_hand") else clip
 
 
 ## The retargeted, loop-flagged library for a body build and weapon hold, with clips under their
@@ -178,15 +180,17 @@ static func blender_to_godot(v: Array) -> Vector3:
 ## start at the bone's head, go along_m along the bone and palm_m toward the palm; the weapon's
 ## blade axis (its local +Y) follows the hold's blade direction and its flat normal (local -Z)
 ## the hold's flat direction.
-static func grip_transform(sk: Skeleton3D, grip: Dictionary, hold: String) -> Transform3D:
+## along_m and palm_m are per body build (the fist's size differs between builds).
+static func grip_transform(sk: Skeleton3D, grip: Dictionary, hold: String, build: String) -> Transform3D:
 	var bone_name: String = str(grip["bone"])
 	var rest: Transform3D = sk.get_bone_global_rest(sk.find_bone(bone_name))
 	var along: Vector3 = rest.basis.y.normalized()  # imported bones keep Blender's frame: +Y runs head to tail
 	var inward: Vector3 = Vector3.RIGHT if bone_name.ends_with("_r") else Vector3.LEFT
 	var palm: Vector3 = (inward - along * along.dot(inward)).normalized()
-	var point: Vector3 = rest.origin + along * float(grip["along_m"]) + palm * float(grip["palm_m"])
+	var point: Vector3 = rest.origin + along * float(grip["along_m"][build]) + palm * float(grip["palm_m"][build])
 	var h: Dictionary = grip["holds"][hold]
 	var blade: Vector3 = blender_to_godot(h["blade"]).normalized()
+	point -= blade * float(h.get("slide_m", 0.0))  # two-handed: slid down so the first fist sits near the guard
 	var flat: Vector3 = blender_to_godot(h["flat"])
 	flat = (flat - blade * blade.dot(flat)).normalized()
 	var z: Vector3 = -flat
@@ -206,6 +210,7 @@ static func attach_weapon(asset: Dictionary, sk: Skeleton3D) -> Node3D:
 	slot.bone_name = str(grip["bone"])
 	sk.add_child(slot)
 	var node: Node3D = (load(res_path(weapon)) as PackedScene).instantiate()
-	node.transform = grip_transform(sk, grip, str(weapon.get("params", {}).get("hold", "forward")))
+	node.transform = grip_transform(sk, grip, str(weapon.get("params", {}).get("hold", "forward")),
+		str(asset.get("body_build", "")))
 	slot.add_child(node)
 	return node

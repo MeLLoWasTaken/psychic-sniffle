@@ -220,40 +220,63 @@ The slice specs are Warblade Carnage (melee, rage), Arcanist Rime (casting, inte
 - [x] Keyframed by script from pose data with eased curves (`tools/blender/animation.py`, `build_animations.py`); one library per body build shared by its characters; played in the game by `CharacterRig` with data-driven weapon grips.
 - [x] Pose sheets reviewed for stiffness (`previews/animations/<character>_<locomotion|casting|combat>.png`) and a game screenshot mid-run (`godot_run.png`); clip names in the art bible. Found and queued: small cast releases, one-handed swings of two-handed weapons and overhead clipping in melee clips (F-06), robe skirts parting at the front (F-07).
 
-### M1-22 Lineup render and M1 art gate `[todo]`
-- [ ] Lineup of the three characters in the arena lighting preset.
-- [ ] Grayscale test: each class is identifiable by silhouette at 30 m.
-- [ ] Decide the "character art source" and "animation source" open decisions and record them in DECISIONS.md. If the result falls short, ask the human before switching to CC0 or artist-made bases.
+### M1-22 Lineup render and M1 art gate `[done]`
+- [x] Lineup of the three characters in the arena lighting preset (`previews/lineup/lineup_idle.png`, in game; `tools/blender/render_lineup.py` for the tests below).
+- [x] Grayscale test: each class is identifiable by silhouette at 30 m (about 57 px tall with the game camera): staff and hood, halo, horns and bulk; distinct brightness in grayscale (`previews/lineup/silhouettes_*.png`, `grayscale_*.png`, overlap figures in `silhouettes.json`).
+- [x] "Character art source" and "animation source" decided and recorded in DECISIONS.md: the human chose to stay fully scripted and reach quality by iteration; scripted keyframes for animation.
+- [x] Art iteration from the gate review: fists and gloves on fine grids, hidden faces by design (hood with glowing eyes, gold mask and coif, closed helm), robe folds, stole, trims and emblem, painted height gradient, slimmer idle for the lean build, robe skirts that no longer part (F-07), two-handed grip in the Warblade's attacks.
 
 **Client and feel**
 
-### M1-23 Camera, controls and targeting UI `[todo]`
-- [ ] Third-person camera with zoom, mouse steering and strafe; click-to-target and tab targeting.
-- [ ] Default keybinds loaded from a keybind profile file (the full rebinding screen comes in M2).
+### M1-23 Camera, controls and targeting UI `[done]`
+- [x] Default keybinds loaded from a keybind profile file (the full rebinding screen comes in M2): `Keybinds.load_profile` registers every action of `data/keybinds/<id>.json` in the InputMap with its key or mouse button and Shift/Ctrl/Alt, replacing older events; the default profile gains camera orbit and steer (mouse buttons), zoom (wheel) and clear target (Escape); key names are checked by the schema (`test/client/test_keybinds.gd`).
+- [x] Player controls produce the bot input dictionary (the server path is unchanged): W/S forward and back, A/D turn (strafe with the right button held), Q/E strafe, Space jump, both buttons run forward; right drag steers character and camera, left drag orbits only the camera, which stays where it is left; mouse sensitivity, invert, keyboard turn speed from `data/settings/default.json` (`test_player_controller.gd`, 10 tests).
+- [x] Third-person camera at shoulder height, wheel zoom 2 to 25 m with smoothing, pitch limits, and pull-in in front of pillars, walls and the floor using the server's map colliders (`test_camera.gd`, 7 tests).
+- [x] Targeting: left or right click selects the unit whose body (1.9 by 0.5 m capsule) is under the cursor, not through walls; empty ground keeps the target; Tab takes enemies in front of the camera within 40 m and in sight, by angle from the screen centre then distance, and cycles; Escape clears; the server's target follows (`clear_target` input flag, protocol 4). A ground ring marks the target, red for enemies, green for allies (`test_targeting.gd`, 8 tests).
+- [x] Practice scene `scenes/game/practice.tscn`: in-process 2v2 on Gallows Courtyard, the player's Warblade (or `--spec`) against three bots, drawn from the world view (the same dictionary the network client builds) with interpolation between ticks, idle/run/backpedal/strafe/death clips; runs 10 simulated seconds of scripted input without errors and the player moves (`test_practice.gd`).
+- [x] Screenshots from the player camera reviewed: `previews/game/practice_target.png` (default zoom, enemy Oracle targeted), `practice_zoomed.png` (four notches out).
 
-### M1-24 Character animation hookup `[todo]`
-- [ ] Locomotion blend tree (run, strafe, backpedal, jump) driven by movement.
-- [ ] Cast, channel and attack animations triggered by ability data; CC states play stunned or feared animations.
+### M1-24 Character animation hookup `[done]`
+- [x] Locomotion blend tree driven by movement: `CharacterAnimator` (one AnimationTree per character) blends idle or combat idle, run, backpedal and strafes in a 2D blend space on the velocity relative to facing, eased (0.12 s), with moving clips played at ground speed / full speed within 0.6-1.4; jump one-shot on take-off; combat idle while casting, with a living hostile target within 40 m, or after damage in the last 5 s (`test_character_animator.gd`: forward, backward, both strafes, slowed, capped, standing, easing; combat idle; jump).
+- [x] Cast, channel and attack animations triggered by ability data and events: cast start then cast loop while the view's cast bar runs, `cast_release_<school>` (else `cast_release`) on success, channel while channeling, attack 1-2-3 cycling for melee abilities and auto-attacks (restarting after 3 s), ranged shot for physical ranged instants, release for instant spells, throttled hit reaction on hits of 5% of maximum health or more; which ability plays what is ordered rules in `data/anim_states/humanoid.json` (schema and validator checks), no per-class code (tests: frost and holy releases, interrupt, channel, instant spells, melee cycle, ranged shot, hit throttle, every ability resolves).
+- [x] Crowd control overrides everything: stunned for stun and incapacitate, feared run for disorient (movement from the server), faded in 0.1 s and out 0.25 s back to locomotion; death plays once and holds; victory for the winners' living units at match end (tests: stun with cast and recovery into running, fear, stun over fear, root is no override, death stays, victory).
+- [x] Upper/lower split with bone filters: actions play on spine and above while moving and full-body when standing (legs join in 0.2 s); the legs of a character swinging on the run match a character only running (test compares bone poses).
+- [x] Practice scene: every unit animates from the view and the event stream (`LocalMatch.take_events` -> `WorldRenderer.push_events`); 15 simulated seconds with no errors, every animator changes state, a cast and running are seen (`test_practice.gd`). Screenshots reviewed: `previews/game/anim_cast.png` (Arcanist cast loop), `anim_melee.png` (Warblade and enemy Oracle mid-swing).
 
-### M1-25 Spell effects v1 `[todo]`
-- [ ] Effects for every ability in the three kits, following the school color table.
-- [ ] Enemy ground effects have a red-tinted outline.
-- [ ] Screenshot test: each school identifiable by color alone.
+### M1-25 Spell effects v1 `[done]`
+- [x] Effects for every ability in the three kits, following the school color table: one entry per ability in `data/effects/<ability id>.json` (44, schema `effect.schema.json`) naming generic styles for up to seven stages (cast glow at the hands plus a ring at the feet while the cast bar or channel runs, projectile, impact, ground circle with the ability's radius, melee swing trail with hit sparks, charge dust or blink, and the visual of each aura it applies); colors from the school table in `data/effect_palettes/default.json` (all 10 schools). The validator checks every finished-kit ability has an entry (or `"none"` with a reason), stages fit the ability, each applied aura has exactly one visual and crowd control uses a CC style (6 fixtures, 3 tests). `EffectsDirector` plays them from views and events with no per-ability code (`test/client/test_effects.gd`: every ability plays all its stages and cleans up; cast glow spawned and freed; view without a cast ends the glow; projectile flies caster to target and triggers the impact; aura visuals on applied/removed events and from the view; CC always shown within the per-unit cap; swings and sparks; charge dust).
+- [x] Enemy ground effects have a red-tinted outline; the player's and allies' a neutral one; relation from the view (caster team vs the local player's); enemy ground effects outrank allied ones in the budget (test).
+- [x] Budget for 20 players: at most 200 live effects and 4,000 particles, 4 aura visuals per unit (CC first), 24 impacts per tick, lower priority evicted first; finished effects freed, meshes and materials shared. A 30 s practice fight stays within it, every child of the director is a tracked live effect, the node count does not creep, and every effect ends when the units leave (test).
+- [x] Screenshot test: each school identifiable by color alone. `scenes/tests/effects_view.tscn --mode schools` lays out the same four effects per school under the arena lighting (`previews/effects/schools.png`); `tools/effects_hues.py` measures each school's effect pixels against the same frame without effects: all 45 pairs pass (hues at least 30 degrees apart, or pale/dark schools apart in saturation or value), closest fire/holy 31 degrees, nature/fel 31; fire/blood 18 degrees apart but 0.21 apart in value (`previews/effects/school_hues.json`).
+- [x] Practice scene hook: `WorldRenderer` creates the `EffectsDirector` and forwards views, events and frames. Screenshots reviewed: ability grids `previews/effects/grid_<spec>.png` (Warblade and Arcanist cast by an enemy: red outlines; Oracle by an ally: neutral), practice fight `practice_fight_1.png` (enemy frost nova with red outline, root, stun, swing), `practice_fight_2.png` (Arcanist and Oracle casting: hand glows and feet rings in frost and holy).
 
-### M1-26 Sound v1 `[todo]`
-- [ ] Sounds for every ability in the three kits (cast, release, impact), melee swings, footsteps and interface clicks.
-- [ ] Audio buses from DESIGN.md; distinct CC warning sound; no sound louder than that warning.
+### M1-26 Sound v1 `[done]`
+- [x] Sounds for every ability in the three kits (cast, release, impact), melee swings, footsteps and interface clicks: 80 recipes in `data/sounds/<id>.json` (layers, or a builtin Python recipe for the 5 approved M0-16 sounds) built by `tools/audio/synth.py --data` into 121 Ogg files and 25 randomizers; `data/sound_map/default.json` maps all 44 abilities (cast start and loop for the 5 casts and the channel, release, impact; `@weapon_swing` / `@weapon_hit` resolve from the caster's weapon and the target's armor), two periodic auras, 13 weapon types, plate and cloth footsteps and landings, interface click, target tick and error (`test/audio/test_sound_data.gd`).
+- [x] Human feedback rules hold for every file: impacts measure below 20% tonal (all 0-9%), heals keep over 40% of their energy below 250 Hz (67-100%), smooth sounds (casts, heals, swings, loops, buffs) do not click, loops join at the seam; weapon hits differ by weapon on every variation (greatsword owns the band above 2 kHz, mace the weight below 250 Hz, staff the 250 Hz-2 kHz mids with the shortest ring) and by armor; plate footsteps are heavier and louder than cloth (`tests/test_audio.py`). The validator rejects tonal impact recipes and layers cut off while still loud (6 new fixtures).
+- [x] Audio buses from DESIGN.md (`default_bus_layout.tres`, Interface raised to 0 dB, a -0.5 dB hard limiter on Master); world sounds are 3D (inverse distance, full level within 10 m, -12 dB at 40 m, culled beyond 60 m; footsteps 5/35 m; area crowd control 16/90 m) on the self, allies or enemies bus by who caused them; interface and warnings are 2D (`test/audio/test_audio_director.gd`).
+- [x] Distinct CC warning, 2D, once per crowd-control application (stun, incapacitate, disorient, silence) on the local player, several in one tick counting once; an incoming warning when an enemy starts a crowd-control cast at the player (DESIGN.md); can be turned off. No sound is louder than it: every file at least 1 LU quieter in integrated and in loudest-400 ms loudness (BS.1770) and not above its peak, and no bus path lifts a sound past it (python and Godot tests).
+- [x] Voice limits: at most 64 voices, pooled players, priority and per-sound caps with stealing, voices ending by game time; enemy crowd control, burst and warnings never dropped. Holds in a 20-unit brawl (400 sounds/s) and in 30 s of a practice 3v3, and with a 6-voice cap (`test/audio/test_practice_audio.gd`, which also counts CC applications from the view independently).
+- [x] Practice scene: `WorldRenderer` creates an `AudioDirector` and forwards views, events and frames to it (next to the effects hook).
+- Spectrograms reviewed (`previews/audio/sheet_*.png` and one PNG per representative sound); the human's listening pass is part of the M1 gate (M1-31), with the list in CHANGELOG.md.
 
-### M1-27 Basic HUD `[todo]`
-- [ ] Two action bars with cooldown sweeps and keybind labels; player, target, focus and party frames; arena enemy frames with cast bars.
-- [ ] Buffs and debuffs with CC shown larger; floating combat text; match timer and dampening percentage; loss-of-control alert.
-- [ ] Screenshots at 1280×720, 1920×1080 and 2560×1440 reviewed.
+### M1-27 Basic HUD `[done]`
+- [x] Layout is data: `data/hud_layouts/default.json` (schema `hud_layout.schema.json`; the settings profile's new `interface` section names it, with `ui_scale`, `min_text_px`, `combat_text`). Every element has a type, anchor, offset, optional scale, opacity and visibility; the validator checks bar actions are bound in every keybind profile, per-spec slot assignments stay inside the kit, complete kits fit on the bars, every CC category used by auras has a label and glyph (3 new fixtures). `Hud` builds every element from it (`test/ui/test_hud.gd`: layout loaded, all elements built).
+- [x] Two action bars of 12 buttons: slots follow the spec's ability list (Break Free last, with its own Shift+R bind; auto attack left off), keybind labels from the loaded profile shortened by the layout (1..0, -, =, S1..); placeholder icons drawn from data (school color, glyph from the icon symbol, initials); cooldown sweep and seconds over the real cooldown length, GCD sweep, red tint and key label out of range, blue short of resource, gray while crowd-controlled or school-locked, gold border when an execute becomes usable (tests: slots and labels for the three specs, cooldown and GCD fractions from the view, range/resource/CC/execute states, layout assignments).
+- [x] Ability presses: a slot's key or a click on its button queues the ability in the controller's input dictionary (one per tick, in order; exact modifier match so 1 and Shift+1 differ; scripted InputEventAction takes the same path); the server's 400 ms spell queue window applies; clicks play `ui_click` on the Interface bus; a key press reaches the simulation (tests).
+- [x] Player, target, focus (Shift+F now sets it), party and arena enemy frames: portrait, spec and name, class-colored health with absorbs, resource, cast bars (amber interruptible, green draining channel, steel with a lock when uninterruptible; "Interrupted" held 0.7 s); arena frames numbered with Break Free cooldown (from its cast event) and a DR tracker; clicking a frame targets that unit; the target's arena frame is outlined (tests: target and focus follow the targeting, frame click, arena Break Free and interrupt).
+- [x] Auras on frames with seconds left: crowd control first and 1.5× larger, then major defensives and offensives at 1.2×, then the rest, debuffs before buffs; a controlled unit's portrait becomes a big CC icon with glyph, short label and seconds (test: order, sizes and drawn order).
+- [x] Floating combat text over the unit through the camera: damage dealt and taken, heals, crits larger with a pop, CC applied by name; texts of nearby units step apart; at most 40 live, gone after 1.3 s; failed presses show "Out of range" and the like under the timer (tests: spawn, crit size, filtering, cap, expiry, projection and rise, overlap avoidance).
+- [x] Match timer (countdown to the gates in preparation, stops at the end) and dampening percentage from the view; loss-of-control alert in the centre with the CC's glyph, label, effect name, seconds and a draining bar for stun, incapacitate, fear, silence, disarm and root on the local player, hidden otherwise (tests: timer and dampening against `ArenaMatch`; stun, stun over root, fear, nothing for others' CC; a real stun in the simulation appears and clears).
+- [x] Scaling: the 1920×1080 logical layout under canvas_items stretch, times `ui_scale`, grown so the smallest text reaches 11 screen pixels (1.18× at 720p); test lays out at 1280×720, 1920×1080 and 2560×1440 and checks no element (including its auras, cast bar and arena extras) overlaps another or leaves the screen, and the smallest text size.
+- [x] Practice scene hook (`--no-hud` to hide it); screenshots reviewed mid-fight: `previews/hud/hud_1280x720.png`, `hud_1920x1080.png`, `hud_2560x1440.png` (player feared, allied healer casting, enemy on Break Free cooldown with DR), `hud_combat_text_1920x1080.png` (player rooted, both enemies stunned and interrupted, combat text). Fixed from them: dark unreadable physical icons, duplicate glyphs within a school, overlapping combat text, low-contrast health text on pale class colors, the alert covering the character's head, frames colliding at 720p, key labels on empty slots, "1:13" overflowing small boxes.
 
 **Match flow and verification**
 
 ### M1-28 Match flow `[todo]`
 - [ ] Menu → "Play 2v2 vs bots" → preparation room → gates open → fight → end screen with damage and healing scoreboard → back to menu.
 - [ ] A human player can play a full match with a bot partner against two bots.
+- Starting point (M1-23): `scenes/game/practice.tscn` already plays a 2v2 in-process (`LocalMatch`); `WorldRenderer` and `PlayerController` read only the world view, so the networked version feeds them `NetClient.bot_view()` and sends the controller's input through `NetClient.input_source`.
+- M1-24: animation also needs the combat events: feed the client's event stream to `WorldRenderer.push_events` (same dictionaries as `MatchRunner.take_events`), or casts release and swings never play.
 
 ### M1-29 Replay test `[todo]`
 - [ ] Every match records its input log; replaying it reproduces the same final state hash.
@@ -289,13 +312,62 @@ The slice specs are Warblade Carnage (melee, rage), Arcanist Rime (casting, inte
 - [ ] Props along the walls (crates, barrels, chains, rubble) and fire effects for the braziers (with M1-24).
 
 ### F-06 Two-handed grip, melee clean-up and stronger releases `[todo]`
-- [ ] The left hand reaches for the hilt of a two-handed weapon (two-bone reach toward a grip point on the weapon, baked into the clips) instead of swinging free.
+- [x] The left hand reaches for the hilt of a two-handed weapon in the three melee attacks (two-bone reach baked into `<clip>_two_handed` clips; the handle moves toward the midline and in front of the body).
+- [ ] Two-handed guard in combat idle: with both hands on the handle, the left upper arm and its pauldron sink up to 7 cm into the breastplate near the collarbone (heavy build, deep plate). Needs a stance redesign or pauldrons that partly follow the clavicle; until then combat idle keeps the one-handed guard, which passes the clipping gate.
 - [ ] Cast releases read small from the game camera: exaggerate the push and hold the follow-through a few frames longer.
 - [ ] Melee attacks, ranged shot, feared run and victory still pass arms through the torso or pauldrons in overhead frames (up to 11 cm in attack_1); bring them under the same 1.5 cm clipping limit as the gated clips, heavy build first.
 
-### F-07 Robe skirt deformation `[todo]`
-- [ ] Arcanist and Oracle robe skirts stay closed at the front through run, jump and feared run (KNOWN_ISSUES.md): weights blend toward the pelvis above the hem, or skirt bones follow the thighs at half strength.
-- [ ] Pose sheets show no dark gap at the robe front; the clipping check still passes.
+### F-07 Robe skirt deformation `[done]`
+- [x] Arcanist and Oracle robe skirts stay closed at the front: below the waist, skirt weights fold calf into thigh, give part of the leg weight to the pelvis (most near the waist) and let the middle follow both thighs halfway (`soften_skirt`).
+- [x] Pose test shows no dark gap at the robe front; the clipping check still passes.
+
+### F-08 1v1 balance (for M2, when 1v1 becomes a supported bracket) `[todo]`
+- [ ] Review pass 2 (1,000 simulated duels): Arcanist beats Warblade 66% and Oracle 100%; Oracle beats Warblade 2%. In 3v3 (M2) the Oracle wins 61% overall because two-healer teams win 74-78%; bring 3v3 specs within 40-60%. Healers may lose duels more often than not, but not almost always: give the Oracle a way to win a long duel (damage over time, a stronger Castigate under dampening, or mana-free pressure) and bring every duel match-up within 35-65%.
+- [ ] Mirrors now end by a kill (they timed out 98% of the time before the hiding fix); keep that above 90%.
+
+### F-09 Controls and targeting polish (found in M1-23) `[todo]`
+- [ ] Tab remembers the enemies it went through recently, so three enemies whose angle order changes while they move are never skipped or repeated before all were visited.
+- [ ] The target ring reads small beyond about 15 m at 1280×720: judge it again with nameplates and the target frame (M1-27), and scale it with distance or add a marker above the target if it still does not read.
+- [ ] Camera collision covers visual-only kit parts above the map colliders (the gallows frame and nooses, banners) or those parts get colliders.
+- [ ] Cursor capture while dragging and cursor return on release checked by a person on a real display (headless tests cannot move the OS cursor).
+- [ ] Mouseover targets and the target modes per bind from DESIGN.md (M2 keybinding page). Focus exists since M1-27 (Shift+F sets it, the focus frame shows it); nothing casts at the focus yet.
+
+### F-10 Animation hookup polish (found in M1-24) `[todo]`
+- [ ] The cast loop reads small from the game camera (one hand reaching forward); with F-06's stronger releases, give the loop a two-handed or staff-raised gather so a cast is readable at 30 m (DESIGN.md "readable chaos").
+- [ ] Run, strafe and backpedal have different cycle lengths (0.73, 0.7, 0.8 s); on diagonals the feet can shuffle. Sync the cycles (equal lengths or phase-matched blending) and judge a diagonal run on a pose sheet.
+- [ ] Auto-attacks need no facing, so a unit can swing at a target behind it (seen in the practice fight). Decide whether melee swings require facing (M2 combat rules) or the character turns toward its target while swinging.
+- [ ] Jump lands on a 0.2 s fade from a 0.9 s clip for 0.8 s of air time; add a short land clip or end the jump on touchdown.
+- [ ] The practice scene reports leaked objects at exit (36 instances; the scripts still in use are the match's: `MatchRunner`, `Sim`, `Combat`, `BotBrain`...). Probably a reference cycle, e.g. `MatchRunner.bot_system`'s closure registered on its own `Sim` (M1-23 code, harmless at quit); find it with `--verbose` and break it when the match ends.
+
+### F-11 Sound polish (found in M1-26) `[todo]`
+- [ ] Human listening pass on the M1-26 sounds (list in CHANGELOG.md 2026-09-30); fold the feedback into the recipes and DECISIONS.md like the M0-16 rounds.
+- [ ] Aura loops (DESIGN.md: each ability has cast start, cast loop, release, impact and aura loop): quiet loops while frozen, feared, silenced, shielded or empowered, following the unit, within the voice cap.
+- [ ] Signature sounds for the Warblade's core strikes: Grim Hack, Wide Hew, Gashing Blow and Crippling Slash share the greatsword swing and hit (plus the wet gash layer); give each a layer of its own so every ability reads by ear (DESIGN.md "a distinct sound per stage").
+- [ ] Occlusion: sounds behind pillars and walls (the server's line-of-sight colliders) low-passed and a few dB quieter, so a hidden caster sounds hidden.
+- [ ] Settings (M2 settings suite): per-bus volume sliders, output device, mute when unfocused, CC warning on/off (`AudioDirector.cc_warning_enabled` exists; nothing sets it yet).
+- [x] The HUD (M1-27) plays `ui_click` through `AudioDirector.play_ui` for action buttons and unit frame clicks.
+- [ ] `AudioStreamPlayer.play()` plus `stop()` cost about 0.4 ms each in the headless debug build (KNOWN_ISSUES.md); measure on a release build with a real audio device at M1-31 and, if it holds, avoid stopping voices that are about to be restarted.
+
+### F-12 Spell effects polish (found in M1-25) `[todo]`
+- [ ] Settings from DESIGN.md: opacity of other players' effects and camera shake (none yet) in the graphics settings (M2 settings suite).
+- [ ] Buffs share generic styles (empower glow, shield bubble), so Red Mist, Deep Winter and Seraphic Surge differ only by color: give major cooldowns their own shape (wings, frost crown, blood haze) so an enemy's burst reads before its damage.
+- [ ] Physical crowd control (Pommel Crack, Warpath Charge, Dread Roar) is drawn in pale steel and reads weaker than colored CC in `practice_fight_1.png`; judge again with nameplates and the loss-of-control alert (M1-27) and add a shared CC accent if it still does not read at 30 m.
+- [ ] DESIGN.md effect tools not used yet: dynamic lights from spells (cap 16 visible), ground decals (circles are flat quads at y = 0, fine for flat arenas), dissolve and heat-distortion shaders.
+- [ ] Fire and blood are 18 degrees apart in hue (told apart by value); recheck with the first blood or fire class (M3) in a real fight.
+- [ ] Frame time of effects in a 20-player battleground on a GPU (particles budget 4,000) with F-02.
+
+### F-13 HUD polish (found in M1-27) `[todo]`
+- [ ] Real icons: the placeholder icons (school gradient, glyph, initials) read mostly by initials, and the Warblade's physical kit is all one bronze; the Blender icon generator from DESIGN.md "Icons" (128 px, painted frame), fed by the same icon data.
+- [ ] Nameplates over characters (DESIGN.md: class color, health, cast bar, important debuffs) and a target-of-target frame; judge the F-09 target ring again with them.
+- [ ] Player-adjustable spell queue window (0-400 ms, DESIGN.md Gameplay page): send the setting to the server with the inputs, or hold presses client-side until the window opens.
+- [ ] At 1280×720 the smallest text (aura seconds, cast bar names, DR marks) sits at the 11 px floor; check on a real display and raise `min_text_px` or the aura size if it strains.
+- [ ] Enemy frames show the spec's initials, not a spec icon; the arena DR marks (½, ¼, IMM) are small on 22 px squares.
+- [ ] Iron-and-parchment interface art (DESIGN.md interface rules): frames are flat dark panels with a bronze line for now.
+- [ ] A performance check of the HUD's per-frame `_draw` at 20 units (raid frames, M4) on the software renderer and a GPU.
+
+### F-14 Bot brain cost at battleground size `[todo]`
+- [ ] Review pass 2: a 20-unit match costs 7 ms per tick in one process with every bot deciding every tick (the networked server without brains averaged 1.8 ms). Bots decide at 10-20 Hz with movement between decisions, and cache line-of-sight and paths, so 20 bots cost under 2 ms per tick. Needed before M4.
+- [ ] Re-measure the networked 20-player run on a machine with more than 2 cores (on 2 cores with 21 processes the server's 95th percentile tick was 9.3 ms and snapshots 57.9 per second, from CPU contention).
 
 ### F-02 GPU frame-rate measurement `[blocked: needs a GPU machine]`
 - [ ] Record fps for the M1 vertical slice on recommended and minimum PC profiles at the M1 gate.

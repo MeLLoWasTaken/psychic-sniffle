@@ -58,6 +58,12 @@ Every humanoid clip is authored as a few key poses in `data/animations/humanoid.
 - Pose sheets must pose the rig with its baked tracks removed; left in place, the tracks override the pose on every render and every frame looks the same.
 - A staff held rigidly tips over whenever the elbow bends; a separate hold with a wrist rule keeps it upright. Its foot must stay well above the ground (grip 0.7 m from the foot), or the running feet kick it.
 - Heavy plate needs the arms wider than the lean build does; poses are tuned against the heavy build's clipping report first.
+- At a character's body density (4,000-6,500 triangles) fingers merge into mitts. Hands are covered by gauntlets or gloves extracted on a 2.5-3 mm grid with their own budget; the weapon hand is a fist around the grip, the other relaxed.
+- A face in a hood reads as a void only when the hood's rim stands about 12 cm in front of it; glowing eyes must sit in front of the face surface (brow and cheeks otherwise hide them) and glow strongly (emission 7).
+- Masks, visors and ornaments are placed from the face's actual forward-most point (the nose tip is 12 cm in front of the head centre); a mask built as an offset of the crude face sank into it.
+- Ornament plates on small parts (a knuckle plate on a fist) read as floating slabs; keep ornaments close to the surface.
+- Character materials darken and cool toward the feet and brighten toward the head (height gradient), which draws the eye to the face and hands.
+- Break up large plain areas with layered pieces in an accent color: the Oracle's cream robe gained a wine stole, gold hem band, bordered panel and an emblem.
 
 - The Skin modifier alone makes thin tubes, and metaball masses read as a segmented mannequin. Bodies are signed distance fields: tapered capsules joint to joint, blended with smooth unions.
 - Round ellipsoids for the torso gave an hourglass, female-looking silhouette. A heroic male torso uses rounded boxes: flat, square pec plates, a thick straight waist, hips narrower than the chest.
@@ -81,6 +87,14 @@ Presets live in `data/lighting/<id>.json` (sun, fill, sky, ambient light, fog, p
 - One asset spec per piece (`data/assets/<kit>_<piece>.json`), built by `tools/blender/build_kit_<kit>.py`. Standard sizes: floor tiles and wall segments 4 m wide, walls 6 m tall, so the map builder can tile and stretch them slightly to fit colliders.
 - Stones, planks and bars are separate beveled parts with slight random offsets, each with its own tint, then joined and baked. Keep shapes chunky; detail comes from the gaps and bevels, not texture noise.
 - Pieces that mount on a surface use the "face" pivot (the mounting face on y = 0).
+
+## Spell effects
+
+- Every ability's stages are data (`data/effects/<ability id>.json`) naming generic styles; colors come only from the school table in `data/effect_palettes/default.json` (the same color always means the same school; physical is pale steel). Check a palette change with `effects_view --mode schools` and `tools/effects_hues.py` (hues at least 30 degrees apart as seen in game).
+- A few bright, simple shapes carry each effect (fresnel shells, orbs, rings, crescents, crystals); particles only add motion, a dozen or two per emitter. Keep glow intensities moderate: AgX and bloom wash anything much brighter toward white and the school is lost.
+- Ground circles: the outline carries the area (red-tinted for enemies, pale for allies); the fill only tints, or large circles paint the floor.
+- Casting is shown at the hands and by a ring at the feet; crowd control has one fixed shape per kind (stun crystals, disorient swirl, silence halo, root spikes, ice block), chunkier than any other effect.
+- Review views: `tools/screenshot.sh res://scenes/tests/effects_view.tscn <out.png> 1600 900 30 --mode schools|grid [--spec <id>] [--caster-team 0|1]`.
 
 ## Approved references
 

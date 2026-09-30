@@ -1,0 +1,184 @@
+{
+  "correction_avg_m": 0.00167395189055242,
+  "correction_log": [
+    {
+      "auras": [
+        "psalm_dread@2967"
+      ],
+      "m": 0.000864347268361598,
+      "pending": 3,
+      "tick": 2609
+    },
+    {
+      "auras": [
+        "psalm_dread@2967"
+      ],
+      "m": 0.000675153103657067,
+      "pending": 3,
+      "tick": 2610
+    },
+    {
+      "auras": [
+        "psalm_dread@2967"
+      ],
+      "m": 0.00722942408174276,
+      "pending": 3,
+      "tick": 2611
+    },
+    {
+      "auras": [
+        "psalm_dread@2967"
+      ],
+      "m": 0.0011280964827165,
+      "pending": 4,
+      "tick": 2612
+    },
+    {
+      "auras": [
+        "psalm_dread@2967"
+      ],
+      "m": 0.0013091117143631,
+      "pending": 4,
+      "tick": 2613
+    },
+    {
+      "auras": [
+        "psalm_dread@2967"
+      ],
+      "m": 0.00139618711546063,
+      "pending": 5,
+      "tick": 2614
+    },
+    {
+      "auras": [
+        "psalm_dread@2967"
+      ],
+      "m": 0.0103368544951081,
+      "pending": 6,
+      "tick": 2615
+    },
+    {
+      "auras": [
+        "psalm_dread@2967"
+      ],
+      "m": 0.00138850789517164,
+      "pending": 5,
+      "tick": 2616
+    },
+    {
+      "auras": [
+        "psalm_dread@2967"
+      ],
+      "m": 0.000863125431351364,
+      "pending": 5,
+      "tick": 2617
+    },
+    {
+      "auras": [
+        "psalm_dread@2967"
+      ],
+      "m": 0.00134752690792084,
+      "pending": 4,
+      "tick": 2618
+    },
+    {
+      "auras": [
+        "psalm_dread@2967"
+      ],
+      "m": 0.00745349284261465,
+      "pending": 5,
+      "tick": 2619
+    },
+    {
+      "auras": [
+        "psalm_dread@2967"
+      ],
+      "m": 0.000743340060580522,
+      "pending": 5,
+      "tick": 2620
+    },
+    {
+      "auras": [
+        "psalm_dread@2967"
+      ],
+      "m": 0.000593637756537646,
+      "pending": 5,
+      "tick": 2621
+    },
+    {
+      "auras": [
+        "psalm_dread@2967"
+      ],
+      "m": 0.00136589503381401,
+      "pending": 5,
+      "tick": 2622
+    },
+    {
+      "auras": [
+        "psalm_dread@2967"
+      ],
+      "m": 0.000655090261716396,
+      "pending": 5,
+      "tick": 2623
+    },
+    {
+      "auras": [
+        "psalm_dread@2967"
+      ],
+      "m": 0.00155053834896535,
+      "pending": 5,
+      "tick": 2625
+    },
+    {
+      "auras": [
+        "psalm_dread@2967"
+      ],
+      "m": 0.00721011683344841,
+      "pending": 6,
+      "tick": 2626
+    },
+    {
+      "auras": [
+        "psalm_dread@2967"
+      ],
+      "m": 0.00186705007217824,
+      "pending": 6,
+      "tick": 2627
+    },
+    {
+      "auras": [
+        "psalm_dread@2967"
+      ],
+      "m": 0.0005715336301364,
+      "pending": 5,
+      "tick": 2628
+    },
+    {
+      "auras": [
+        "psalm_dread@2967"
+      ],
+      "m": 0.000854369893204421,
+      "pending": 6,
+      "tick": 2629
+    }
+  ],
+  "correction_max_m": 0.0103368544951081,
+  "corrections": 68,
+  "effect_correction_max_m": 0.560000121593475,
+  "effect_corrections": 7,
+  "events_received": 1458,
+  "inputs_sent": 2701,
+  "log_errors": 0,
+  "log_warnings": 0,
+  "name": "bot13",
+  "rtt_avg_ms": 22.3249555555556,
+  "rtt_samples": 45,
+  "simulated_jitter_ms": 0.0,
+  "simulated_lag_ms": 0.0,
+  "simulated_loss": 0.0,
+  "snapshot_rate_hz": 57.9343427825669,
+  "snapshots": 2606,
+  "stale_snapshots": 0,
+  "teleports": 2,
+  "unit_id": 13
+}

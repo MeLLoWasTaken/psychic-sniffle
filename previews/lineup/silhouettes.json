@@ -1,0 +1,23 @@
+{
+ "distance_m": 30.0,
+ "fov_deg": 75.0,
+ "px_per_m_at_distance": 23.46,
+ "clips": {
+  "idle": {
+   "iou": {
+    "char_arcanist_rime/char_oracle_grace": 0.744,
+    "char_arcanist_rime/char_warblade_carnage": 0.543,
+    "char_oracle_grace/char_warblade_carnage": 0.542
+   },
+   "height_px_at_distance": 56.6
+  },
+  "run": {
+   "iou": {
+    "char_arcanist_rime/char_oracle_grace": 0.737,
+    "char_arcanist_rime/char_warblade_carnage": 0.572,
+    "char_oracle_grace/char_warblade_carnage": 0.606
+   },
+   "height_px_at_distance": 62.9
+  }
+ }
+}

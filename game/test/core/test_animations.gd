@@ -103,9 +103,17 @@ func test_weapons_sit_in_the_right_hand_at_rest() -> void:
 		var angle: float = rad_to_deg(blade.angle_to(expect[char_id]))
 		assert_float(angle).override_failure_message("%s: blade %s is %.1f deg off %s" % [
 			char_id, blade, angle, expect[char_id]]).is_less(10.0)
-		var hand_head: Vector3 = (_skeleton_in_model(model, sk) * bone_rest).origin
-		var dist: float = in_model.origin.distance_to(hand_head)
-		assert_float(dist).override_failure_message("%s: grip %.3f m from the hand" % [char_id, dist]).is_less(0.12)
+		# the grip lies in the hand: past the wrist, within the hand's length (about 0.2 m), and
+		# within 5 cm of its axis (the fist closes around it, body_sdf.fist_grip)
+		var hand: Transform3D = _skeleton_in_model(model, sk) * bone_rest
+		# two-handed holds slide the weapon down through the fist (slide_m): measure the fist
+		var hold: String = str(Data.assets[str(Data.assets[char_id]["params"]["weapon"])]["params"].get("hold", "forward"))
+		var slide: float = float(grip["holds"][hold].get("slide_m", 0.0))
+		var offset: Vector3 = in_model.origin + blade * slide - hand.origin
+		var along: float = offset.dot(hand.basis.y.normalized())
+		var across: float = (offset - hand.basis.y.normalized() * along).length()
+		assert_float(along).override_failure_message("%s: grip %.3f m along the hand" % [char_id, along]).is_between(0.03, 0.2)
+		assert_float(across).override_failure_message("%s: grip %.3f m off the hand's axis" % [char_id, across]).is_less(0.05)
 
 
 func test_run_drives_the_skeleton() -> void:

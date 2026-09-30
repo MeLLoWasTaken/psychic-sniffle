@@ -1,0 +1,334 @@
+{
+  "by_unit": {
+    "-1": {
+      "casts": 0,
+      "cc_applied": 0,
+      "damage": 0,
+      "healing": 0,
+      "interrupts": 0
+    },
+    "1": {
+      "casts": 17,
+      "cc_applied": 4,
+      "damage": 30134,
+      "healing": 6750,
+      "interrupts": 2
+    },
+    "10": {
+      "casts": 17,
+      "cc_applied": 5,
+      "damage": 58827,
+      "healing": 0,
+      "interrupts": 1
+    },
+    "11": {
+      "casts": 25,
+      "cc_applied": 2,
+      "damage": 21530,
+      "healing": 39218,
+      "interrupts": 1
+    },
+    "12": {
+      "casts": 22,
+      "cc_applied": 9,
+      "damage": 9724,
+      "healing": 51439,
+      "interrupts": 1
+    },
+    "13": {
+      "casts": 14,
+      "cc_applied": 3,
+      "damage": 36235,
+      "healing": 0,
+      "interrupts": 1
+    },
+    "14": {
+      "casts": 18,
+      "cc_applied": 3,
+      "damage": 90386,
+      "healing": 0,
+      "interrupts": 2
+    },
+    "15": {
+      "casts": 18,
+      "cc_applied": 5,
+      "damage": 0,
+      "healing": 45069,
+      "interrupts": 2
+    },
+    "16": {
+      "casts": 23,
+      "cc_applied": 6,
+      "damage": 14644,
+      "healing": 24704,
+      "interrupts": 1
+    },
+    "17": {
+      "casts": 16,
+      "cc_applied": 3,
+      "damage": 34475,
+      "healing": 5063,
+      "interrupts": 2
+    },
+    "18": {
+      "casts": 18,
+      "cc_applied": 4,
+      "damage": 61290,
+      "healing": 0,
+      "interrupts": 2
+    },
+    "19": {
+      "casts": 18,
+      "cc_applied": 2,
+      "damage": 0,
+      "healing": 33698,
+      "interrupts": 2
+    },
+    "2": {
+      "casts": 18,
+      "cc_applied": 11,
+      "damage": 42113,
+      "healing": 0,
+      "interrupts": 2
+    },
+    "20": {
+      "casts": 20,
+      "cc_applied": 4,
+      "damage": 7700,
+      "healing": 31623,
+      "interrupts": 1
+    },
+    "3": {
+      "casts": 14,
+      "cc_applied": 1,
+      "damage": 12250,
+      "healing": 16721,
+      "interrupts": 0
+    },
+    "4": {
+      "casts": 23,
+      "cc_applied": 4,
+      "damage": 12600,
+      "healing": 46789,
+      "interrupts": 1
+    },
+    "5": {
+      "casts": 24,
+      "cc_applied": 4,
+      "damage": 60116,
+      "healing": 12000,
+      "interrupts": 1
+    },
+    "6": {
+      "casts": 18,
+      "cc_applied": 3,
+      "damage": 75240,
+      "healing": 0,
+      "interrupts": 2
+    },
+    "7": {
+      "casts": 19,
+      "cc_applied": 3,
+      "damage": 8750,
+      "healing": 21147,
+      "interrupts": 2
+    },
+    "8": {
+      "casts": 22,
+      "cc_applied": 1,
+      "damage": 9940,
+      "healing": 60005,
+      "interrupts": 1
+    },
+    "9": {
+      "casts": 16,
+      "cc_applied": 5,
+      "damage": 40348,
+      "healing": 0,
+      "interrupts": 1
+    }
+  },
+  "bytes_sent": 52432915,
+  "casts": 380,
+  "clients": {
+    "bot1": {
+      "lost_inputs": 0,
+      "seconds": 43.3833333333333,
+      "snapshot_rate_hz": 60.0,
+      "snapshots_sent": 2603,
+      "spec": "warblade_carnage",
+      "starved_ticks": 35
+    },
+    "bot10": {
+      "lost_inputs": 0,
+      "seconds": 43.45,
+      "snapshot_rate_hz": 60.0,
+      "snapshots_sent": 2607,
+      "spec": "arcanist_rime",
+      "starved_ticks": 33
+    },
+    "bot11": {
+      "lost_inputs": 0,
+      "seconds": 43.4333333333333,
+      "snapshot_rate_hz": 60.0,
+      "snapshots_sent": 2606,
+      "spec": "oracle_grace",
+      "starved_ticks": 42
+    },
+    "bot12": {
+      "lost_inputs": 0,
+      "seconds": 43.4166666666667,
+      "snapshot_rate_hz": 60.0,
+      "snapshots_sent": 2605,
+      "spec": "oracle_grace",
+      "starved_ticks": 35
+    },
+    "bot13": {
+      "lost_inputs": 0,
+      "seconds": 43.4333333333333,
+      "snapshot_rate_hz": 60.0,
+      "snapshots_sent": 2606,
+      "spec": "warblade_carnage",
+      "starved_ticks": 42
+    },
+    "bot14": {
+      "lost_inputs": 0,
+      "seconds": 43.4166666666667,
+      "snapshot_rate_hz": 60.0,
+      "snapshots_sent": 2605,
+      "spec": "arcanist_rime",
+      "starved_ticks": 46
+    },
+    "bot15": {
+      "lost_inputs": 0,
+      "seconds": 43.4166666666667,
+      "snapshot_rate_hz": 60.0,
+      "snapshots_sent": 2605,
+      "spec": "oracle_grace",
+      "starved_ticks": 41
+    },
+    "bot16": {
+      "lost_inputs": 0,
+      "seconds": 43.4166666666667,
+      "snapshot_rate_hz": 60.0,
+      "snapshots_sent": 2605,
+      "spec": "oracle_grace",
+      "starved_ticks": 36
+    },
+    "bot17": {
+      "lost_inputs": 0,
+      "seconds": 43.4333333333333,
+      "snapshot_rate_hz": 60.0,
+      "snapshots_sent": 2606,
+      "spec": "warblade_carnage",
+      "starved_ticks": 43
+    },
+    "bot18": {
+      "lost_inputs": 0,
+      "seconds": 43.4166666666667,
+      "snapshot_rate_hz": 60.0,
+      "snapshots_sent": 2605,
+      "spec": "arcanist_rime",
+      "starved_ticks": 49
+    },
+    "bot19": {
+      "lost_inputs": 0,
+      "seconds": 43.4333333333333,
+      "snapshot_rate_hz": 60.0,
+      "snapshots_sent": 2606,
+      "spec": "oracle_grace",
+      "starved_ticks": 52
+    },
+    "bot2": {
+      "lost_inputs": 0,
+      "seconds": 43.3833333333333,
+      "snapshot_rate_hz": 60.0,
+      "snapshots_sent": 2603,
+      "spec": "arcanist_rime",
+      "starved_ticks": 36
+    },
+    "bot20": {
+      "lost_inputs": 0,
+      "seconds": 43.45,
+      "snapshot_rate_hz": 60.0,
+      "snapshots_sent": 2607,
+      "spec": "oracle_grace",
+      "starved_ticks": 44
+    },
+    "bot3": {
+      "lost_inputs": 0,
+      "seconds": 43.3666666666667,
+      "snapshot_rate_hz": 60.0,
+      "snapshots_sent": 2602,
+      "spec": "oracle_grace",
+      "starved_ticks": 35
+    },
+    "bot4": {
+      "lost_inputs": 0,
+      "seconds": 43.4333333333333,
+      "snapshot_rate_hz": 60.0,
+      "snapshots_sent": 2606,
+      "spec": "oracle_grace",
+      "starved_ticks": 34
+    },
+    "bot5": {
+      "lost_inputs": 0,
+      "seconds": 43.4333333333333,
+      "snapshot_rate_hz": 60.0,
+      "snapshots_sent": 2606,
+      "spec": "warblade_carnage",
+      "starved_ticks": 34
+    },
+    "bot6": {
+      "lost_inputs": 0,
+      "seconds": 43.45,
+      "snapshot_rate_hz": 60.0,
+      "snapshots_sent": 2607,
+      "spec": "arcanist_rime",
+      "starved_ticks": 34
+    },
+    "bot7": {
+      "lost_inputs": 0,
+      "seconds": 43.4166666666667,
+      "snapshot_rate_hz": 60.0,
+      "snapshots_sent": 2605,
+      "spec": "oracle_grace",
+      "starved_ticks": 33
+    },
+    "bot8": {
+      "lost_inputs": 0,
+      "seconds": 43.45,
+      "snapshot_rate_hz": 60.0,
+      "snapshots_sent": 2607,
+      "spec": "oracle_grace",
+      "starved_ticks": 34
+    },
+    "bot9": {
+      "lost_inputs": 0,
+      "seconds": 43.4166666666667,
+      "snapshot_rate_hz": 60.0,
+      "snapshots_sent": 2605,
+      "spec": "warblade_carnage",
+      "starved_ticks": 34
+    }
+  },
+  "damage_events": 274,
+  "heals": 139,
+  "interrupts": 28,
+  "kills": 2,
+  "log_errors": 0,
+  "log_warnings": 0,
+  "match_seconds": 61.0,
+  "mode": "skirmish",
+  "sim_seconds": 61.0,
+  "state_hash": "332200e1667756cf3224519b974a3fc70250178fe5ce562e7c17baa48f03ef6d",
+  "tick_ms": {
+    "avg": 1.80280163934426,
+    "max": 33.434,
+    "p95": 9.273
+  },
+  "tick_rate_hz": 60,
+  "ticks": 3660,
+  "units": {},
+  "winner_team": -1
+}

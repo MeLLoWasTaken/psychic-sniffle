@@ -235,7 +235,7 @@ def build_body(build_name: str, name: str = "body") -> bpy.types.Object:
 
 
 def build_body_sdf(build_name: str, name: str = "body", target_tris: int = 9000,
-                   voxel: float = 0.005) -> bpy.types.Object:
+                   voxel: float = 0.005, hands: tuple[str, str] = ("relaxed", "fist")) -> bpy.types.Object:
     """Third version: a signed-distance-field body (tapered limbs and muscles blended with
     smooth unions, see body_sdf.py), extracted with marching cubes and reduced to the
     triangle target. Replaced the metaball body, which read as a segmented mannequin."""
@@ -243,7 +243,7 @@ def build_body_sdf(build_name: str, name: str = "body", target_tris: int = 9000,
     import body_sdf
     build = BUILDS[build_name]
     j = {k: np.array(v) for k, v in joints(build).items()}
-    verts, faces = body_sdf.body_mesh(j, build_name, voxel)
+    verts, faces = body_sdf.body_mesh(j, build_name, voxel, hands)
     mesh = bpy.data.meshes.new(name)
     mesh.from_pydata(verts.tolist(), [], faces.tolist())
     mesh.validate()
@@ -254,8 +254,7 @@ def build_body_sdf(build_name: str, name: str = "body", target_tris: int = 9000,
     bpy.context.view_layer.objects.active = obj
     dec = obj.modifiers.new("decimate", "DECIMATE")
     dec.ratio = min(1.0, target_tris / max(len(faces), 1))
-    dec.use_symmetry = True
-    dec.symmetry_axis = "X"
+    dec.use_symmetry = False  # the hands differ (a fist on the weapon hand)
     smooth = obj.modifiers.new("smooth", "CORRECTIVE_SMOOTH")
     smooth.iterations = 3
     smooth.use_only_smooth = True

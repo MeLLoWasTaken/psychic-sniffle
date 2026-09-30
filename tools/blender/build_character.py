@@ -25,23 +25,31 @@ import kit  # noqa: E402
 import sdf  # noqa: E402
 
 
+GRAD = {"height_grad": 0.22}  # painted height gradient on every non-glowing character material
+
+
 def materials(pal: dict) -> dict:
+    g = GRAD
     return {
         "plate": kit.kit_material("plate", pal.get("plate", "#4b4e55"), roughness=0.45, metallic=0.3, edge=0.6,
-                                  cavity=0.6, top_light=0.15, mottle=0.1, mottle_scale=2.0),
-        "trim": kit.kit_material("trim", pal.get("trim", "#8a6b3c"), roughness=0.5, metallic=0.3, edge=0.5),
-        "leather": kit.kit_material("leather", pal.get("leather", "#4a3325"), roughness=0.8, edge=0.3, cavity=0.5),
-        "cloth": kit.kit_material("cloth", pal.get("cloth", "#3a2a24"), roughness=0.9, edge=0.1, cavity=0.5),
+                                  cavity=0.6, top_light=0.15, mottle=0.1, mottle_scale=2.0, **g),
+        "trim": kit.kit_material("trim", pal.get("trim", "#8a6b3c"), roughness=0.5, metallic=0.3, edge=0.5, **g),
+        "leather": kit.kit_material("leather", pal.get("leather", "#4a3325"), roughness=0.8, edge=0.3, cavity=0.5, **g),
+        "cloth": kit.kit_material("cloth", pal.get("cloth", "#3a2a24"), roughness=0.9, edge=0.1, cavity=0.5, **g),
         "skin": kit.kit_material("skin", pal.get("skin", "#9a7a62"), roughness=0.7, edge=0.05, cavity=0.45,
-                                 top_light=0.1),
+                                 top_light=0.1, **g),
         "cloth_dark": kit.kit_material("cloth_dark", pal.get("cloth_dark", "#23272e"), roughness=0.9, edge=0.12,
-                                       cavity=0.5),
+                                       cavity=0.5, **g),
         "frost": kit.kit_material("frost", pal.get("frost", "#9fe6ff"), roughness=0.2, edge=0.4, cavity=0.2,
                                   top_light=0.1, emission=1.2),
         "gold": kit.kit_material("gold", pal.get("gold", "#b08a3e"), roughness=0.4, metallic=0.3, edge=0.6,
-                                 cavity=0.5),
+                                 cavity=0.5, **g),
         "trim_cloth": kit.kit_material("trim_cloth", pal.get("trim_cloth", "#e6ddc8"), roughness=0.9, edge=0.1,
-                                       cavity=0.45),
+                                       cavity=0.45, **g),
+        "shadow": kit.kit_material("shadow", pal.get("shadow", "#0b0d12"), roughness=1.0, edge=0.0, cavity=0.2,
+                                   top_light=0.0, **g),
+        "eyes": kit.kit_material("eyes", pal.get("eyes", pal.get("frost", "#9fe6ff")), roughness=0.3, edge=0.0,
+                                 cavity=0.0, top_light=0.0, emission=7.0),
         "holy": kit.kit_material("holy", pal.get("holy", "#ffd98a"), roughness=0.3, metallic=0.2, edge=0.5,
                                  cavity=0.3, emission=0.6),
     }
@@ -163,6 +171,37 @@ def transfer_weights(o: bpy.types.Object, body: bpy.types.Object) -> None:
     bpy.ops.object.modifier_apply(modifier=m.name)
 
 
+def soften_skirt(o: bpy.types.Object, j: dict) -> None:
+    """A skirt copying each thigh's weights splits at the front when a leg lifts. Below the
+    waist, fold calf and foot weights into the thigh, hand part of the leg weight to the pelvis
+    (most near the waist, less toward the hem, so the hem still swings), and let the middle of
+    the skirt follow both thighs halfway, so the two halves move together."""
+    waist = float(j["spine"][2]) - 0.08
+    hem = float(j["ankle_l"][2]) + 0.1
+    groups = {g.name: g for g in o.vertex_groups}
+    idx = {g.index: g.name for g in o.vertex_groups}
+    for v in o.data.vertices:
+        if v.co.z >= waist:
+            continue
+        w = {idx[g.group]: g.weight for g in v.groups}
+        t = min(max((waist - v.co.z) / (waist - hem), 0.0), 1.0)
+        leg = {s: sum(w.pop(f"{b}_{s}", 0.0) for b in ("thigh", "calf", "foot")) for s in ("l", "r")}
+        keep = 0.25 + 0.35 * t
+        mix = 0.5 * min(max(1.0 - abs(v.co.x) / 0.12, 0.0), 1.0)
+        left, right = leg["l"] * keep, leg["r"] * keep
+        both = (left + right) / 2
+        w["thigh_l"] = (1 - mix) * left + mix * both
+        w["thigh_r"] = (1 - mix) * right + mix * both
+        w["pelvis"] = w.get("pelvis", 0.0) + (leg["l"] + leg["r"]) * (1 - keep)
+        total = sum(w.values()) or 1.0
+        for name, g in groups.items():
+            value = w.get(name, 0.0) / total
+            if value > 1e-4:
+                g.add([v.index], value, "REPLACE")
+            else:
+                g.remove([v.index])
+
+
 def close_holes(o: bpy.types.Object) -> None:
     """Weld duplicate vertices and fill any small holes left after reduction and joining, so
     the character stays a set of closed meshes (asset validation).
@@ -209,14 +248,26 @@ def rivet(pos, normal, mat, bone: str) -> bpy.types.Object:
     return o
 
 
-def build(spec: dict, previews: Path | None, pose_test: bool) -> None:
+def closeup_shots(j: dict) -> list:
+    """Head, both hands and the chest, for judging detail."""
+    head = j["head"] + np.array([0.0, 0.0, 0.12])
+    hands = {s: (j[f"wrist_{s}"] + j[f"hand_end_{s}"]) / 2 for s in ("l", "r")}
+    return [("head", head, 20, 0.75), ("head_side", head, 75, 0.75),
+            ("hand_r", hands["r"], -60, 0.55), ("hand_l", hands["l"], 50, 0.55),
+            ("front", (j["spine"] + j["pelvis"]) / 2, 0, 1.3)]
+
+
+def build(spec: dict, previews: Path | None, pose_test: bool, bake: bool = True) -> None:
     common.reset_scene()
     rng = common.seeded_random(spec["seed"])
     build_name = spec["body_build"]
     mats = materials(spec.get("palette", {}))
-    body = humanoid.build_body_sdf(build_name, spec["id"], target_tris=int(spec["params"].get("body_tris", 7000)))
+    hand_poses = tuple(spec["params"].get("hands", ["relaxed", "fist"]))  # left, right
+    body = humanoid.build_body_sdf(build_name, spec["id"], target_tris=int(spec["params"].get("body_tris", 7000)),
+                                   hands=hand_poses)
     body.data.materials.append(mats["cloth"])
-    body.data.materials.append(mats["skin"])
+    # the head: skin, or "shadow" for a face lost in a deep hood (params.face)
+    body.data.materials.append(mats["shadow" if spec["params"].get("face") == "shadow" else "skin"])
     # skin on the head and neck, and on the hands unless the armor set covers them; padded
     # cloth everywhere else under the armor
     jt = humanoid.joints(humanoid.BUILDS[build_name])
@@ -232,7 +283,7 @@ def build(spec: dict, previews: Path | None, pose_test: bool) -> None:
 
     j = {k: np.array(v) for k, v in humanoid.joints(humanoid.BUILDS[build_name]).items()}
     parts = []
-    for piece in armor.ARMOR_SETS[spec["params"]["armor"]](j, build_name):
+    for piece in armor.ARMOR_SETS[spec["params"]["armor"]](j, build_name, hand_poses):
         floor_clipped = lambda P, fn=piece.fn: np.maximum(fn(P), -P[:, 2])  # noqa: E731  nothing below the floor
         verts, faces = sdf.extract_field(floor_clipped, piece.lo, piece.hi, piece.voxel)
         if len(faces) == 0:
@@ -244,6 +295,8 @@ def build(spec: dict, previews: Path | None, pose_test: bool) -> None:
         kit.set_tint(o, kit.random_tint(rng, 0.08, 0.02))
         if piece.skin == "transfer":
             transfer_weights(o, body)
+            if piece.skirt:
+                soften_skirt(o, j)
         else:
             rigid(o, piece.bone)
         parts.append(o)
@@ -261,9 +314,21 @@ def build(spec: dict, previews: Path | None, pose_test: bool) -> None:
     close_holes(char)
     tris = common.triangle_count([char])
     print(f"CHARACTER {spec['id']} tris={tris}")
+    if not bake:  # fast geometry review: procedural materials, close-ups, nothing exported
+        if previews:
+            common.render_contact_sheet([char], previews / f"{spec['id']}_nobake_sheet.png", cell=384,
+                                        title=f"{spec['id']} {tris} tris (no bake)")
+            common.render_closeups([char], previews / f"{spec['id']}_closeups.png", closeup_shots(j))
+            if pose_test:
+                build_body.pose_test(rig)
+                common.render_contact_sheet([char], previews / f"{spec['id']}_nobake_pose.png", cell=384,
+                                            title="pose test (no bake)")
+        print(f"PREVIEWED {spec['id']} (no bake, not exported)")
+        return
     kit.bake_piece(char, common.REPO / "previews" / "kit_textures", spec["id"], size=int(spec.get("texture_size", 2048)),
                    samples=32, bevel_normal=0.006)
     if previews:
+        common.render_closeups([char], previews / f"{spec['id']}_closeups.png", closeup_shots(j))
         common.render_contact_sheet([char], previews / f"{spec['id']}_sheet.png", cell=512, title=f"{spec['id']} {tris} tris")
         if pose_test:
             build_body.pose_test(rig)
@@ -278,8 +343,11 @@ def build(spec: dict, previews: Path | None, pose_test: bool) -> None:
 
 
 def main() -> None:
-    args = common.parse_args("Build a character", lambda p: p.add_argument("--pose-test", action="store_true"))
-    build(common.load_spec(args.spec), args.previews, args.pose_test)
+    def extra(p):
+        p.add_argument("--pose-test", action="store_true")
+        p.add_argument("--no-bake", action="store_true", help="geometry review only: no bake, no export")
+    args = common.parse_args("Build a character", extra)
+    build(common.load_spec(args.spec), args.previews, args.pose_test, bake=not args.no_bake)
 
 
 if __name__ == "__main__":

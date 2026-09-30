@@ -1,0 +1,6 @@
+{
+  "description": "A HUD layout puts another spec's ability on the Warblade's action bar.",
+  "file": "hud_layouts/default.json",
+  "set": {"/action_bars/assignments/warblade_carnage": {"action_bar_1": ["ruin_strike", "", "rime_bolt"]}},
+  "expect": "'rime_bolt' is not in the warblade_carnage kit"
+}

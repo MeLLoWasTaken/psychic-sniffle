@@ -1,0 +1,6 @@
+{
+  "description": "A crowd-control category used by auras has no label and glyph on the HUD (it would read by color alone, or not at all).",
+  "file": "hud_layouts/default.json",
+  "delete": ["/crowd_control/stun"],
+  "expect": "no label and glyph for CC category 'stun'"
+}

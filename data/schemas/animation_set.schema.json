@@ -119,16 +119,24 @@
         "palm_m",
         "holds"
       ],
-      "description": "Where a held weapon sits, in rest-pose terms so it works on every body build: the grip point lies along_m down the hand bone and palm_m toward the palm; each hold names the character-space directions (rest pose, character faces -Y, left is +X) of the weapon's blade (+Z) and blade flat (+Y). Weapon specs pick a hold with params.hold (default forward).",
+      "description": "Where a held weapon sits, in rest-pose terms so it works on every body build: the grip point lies along_m down the hand bone and palm_m toward the palm (per body build; the centre of the fist, tools/blender/body_sdf.py fist_grip); each hold names the character-space directions (rest pose, character faces -Y, left is +X) of the weapon's blade (+Z) and blade flat (+Y). Weapon specs pick a hold with params.hold (default forward).",
       "properties": {
         "bone": {
           "type": "string"
         },
         "along_m": {
-          "type": "number"
+          "type": "object",
+          "description": "Per body build (the fist's size differs).",
+          "additionalProperties": {
+            "type": "number"
+          }
         },
         "palm_m": {
-          "type": "number"
+          "type": "object",
+          "description": "Per body build (the fist's size differs).",
+          "additionalProperties": {
+            "type": "number"
+          }
         },
         "holds": {
           "type": "object",
@@ -183,8 +191,65 @@
                     "maximum": 180
                   }
                 }
+              },
+              "slide_m": {
+                "type": "number",
+                "minimum": 0,
+                "maximum": 0.3,
+                "description": "Two-handed holds: the weapon slides this far down through the first fist, so it sits near the guard and the second hand fits below."
+              },
+              "second_hand": {
+                "type": "object",
+                "additionalProperties": false,
+                "required": [
+                  "bone",
+                  "below_m",
+                  "clips"
+                ],
+                "description": "The other hand on the handle below_m further down it, in these clips (reached with a two-bone solve when the clips are baked).",
+                "properties": {
+                  "bone": {
+                    "type": "string"
+                  },
+                  "below_m": {
+                    "type": "number",
+                    "minimum": 0.05,
+                    "maximum": 0.5
+                  },
+                  "clips": {
+                    "type": "array",
+                    "items": {
+                      "type": "string"
+                    }
+                  },
+                  "min_forward_m": {
+                    "type": "number",
+                    "minimum": 0.1,
+                    "maximum": 0.8,
+                    "description": "The handle stays at least this far in front of the body (plate is deep)."
+                  },
+                  "centre": {
+                    "type": "number",
+                    "minimum": 0,
+                    "maximum": 1,
+                    "description": "How far the handle moves toward the midline (default 0.8)."
+                  }
+                }
               }
             }
+          }
+        }
+      }
+    },
+    "build_offsets": {
+      "type": "object",
+      "description": "Body build -> clip -> bone -> term offsets added to that build's copy of the clip (the slim build can hang its arms closer than plate allows).",
+      "additionalProperties": {
+        "type": "object",
+        "additionalProperties": {
+          "type": "object",
+          "additionalProperties": {
+            "$ref": "#/$defs/terms"
           }
         }
       }

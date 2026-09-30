@@ -108,16 +108,26 @@ def build_library(spec: dict, anim: dict, clips: list[str], export: bool):
     if failures:
         raise SystemExit("axis check failed:\n  " + "\n  ".join(failures))
     print(f"axis check OK ({build})")
+    import body_sdf
+    jt = {k: np.array(tuple(v)) for k, v in humanoid.joints(humanoid.BUILDS[build]).items()}
+    fist = body_sdf.fist_grip(jt, anim["weapon_grip"]["bone"][-1], build)
+    got = grip_matrix(rig, anim["weapon_grip"], "forward", build).translation
+    if (Vector(tuple(fist)) - got).length > 0.005:
+        raise SystemExit(f"weapon_grip for {build} is {(Vector(tuple(fist)) - got).length * 1000:.1f} mm from the "
+                         f"fist's centre {tuple(round(c, 4) for c in fist)}; update data/animations")
     for hold in [None] + animation.hold_variants(anim):
         for clip in clips:
             name = animation.variant_name(clip, hold)
-            act = animation.bake_clip(rig, anim, clip, hold=hold)
+            act = animation.bake_clip(rig, anim, clip, hold=hold, build=build)
             track = rig.animation_data.nla_tracks.new()
             track.name = name
             strip = track.strips.new(name, 0, act)
             strip.name = name
             rig.animation_data.action = None
         print(f"  baked {len(clips)} clips{' for hold ' + hold if hold else ''}")
+    short = {k: round(v, 3) for k, v in animation.SECOND_HAND_SHORTFALL.items() if v > 0.005}
+    if short:
+        print(f"  second hand fell short of the handle (m): {short}")
     animation.pose_rig(rig, {})
     bpy.ops.object.mode_set(mode="OBJECT")
     proxy = proxy_mesh(rig)
@@ -173,25 +183,12 @@ def load_character(char_spec: dict, rig) -> bpy.types.Object:
     return body
 
 
-def grip_matrix(rig, grip: dict, hold: str) -> Matrix:
-    """Rest-pose world matrix of a held weapon (origin at the grip point)."""
-    bone = rig.data.bones[grip["bone"]]
-    head = bone.head_local
-    along = (bone.tail_local - head).normalized()
-    inward = Vector((1.0, 0.0, 0.0)) if grip["bone"].endswith("_r") else Vector((-1.0, 0.0, 0.0))
-    palm = (inward - along * along.dot(inward)).normalized()
-    point = head + along * grip["along_m"] + palm * grip["palm_m"]
-    h = grip["holds"][hold]
-    z = Vector(h["blade"]).normalized()
-    y = Vector(h["flat"])
-    y = (y - z * z.dot(y)).normalized()
-    x = y.cross(z)
-    m = Matrix((x, y, z)).transposed().to_4x4()
-    m.translation = point
-    return m
+def grip_matrix(rig, grip: dict, hold: str, build: str) -> Matrix:
+    """Rest-pose world matrix of a held weapon (see animation.grip_rest)."""
+    return animation.grip_rest(rig, grip, hold, build)
 
 
-def attach_weapon(weapon_spec: dict, rig, grip: dict) -> bpy.types.Object:
+def attach_weapon(weapon_spec: dict, rig, grip: dict, build: str) -> bpy.types.Object:
     new = import_glb(REPO / weapon_spec["out"])
     meshes = [o for o in new if o.type == "MESH"]
     for o in meshes:
@@ -211,7 +208,7 @@ def attach_weapon(weapon_spec: dict, rig, grip: dict) -> bpy.types.Object:
     weapon.name = weapon_spec["id"]
     animation.pose_rig(rig, {})
     bpy.context.view_layer.update()
-    world = grip_matrix(rig, grip, weapon_spec.get("params", {}).get("hold", "forward"))
+    world = grip_matrix(rig, grip, weapon_spec.get("params", {}).get("hold", "forward"), build)
     weapon.parent = rig
     weapon.parent_type = "BONE"
     weapon.parent_bone = grip["bone"]
@@ -389,7 +386,7 @@ def framing(objs, yaw_deg: float):
 
 
 def render_sheet(body, weapon, rig, anim: dict, clips: list[str], out_png: Path, title: str, cell: int = 220,
-                 hold: str | None = None):
+                 hold: str | None = None, build: str | None = None):
     from PIL import Image, ImageDraw
 
     scene = bpy.context.scene
@@ -401,8 +398,8 @@ def render_sheet(body, weapon, rig, anim: dict, clips: list[str], out_png: Path,
     yaw = -62.0  # front three-quarter from the character's right (weapon side)
     rows = []
     for clip in clips:
-        frames = animation.sample_clip(anim, clip)
-        wrist = animation.wrist_rule(anim, hold)
+        frames = animation.sample_clip(anim, clip, build)
+        wrist = animation.wrist_rule(anim, hold, clip, build)
         picks = sample_frames(anim, clip)
         # one camera for the whole row, fitted to every sampled pose, so motion reads as motion
         pts = []
@@ -461,7 +458,7 @@ def review(spec: dict, anim: dict, rig, clips: list[str], previews: Path, sheets
         if wid:
             ws = json.loads((REPO / "data" / "assets" / f"{wid}.json").read_text())
             if (REPO / ws["out"]).exists():
-                weapon = attach_weapon(ws, rig, anim["weapon_grip"])
+                weapon = attach_weapon(ws, rig, anim["weapon_grip"], cs["body_build"])
                 h = ws.get("params", {}).get("hold", "forward")
                 hold = h if h in animation.hold_variants(anim) else None
         vregion = triangle_regions(body)
@@ -471,8 +468,8 @@ def review(spec: dict, anim: dict, rig, clips: list[str], previews: Path, sheets
         rest_hits = pieces.frame(rig)
         per_clip = {}
         for clip in clips:
-            frames = animation.sample_clip(anim, clip)
-            wrist = animation.wrist_rule(anim, hold)
+            frames = animation.sample_clip(anim, clip, cs["body_build"])
+            wrist = animation.wrist_rule(anim, hold, clip, cs["body_build"])
             worst: dict[str, dict] = {}
             for f in range(0, len(frames), 2):
                 animation.pose_rig(rig, frames[f], wrist)
@@ -493,7 +490,8 @@ def review(spec: dict, anim: dict, rig, clips: list[str], previews: Path, sheets
                 names = [n for n in names if n in clips]
                 if names:
                     render_sheet(body, weapon, rig, anim, names, previews / f"{cs['id']}_{sheet}.png",
-                                 f"{cs['id']} - {sheet}{' (hold ' + hold + ')' if hold else ''}", hold=hold)
+                                 f"{cs['id']} - {sheet}{' (hold ' + hold + ')' if hold else ''}", hold=hold,
+                                 build=cs["body_build"])
         for o in (body, weapon):
             if o is not None:
                 bpy.data.objects.remove(o, do_unlink=True)

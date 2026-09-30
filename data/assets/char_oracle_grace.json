@@ -17,12 +17,12 @@
     "holy": "#c99a3a",
     "leather": "#4a3325",
     "skin": "#a0826a",
-    "cloth_dark": "#3a2f28"
+    "cloth_dark": "#5a1f2a"
   },
   "params": {
     "armor": "oracle_vestments",
     "body_tris": 6500,
-    "bare_hands": true,
+    "bare_hands": false,
     "weapon": "weapon_mace"
   },
   "out": "game/assets/characters/char_oracle_grace.glb",

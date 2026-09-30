@@ -245,6 +245,54 @@ def _bounds(objs) -> tuple[Vector, Vector]:
     return lo, hi
 
 
+def render_closeups(objs, out_png: Path, shots, cell: int = 384, preset: str = "dusk_grim",
+                    samples: int = 24) -> Path:
+    """Close-up views tiled into one sheet. shots: [(label, target, yaw_deg, distance_m)];
+    yaw 0 looks at the model's front (-Y). A soft front fill keeps faces and hands readable."""
+    from PIL import Image, ImageDraw
+
+    out_png = out_png if out_png.is_absolute() else REPO / out_png
+    out_png.parent.mkdir(parents=True, exist_ok=True)
+    scene = bpy.context.scene
+    setup_lighting(preset)
+    fill = bpy.data.objects.new("light_front_fill", bpy.data.lights.new("light_front_fill", type="SUN"))
+    fill.data.energy = 1.2
+    fill.rotation_euler = (math.radians(70), 0, math.radians(15))
+    scene.collection.objects.link(fill)
+    cam = bpy.data.objects.new("_closeup_cam", bpy.data.cameras.new("_closeup_cam"))
+    scene.collection.objects.link(cam)
+    scene.camera = cam
+    cam.data.lens = 50
+    scene.render.engine = "CYCLES"
+    scene.cycles.device = "CPU"
+    scene.cycles.samples = samples
+    scene.cycles.use_denoising = True
+    scene.render.resolution_x = scene.render.resolution_y = cell
+    scene.view_settings.view_transform = "AgX"
+    tiles = []
+    for label, target, yaw, dist in shots:
+        a = math.radians(yaw)
+        d = Vector((math.sin(a), -math.cos(a), 0.15)).normalized()
+        target = Vector(target)
+        cam.location = target + d * dist
+        cam.rotation_euler = (target - cam.location).to_track_quat("-Z", "Y").to_euler()
+        tmp = out_png.with_name(f"_{out_png.stem}_{label}.png")
+        scene.render.filepath = str(tmp)
+        bpy.ops.render.render(write_still=True)
+        tiles.append((label, tmp))
+    sheet = Image.new("RGB", (cell * len(tiles), cell + 24), (18, 18, 20))
+    draw = ImageDraw.Draw(sheet)
+    for i, (label, tmp) in enumerate(tiles):
+        sheet.paste(Image.open(tmp).convert("RGB"), (i * cell, 24))
+        draw.text((i * cell + 6, 6), label, fill=(220, 220, 220))
+        tmp.unlink()
+    sheet.save(out_png)
+    bpy.data.objects.remove(cam, do_unlink=True)
+    for o in [o for o in bpy.data.objects if o.name.startswith("light_")]:
+        bpy.data.objects.remove(o, do_unlink=True)
+    return out_png
+
+
 def render_contact_sheet(objs, out_png: Path, engine: str = "CYCLES", cell: int = 512,
                          preset: str = "dusk_grim", title: str = "") -> Path:
     """Render front, side, back and three-quarter views and tile them into one image."""

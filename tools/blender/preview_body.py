@@ -57,6 +57,12 @@ def main() -> None:
              ("side", 90, Vector((0, 0, h * 0.5)), h * 1.25, 50),
              ("three-quarter", 35, Vector((0, 0, h * 0.5)), h * 1.25, 50),
              ("head", 25, Vector((0, 0, h * 0.9)), 0.55, 85)]
+    import numpy as np
+    jt = humanoid.joints(humanoid.BUILDS[args.build])
+    for s, yaw in (("r", -70), ("l", 70)):
+        c = (jt[f"wrist_{s}"] + jt[f"hand_end_{s}"]) / 2
+        views.append((f"hand_{s}", yaw, Vector(c), 0.28, 85))
+        views.append((f"hand_{s}_front", 0, Vector(c), 0.28, 85))
     tiles = []
     for label, yaw, target, dist, lens in views:
         cam_data.lens = lens

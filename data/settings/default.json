@@ -29,5 +29,11 @@
     "click_empty_clears_target": false,
     "pick_height_m": 1.9,
     "pick_radius_m": 0.5
+  },
+  "interface": {
+    "hud_layout": "default",
+    "ui_scale": 1.0,
+    "min_text_px": 11,
+    "combat_text": true
   }
 }

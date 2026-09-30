@@ -34,6 +34,12 @@
     {"action": "bar2_slot4", "key": "KEY_4", "modifiers": ["shift"]},
     {"action": "bar2_slot5", "key": "KEY_5", "modifiers": ["shift"]},
     {"action": "bar2_slot6", "key": "KEY_6", "modifiers": ["shift"]},
+    {"action": "bar2_slot7", "key": "KEY_7", "modifiers": ["shift"]},
+    {"action": "bar2_slot8", "key": "KEY_8", "modifiers": ["shift"]},
+    {"action": "bar2_slot9", "key": "KEY_9", "modifiers": ["shift"]},
+    {"action": "bar2_slot10", "key": "KEY_0", "modifiers": ["shift"]},
+    {"action": "bar2_slot11", "key": "KEY_MINUS", "modifiers": ["shift"]},
+    {"action": "bar2_slot12", "key": "KEY_EQUAL", "modifiers": ["shift"]},
     {"action": "break_free", "key": "KEY_R", "modifiers": ["shift"]},
     {"action": "toggle_edit_mode", "key": "KEY_F10"},
     {"action": "toggle_scoreboard", "key": "KEY_H"}

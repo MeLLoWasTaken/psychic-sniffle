@@ -23,7 +23,84 @@ BUILD_SCALES = {
 }
 
 
-def body_shape(j: dict, build: str) -> sdf.Shape:
+# Finger curl per hand pose: bends (degrees) at the three knuckles. A fist wraps the fingers
+# around a handle instead (see _hand); relaxed hands hang with a soft curl.
+HAND_POSES = {"relaxed": (18, 30, 20), "open": (5, 8, 5)}
+GRIP_RADIUS_M = 0.02   # handle radius a fist closes around (the weapons' grips are 0.018-0.02 m)
+
+
+def hand_frame(j: dict, side: str):
+    """Axes of a hand in the rest pose: x along the hand, palm toward the body, fwd across the
+    knuckles toward the thumb (the character's front)."""
+    wrist, end = j[f"wrist_{side}"], j[f"hand_end_{side}"]
+    x = (end - wrist) / np.linalg.norm(end - wrist)
+    inward = np.array([-1.0 if side == "l" else 1.0, 0.0, 0.0])
+    palm = inward - x * (x @ inward)
+    palm /= np.linalg.norm(palm)
+    fwd = np.cross(palm, x) if side == "l" else np.cross(x, palm)
+    fwd /= np.linalg.norm(fwd)
+    if fwd[1] > 0:  # thumb and index face the front (-Y)
+        fwd = -fwd
+    return x, palm, fwd
+
+
+def fist_grip(j: dict, side: str, build: str) -> np.ndarray:
+    """Centre of the hole a fist closes around (where a held weapon's grip axis passes)."""
+    H = BUILD_SCALES[build]["hand"]
+    x, palm, _fwd = hand_frame(j, side)
+    radius = GRIP_RADIUS_M + 0.0155 * H
+    knuckle = j[f"wrist_{side}"] + x * (0.096 * H)
+    return knuckle + x * 0.008 + palm * radius
+
+
+def _hand(sh: sdf.Shape, j: dict, side: str, build: str, pose: str) -> None:
+    """Oversized hand: palm block, four fingers (index toward the front), thumb."""
+    H = BUILD_SCALES[build]["hand"]
+    x, palm, fwd = hand_frame(j, side)
+    back = -palm
+    rot = np.stack([x, back, fwd])      # box axes: along, thickness, width
+    wrist = j[f"wrist_{side}"]
+    palm_c = wrist + x * 0.05 * H
+    sh.round_box(palm_c, (0.056 * H, 0.025 * H, 0.052 * H), 0.02 * H, k=0.03, rot=rot, name=f"palm_{side}")
+    lengths = (0.08, 0.092, 0.088, 0.07)          # index, middle, ring, little
+    offsets = (0.036, 0.012, -0.012, -0.035)      # across the knuckles, index toward the front
+    r0, r1 = 0.0155 * H, 0.013 * H
+    for i in range(4):
+        L = lengths[i] * H
+        base = palm_c + x * 0.046 * H + fwd * offsets[i] * H
+        if pose == "fist":
+            # wrap around the handle: an arc about an axis across the knuckles
+            radius = GRIP_RADIUS_M + r0
+            centre = base + x * 0.008 + palm * radius
+            sweep = min(L / radius, np.radians(250))
+            pts = [base]
+            for k in range(1, 5):
+                a = sweep * k / 4
+                pts.append(centre - palm * radius * np.cos(a) + x * radius * np.sin(a))
+        else:
+            a1, a2, a3 = (np.radians(b) for b in HAND_POSES[pose])
+            pts, p, th = [base], base, 0.0
+            for frac, bend in ((0.45, a1), (0.32, a2), (0.23, a3)):
+                th += bend
+                p = p + (x * np.cos(th) + palm * np.sin(th)) * L * frac
+                pts.append(p)
+        for k in range(len(pts) - 1):
+            t0, t1 = k / (len(pts) - 1), (k + 1) / (len(pts) - 1)
+            sh.round_cone(pts[k], pts[k + 1], r0 + (r1 - r0) * t0, r0 + (r1 - r0) * t1, k=0.006,
+                          name=f"finger{i}_{side}")
+    thumb_base = wrist + x * 0.022 * H + fwd * 0.042 * H + palm * 0.012 * H
+    if pose == "fist":  # folded over the index and middle fingers
+        tip = thumb_base + (x * 0.55 + palm * 0.75 - fwd * 0.35) * 0.08 * H
+    else:
+        tip = thumb_base + (x * 0.6 + fwd * 0.45 + palm * 0.35) * 0.08 * H
+    mid = (thumb_base + tip) / 2 + fwd * 0.01 * H
+    sh.round_cone(thumb_base, mid, 0.019 * H, 0.016 * H, k=0.015, name=f"thumb_{side}")
+    sh.round_cone(mid, tip, 0.016 * H, 0.014 * H, k=0.008, name=f"thumb_{side}")
+
+
+def body_shape(j: dict, build: str, hands: tuple[str, str] = ("relaxed", "fist")) -> sdf.Shape:
+    """`hands`: pose of the left and right hand ("relaxed", "open" or "fist"). The right hand
+    closes around a weapon's grip by default."""
     s = BUILD_SCALES[build]
     T, L, M, H, F, J = (s[k] for k in ("torso", "limb", "muscle", "hand", "foot", "jaw"))
     v = lambda *a: np.array(a, dtype=float)  # noqa: E731
@@ -55,7 +132,6 @@ def body_shape(j: dict, build: str) -> sdf.Shape:
     shoulder, elbow, wrist, hand_end = j["shoulder_l"], j["elbow_l"], j["wrist_l"], j["hand_end_l"]
     arm = elbow - shoulder
     fore = wrist - elbow
-    handd = hand_end - wrist
     sh.ellipsoid(shoulder + v(0.0, 0.0, 0.02), (0.088 * L, 0.098 * L, 0.084 * L), k=0.11,
                  rot=sdf.frame(arm + v(0, 0, 0.25)), name="deltoid")
     sh.round_cone(shoulder, elbow, 0.09 * L, 0.072 * L, k=0.05, name="upperarm")
@@ -66,21 +142,6 @@ def body_shape(j: dict, build: str) -> sdf.Shape:
     sh.round_cone(elbow, wrist, 0.078 * L, 0.057 * L, k=0.04, name="forearm")
     sh.ellipsoid(elbow + fore * 0.28 + v(0, -0.01, 0), (0.11, 0.07 * M + 0.012, 0.062 * M + 0.012), k=0.04,
                  rot=sdf.frame(fore), name="forearm_mass")
-    # hand: oversized; palm towards the thigh; local x along the hand, z across the knuckles,
-    # y through the palm
-    hrot = sdf.frame(handd, up=(0, -1, 0))
-    hx, hy, hz = hrot[0], hrot[1], hrot[2]
-    palm_c = wrist + hx * 0.05 * H
-    sh.round_box(palm_c, (0.056 * H, 0.025 * H, 0.052 * H), 0.02 * H, k=0.03, rot=hrot, name="palm")
-    for i, off in enumerate((-0.036, -0.012, 0.012, 0.035)):
-        length = (0.08, 0.092, 0.088, 0.07)[i] * H
-        base = palm_c + hx * 0.046 * H + hz * off * H
-        tip = base + (hx * 0.88 - hy * 0.4) * length  # fingers curl a little towards the palm
-        sh.round_cone(base, tip, 0.0155 * H, 0.013 * H, k=0.008, name=f"finger{i}")
-    thumb_base = wrist + hx * 0.022 * H - hz * 0.042 * H - hy * 0.012 * H
-    sh.round_cone(thumb_base, thumb_base + (hx * 0.55 - hz * 0.5 - hy * 0.45) * 0.08 * H, 0.019 * H, 0.015 * H,
-                  k=0.015, name="thumb")
-
     # leg: thick thighs, strong calves
     hip, knee, ankle, toe = j["hip_l"], j["knee_l"], j["ankle_l"], j["toe_l"]
     thigh = knee - hip
@@ -112,9 +173,13 @@ def body_shape(j: dict, build: str) -> sdf.Shape:
     sh.round_cone(v(0.0, -0.106, hz0 + 0.135), v(0.0, -0.121, hz0 + 0.09), 0.009, 0.015, k=0.012, name="nose")
     sh.ellipsoid(v(0.0, -0.104, hz0 + 0.06), (0.03, 0.013, 0.01), k=0.012, name="lip")
     sh.ellipsoid(v(0.097, 0.01, hz0 + 0.108), (0.011, 0.022, 0.032), k=0.012, name="ear")
-    return sh.mirrored()
+    out = sh.mirrored()
+    # hands last and per side, so the two can differ (a fist on the weapon hand)
+    _hand(out, j, "l", build, hands[0])
+    _hand(out, j, "r", build, hands[1])
+    return out
 
 
-def body_mesh(j: dict, build: str, voxel: float = 0.005):
+def body_mesh(j: dict, build: str, voxel: float = 0.005, hands: tuple[str, str] = ("relaxed", "fist")):
     """Closed triangle mesh (vertices, faces) of a body."""
-    return sdf.extract(body_shape(j, build), voxel=voxel, floor_z=0.0)
+    return sdf.extract(body_shape(j, build, hands), voxel=voxel, floor_z=0.0)

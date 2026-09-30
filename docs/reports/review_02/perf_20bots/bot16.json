@@ -1,0 +1,58 @@
+{
+  "correction_avg_m": 0.00113954889820889,
+  "correction_log": [
+    {
+      "auras": [
+        "seraphic_surge@1629",
+        "gashed@1784",
+        "ruin_bleed@1948",
+        "ruin_bleed@1999",
+        "crippled@2043",
+        "lingering_grace@2232",
+        "veil_of_faith@1968",
+        "ruin_bleed@2209",
+        "waning_light@1850",
+        "psalm_dread@1939"
+      ],
+      "m": 0.00116289628203958,
+      "pending": 2,
+      "tick": 1581
+    },
+    {
+      "auras": [
+        "seraphic_surge@1629",
+        "gashed@1784",
+        "ruin_bleed@1948",
+        "ruin_bleed@1999",
+        "crippled@2043",
+        "lingering_grace@2232",
+        "veil_of_faith@1968",
+        "ruin_bleed@2209",
+        "waning_light@1850",
+        "psalm_dread@1939"
+      ],
+      "m": 0.00111620151437819,
+      "pending": 2,
+      "tick": 1582
+    }
+  ],
+  "correction_max_m": 0.00116289628203958,
+  "corrections": 2,
+  "effect_correction_max_m": 1.04999995231628,
+  "effect_corrections": 8,
+  "events_received": 1452,
+  "inputs_sent": 2702,
+  "log_errors": 0,
+  "log_warnings": 0,
+  "name": "bot16",
+  "rtt_avg_ms": 19.8096444444444,
+  "rtt_samples": 45,
+  "simulated_jitter_ms": 0.0,
+  "simulated_lag_ms": 0.0,
+  "simulated_loss": 0.0,
+  "snapshot_rate_hz": 57.9233249491637,
+  "snapshots": 2605,
+  "stale_snapshots": 0,
+  "teleports": 0,
+  "unit_id": 16
+}

@@ -1,0 +1,122 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "hud_layout.schema.json",
+  "title": "HUD layout profile",
+  "description": "Where every HUD element sits and how it looks (docs/DESIGN.md 'Interface, HUD and settings'; backlog M1-27). Positions are logical pixels on base_resolution from the element's anchor point; the element's matching corner or edge sits on the anchor. The M2 edit mode edits copies of these files.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["id", "name", "base_resolution", "style", "crowd_control", "loss_of_control", "dr_categories",
+    "key_label_abbreviations", "icon_glyphs", "action_bars", "elements"],
+  "$defs": {
+    "color": {"type": "string", "pattern": "^#[0-9a-fA-F]{6}([0-9a-fA-F]{2})?$"},
+    "size": {"type": "array", "items": {"type": "number", "exclusiveMinimum": 0}, "minItems": 2, "maxItems": 2},
+    "glyph": {"enum": ["crystal", "shield", "drop", "wing", "chain", "rays", "fist", "wave", "arrow", "heart", "pillar", "rune", "blade", "orb", "star", "diamond", "spiral", "cross", "slash", "bars"]},
+    "element": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["type", "anchor", "offset"],
+      "properties": {
+        "type": {"enum": ["action_bar", "unit_frame", "cast_bar", "match_timer", "loss_of_control", "combat_text"]},
+        "anchor": {"enum": ["top_left", "top_center", "top_right", "center_left", "center", "center_right", "bottom_left", "bottom_center", "bottom_right"]},
+        "offset": {"type": "array", "items": {"type": "number"}, "minItems": 2, "maxItems": 2},
+        "scale": {"type": "number", "minimum": 0.5, "maximum": 2.0, "description": "Edit mode scale, 50 to 200% (DESIGN.md)"},
+        "opacity": {"type": "number", "minimum": 0.1, "maximum": 1.0},
+        "visible": {"type": "boolean"},
+        "size": {"$ref": "#/$defs/size"},
+        "action_prefix": {"type": "string", "pattern": "^[a-z][a-z0-9_]*$", "description": "action_bar: keybind actions <prefix>1 .. <prefix><buttons>"},
+        "buttons": {"type": "integer", "minimum": 1, "maximum": 12},
+        "columns": {"type": "integer", "minimum": 1, "maximum": 12},
+        "button_px": {"type": "number", "minimum": 24, "maximum": 96},
+        "spacing_px": {"type": "number", "minimum": 0},
+        "unit": {"enum": ["player", "target", "focus", "party", "arena"]},
+        "count": {"type": "integer", "minimum": 1, "maximum": 4, "description": "party and arena frames: how many frames, stacked downward"},
+        "cast_bar": {"type": "boolean"},
+        "aura_side": {"enum": ["above", "below"]},
+        "max_auras": {"type": "integer", "minimum": 0, "maximum": 16},
+        "break_free": {"type": "boolean", "description": "arena frames: Break Free cooldown indicator (DESIGN.md)"},
+        "dr_tracker": {"type": "boolean", "description": "arena frames: diminishing-returns tracker per CC category"},
+        "max_live": {"type": "integer", "minimum": 1, "maximum": 200},
+        "lifetime_s": {"type": "number", "exclusiveMinimum": 0},
+        "rise_px": {"type": "number"},
+        "height_m": {"type": "number", "minimum": 0}
+      },
+      "allOf": [
+        {"if": {"properties": {"type": {"const": "action_bar"}}}, "then": {"required": ["action_prefix", "buttons", "columns", "button_px", "spacing_px"]}},
+        {"if": {"properties": {"type": {"const": "unit_frame"}}}, "then": {"required": ["unit", "size", "cast_bar", "aura_side", "max_auras"]}},
+        {"if": {"properties": {"type": {"const": "cast_bar"}}}, "then": {"required": ["unit", "size"]}},
+        {"if": {"properties": {"type": {"enum": ["match_timer", "loss_of_control"]}}}, "then": {"required": ["size"]}},
+        {"if": {"properties": {"type": {"const": "combat_text"}}}, "then": {"required": ["max_live", "lifetime_s", "rise_px", "height_m"]}}
+      ]
+    }
+  },
+  "properties": {
+    "id": {"$ref": "common.schema.json#/$defs/id"},
+    "name": {"type": "string"},
+    "description": {"type": "string"},
+    "base_resolution": {"$ref": "#/$defs/size"},
+    "style": {
+      "type": "object",
+      "required": ["font_px", "text", "resource_colors"],
+      "properties": {
+        "font_px": {
+          "type": "object",
+          "required": ["small", "normal", "large", "timer", "alert", "combat_text", "combat_text_crit"],
+          "additionalProperties": {"type": "number", "minimum": 8}
+        },
+        "resource_colors": {"type": "object", "additionalProperties": {"$ref": "#/$defs/color"}}
+      },
+      "additionalProperties": {"$ref": "#/$defs/color"}
+    },
+    "crowd_control": {
+      "type": "object",
+      "description": "Per CC category: text label, short label and glyph shape, so CC never reads by color alone (color-blind safe)",
+      "propertyNames": {"$ref": "common.schema.json#/$defs/cc_category"},
+      "additionalProperties": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["label", "short", "glyph", "color", "priority"],
+        "properties": {
+          "label": {"type": "string"},
+          "short": {"type": "string", "maxLength": 6},
+          "glyph": {"$ref": "#/$defs/glyph"},
+          "color": {"$ref": "#/$defs/color"},
+          "priority": {"type": "integer", "minimum": 1, "description": "Lower wins: which CC the loss-of-control alert and frames show first"}
+        }
+      }
+    },
+    "loss_of_control": {"type": "array", "items": {"$ref": "common.schema.json#/$defs/cc_category"}, "uniqueItems": true, "description": "CC categories that raise the loss-of-control alert for the local player"},
+    "dr_categories": {"type": "array", "items": {"$ref": "common.schema.json#/$defs/cc_category"}, "uniqueItems": true},
+    "key_label_abbreviations": {"type": "array", "items": {"type": "array", "items": {"type": "string"}, "minItems": 2, "maxItems": 2}, "description": "Text replacements that shorten keybind labels on buttons, in order (Shift+1 -> S1)"},
+    "error_messages": {
+      "type": "object",
+      "description": "Text shown under the timer when the player's ability press fails, by Combat.try_use reason; reasons not listed show nothing",
+      "additionalProperties": {"type": "string"}
+    },
+    "icon_glyphs": {
+      "type": "array",
+      "description": "Placeholder icons: the first rule whose regular expression matches an ability or aura icon symbol picks its glyph; others get one by hash",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["match", "glyph"],
+        "properties": {"match": {"type": "string"}, "glyph": {"$ref": "#/$defs/glyph"}}
+      }
+    },
+    "action_bars": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["fill_order", "exclude", "shared_at_end", "assignments"],
+      "properties": {
+        "fill_order": {"type": "array", "items": {"type": "string"}, "minItems": 1, "description": "action_bar elements filled with the spec's abilities in this order"},
+        "exclude": {"type": "array", "items": {"$ref": "common.schema.json#/$defs/id"}, "description": "Abilities never placed automatically (automatic ones like auto_attack)"},
+        "shared_at_end": {"type": "boolean", "description": "Class-shared abilities (Break Free) take the last slots of the last bar"},
+        "assignments": {
+          "type": "object",
+          "description": "Spec id -> bar element id -> ability ids by slot (\"\" for an empty slot); replaces the automatic fill for that spec",
+          "additionalProperties": {"type": "object", "additionalProperties": {"type": "array", "items": {"type": "string"}, "maxItems": 12}}
+        }
+      }
+    },
+    "elements": {"type": "object", "propertyNames": {"$ref": "common.schema.json#/$defs/id"}, "additionalProperties": {"$ref": "#/$defs/element"}}
+  }
+}

@@ -1,0 +1,7 @@
+Godot Engine v4.7.2.stable.custom_build.ed1daf0bf (2026-08-17 01:18:38 UTC) - https://godotengine.org
+
+0.185 INFO [bot10] data: loaded 44 abilities, 23 auras, 3 specs, 3 classes
+0.185 INFO [bot10] boot: starting bot
+0.403 INFO [bot10] client: connecting to 127.0.0.1:24700
+0.418 INFO [bot10] client: welcomed as unit 10 on map gallows_courtyard
+45.417 INFO [bot10] client: done; 2607 snapshots (57.9 Hz), avg correction 0.000 m, max 0.000 m, rtt 22 ms

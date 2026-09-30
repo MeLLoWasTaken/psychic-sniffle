@@ -19,8 +19,12 @@
   },
   "params": {
     "armor": "warblade_plate",
-    "body_tris": 4500,
-    "weapon": "weapon_greatsword"
+    "body_tris": 4000,
+    "weapon": "weapon_greatsword",
+    "hands": [
+      "fist",
+      "fist"
+    ]
   },
   "out": "game/assets/characters/char_warblade_carnage.glb",
   "status": "draft"

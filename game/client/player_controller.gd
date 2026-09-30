@@ -16,6 +16,12 @@ extends RefCounted
 ## - Both buttons held run forward. A press and release without dragging is a click: it selects
 ##   the unit under the cursor (Targeting). Tab cycles enemies; Escape clears the target.
 ## - The mouse wheel zooms (read pending_zoom each frame and pass it to ThirdPersonCamera).
+## - Action bar keys (M1-27): `bar_actions` maps keybind actions to abilities (the HUD fills it
+##   from its layout); a press, or press_ability() from a click on a button, puts the ability in
+##   the input dictionary. Presses are sent at once, one per tick in order; the server's spell
+##   queue window (Combat.try_use) holds one pressed near the end of the GCD or a cast. Bar keys
+##   match modifiers exactly, so 1 and Shift+1 are different buttons. Shift+F (set_focus) makes
+##   the current target the focus target.
 ##
 ## Feed events with handle_event(), then call next_input() once per simulation tick.
 
@@ -38,6 +44,14 @@ var held: Dictionary = {}  ## movement action -> held
 var targeting: Targeting
 var target_id: int = -1  ## the player's current target (any unit, ally or enemy), or -1
 var pending_zoom: int = 0  ## wheel notches since the camera last read them (+ = out)
+var focus_id: int = -1  ## the focus target (set_focus), or -1
+var bar_actions: Dictionary = {}  ## keybind action -> ability id (action bar slots, M1-27)
+var max_pending_presses: int = 3  ## presses waiting for a tick beyond this drop the oldest
+
+## An ability was pressed by key or click (the HUD flashes the button).
+signal ability_pressed(ability_id: String, action: String)
+
+var _presses: Array[String] = []  ## abilities pressed and not sent yet, oldest first
 
 var _requests: Array = []  ## ["tab"], ["clear"], ["click", screen position], in arrival order
 var _press_pos: Dictionary = {}  ## "steer"/"orbit" -> screen position of the press
@@ -115,7 +129,29 @@ func handle_event(ev: InputEvent) -> bool:
 	if _pressed(ev, "clear_target"):
 		_requests.append(["clear"])
 		used = true
+	if _pressed(ev, "set_focus"):
+		_requests.append(["focus"])
+		used = true
+	for action: String in bar_actions:
+		if InputMap.has_action(action) and ev.is_action_pressed(action, false, true):
+			press_ability(str(bar_actions[action]), action)
+			used = true
 	return used
+
+
+## Queue an ability press for the next tick (an action button click, or its key).
+func press_ability(ability_id: String, action: String = "") -> void:
+	if ability_id == "":
+		return
+	_presses.append(ability_id)
+	while _presses.size() > max_pending_presses:
+		_presses.pop_front()
+	ability_pressed.emit(ability_id, action)
+
+
+## Select a unit as the target now (a click on its unit frame).
+func set_target(id: int) -> void:
+	target_id = id
 
 
 ## Actions missing from the loaded keybind profile never match (InputMap would log an error).
@@ -183,12 +219,16 @@ func next_input(dt: float, view: Dictionary = {}, camera: Camera3D = null, units
 					target_id = targeting.click(camera, r[1], units, geometry, target_id)
 				"tab":
 					target_id = targeting.tab(camera, view["me"], view.get("units", []), geometry, target_id)
+				"focus":
+					focus_id = target_id
 		_requests.clear()
 	else:
-		_requests = _requests.filter(func(r: Array) -> bool: return r[0] == "clear")
-		if not _requests.is_empty():
-			target_id = -1
-			_requests.clear()
+		for r: Array in _requests:
+			if r[0] == "clear":
+				target_id = -1
+			elif r[0] == "focus":
+				focus_id = target_id
+		_requests.clear()
 	var turn: float = 0.0
 	var strafe: float = float(held["strafe_right"]) - float(held["strafe_left"])
 	var side_keys: float = float(held["turn_right"]) - float(held["turn_left"])
@@ -202,7 +242,8 @@ func next_input(dt: float, view: Dictionary = {}, camera: Camera3D = null, units
 			orbit = wrapf(orbit - turn, -PI, PI)  # the held camera stays put while the body turns
 	var forward: float = float(held["move_forward"] or (steering and orbiting)) - float(held["move_back"])
 	return {"move": Vector2(clampf(strafe, -1.0, 1.0), clampf(forward, -1.0, 1.0)), "yaw": yaw,
-		"jump": bool(held["jump"]), "tab": false, "ability": "", "target": target_id,
+		"jump": bool(held["jump"]), "tab": false, "ability": _presses.pop_front() if not _presses.is_empty() else "",
+		"target": target_id,
 		"clear_target": not _is_hostile(view, target_id)}
 
 

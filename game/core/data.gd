@@ -6,7 +6,7 @@ extends Node
 const DATA_ROOT: String = "res://data"
 const FOLDERS: Array[String] = [
 	"classes", "specs", "abilities", "auras", "talents", "maps", "assets", "keybinds", "bots", "lighting",
-	"animations", "anim_states", "settings", "effects", "effect_palettes"]
+	"animations", "anim_states", "settings", "effects", "effect_palettes", "hud_layouts"]
 
 var tuning: Dictionary = {}
 var classes: Dictionary = {}
@@ -24,6 +24,7 @@ var anim_states: Dictionary = {}  ## how characters pick and blend clips in game
 var settings: Dictionary = {}  ## gameplay settings profiles (camera, mouse, targeting)
 var effects: Dictionary = {}  ## spell effect stages per ability id (EffectsDirector, M1-25)
 var effect_palettes: Dictionary = {}  ## school colors and effect budget (EffectsData)
+var hud_layouts: Dictionary = {}  ## HUD element positions, styles and bar assignments (Hud, M1-27)
 
 
 func _ready() -> void:

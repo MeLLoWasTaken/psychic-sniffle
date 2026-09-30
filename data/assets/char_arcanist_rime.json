@@ -22,8 +22,9 @@
   "params": {
     "armor": "arcanist_robe",
     "body_tris": 6000,
-    "bare_hands": true,
-    "weapon": "weapon_frost_staff"
+    "bare_hands": false,
+    "weapon": "weapon_frost_staff",
+    "face": "shadow"
   },
   "out": "game/assets/characters/char_arcanist_rime.glb",
   "status": "draft"

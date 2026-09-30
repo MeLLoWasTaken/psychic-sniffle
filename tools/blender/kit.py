@@ -25,13 +25,16 @@ TINT_ATTR = "tint"  # per-part color variation, stored as a face-corner color at
 
 def kit_material(name: str, hex_color: str, roughness: float = 0.85, metallic: float = 0.0,
                  edge: float = 0.3, cavity: float = 0.55, top_light: float = 0.18, mottle: float = 0.12,
-                 mottle_scale: float = 0.45, emission: float = 0.0) -> bpy.types.Material:
+                 mottle_scale: float = 0.45, emission: float = 0.0, height_grad: float = 0.0,
+                 height_m: float = 2.0) -> bpy.types.Material:
     """Painted-look material. Every channel is broad and soft (no fine noise):
     - base color times the per-part tint attribute
     - mottle: very low-frequency brightness variation (mottle_scale is in 1/m)
     - top_light: surfaces facing up are lighter (light from above, baked in)
     - edge: worn, lighter edges (Bevel-normal comparison)
     - cavity: darker crevices (ambient occlusion)
+    - height_grad: characters darken and cool toward the feet and brighten toward the head
+      (object-space height over height_m), which draws the eye to the face and upper body
     """
     mat = bpy.data.materials.new(name)
     mat.use_nodes = True
@@ -71,6 +74,21 @@ def kit_material(name: str, hex_color: str, roughness: float = 0.85, metallic: f
     up.inputs["To Max"].default_value = 1.0 + top_light
     l.new(sep.outputs["Z"], up.inputs["Value"])
     lit = _mix(nt, "MULTIPLY", mottled, _gray(nt, up.outputs["Result"]), 1.0)
+    if height_grad > 0:
+        pos = n.new("ShaderNodeSeparateXYZ")
+        l.new(tex.outputs["Object"], pos.inputs["Vector"])
+        hr = n.new("ShaderNodeMapRange")
+        hr.clamp = True
+        hr.inputs["From Min"].default_value = 0.0
+        hr.inputs["From Max"].default_value = height_m
+        l.new(pos.outputs["Z"], hr.inputs["Value"])
+        ramp = n.new("ShaderNodeValToRGB")
+        low = 1.0 - height_grad
+        ramp.color_ramp.elements[0].color = (low * 0.9, low * 0.95, low * 1.05, 1.0)   # cool, dark feet
+        ramp.color_ramp.elements[1].position = 0.85
+        ramp.color_ramp.elements[1].color = (1.0 + height_grad * 0.25, 1.0 + height_grad * 0.22, 1.0 + height_grad * 0.15, 1.0)
+        l.new(hr.outputs["Result"], ramp.inputs["Fac"])
+        lit = _mix(nt, "MULTIPLY", lit, ramp.outputs["Color"], 1.0)
 
     # worn edges
     bevel = n.new("ShaderNodeBevel")

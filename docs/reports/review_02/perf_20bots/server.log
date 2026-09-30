@@ -1,0 +1,74 @@
+Godot Engine v4.7.2.stable.custom_build.ed1daf0bf (2026-08-17 01:18:38 UTC) - https://godotengine.org
+
+0.127 INFO [server] data: loaded 44 abilities, 23 auras, 3 specs, 3 classes
+0.127 INFO [server] boot: starting server
+0.219 INFO [server] server: listening on port 24700, map gallows_courtyard, mode skirmish, tick 60 Hz
+0.620 INFO [server] server: peer connected
+0.627 INFO [server] server: bot1 joined as unit 1 (warblade_carnage) on team 0
+1.006 INFO [server] server: peer connected
+1.006 INFO [server] server: bot2 joined as unit 2 (arcanist_rime) on team 1
+1.285 INFO [server] server: peer connected
+1.292 INFO [server] server: bot3 joined as unit 3 (oracle_grace) on team 0
+1.609 INFO [server] server: peer connected
+1.616 INFO [server] server: bot4 joined as unit 4 (oracle_grace) on team 1
+1.878 INFO [server] server: peer connected
+1.878 INFO [server] server: bot5 joined as unit 5 (warblade_carnage) on team 0
+2.251 INFO [server] server: peer connected
+2.251 INFO [server] server: bot6 joined as unit 6 (arcanist_rime) on team 1
+2.541 INFO [server] server: peer connected
+2.541 INFO [server] server: bot7 joined as unit 7 (oracle_grace) on team 0
+2.844 INFO [server] server: peer connected
+2.844 INFO [server] server: bot8 joined as unit 8 (oracle_grace) on team 1
+3.155 INFO [server] server: peer connected
+3.162 INFO [server] server: bot9 joined as unit 9 (warblade_carnage) on team 0
+3.527 INFO [server] server: peer connected
+3.528 INFO [server] server: bot10 joined as unit 10 (arcanist_rime) on team 1
+3.852 INFO [server] server: peer connected
+3.852 INFO [server] server: bot11 joined as unit 11 (oracle_grace) on team 0
+4.148 INFO [server] server: peer connected
+4.155 INFO [server] server: bot12 joined as unit 12 (oracle_grace) on team 1
+4.486 INFO [server] server: peer connected
+4.495 INFO [server] server: bot13 joined as unit 13 (warblade_carnage) on team 0
+4.790 INFO [server] server: peer connected
+4.797 INFO [server] server: bot14 joined as unit 14 (arcanist_rime) on team 1
+5.095 INFO [server] server: peer connected
+5.108 INFO [server] server: bot15 joined as unit 15 (oracle_grace) on team 0
+5.363 INFO [server] server: peer connected
+5.370 INFO [server] server: bot16 joined as unit 16 (oracle_grace) on team 1
+5.763 INFO [server] server: peer connected
+5.763 INFO [server] server: bot17 joined as unit 17 (warblade_carnage) on team 0
+6.575 INFO [server] server: peer connected
+6.583 INFO [server] server: bot18 joined as unit 18 (arcanist_rime) on team 1
+6.844 INFO [server] server: peer connected
+6.844 INFO [server] server: bot19 joined as unit 19 (oracle_grace) on team 0
+7.337 INFO [server] server: peer connected
+7.337 INFO [server] server: bot20 joined as unit 20 (oracle_grace) on team 1
+10.125 INFO [server] server: t=10 s, 20 clients, tick avg 1.117 ms
+20.122 INFO [server] server: t=20 s, 20 clients, tick avg 1.410 ms
+22.422 INFO [server] server: unit 14 killed unit 17
+30.845 INFO [server] server: t=30 s, 20 clients, tick avg 1.998 ms
+35.755 INFO [server] server: unit 10 killed unit 1
+41.638 INFO [server] server: t=40 s, 20 clients, tick avg 2.300 ms
+45.632 INFO [server] server: bot1 disconnected
+46.026 INFO [server] server: bot2 disconnected
+46.310 INFO [server] server: bot3 disconnected
+46.623 INFO [server] server: bot4 disconnected
+46.884 INFO [server] server: bot5 disconnected
+47.262 INFO [server] server: bot6 disconnected
+47.540 INFO [server] server: bot7 disconnected
+47.852 INFO [server] server: bot8 disconnected
+48.149 INFO [server] server: bot9 disconnected
+48.535 INFO [server] server: bot10 disconnected
+48.846 INFO [server] server: bot11 disconnected
+49.142 INFO [server] server: bot12 disconnected
+49.487 INFO [server] server: bot13 disconnected
+49.791 INFO [server] server: bot14 disconnected
+50.095 INFO [server] server: bot15 disconnected
+50.357 INFO [server] server: bot16 disconnected
+50.765 INFO [server] server: bot17 disconnected
+51.578 INFO [server] server: bot18 disconnected
+51.689 INFO [server] server: t=50 s, 2 clients, tick avg 2.193 ms
+51.840 INFO [server] server: bot19 disconnected
+52.337 INFO [server] server: bot20 disconnected
+61.694 INFO [server] server: t=60 s, 0 clients, tick avg 1.832 ms
+62.695 INFO [server] server: match over after 61 s; 274 damage events, 2 kills

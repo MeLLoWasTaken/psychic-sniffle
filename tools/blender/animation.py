@@ -107,6 +107,20 @@ def validate_set(anim: dict) -> list[str]:
                         term_axis(bone, term)
                     except KeyError as e:
                         errors.append(f"{name}: {e.args[0]}")
+    for hold, h in anim.get("weapon_grip", {}).get("holds", {}).items():
+        for name in h.get("second_hand", {}).get("clips", []):
+            if name not in anim["clips"]:
+                errors.append(f"weapon_grip.holds.{hold}.second_hand: unknown clip {name!r}")
+    for build, clips in anim.get("build_offsets", {}).items():
+        for name, pose in clips.items():
+            if name not in anim["clips"]:
+                errors.append(f"build_offsets.{build}: unknown clip {name!r}")
+            for bone, terms in pose.items():
+                for term in terms:
+                    try:
+                        term_axis(bone, term)
+                    except KeyError as e:
+                        errors.append(f"build_offsets.{build}.{name}: {e.args[0]}")
     return errors
 
 
@@ -196,27 +210,65 @@ def frame_count(clip: dict, fps: int) -> int:
 
 
 def hold_variants(anim: dict) -> list[str]:
-    """Weapon holds whose wrist rule needs its own baked copy of every clip."""
-    return [h for h, d in anim.get("weapon_grip", {}).get("holds", {}).items() if d.get("wrist")]
+    """Weapon holds with a rule (a wrist aim or a second hand) that need their own baked copy of
+    every clip."""
+    return [h for h, d in anim.get("weapon_grip", {}).get("holds", {}).items()
+            if d.get("wrist") or d.get("second_hand")]
 
 
-def wrist_rule(anim: dict, hold: str | None) -> dict | None:
-    """The wrist rule for a hold, with the grip bone and the blade's rest direction filled in."""
+def wrist_rule(anim: dict, hold: str | None, clip: str | None = None, build: str | None = None) -> dict | None:
+    """The hand rules of a hold for one clip: "aim" (wrist aim, see _aim_wrist) and "second"
+    (the other hand on the handle, for the clips the hold lists; see _second_hand)."""
     if not hold:
         return None
     grip = anim["weapon_grip"]
     h = grip["holds"][hold]
-    if not h.get("wrist"):
-        return None
-    return dict(h["wrist"], bone=grip["bone"], blade=h["blade"])
+    rules: dict = {}
+    if h.get("wrist"):
+        rules.update(h["wrist"], bone=grip["bone"], blade=h["blade"])
+    second = h.get("second_hand")
+    if second and clip in second.get("clips", []) and build:
+        rules["second"] = dict(second, grip=grip, hold=hold, build=build)
+    return rules or None
+
+
+def fist_point(rig, grip: dict, bone_name: str, build: str):
+    """Rest-pose centre of a fist (where a handle passes) and the hand's along and palm axes."""
+    from mathutils import Vector
+
+    bone = rig.data.bones[bone_name]
+    head = bone.head_local
+    along = (bone.tail_local - head).normalized()
+    inward = Vector((1.0, 0.0, 0.0)) if bone_name.endswith("_r") else Vector((-1.0, 0.0, 0.0))
+    palm = (inward - along * along.dot(inward)).normalized()
+    return head + along * grip["along_m"][build] + palm * grip["palm_m"][build], along, palm
+
+
+def grip_rest(rig, grip: dict, hold: str, build: str):
+    """Rest-pose world matrix of a held weapon: the blade (+Z) and flat (+Y) along the hold's
+    directions; the weapon's origin (its grip centre) at the fist, slid slide_m down the handle
+    for two-handed holds so the first hand sits near the guard."""
+    from mathutils import Matrix, Vector
+
+    point, _along, _palm = fist_point(rig, grip, grip["bone"], build)
+    h = grip["holds"][hold]
+    z = Vector(h["blade"]).normalized()
+    y = Vector(h["flat"])
+    y = (y - z * z.dot(y)).normalized()
+    x = y.cross(z)
+    m = Matrix((x, y, z)).transposed().to_4x4()
+    m.translation = point - z * h.get("slide_m", 0.0)
+    return m
 
 
 def variant_name(clip: str, hold: str | None) -> str:
     return f"{clip}_{hold}" if hold else clip
 
 
-def sample_clip(anim: dict, clip_name: str) -> list[dict[str, dict[str, float]]]:
-    """Pose (bone -> term -> degrees or metres) for every frame, with follow-through applied."""
+def sample_clip(anim: dict, clip_name: str, build: str | None = None) -> list[dict[str, dict[str, float]]]:
+    """Pose (bone -> term -> degrees or metres) for every frame, with follow-through applied.
+    `build` adds that body build's offsets for this clip (build_offsets in the set), e.g. arms
+    hanging closer on the slim build than plate allows on the heavy one."""
     clip = anim["clips"][clip_name]
     fps = anim["fps"]
     lag = anim.get("overlap_s", {})
@@ -228,6 +280,9 @@ def sample_clip(anim: dict, clip_name: str) -> list[dict[str, dict[str, float]]]
         for (bone, term), f in curves.items():
             delay = 0.0 if bone == "root" else lag.get(family(bone), 0.0)
             pose.setdefault(bone, {})[term] = f(t - delay if clip["loop"] else max(0.0, t - delay))
+        for bone, terms in anim.get("build_offsets", {}).get(build or "", {}).get(clip_name, {}).items():
+            for term, value in terms.items():
+                pose.setdefault(bone, {})[term] = pose.get(bone, {}).get(term, 0.0) + value
         _auto_shrug(pose, anim.get("auto_shrug", 0.0))
         frames.append(pose)
     return frames
@@ -302,7 +357,126 @@ def pose_rig(rig, pose: dict[str, dict[str, float]], wrist: dict | None = None) 
         else:
             rig.pose.bones[bone].rotation_quaternion = bone_quaternion(rig, bone, terms)
     if wrist:
-        _aim_wrist(rig, wrist)
+        if "aim" in wrist:
+            _aim_wrist(rig, wrist)
+        if "second" in wrist:
+            _second_hand(rig, wrist["second"])
+
+
+def _basis(a, b):
+    """Orthonormal rotation matrix whose columns are a, b (made perpendicular to a) and a x b."""
+    from mathutils import Matrix
+
+    a = a.normalized()
+    b = (b - a * a.dot(b)).normalized()
+    return Matrix((a, b, a.cross(b))).transposed()
+
+
+def _turn_bone(pb, pivot, from_dir, to_dir) -> None:
+    import bpy
+    from mathutils import Matrix
+
+    q = from_dir.rotation_difference(to_dir)
+    pb.matrix = Matrix.Translation(pivot) @ q.to_matrix().to_4x4() @ Matrix.Translation(-pivot) @ pb.matrix
+    bpy.context.view_layer.update()
+
+
+SECOND_HAND_SHORTFALL: dict = {}   # clip bake diagnostics: worst distance the hand fell short (m)
+
+
+def _reach(rig, hand_name: str, wrist_target, hand_turn) -> float:
+    """Two-bone reach: turn the upper arm and forearm so the wrist lands on wrist_target (or as
+    close as the arm allows), keeping the animated elbow's side; then set the hand's world
+    rotation to hand_turn (applied to its rest orientation). Returns how far it fell short (m)."""
+    import bpy
+    from mathutils import Vector
+
+    hand = rig.pose.bones[hand_name]
+    upper, fore = hand.parent.parent, hand.parent
+    a, b = upper.bone.length, fore.bone.length
+    shoulder = upper.head.copy()
+    to = wrist_target - shoulder
+    d = to.length
+    reach = min(max(d, abs(a - b) + 1e-3), a + b - 1e-4)
+    u = to.normalized()
+    side = upper.tail - shoulder
+    side = side - u * side.dot(u)
+    if side.length < 1e-4:
+        side = Vector((0, 0, -1)) - u * u.z
+    side.normalize()
+    cos_a = (a * a + reach * reach - b * b) / (2 * a * reach)
+    elbow = shoulder + u * a * cos_a + side * a * math.sqrt(max(0.0, 1 - cos_a * cos_a))
+    wrist = shoulder + u * reach
+    _turn_bone(upper, shoulder, (upper.tail - upper.head).normalized(), (elbow - shoulder).normalized())
+    _turn_bone(fore, fore.head.copy(), (fore.tail - fore.head).normalized(), (wrist - fore.head).normalized())
+    m = (hand_turn @ hand.bone.matrix_local.to_3x3()).to_4x4()
+    m.translation = hand.head.copy()
+    hand.matrix = m
+    bpy.context.view_layer.update()
+    return max(0.0, d - reach)
+
+
+def _second_hand(rig, s: dict) -> None:
+    """Both hands on a two-handed weapon. The blade keeps its animated direction; the handle
+    moves toward the body's midline (and toward the chest while a fist is out of reach), the
+    first hand is re-reached onto it with its animated rotation, and the second fist closes
+    below_m further down the handle, palm facing the first hand's palm, thumb toward the blade."""
+    import bpy
+    from mathutils import Vector
+
+    bpy.context.view_layer.update()
+    grip, hold, build = s["grip"], s["hold"], s["build"]
+    h = grip["holds"][hold]
+    first = rig.pose.bones[grip["bone"]]
+    second = rig.pose.bones[s["bone"]]
+    turn_first = first.matrix.to_3x3() @ first.bone.matrix_local.to_3x3().inverted()
+    weapon = first.matrix @ first.bone.matrix_local.inverted() @ grip_rest(rig, grip, hold, build)
+    blade = (weapon.to_3x3() @ Vector((0, 0, 1))).normalized()
+    fist1, _a1, palm1 = fist_point(rig, grip, grip["bone"], build)
+    fist2, along2, palm2 = fist_point(rig, grip, s["bone"], build)
+    fist_first = weapon.translation + blade * h.get("slide_m", 0.0)
+    fist_second = fist_first - blade * s["below_m"]
+    palm_first = turn_first @ palm1
+    fwd2 = palm2.cross(along2) if s["bone"].endswith("_l") else along2.cross(palm2)
+    if fwd2.y > 0:
+        fwd2 = -fwd2
+    turn_second = _basis(blade, -palm_first) @ _basis(fwd2.normalized(), palm2).inverted()
+    off1 = turn_first @ (fist1 - first.bone.head_local)       # wrist to fist centre, posed
+    off2 = turn_second @ (fist2 - second.bone.head_local)
+    # move the handle: toward the midline and at least min_forward_m in front of the body (plate
+    # is deep); while a wrist is out of reach, raise it toward shoulder height rather than
+    # pulling it back into the chest
+    root = rig.pose.bones["root"]
+    root_rot = root.matrix.to_3x3() @ root.bone.matrix_local.to_3x3().inverted()
+    left_axis = root_rot @ Vector((1, 0, 0))
+    fwd_axis = root_rot @ Vector((0, -1, 0))
+    up_axis = root_rot @ Vector((0, 0, 1))
+    mid = (fist_first + fist_second) / 2
+    rel = mid - root.head
+    lateral = rel.dot(left_axis) * (1.0 - s.get("centre", 0.8))
+    s1, s2 = first.parent.parent, second.parent.parent
+    shoulder_h = ((s1.head + s2.head) / 2 - root.head).dot(up_axis)
+    height = rel.dot(up_axis)
+    # the forward clearance applies in front of the torso, fading out as the handle rises past
+    # the shoulders (overhead windups pass behind the head)
+    low = min(max((shoulder_h + 0.05 - height) / 0.25, 0.0), 1.0)
+    min_fwd = s.get("min_forward_m", 0.4) * low
+    forward = max(rel.dot(fwd_axis), min_fwd)
+    limit = 0.97 * (s1.bone.length + first.parent.bone.length)
+    for _ in range(20):
+        new_mid = root.head + left_axis * lateral + fwd_axis * forward + up_axis * height
+        shift = new_mid - mid
+        w1 = fist_first + shift - off1
+        w2 = fist_second + shift - off2
+        if (w1 - s1.head).length <= limit and (w2 - s2.head).length <= limit:
+            break
+        height += (shoulder_h - 0.2 - height) * 0.2
+        forward = max(min_fwd, forward - 0.02)
+        lateral *= 0.9
+    short = _reach(rig, grip["bone"], fist_first + shift - off1, turn_first)
+    short = max(short, _reach(rig, s["bone"], fist_second + shift - off2, turn_second))
+    key = s.get("clip", "")
+    SECOND_HAND_SHORTFALL[key] = max(SECOND_HAND_SHORTFALL.get(key, 0.0), short)
 
 
 def _aim_wrist(rig, wrist: dict) -> None:
@@ -327,12 +501,15 @@ def _aim_wrist(rig, wrist: dict) -> None:
     pb.matrix = turn @ pb.matrix
 
 
-def bake_clip(rig, anim: dict, clip_name: str, start_frame: int = 0, hold: str | None = None):
+def bake_clip(rig, anim: dict, clip_name: str, start_frame: int = 0, hold: str | None = None,
+              build: str | None = None):
     """Key every frame of a clip into a new action on the rig; returns the action."""
     import bpy
 
-    frames = sample_clip(anim, clip_name)
-    wrist = wrist_rule(anim, hold)
+    frames = sample_clip(anim, clip_name, build)
+    wrist = wrist_rule(anim, hold, clip_name, build)
+    if wrist and "second" in wrist:
+        wrist["second"]["clip"] = variant_name(clip_name, hold)
     act = bpy.data.actions.new(variant_name(clip_name, hold))
     rig.animation_data_create()
     rig.animation_data.action = act

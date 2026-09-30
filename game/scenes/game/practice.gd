@@ -17,7 +17,7 @@ extends Node3D
 ##     [--follow arcanist_rime] [--cam-yaw 90] [--cam-pitch 10] [--cam-zoom -2]
 ##                                    camera framing for screenshots: follow another unit (looking
 ##                                    along its facing), orbit by degrees, pitch, wheel notches
-##     [--no-kit] [--no-gi]
+##     [--no-kit] [--no-gi] [--no-hud]
 ## Tests set `options` before adding the scene to the tree and step it with run_ticks().
 
 ## Defaults for every option; the command line (or a test) overrides them.
@@ -26,7 +26,7 @@ const DEFAULTS: Dictionary = {
 	"map": "gallows_courtyard", "prep": 0.0, "seed": 1, "settings": "default", "keybinds": "default",
 	"auto": "", "fast_forward": 0.0, "pause": false, "seconds": 0.0, "kit": true, "gi": true,
 	"lighting": true, "manual": false, "player_bot": false, "follow": "", "cam_yaw": 0.0, "cam_pitch": "",
-	"cam_zoom": 0,
+	"cam_zoom": 0, "hud": true,
 }
 const MAX_FRAME_S: float = 0.25  ## longer frames are clamped, so a stall never runs away
 
@@ -37,6 +37,7 @@ var renderer: WorldRenderer
 var cam: ThirdPersonCamera
 var controller: PlayerController
 var scripted: ScriptedInput
+var hud: Hud  ## the HUD (M1-27), fed the same views and events as the renderer; null with --no-hud
 var sim_time: float = 0.0
 var paused: bool = false
 var start_position: Vector3
@@ -84,6 +85,10 @@ func _ready() -> void:
 	if str(options["cam_pitch"]) != "":
 		controller.pitch = clampf(deg_to_rad(float(options["cam_pitch"])), controller.pitch_min, controller.pitch_max)
 	scripted = ScriptedInput.new(str(options["auto"]))
+	if bool(options["hud"]):
+		hud = Hud.new(settings)
+		add_child(hud)
+		hud.bind(controller, cam.camera, renderer)
 
 	renderer.push_view(world.view())
 	var ff_ticks: int = roundi(float(options["fast_forward"]) * world.tick_rate())
@@ -112,6 +117,7 @@ func _options_from_args() -> Dictionary:
 	out["player_bot"] = "--player-bot" in args
 	out["kit"] = not ("--no-kit" in args)
 	out["gi"] = not ("--no-gi" in args)
+	out["hud"] = not ("--no-hud" in args)
 	return out
 
 
@@ -144,7 +150,10 @@ func _tick() -> void:
 	world.step(inp)
 	sim_time += world.dt()
 	renderer.push_view(world.view())
-	renderer.push_events(world.take_events())
+	var events: Array = world.take_events()
+	renderer.push_events(events)
+	if hud != null:
+		hud.push(renderer.view, events)
 	renderer.target_id = controller.target_id
 	var quit_after: float = float(options["seconds"])
 	if quit_after > 0.0 and sim_time + 1e-6 >= quit_after and not bool(options["manual"]):
@@ -153,6 +162,8 @@ func _tick() -> void:
 
 func _draw_frame(delta: float, instant: bool = false) -> void:
 	renderer.draw(_accum / world.dt(), 0.0 if paused or instant else delta)  # paused: poses hold
+	if hud != null:
+		hud.update(0.0 if paused or instant else delta)
 	var v: Dictionary = renderer.view
 	if not _gates_opened and not v.is_empty() and int(v["match"]["phase"]) != ArenaMatch.Phase.PREP:
 		_gates_opened = true

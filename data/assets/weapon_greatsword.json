@@ -19,7 +19,8 @@
     "type": "greatsword",
     "blade_m": 1.22,
     "grip_m": 0.34,
-    "blade_width_m": 0.085
+    "blade_width_m": 0.085,
+    "hold": "two_handed"
   },
   "out": "game/assets/weapons/weapon_greatsword.glb",
   "status": "draft"

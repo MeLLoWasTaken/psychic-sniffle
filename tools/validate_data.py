@@ -24,6 +24,7 @@ from __future__ import annotations
 import argparse
 import json
 import math
+import re
 import sys
 from pathlib import Path
 
@@ -51,6 +52,7 @@ FOLDERS = {
     "effect_palettes": ("effect_palette.schema.json", "id"),
     "sounds": ("sound.schema.json", "id"),
     "sound_map": ("sound_map.schema.json", "id"),
+    "hud_layouts": ("hud_layout.schema.json", "id"),
 }
 
 # Ability kit template (docs/DESIGN.md, "Ability kit template"): slot -> (min, max)
@@ -259,6 +261,7 @@ def validate(data_dir: Path) -> list[str]:
         if missing:
             report.error(rel, f"missing required clips: {', '.join(missing)}")
     _check_effects(report, db, schemas)
+    _check_hud_layouts(report, db)
     sys.path.insert(0, str(REPO / "tools" / "audio"))
     import sound_data  # sounds and the sound map (backlog M1-26); weapon sounds per spec
 
@@ -337,6 +340,71 @@ def validate(data_dir: Path) -> list[str]:
 EFFECT_STAGES = ("cast", "projectile", "impact", "ground", "melee", "displacement", "auras")
 CC_AURA_STYLES = {"stun", "disorient", "root", "silence", "ice_block"}
 UNIT_TARGETS = ("enemy", "ally", "any_unit")
+
+
+def _check_hud_layouts(report: Report, db: dict) -> None:
+    """HUD layouts (backlog M1-27): bars bound to real keys, assignments inside the spec's kit,
+    every CC category drawn with a label and glyph, every complete kit fits on the bars."""
+    abilities, specs, classes, auras = db["abilities"], db["specs"], db["classes"], db["auras"]
+    for sid, s in db["settings"].items():
+        lay = s.get("interface", {}).get("hud_layout")
+        if lay is not None and lay not in db["hud_layouts"]:
+            report.error(f"settings/{sid}.json", f"interface.hud_layout '{lay}' not found in hud_layouts")
+    used_cc = {a["cc_category"] for a in auras.values()} - {"none", "knockback"}
+    for lid, lay in db["hud_layouts"].items():
+        rel = f"hud_layouts/{lid}.json"
+        elements = lay["elements"]
+        bars = {eid: e for eid, e in elements.items() if e["type"] == "action_bar"}
+        for eid, e in bars.items():
+            for kid, k in db["keybinds"].items():
+                bound = {b["action"] for b in k["binds"]}
+                missing = [f"{e['action_prefix']}{n}" for n in range(1, e["buttons"] + 1)
+                           if f"{e['action_prefix']}{n}" not in bound]
+                if missing:
+                    report.error(rel, f"elements/{eid}: actions {', '.join(missing)} not bound in keybinds/{kid}.json")
+        ab = lay["action_bars"]
+        for bid in ab["fill_order"]:
+            if bid not in bars:
+                report.error(rel, f"action_bars.fill_order: '{bid}' is not an action_bar element")
+        for aid in ab["exclude"]:
+            if aid not in abilities:
+                report.error(rel, f"action_bars.exclude: ability '{aid}' not found")
+        capacity = sum(bars[b]["buttons"] for b in ab["fill_order"] if b in bars)
+        for spec_id, spec in specs.items():
+            kit = list(spec["abilities"]) + list(classes.get(spec["class"], {}).get("shared_abilities", []))
+            if spec_id in ab["assignments"]:
+                for bid, slots in ab["assignments"][spec_id].items():
+                    if bid not in bars:
+                        report.error(rel, f"action_bars.assignments/{spec_id}: '{bid}' is not an action_bar element")
+                        continue
+                    if len(slots) > bars[bid]["buttons"]:
+                        report.error(rel, f"action_bars.assignments/{spec_id}/{bid}: {len(slots)} slots on a {bars[bid]['buttons']}-button bar")
+                    for aid in slots:
+                        if aid == "":
+                            continue
+                        if aid not in abilities:
+                            report.error(rel, f"action_bars.assignments/{spec_id}/{bid}: ability '{aid}' not found")
+                        elif aid not in kit:
+                            report.error(rel, f"action_bars.assignments/{spec_id}/{bid}: '{aid}' is not in the {spec_id} kit")
+                continue
+            placed = [a for a in kit if a not in ab["exclude"] and abilities.get(a, {}).get("cast_type") != "passive"]
+            if spec.get("kit_status") == "complete" and len(placed) > capacity:
+                report.error(rel, f"{spec_id}: {len(placed)} abilities do not fit on {capacity} action buttons")
+        for cat in used_cc:
+            if cat not in lay["crowd_control"]:
+                report.error(rel, f"crowd_control: no label and glyph for CC category '{cat}' (used by auras)")
+        for key in ("loss_of_control", "dr_categories"):
+            for cat in lay[key]:
+                if cat not in lay["crowd_control"]:
+                    report.error(rel, f"{key}: '{cat}' has no crowd_control entry")
+        for i, rule in enumerate(lay["icon_glyphs"]):
+            try:
+                re.compile(rule["match"])
+            except re.error as exc:
+                report.error(rel, f"icon_glyphs/{i}: bad pattern: {exc}")
+        for eid, e in elements.items():
+            if e["type"] == "combat_text" and e.get("lifetime_s", 1) > 5:
+                report.error(rel, f"elements/{eid}: combat text lifetime over 5 s clutters the screen")
 
 
 def _check_effects(report: Report, db: dict, schemas: dict) -> None:

@@ -1,0 +1,6 @@
+{
+  "description": "An action bar whose buttons have no keys in the keybind profile.",
+  "file": "hud_layouts/default.json",
+  "set": {"/elements/action_bar_2/action_prefix": "bar3_slot"},
+  "expect": "bar3_slot1, bar3_slot2"
+}

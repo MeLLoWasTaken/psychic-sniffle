@@ -1,0 +1,264 @@
+{
+  "correction_avg_m": 0.0071999614426334,
+  "correction_log": [
+    {
+      "auras": [
+        "gashed@1385",
+        "crippled@1510",
+        "seraphic_surge@1591",
+        "ruin_bleed@1862",
+        "dread_roared@1541"
+      ],
+      "m": 0.000610910297837108,
+      "pending": 2,
+      "tick": 1184
+    },
+    {
+      "auras": [
+        "gashed@1385",
+        "crippled@1510",
+        "seraphic_surge@1591",
+        "ruin_bleed@1862",
+        "dread_roared@1541"
+      ],
+      "m": 0.00145287171471864,
+      "pending": 4,
+      "tick": 1185
+    },
+    {
+      "auras": [
+        "gashed@1385",
+        "crippled@1510",
+        "seraphic_surge@1591",
+        "ruin_bleed@1862",
+        "dread_roared@1541"
+      ],
+      "m": 0.00183909642510116,
+      "pending": 4,
+      "tick": 1186
+    },
+    {
+      "auras": [
+        "gashed@1385",
+        "crippled@1510",
+        "seraphic_surge@1591",
+        "ruin_bleed@1862",
+        "dread_roared@1541"
+      ],
+      "m": 0.0015737023204565,
+      "pending": 3,
+      "tick": 1187
+    },
+    {
+      "auras": [
+        "gashed@1385",
+        "crippled@1510",
+        "seraphic_surge@1591",
+        "ruin_bleed@1862",
+        "dread_roared@1541"
+      ],
+      "m": 0.00140523351728916,
+      "pending": 3,
+      "tick": 1188
+    },
+    {
+      "auras": [
+        "gashed@1385",
+        "crippled@1510",
+        "seraphic_surge@1591",
+        "ruin_bleed@1862",
+        "dread_roared@1541"
+      ],
+      "m": 0.00137564877513796,
+      "pending": 3,
+      "tick": 1189
+    },
+    {
+      "auras": [
+        "gashed@1385",
+        "crippled@1510",
+        "seraphic_surge@1591",
+        "ruin_bleed@1862",
+        "dread_roared@1541"
+      ],
+      "m": 0.00113286438863724,
+      "pending": 3,
+      "tick": 1190
+    },
+    {
+      "auras": [
+        "gashed@1385",
+        "crippled@1510",
+        "seraphic_surge@1591",
+        "ruin_bleed@1862",
+        "dread_roared@1541"
+      ],
+      "m": 0.00139269698411226,
+      "pending": 3,
+      "tick": 1191
+    },
+    {
+      "auras": [
+        "gashed@1385",
+        "crippled@1510",
+        "seraphic_surge@1591",
+        "ruin_bleed@1862",
+        "dread_roared@1541"
+      ],
+      "m": 0.000738144561182708,
+      "pending": 2,
+      "tick": 1192
+    },
+    {
+      "auras": [
+        "gashed@1385",
+        "crippled@1510",
+        "seraphic_surge@1591",
+        "ruin_bleed@1862",
+        "dread_roared@1541"
+      ],
+      "m": 0.000978915020823479,
+      "pending": 2,
+      "tick": 1193
+    },
+    {
+      "auras": [
+        "gashed@1385",
+        "crippled@1510",
+        "seraphic_surge@1591",
+        "ruin_bleed@1862",
+        "dread_roared@1541"
+      ],
+      "m": 0.00158856750931591,
+      "pending": 3,
+      "tick": 1194
+    },
+    {
+      "auras": [
+        "gashed@1385",
+        "crippled@1510",
+        "seraphic_surge@1591",
+        "ruin_bleed@1862",
+        "dread_roared@1541"
+      ],
+      "m": 0.000963902450166643,
+      "pending": 2,
+      "tick": 1195
+    },
+    {
+      "auras": [
+        "gashed@1385",
+        "crippled@1510",
+        "seraphic_surge@1591",
+        "ruin_bleed@1862",
+        "dread_roared@1541"
+      ],
+      "m": 0.000801659014541656,
+      "pending": 2,
+      "tick": 1196
+    },
+    {
+      "auras": [
+        "gashed@1385",
+        "crippled@1510",
+        "seraphic_surge@1591",
+        "ruin_bleed@1862",
+        "dread_roared@1541"
+      ],
+      "m": 0.000976164417807013,
+      "pending": 2,
+      "tick": 1197
+    },
+    {
+      "auras": [
+        "gashed@1385",
+        "crippled@1510",
+        "seraphic_surge@1591",
+        "ruin_bleed@1862",
+        "dread_roared@1541"
+      ],
+      "m": 0.00139913521707058,
+      "pending": 2,
+      "tick": 1198
+    },
+    {
+      "auras": [
+        "gashed@1385",
+        "crippled@1510",
+        "seraphic_surge@1591",
+        "ruin_bleed@1862",
+        "dread_roared@1541"
+      ],
+      "m": 0.000759439310058951,
+      "pending": 2,
+      "tick": 1199
+    },
+    {
+      "auras": [
+        "gashed@1385",
+        "crippled@1510",
+        "seraphic_surge@1591",
+        "ruin_bleed@1862",
+        "dread_roared@1541"
+      ],
+      "m": 0.00100287550594658,
+      "pending": 2,
+      "tick": 1200
+    },
+    {
+      "auras": [
+        "gashed@1385",
+        "crippled@1510",
+        "seraphic_surge@1591",
+        "ruin_bleed@1862",
+        "dread_roared@1541"
+      ],
+      "m": 0.000979891861788929,
+      "pending": 2,
+      "tick": 1202
+    },
+    {
+      "auras": [
+        "gashed@1385",
+        "crippled@1510",
+        "seraphic_surge@1591",
+        "ruin_bleed@1862",
+        "dread_roared@1541"
+      ],
+      "m": 0.000870065647177398,
+      "pending": 1,
+      "tick": 1203
+    },
+    {
+      "auras": [
+        "gashed@1385",
+        "crippled@1510",
+        "seraphic_surge@1591",
+        "ruin_bleed@1862",
+        "dread_roared@1541"
+      ],
+      "m": 0.000985392951406538,
+      "pending": 2,
+      "tick": 1204
+    }
+  ],
+  "correction_max_m": 0.116666659712791,
+  "corrections": 49,
+  "effect_correction_max_m": 0.441995859146118,
+  "effect_corrections": 7,
+  "events_received": 1455,
+  "inputs_sent": 2699,
+  "log_errors": 0,
+  "log_warnings": 0,
+  "name": "bot12",
+  "rtt_avg_ms": 21.1056666666667,
+  "rtt_samples": 45,
+  "simulated_jitter_ms": 0.0,
+  "simulated_lag_ms": 0.0,
+  "simulated_loss": 0.0,
+  "snapshot_rate_hz": 57.9187414953387,
+  "snapshots": 2605,
+  "stale_snapshots": 0,
+  "teleports": 0,
+  "unit_id": 12
+}

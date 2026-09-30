@@ -1,0 +1,23 @@
+{
+  "correction_avg_m": 0.0,
+  "correction_log": [],
+  "correction_max_m": 0.0,
+  "corrections": 0,
+  "effect_correction_max_m": 0.466667711734772,
+  "effect_corrections": 4,
+  "events_received": 1429,
+  "inputs_sent": 2699,
+  "log_errors": 0,
+  "log_warnings": 0,
+  "name": "bot3",
+  "rtt_avg_ms": 19.1398444444444,
+  "rtt_samples": 45,
+  "simulated_jitter_ms": 0.0,
+  "simulated_lag_ms": 0.0,
+  "simulated_loss": 0.0,
+  "snapshot_rate_hz": 57.790459573073,
+  "snapshots": 2600,
+  "stale_snapshots": 0,
+  "teleports": 0,
+  "unit_id": 3
+}
