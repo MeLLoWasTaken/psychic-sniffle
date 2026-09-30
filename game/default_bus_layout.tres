@@ -1,8 +1,27 @@
-[gd_resource type="AudioBusLayout" load_steps=2 format=3]
+[gd_resource type="AudioBusLayout" load_steps=4 format=3]
 
 [sub_resource type="AudioEffectHardLimiter" id="AudioEffectHardLimiter_master"]
 resource_name = "HardLimiter"
 ceiling_db = -0.5
+
+[sub_resource type="AudioEffectReverb" id="AudioEffectReverb_arena"]
+resource_name = "ArenaReverb"
+predelay_msec = 25.0
+predelay_feedback = 0.1
+room_size = 0.3
+damping = 0.6
+spread = 0.6
+hipass = 0.06
+dry = 1.0
+wet = 0.08
+
+[sub_resource type="AudioEffectCompressor" id="AudioEffectCompressor_duck"]
+resource_name = "WarningDuck"
+threshold = -6.0
+ratio = 2.0
+attack_us = 500.0
+release_ms = 300.0
+sidechain = &"Interface"
 
 [resource]
 bus/0/name = &"Master"
@@ -31,6 +50,10 @@ bus/3/mute = false
 bus/3/bypass_fx = false
 bus/3/volume_db = 0.0
 bus/3/send = &"Master"
+bus/3/effect/0/effect = SubResource("AudioEffectReverb_arena")
+bus/3/effect/0/enabled = true
+bus/3/effect/1/effect = SubResource("AudioEffectCompressor_duck")
+bus/3/effect/1/enabled = true
 bus/4/name = &"EffectsSelf"
 bus/4/solo = false
 bus/4/mute = false

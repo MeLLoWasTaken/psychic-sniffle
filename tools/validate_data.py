@@ -53,6 +53,8 @@ FOLDERS = {
     "sounds": ("sound.schema.json", "id"),
     "sound_map": ("sound_map.schema.json", "id"),
     "hud_layouts": ("hud_layout.schema.json", "id"),
+    "sound_processing": ("sound_processing.schema.json", "id"),
+    "acoustics": ("acoustics.schema.json", "id"),
 }
 
 # Ability kit template (docs/DESIGN.md, "Ability kit template"): slot -> (min, max)

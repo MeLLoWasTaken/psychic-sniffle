@@ -51,7 +51,22 @@
         "allies": {"$ref": "#/$defs/bus"},
         "enemies": {"$ref": "#/$defs/bus"},
         "interface": {"$ref": "#/$defs/bus"},
-        "warning": {"$ref": "#/$defs/bus"}
+        "warning": {"$ref": "#/$defs/bus"},
+        "world": {"$ref": "#/$defs/bus", "description": "The bus every world sound passes through (self, allies and enemies send to it): it carries the map's arena reverb (data/acoustics, backlog X-04). Interface and warning buses must not pass through it, so they stay dry"}
+      }
+    },
+    "ducking": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["bus", "sidechain", "threshold_db", "ratio", "attack_us", "release_ms"],
+      "description": "A compressor on `bus` keyed by `sidechain` (backlog X-04): when a warning plays, the world dips so the warning sits on top; the threshold is set so quiet interface clicks (peaks -14 dBFS and below) do not trigger it. Godot's compressor counts the overshoot about twice (2.08 x dB over the threshold), so the dip is about 2.08 x over x (ratio - 1) / ratio dB: -6 dB and ratio 2 dip the world about 5 dB under the -1 dBFS CC warning",
+      "properties": {
+        "bus": {"$ref": "#/$defs/bus"},
+        "sidechain": {"$ref": "#/$defs/bus"},
+        "threshold_db": {"type": "number", "minimum": -60, "maximum": 0},
+        "ratio": {"type": "number", "minimum": 1, "maximum": 48},
+        "attack_us": {"type": "number", "minimum": 20, "maximum": 2000},
+        "release_ms": {"type": "number", "minimum": 20, "maximum": 2000}
       }
     },
     "attenuation": {

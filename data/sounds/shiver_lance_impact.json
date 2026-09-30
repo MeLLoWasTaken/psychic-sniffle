@@ -3,6 +3,7 @@
   "description": "Shiver Lance pierces: sharp ice tip, a tight thunk, small shards.",
   "category": "impact",
   "peak_dbfs": -4.0,
+  "processing": "impact_light",
   "duration_s": 0.5,
   "layers": [
     {

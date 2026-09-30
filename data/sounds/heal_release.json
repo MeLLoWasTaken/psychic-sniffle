@@ -3,6 +3,7 @@
   "description": "A heal spell released: a soft chime and a breath of air.",
   "category": "release",
   "peak_dbfs": -7.0,
+  "processing": "magic_release",
   "duration_s": 1.55,
   "layers": [
     {

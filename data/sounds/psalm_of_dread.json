@@ -3,6 +3,7 @@
   "description": "Psalm of Dread (shadow area fear): a low, moaning dark choir with a dissonant cluster and a deep drop.",
   "category": "release",
   "peak_dbfs": -3.0,
+  "processing": "magic_release",
   "duration_s": 3.35,
   "layers": [
     {

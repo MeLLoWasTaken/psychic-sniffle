@@ -1,0 +1,1 @@
+{"description": "Interface sounds are given the cast chain (chorus and plate) instead of a dry one (X-04)", "file": "sound_processing/default.json", "set": {"/categories/interface": "cast"}, "expect": "category 'interface' must stay dry and on top"}

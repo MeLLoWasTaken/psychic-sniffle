@@ -1,0 +1,1 @@
+{"description": "A cast loop is given a chain with a chorus, whose sweep would break the loop seam (X-04)", "file": "sounds/frost_channel_loop.json", "set": {"/processing": "cast"}, "expect": "would break the loop seam"}

@@ -3,6 +3,7 @@
   "description": "A holy dispel cast (Absolve, Unravel): a purifying upward sweep with a clear chime.",
   "category": "release",
   "peak_dbfs": -6.0,
+  "processing": "magic_release",
   "duration_s": 1.0,
   "layers": [
     {

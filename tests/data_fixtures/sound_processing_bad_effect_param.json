@@ -1,0 +1,1 @@
+{"description": "A compressor is missing its ratio and has a parameter from another effect (schema, X-04)", "file": "sound_processing/default.json", "set": {"/chains/impact/effects/3": {"fx": "compressor", "threshold_db": -18, "attack_ms": 10, "release_ms": 60, "room_size": 0.5}}, "expect": "'ratio' is a required property"}

@@ -19,7 +19,10 @@ extends Node3D
 ##
 ## World sounds are 3D (AudioStreamPlayer3D, inverse-distance falloff from the map's attenuation
 ## profiles) on the self, allies or enemies effects bus by who caused them; interface sounds and
-## warnings are 2D. At most `max_voices` play at once (DESIGN.md: 64): a new sound takes the voice
+## warnings are 2D. The self, allies and enemies buses send to the world bus (sound_map
+## buses.world), whose AudioEffectReverb takes the room sound of the view's map (data/acoustics,
+## backlog X-04) and whose compressor dips the world under the warnings (sound_map ducking);
+## interface sounds and warnings bypass it, dry and on top. At most `max_voices` play at once (DESIGN.md: 64): a new sound takes the voice
 ## of the lowest-priority, oldest one when it outranks it, else it is dropped; enemy crowd control
 ## and burst abilities and the warnings are never dropped. Each sound also has a cap on copies of
 ## itself (max_instances). Voices end by game time (the views' tick), so counts are deterministic.
@@ -43,6 +46,7 @@ var tick: int = -1
 var tick_rate: int = 60
 var clock: float = 0.0  ## game time of the newest view, seconds
 var target_id: int = -1
+var acoustics_id: String = ""  ## map whose room sound the arena reverb has ("" = the default)
 
 var voices: Array[Dictionary] = []  ## playing: {player, id, priority, critical, started, ends, unit, ...}
 var units: Dictionary = {}  ## unit id -> {spec, team, pos, acc, airborne, loop}
@@ -72,6 +76,62 @@ func _init(p_bank: SoundBank = null) -> void:
 	bank = p_bank if p_bank != null else SoundBank.shared()
 	max_voices = int(bank.map.get("voices", {}).get("max", max_voices))
 	cc_warning_enabled = bool(bank.map.get("cc_warning", {}).get("enabled_default", true))
+	apply_ducking()
+	apply_acoustics("")
+
+
+# ================================================================== mix (backlog X-04)
+
+## The effect of `type` on `bus` (the first one), added at the end if the bus has none.
+static func bus_effect(bus: String, type: String) -> AudioEffect:
+	var idx: int = AudioServer.get_bus_index(bus)
+	if idx == -1:
+		Log.error("audio: no bus '%s'" % bus)
+		return null
+	for i: int in AudioServer.get_bus_effect_count(idx):
+		var e: AudioEffect = AudioServer.get_bus_effect(idx, i)
+		if e.is_class(type):
+			return e
+	var made: AudioEffect = ClassDB.instantiate(type)
+	AudioServer.add_bus_effect(idx, made)
+	return made
+
+
+## Set the arena reverb on the world bus to the room sound of `map_id` (data/acoustics; the
+## default file for maps without one). Views name their map, so a new map re-tunes the reverb.
+func apply_acoustics(map_id: String) -> void:
+	acoustics_id = map_id
+	var a: Dictionary = bank.acoustics_for(map_id)
+	var bus: String = str(bank.map.get("buses", {}).get("world", ""))
+	if a.is_empty() or bus == "":
+		return
+	var rv: AudioEffectReverb = bus_effect(bus, "AudioEffectReverb")
+	if rv == null:
+		return
+	var p: Dictionary = a["reverb"]
+	rv.room_size = float(p["room_size"])
+	rv.damping = float(p["damping"])
+	rv.spread = float(p["spread"])
+	rv.hipass = float(p["hipass"])
+	rv.dry = float(p["dry"])
+	rv.wet = float(p["wet"])
+	rv.predelay_msec = float(p["predelay_ms"])
+	rv.predelay_feedback = float(p["predelay_feedback"])
+
+
+## The world dips under the warnings: a compressor on the ducking bus keyed by the warning bus.
+func apply_ducking() -> void:
+	var d: Dictionary = bank.map.get("ducking", {})
+	if d.is_empty():
+		return
+	var c: AudioEffectCompressor = bus_effect(str(d["bus"]), "AudioEffectCompressor")
+	if c == null:
+		return
+	c.sidechain = StringName(str(d["sidechain"]))
+	c.threshold = float(d["threshold_db"])
+	c.ratio = float(d["ratio"])
+	c.attack_us = float(d["attack_us"])
+	c.release_ms = float(d["release_ms"])
 
 
 # ================================================================== input
@@ -82,6 +142,8 @@ func push_view(v: Dictionary) -> void:
 	if v.is_empty() or int(v["tick"]) == tick:
 		return
 	tick_rate = int(v.get("tick_rate", tick_rate))
+	if v.has("map") and str(v["map"]) != acoustics_id:
+		apply_acoustics(str(v["map"]))
 	var dt: float = float(int(v["tick"]) - tick) / tick_rate if tick >= 0 else 0.0
 	tick = int(v["tick"])
 	clock = float(tick) / tick_rate

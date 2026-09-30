@@ -1,0 +1,29 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "acoustics.schema.json",
+  "title": "Map acoustics",
+  "description": "The room sound of a map (backlog X-04): settings of the AudioEffectReverb on the world effects bus (sound_map buses.world), applied by AudioDirector when a view names the map. The file id is a map id, or 'default' for maps without their own file. Interface sounds and warnings do not pass through this bus: they stay dry.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["id", "description", "reverb"],
+  "properties": {
+    "id": {"$ref": "common.schema.json#/$defs/id"},
+    "description": {"type": "string", "description": "The space, and what the reverb should sound like"},
+    "reverb": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["room_size", "damping", "spread", "hipass", "dry", "wet", "predelay_ms", "predelay_feedback"],
+      "description": "Godot AudioEffectReverb parameters (a Freeverb-style algorithmic reverb)",
+      "properties": {
+        "room_size": {"type": "number", "minimum": 0, "maximum": 1, "description": "Longer tail for larger values"},
+        "damping": {"type": "number", "minimum": 0, "maximum": 1, "description": "How fast the highs die in the tail (stone: low, cloth and wood: high)"},
+        "spread": {"type": "number", "minimum": 0, "maximum": 1, "description": "Stereo width of the tail"},
+        "hipass": {"type": "number", "minimum": 0, "maximum": 1, "description": "High-pass on the reverb input, keeping the low end out of the tail (no mud); cutoff about hipass x 6 kHz (0.04 = 240 Hz)"},
+        "dry": {"type": "number", "minimum": 0, "maximum": 1},
+        "wet": {"type": "number", "minimum": 0, "maximum": 0.5, "description": "Tail level; the loudness rule (nothing louder than the CC warning) is checked with it through tools/audio/arena.py, a port of Godot's reverb"},
+        "predelay_ms": {"type": "number", "minimum": 20, "maximum": 500, "description": "Spacing of the echo Godot's reverb feeds back into its own input (it does not delay the direct sound); with predelay_feedback 0 it has no effect"},
+        "predelay_feedback": {"type": "number", "minimum": 0, "maximum": 0.98, "description": "Level of that echo: a flutter between parallel walls"}
+      }
+    }
+  }
+}

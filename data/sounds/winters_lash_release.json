@@ -3,6 +3,7 @@
   "description": "Winter's Lash: a whip of frost, a rising lash ending in a sharp crack.",
   "category": "release",
   "peak_dbfs": -5.0,
+  "processing": "magic_release",
   "duration_s": 0.45,
   "layers": [
     {

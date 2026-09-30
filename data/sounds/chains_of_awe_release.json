@@ -3,6 +3,7 @@
   "description": "Chains of Awe cast: spectral chains flung out, a whoosh with rattling links.",
   "category": "release",
   "peak_dbfs": -5.0,
+  "processing": "magic_release",
   "duration_s": 0.7,
   "layers": [
     {

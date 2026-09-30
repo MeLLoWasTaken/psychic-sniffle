@@ -83,6 +83,7 @@
       "description": "impact: hits and damage landing (no sustained pure tone above 200 Hz); heal: needs low-end weight; warning: the CC warnings, the loudest sounds in the game. Playback defaults per category are in data/sound_map."
     },
     "peak_dbfs": {"type": "number", "minimum": -40, "maximum": -1},
+    "processing": {"$ref": "common.schema.json#/$defs/id", "description": "Studio processing chain from data/sound_processing (backlog X-04) instead of the category's default, or \"none\""},
     "loops": {"type": "boolean"},
     "variants": {"type": "integer", "minimum": 1, "maximum": 8, "description": "Seeded variations, picked at random per play (AudioStreamRandomizer)"},
     "seed": {"type": "integer", "minimum": 0},

@@ -85,3 +85,57 @@ def attack_time(x: np.ndarray, sr: int) -> float:
     n = len(x) // frame
     e = (x[: n * frame].reshape(n, frame) ** 2).mean(axis=1)
     return float(np.argmax(e) * frame / sr)
+
+
+# ----------------------------------------------------------------------------- X-04 processing checks
+
+def _frames_db(x: np.ndarray, sr: int, ms: float = 10.0) -> np.ndarray:
+    frame = max(1, int(ms * 1e-3 * sr))
+    n = max(1, len(x) // frame)
+    xx = np.pad(x, (0, max(0, n * frame - len(x))))[: n * frame]
+    return 10 * np.log10((xx.reshape(n, frame) ** 2).mean(axis=1) + 1e-20)
+
+
+def crest_factor_db(x: np.ndarray, sr: int) -> float:
+    """Peak over RMS (dB) across the sound's active part: from the first to the last 10 ms frame
+    within 30 dB of the loudest one. Transient punch raises it; heavy compression lowers it."""
+    e = _frames_db(x, sr)
+    frame = int(0.01 * sr)
+    act = np.nonzero(e > e.max() - 30)[0]
+    seg = x[act[0] * frame:(act[-1] + 1) * frame]
+    return float(peak_dbfs(x) - 10 * np.log10(np.mean(seg ** 2) + 1e-20))
+
+
+def low_mid_share(x: np.ndarray, sr: int) -> float:
+    """Share of energy between 100 and 500 Hz: the body of a hit (too much of it reads as mud)."""
+    return band_share(x, sr, 500, 100)
+
+
+def mud_share(x: np.ndarray, sr: int) -> float:
+    """Share of energy between 250 and 500 Hz, where a mix turns boxy and muddy."""
+    return band_share(x, sr, 500, 250)
+
+
+def harsh_share(x: np.ndarray, sr: int) -> float:
+    """Share of energy between 2.5 and 5 kHz, where a sound turns harsh and piercing."""
+    return band_share(x, sr, 5000, 2500)
+
+
+def dc_offset(x: np.ndarray) -> float:
+    return float(abs(np.mean(x)))
+
+
+def tail_db(x: np.ndarray, sr: int, ms: float = 50.0) -> float:
+    """Peak level of the last `ms` relative to the whole sound's peak (dB). A tail cut off while
+    still ringing (a reverb stopping dead) shows as a high value."""
+    n = max(1, int(ms * 1e-3 * sr))
+    return float(20 * np.log10((np.max(np.abs(x[-n:])) + 1e-12) / (np.max(np.abs(x)) + 1e-12)))
+
+
+def flat_top_run(x: np.ndarray, rel: float = 1e-6) -> int:
+    """Longest run of consecutive samples at the peak magnitude (within `rel`): a hard clip leaves
+    a flat top of many equal samples; a clean peak is 1 sample (rarely 2). Measure it on the float
+    signal before encoding (Vorbis smears flat tops), as synth.py does into manifest.json."""
+    near = np.concatenate([[0], (np.abs(x) >= np.max(np.abs(x)) * (1 - rel)).astype(np.int8), [0]])
+    edges = np.diff(near)
+    return int((np.nonzero(edges == -1)[0] - np.nonzero(edges == 1)[0]).max())

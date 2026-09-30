@@ -1,0 +1,1 @@
+{"description": "The warning chain gets a plate reverb: warnings must stay dry and on top (X-04)", "file": "sound_processing/default.json", "set": {"/chains/warning/effects/1": {"fx": "plate", "decay_s": 1.2, "wet": 0.2}}, "expect": "chains/warning: a dry chain may not use reverb"}

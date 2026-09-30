@@ -1,0 +1,156 @@
+{
+  "id": "default",
+  "description": "Studio processing of every generated sound (backlog X-04): named effect chains, the default chain per category (a sound picks another with \"processing\"), the categories that must stay dry, and the loudness window each category must land in. Levels in a chain are relative to the sound's peak before processing. Effects are documented in tools/audio/processing.py.",
+  "chains": {
+    "impact": {
+      "description": "Hits: rumble removed, low-mid body lifted and thickened by parallel saturation, glued by a slow-attack compressor, then the onset sharpened and the ring shortened again by a transient shaper, the top 3.5 dB of the crack trimmed so the body stays loud under the same peak, the 3 kHz bite eased, and each variation pitched slightly apart.",
+      "effects": [
+        {"fx": "highpass", "hz": 32, "order": 2},
+        {"fx": "peak", "hz": 190, "gain_db": 3.5, "q": 0.7},
+        {"fx": "saturate", "band": [80, 320], "drive_db": 12, "mix": 0.45},
+        {"fx": "compressor", "threshold_db": -18, "ratio": 2.0, "attack_ms": 10, "release_ms": 60},
+        {"fx": "transient", "attack_db": 3.0, "sustain_db": -2.5, "fast_ms": 1.0, "slow_ms": 40},
+        {"fx": "limiter", "threshold_db": -5, "release_ms": 30},
+        {"fx": "peak", "hz": 3200, "gain_db": -1.5, "q": 1.0},
+        {"fx": "varispeed", "semitones": [-0.6, 0.6]}
+      ]
+    },
+    "impact_light": {
+      "description": "Thin, fast hits whose body already sits in the low mids (ice lance, dagger): no low-mid boost or saturation (they measured 70% low-mid and turned boxy with the impact chain), only the onset sharpened, the ring shortened, the top of the crack trimmed and each variation pitched apart.",
+      "effects": [
+        {"fx": "highpass", "hz": 40, "order": 2},
+        {"fx": "compressor", "threshold_db": -18, "ratio": 2.0, "attack_ms": 10, "release_ms": 60},
+        {"fx": "transient", "attack_db": 3.0, "sustain_db": -3.0, "fast_ms": 1.0, "slow_ms": 40},
+        {"fx": "limiter", "threshold_db": -6, "release_ms": 30},
+        {"fx": "varispeed", "semitones": [-0.6, 0.6]}
+      ]
+    },
+    "cast": {
+      "description": "Spell wind-ups: a slow chorus shimmer above 400 Hz, gentle levelling, the top eased, and a bright plate above 250 Hz for space around the caster (the low end stays dry and clean).",
+      "effects": [
+        {"fx": "highpass", "hz": 30, "order": 2},
+        {"fx": "chorus", "rate_hz": 0.6, "depth": 0.25, "centre_delay_ms": 9, "feedback": 0.1, "mix": 0.3, "above_hz": 400},
+        {"fx": "compressor", "threshold_db": -14, "ratio": 2.0, "attack_ms": 20, "release_ms": 150},
+        {"fx": "high_shelf", "hz": 6000, "gain_db": -1.5, "q": 0.7},
+        {"fx": "plate", "decay_s": 1.4, "predelay_ms": 18, "damping_hz": 5000, "wet": 0.22, "above_hz": 250}
+      ]
+    },
+    "loop": {
+      "description": "Held casts and channels: gentle levelling and a short plate folded into the loop (no time-varying effects: the seam must join).",
+      "effects": [
+        {"fx": "highpass", "hz": 30, "order": 2},
+        {"fx": "compressor", "threshold_db": -12, "ratio": 2.0, "attack_ms": 30, "release_ms": 200},
+        {"fx": "plate", "decay_s": 1.0, "predelay_ms": 15, "damping_hz": 5000, "wet": 0.15, "above_hz": 250}
+      ]
+    },
+    "release": {
+      "description": "Physical releases, shouts and throws: a little low-mid body, peaks trimmed, light levelling and a short plate so the action leaves a trail.",
+      "effects": [
+        {"fx": "highpass", "hz": 32, "order": 2},
+        {"fx": "peak", "hz": 200, "gain_db": 1.5, "q": 0.8},
+        {"fx": "limiter", "threshold_db": -2, "release_ms": 40},
+        {"fx": "compressor", "threshold_db": -16, "ratio": 1.8, "attack_ms": 15, "release_ms": 120},
+        {"fx": "plate", "decay_s": 1.1, "predelay_ms": 12, "damping_hz": 5500, "wet": 0.16, "above_hz": 250}
+      ]
+    },
+    "magic_release": {
+      "description": "Frost, holy and shadow releases: peaks trimmed, a slow phaser swirl above 400 Hz, light levelling, the air eased, and a longer, brighter plate than physical releases.",
+      "effects": [
+        {"fx": "highpass", "hz": 32, "order": 2},
+        {"fx": "limiter", "threshold_db": -2, "release_ms": 40},
+        {"fx": "phaser", "rate_hz": 0.8, "depth": 0.5, "centre_hz": 1800, "feedback": 0.3, "mix": 0.3, "above_hz": 400},
+        {"fx": "compressor", "threshold_db": -16, "ratio": 1.8, "attack_ms": 15, "release_ms": 120},
+        {"fx": "high_shelf", "hz": 7000, "gain_db": -1.0, "q": 0.7},
+        {"fx": "plate", "decay_s": 1.3, "predelay_ms": 15, "damping_hz": 6500, "wet": 0.2, "above_hz": 250}
+      ]
+    },
+    "buff": {
+      "description": "Magic cooldowns and shields: warm low shelf, chorus shimmer above 400 Hz and a longer plate so an empowered caster sounds bigger than a cast.",
+      "effects": [
+        {"fx": "highpass", "hz": 30, "order": 2},
+        {"fx": "low_shelf", "hz": 180, "gain_db": 1.5, "q": 0.7},
+        {"fx": "chorus", "rate_hz": 0.5, "depth": 0.3, "centre_delay_ms": 10, "feedback": 0.1, "mix": 0.3, "above_hz": 400},
+        {"fx": "compressor", "threshold_db": -14, "ratio": 2.0, "attack_ms": 15, "release_ms": 150},
+        {"fx": "plate", "decay_s": 1.6, "predelay_ms": 20, "damping_hz": 5000, "wet": 0.2, "above_hz": 250}
+      ]
+    },
+    "buff_physical": {
+      "description": "Warrior cooldowns (rage, bracing): low-mid body and parallel saturation like a hit, levelling and a short dark plate; no chorus on armour and growls.",
+      "effects": [
+        {"fx": "highpass", "hz": 30, "order": 2},
+        {"fx": "peak", "hz": 180, "gain_db": 2.0, "q": 0.8},
+        {"fx": "saturate", "band": [80, 320], "drive_db": 10, "mix": 0.3},
+        {"fx": "compressor", "threshold_db": -14, "ratio": 2.0, "attack_ms": 15, "release_ms": 150},
+        {"fx": "plate", "decay_s": 1.2, "predelay_ms": 15, "damping_hz": 4500, "wet": 0.15, "above_hz": 250}
+      ]
+    },
+    "heal": {
+      "description": "Heals: keep and warm the low-end weight (human feedback), a light chorus on the choir above 400 Hz and a warm plate above 300 Hz.",
+      "effects": [
+        {"fx": "highpass", "hz": 25, "order": 2},
+        {"fx": "low_shelf", "hz": 160, "gain_db": 1.5, "q": 0.7},
+        {"fx": "chorus", "rate_hz": 0.4, "depth": 0.2, "centre_delay_ms": 11, "feedback": 0.0, "mix": 0.25, "above_hz": 400},
+        {"fx": "compressor", "threshold_db": -14, "ratio": 2.0, "attack_ms": 25, "release_ms": 180},
+        {"fx": "plate", "decay_s": 1.5, "predelay_ms": 20, "damping_hz": 4000, "wet": 0.18, "above_hz": 300}
+      ]
+    },
+    "swing": {
+      "description": "Weapon swings: rumble removed, a light compressor so every swing whooshes at a steady level, each variation pitched slightly apart.",
+      "effects": [
+        {"fx": "highpass", "hz": 70, "order": 2},
+        {"fx": "compressor", "threshold_db": -12, "ratio": 2.0, "attack_ms": 5, "release_ms": 80},
+        {"fx": "varispeed", "semitones": [-0.8, 0.8]}
+      ]
+    },
+    "footstep": {
+      "description": "Footsteps: no reverb (the arena bus adds the room in game), the heel thump lifted, levelled so steps do not jump out, each variation pitched slightly apart.",
+      "effects": [
+        {"fx": "highpass", "hz": 40, "order": 2},
+        {"fx": "peak", "hz": 140, "gain_db": 2.0, "q": 0.9},
+        {"fx": "compressor", "threshold_db": -12, "ratio": 2.5, "attack_ms": 3, "release_ms": 60},
+        {"fx": "varispeed", "semitones": [-0.7, 0.7]}
+      ]
+    },
+    "interface": {
+      "description": "Interface sounds: dry and clean, only DC and subsonic drift removed (a gentle first-order 15 Hz high-pass: a steeper one shifted the phase of the error buzz and cost it 2 dB of loudness under the same peak).",
+      "dry": true,
+      "effects": [
+        {"fx": "highpass", "hz": 15, "order": 1}
+      ]
+    },
+    "warning": {
+      "description": "Crowd-control warnings: dry and dense. A fast compressor and a limiter raise the body under the same peak so the warning stays the loudest cue by a wider margin.",
+      "dry": true,
+      "effects": [
+        {"fx": "highpass", "hz": 25, "order": 2},
+        {"fx": "compressor", "threshold_db": -12, "ratio": 4.0, "attack_ms": 0.5, "release_ms": 50},
+        {"fx": "limiter", "threshold_db": -6, "release_ms": 40}
+      ]
+    }
+  },
+  "categories": {
+    "impact": "impact",
+    "cast": "cast",
+    "loop": "loop",
+    "release": "release",
+    "buff": "buff",
+    "heal": "heal",
+    "swing": "swing",
+    "footstep": "footstep",
+    "interface": "interface",
+    "warning": "warning"
+  },
+  "dry_categories": ["interface", "warning"],
+  "loudness": {
+    "impact": {"plr_lu": [10, 26], "max_spread_lu": 3.0},
+    "cast": {"plr_lu": [10.5, 14], "max_spread_lu": 1.0},
+    "loop": {"plr_lu": [9, 11.5], "max_spread_lu": 0.8},
+    "release": {"plr_lu": [9.5, 20.5], "max_spread_lu": 2.5},
+    "buff": {"plr_lu": [9.5, 13.5], "max_spread_lu": 1.0},
+    "heal": {"plr_lu": [10, 13], "max_spread_lu": 1.0},
+    "swing": {"plr_lu": [11.5, 19.5], "max_spread_lu": 1.8},
+    "footstep": {"plr_lu": [16, 23], "max_spread_lu": 1.3},
+    "interface": {"plr_lu": [11, 24.5], "max_spread_lu": 5.0},
+    "warning": {"plr_lu": [6.5, 10.5], "max_spread_lu": 1.5}
+  }
+}

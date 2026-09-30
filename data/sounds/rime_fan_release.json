@@ -3,6 +3,7 @@
   "description": "Rime Fan: a burst of frost exploding outward around the caster; a low whoomph, spraying ice.",
   "category": "release",
   "peak_dbfs": -3.0,
+  "processing": "magic_release",
   "duration_s": 1.2,
   "layers": [
     {
