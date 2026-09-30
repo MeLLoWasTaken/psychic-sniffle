@@ -5,16 +5,28 @@ extends Node
 ## Command line (after `--`): --server [--port 24600] [--map gallows_courtyard]
 ##   [--mode skirmish|arena] [--bracket 2v2] [--prep-seconds 60] [--match-seconds 300]
 ##   [--respawn] [--summary /abs/path.json] [--seed 1]
+##   [--roster player:0,partner:0,enemy1:1,enemy2:1] [--host player] [--ready-file /abs/path]
 ## skirmish: free-for-all testing mode with optional respawns and no match rules.
 ## arena: preparation phase behind gates, dampening, and a winner (backlog M1-09); the server
 ##   writes its summary and exits a few seconds after the match ends.
 ## Runs the simulation at the tuning tick rate in _physics_process, applies one buffered input
 ## per client per tick, and sends every client a snapshot after every tick.
+##
+## Hosted matches (M1-28, a game client starts this server for "Play 2v2 vs bots"):
+##   --roster: the names allowed to join and their teams; other names are rejected. In arena
+##     mode the preparation countdown holds until the whole roster has joined, so nobody loses
+##     preparation time to loading.
+##   --host: the client that owns this server. If it has not joined within HOST_JOIN_TIMEOUT_S,
+##     disconnects, or sends nothing for HOST_SILENCE_S, the server writes its summary and exits
+##     (no server outlives the game that started it).
+##   --ready-file: written once the server listens, so the launcher knows when to connect.
 
 const CATCH_UP_BUFFER: int = 6  ## above this many queued inputs, apply two per tick to catch up
 const GAP_GIVE_UP_INPUTS: int = 4  ## a missing input is treated as lost once this many newer ones are queued
 const RESPAWN_S: float = 5.0
 const END_LINGER_S: float = 3.0
+const HOST_JOIN_TIMEOUT_S: float = 60.0
+const HOST_SILENCE_S: float = 15.0
 
 var transport: NetTransport = NetTransport.new()
 var runner: MatchRunner
@@ -37,6 +49,13 @@ var _last_report_tick: int = 0
 var _finished: bool = false
 var _ended_tick: int = -1
 var _departed: Dictionary = {}  ## name -> stats of clients that already left
+var _unit_names: Dictionary = {}  ## client name -> unit id, kept after the client leaves
+var roster: Dictionary = {}  ## name -> team (hosted matches); empty = anyone joins, teams alternate
+var host_name: String = ""  ## the client that owns this server (hosted matches), or ""
+var end_reason: String = ""  ## why the server finished: match_end, time_limit, host_left...
+var _started_usec: int = 0
+var _host_seen: bool = false
+var _host_last_usec: int = 0
 
 
 func _ready() -> void:
@@ -45,6 +64,8 @@ func _ready() -> void:
 	match_seconds = float(_arg(args, "--match-seconds", "0"))
 	respawn = "--respawn" in args
 	summary_path = _arg(args, "--summary", "")
+	roster = parse_roster(_arg(args, "--roster", ""))
+	host_name = _arg(args, "--host", "")
 	mode = _arg(args, "--mode", "skirmish")
 	var map_id: String = _arg(args, "--map", "gallows_courtyard")
 	map = Data.maps.get(map_id, {})
@@ -68,6 +89,22 @@ func _ready() -> void:
 		get_tree().quit(1)
 		return
 	Log.info("server: listening on port %d, map %s, mode %s, tick %d Hz" % [port, map_id, mode, sim.tick_rate])
+	_started_usec = Time.get_ticks_usec()
+	var ready_file: String = _arg(args, "--ready-file", "")
+	if ready_file != "":
+		var rf: FileAccess = FileAccess.open(ready_file, FileAccess.WRITE)
+		rf.store_string(str(OS.get_process_id()))
+		rf.close()
+
+
+## "player:0,partner:0,enemy1:1" -> {"player": 0, "partner": 0, "enemy1": 1}.
+static func parse_roster(text: String) -> Dictionary:
+	var out: Dictionary = {}
+	for part: String in text.split(",", false):
+		var kv: PackedStringArray = part.strip_edges().split(":")
+		if kv.size() == 2:
+			out[kv[0]] = int(kv[1])
+	return out
 
 
 func _process(_delta: float) -> void:
@@ -79,6 +116,12 @@ func _physics_process(_delta: float) -> void:
 	if _finished or sim == null:
 		return
 	_handle_network()
+	if _finished:
+		return
+	if _check_host():
+		return
+	if arena and not roster.is_empty() and clients.size() < roster.size():
+		arena.hold_prep(sim.tick)  # preparation starts when everyone is in
 	var t0: int = Time.get_ticks_usec()
 	sim.step()
 	_tick_usec.append(Time.get_ticks_usec() - t0)
@@ -87,9 +130,29 @@ func _physics_process(_delta: float) -> void:
 		_last_report_tick = sim.tick
 		Log.info("server: t=%.0f s, %d clients, tick avg %.3f ms" % [sim.time_s(), clients.size(), _avg_tick_ms()])
 	if match_seconds > 0.0 and sim.time_s() >= match_seconds:
+		end_reason = "time_limit"
 		_finish()
 	elif _ended_tick >= 0 and sim.tick - _ended_tick >= int(END_LINGER_S * sim.tick_rate):
+		end_reason = "match_end"
 		_finish()
+
+
+## Hosted matches: finish when the host never came, left, or went silent. True when finished.
+func _check_host() -> bool:
+	if host_name == "":
+		return false
+	var now: int = Time.get_ticks_usec()
+	var reason: String = ""
+	if not _host_seen and (now - _started_usec) / 1e6 > HOST_JOIN_TIMEOUT_S:
+		reason = "host_never_joined"
+	elif _host_seen and (now - _host_last_usec) / 1e6 > HOST_SILENCE_S:
+		reason = "host_silent"
+	if reason == "":
+		return false
+	Log.info("server: finishing (%s)" % reason)
+	end_reason = reason
+	_finish()
+	return true
 
 
 # ------------------------------------------------------------------ network
@@ -109,7 +172,15 @@ func _handle_network() -> void:
 					if mode != "arena":
 						sim.units.erase(c["unit_id"])  # arena keeps the unit so the match can finish
 					clients.erase(key)
+					if host_name != "" and c["name"] == host_name and not _finished:
+						Log.info("server: the host left; finishing")
+						end_reason = "host_left"
+						_finish()
+						return
 			"receive":
+				var from: Dictionary = clients.get(key, {})
+				if host_name != "" and not from.is_empty() and from["name"] == host_name:
+					_host_last_usec = Time.get_ticks_usec()
 				_on_packet(peer, key, Protocol.decode(ev["data"]))
 
 
@@ -124,6 +195,12 @@ func _on_packet(peer: ENetPacketPeer, key: int, msg: Dictionary) -> void:
 				transport.send(peer, Protocol.CH_RELIABLE, Protocol.reject("unknown spec"), true)
 				Log.warn("server: rejected client with unknown spec %s" % msg["spec"])
 				return
+			if not roster.is_empty():
+				var taken: bool = clients.values().any(func(c: Dictionary) -> bool: return c["name"] == msg["name"])
+				if not roster.has(msg["name"]) or taken:
+					transport.send(peer, Protocol.CH_RELIABLE, Protocol.reject("not in the roster"), true)
+					Log.warn("server: rejected %s (not in the roster, or already joined)" % msg["name"])
+					return
 			_add_client(peer, key, msg["name"], msg["spec"])
 		Protocol.Msg.INPUT:
 			var c: Dictionary = clients.get(key, {})
@@ -160,13 +237,19 @@ func _client_stats(c: Dictionary) -> Dictionary:
 
 
 func _add_client(peer: ENetPacketPeer, key: int, player_name: String, spec_id: String) -> void:
-	var team: int = clients.size() % 2
+	var team: int = int(roster.get(player_name, clients.size() % 2))
 	var unit: Unit = runner.add_unit(spec_id, team)
+	_unit_names[player_name] = unit.id
 	clients[key] = {"peer": peer, "name": player_name, "spec": spec_id, "unit_id": unit.id, "inputs": [],
 		"last_received_seq": 0, "ack_seq": 0, "snapshots": 0, "starved_ticks": 0, "lost_inputs": 0,
 		"joined_tick": sim.tick}
 	transport.send(peer, Protocol.CH_RELIABLE, Protocol.welcome(unit.id, sim.tick, sim.tick_rate, map["id"]), true)
 	Log.info("server: %s joined as unit %d (%s) on team %d" % [player_name, unit.id, spec_id, team])
+	if player_name == host_name:
+		_host_seen = true
+		_host_last_usec = Time.get_ticks_usec()
+	if not roster.is_empty() and clients.size() == roster.size():
+		Log.info("server: roster complete; preparation starts")
 
 
 func _match_state() -> Dictionary:
@@ -239,13 +322,16 @@ func _count_event(s: Sim, ev: Dictionary) -> void:
 	var src: String = str(ev.get("source", -1))
 	var by: Dictionary = _stats["by_unit"]
 	if not by.has(src):
-		by[src] = {"damage": 0, "healing": 0, "casts": 0, "interrupts": 0, "cc_applied": 0}
+		by[src] = {"damage": 0, "absorbed": 0, "healing": 0, "casts": 0, "interrupts": 0, "cc_applied": 0,
+			"kills": 0}
 	match ev["type"]:
 		"damage":
 			_stats["damage_events"] += 1
 			by[src]["damage"] += int(ev["amount"])
+			by[src]["absorbed"] += int(ev.get("absorbed", 0))
 			if ev["killed"]:
 				_stats["kills"] += 1
+				by[src]["kills"] += 1
 				_dead_since[ev["target"]] = s.tick
 				Log.info("server: unit %s killed unit %d" % [src, ev["target"]])
 		"heal":
@@ -282,7 +368,8 @@ func _finish() -> void:
 		per_client[c["name"]] = _client_stats(c)
 	var units: Dictionary = {}
 	for u: Unit in sim.units.values():
-		units[str(u.id)] = {"spec": u.spec_id, "team": u.team, "health": u.health, "alive": u.is_alive()}
+		units[str(u.id)] = {"spec": u.spec_id, "team": u.team, "health": u.health, "alive": u.is_alive(),
+			"name": _name_of(u.id)}
 	var summary: Dictionary = {
 		"ticks": sim.tick, "sim_seconds": sim.time_s(), "tick_rate_hz": sim.tick_rate, "mode": mode,
 		"tick_ms": {"avg": _avg_tick_ms(),
@@ -291,7 +378,7 @@ func _finish() -> void:
 		"clients": per_client, "units": units, "damage_events": _stats["damage_events"],
 		"kills": _stats["kills"], "heals": _stats["heals"], "casts": _stats["casts"],
 		"interrupts": _stats["interrupts"], "by_unit": _stats["by_unit"],
-		"winner_team": arena.winner_team if arena else -1,
+		"winner_team": arena.winner_team if arena else -1, "end_reason": end_reason,
 		"match_seconds": arena.match_seconds(sim.tick) if arena else sim.time_s(),
 		"bytes_sent": transport.bytes_sent, "state_hash": sim.state_hash(),
 		"log_warnings": Log.warn_count, "log_errors": Log.error_count,
@@ -304,6 +391,17 @@ func _finish() -> void:
 		sim.time_s(), _stats["damage_events"], _stats["kills"]])
 	transport.close()
 	get_tree().quit(0)
+
+
+## The name of the client playing a unit (also after it left), or "".
+func _name_of(unit_id: int) -> String:
+	for c: Dictionary in clients.values():
+		if int(c["unit_id"]) == unit_id:
+			return c["name"]
+	for n: String in _unit_names:
+		if int(_unit_names[n]) == unit_id:
+			return n
+	return ""
 
 
 static func _arg(args: PackedStringArray, name: String, default: String) -> String:

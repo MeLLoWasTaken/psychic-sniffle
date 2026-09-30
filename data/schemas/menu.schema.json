@@ -1,0 +1,357 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "menu.schema.json",
+  "title": "Client menu",
+  "description": "Main menu buttons, the spec picker, the 'Play vs bots' preset (map, bracket, bot comps per player spec, match flow timings), the settings panel rows, and the match flow text, fonts and colors (backlog M1-28).",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "id",
+    "name",
+    "title",
+    "fonts",
+    "buttons",
+    "spec_picker",
+    "play_bots",
+    "text",
+    "scoreboard_columns",
+    "style"
+  ],
+  "$defs": {
+    "color": {
+      "type": "string",
+      "pattern": "^#([0-9a-fA-F]{6}|[0-9a-fA-F]{8})$"
+    }
+  },
+  "properties": {
+    "id": {
+      "$ref": "common.schema.json#/$defs/id"
+    },
+    "name": {
+      "type": "string"
+    },
+    "description": {
+      "type": "string"
+    },
+    "title": {
+      "type": "string",
+      "minLength": 1
+    },
+    "subtitle": {
+      "type": "string"
+    },
+    "fonts": {
+      "type": "object",
+      "description": "Typefaces, the same as the HUD's: 'display' for titles, banners and the outcome, 'text' for buttons and body text. file is under game/assets/fonts; weight picks an instance of a variable font.",
+      "required": [
+        "display",
+        "text"
+      ],
+      "additionalProperties": false,
+      "properties": {
+        "display": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "file"
+          ],
+          "properties": {
+            "file": {
+              "type": "string",
+              "pattern": "^[a-z0-9_]+/[A-Za-z0-9_.-]+\\.(ttf|otf)$"
+            },
+            "weight": {
+              "type": "integer",
+              "minimum": 100,
+              "maximum": 900
+            }
+          }
+        },
+        "text": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "file"
+          ],
+          "properties": {
+            "file": {
+              "type": "string",
+              "pattern": "^[a-z0-9_]+/[A-Za-z0-9_.-]+\\.(ttf|otf)$"
+            },
+            "weight": {
+              "type": "integer",
+              "minimum": 100,
+              "maximum": 900
+            }
+          }
+        }
+      }
+    },
+    "buttons": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "id",
+          "label",
+          "action"
+        ],
+        "properties": {
+          "id": {
+            "$ref": "common.schema.json#/$defs/id"
+          },
+          "label": {
+            "type": "string",
+            "minLength": 1
+          },
+          "action": {
+            "enum": [
+              "play_bots",
+              "practice",
+              "settings",
+              "quit"
+            ],
+            "description": "What the button does; the client routes each action (GameFlow)"
+          },
+          "enabled": {
+            "type": "boolean",
+            "default": true
+          },
+          "hint": {
+            "type": "string"
+          }
+        }
+      }
+    },
+    "spec_picker": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "label",
+        "specs",
+        "default"
+      ],
+      "properties": {
+        "label": {
+          "type": "string"
+        },
+        "specs": {
+          "type": "array",
+          "minItems": 1,
+          "items": {
+            "$ref": "common.schema.json#/$defs/id"
+          },
+          "uniqueItems": true
+        },
+        "default": {
+          "$ref": "common.schema.json#/$defs/id"
+        }
+      }
+    },
+    "play_bots": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "map",
+        "bracket",
+        "host_name",
+        "port_range",
+        "comps",
+        "bot_names",
+        "server_start_timeout_s",
+        "end_banner_s",
+        "server_silence_s",
+        "gates_banner_s"
+      ],
+      "properties": {
+        "map": {
+          "$ref": "common.schema.json#/$defs/id"
+        },
+        "bracket": {
+          "enum": [
+            "1v1",
+            "2v2",
+            "3v3"
+          ]
+        },
+        "host_name": {
+          "type": "string",
+          "minLength": 1,
+          "description": "The player's client name on the server (the server's --host)"
+        },
+        "port_range": {
+          "type": "array",
+          "items": {
+            "type": "integer",
+            "minimum": 1024,
+            "maximum": 65535
+          },
+          "minItems": 2,
+          "maxItems": 2
+        },
+        "comps": {
+          "type": "object",
+          "description": "Player spec -> the bots' specs: one partner per ally slot and the enemy team",
+          "additionalProperties": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": [
+              "partner",
+              "enemies"
+            ],
+            "properties": {
+              "partner": {
+                "$ref": "common.schema.json#/$defs/id"
+              },
+              "enemies": {
+                "type": "array",
+                "minItems": 1,
+                "items": {
+                  "$ref": "common.schema.json#/$defs/id"
+                }
+              }
+            }
+          }
+        },
+        "bot_names": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "partner",
+            "enemies"
+          ],
+          "properties": {
+            "partner": {
+              "type": "string",
+              "minLength": 1
+            },
+            "enemies": {
+              "type": "array",
+              "items": {
+                "type": "string",
+                "minLength": 1
+              },
+              "uniqueItems": true
+            }
+          }
+        },
+        "server_start_timeout_s": {
+          "type": "number",
+          "exclusiveMinimum": 0
+        },
+        "end_banner_s": {
+          "type": "number",
+          "minimum": 0,
+          "description": "Seconds the Victory/Defeat banner shows over the arena before the end screen"
+        },
+        "prep_s": {
+          "type": "number",
+          "minimum": 0,
+          "description": "Preparation phase length for these matches; omitted = the tuning's arena.prep_phase_s"
+        },
+        "server_silence_s": {
+          "type": "number",
+          "exclusiveMinimum": 0,
+          "description": "The client leaves (and shows the failure screen) when the server sends nothing for this long"
+        },
+        "gates_banner_s": {
+          "type": "number",
+          "minimum": 0,
+          "description": "Seconds the 'gates are open' banner shows after the gates open"
+        }
+      }
+    },
+    "controls_hint": {
+      "type": "string"
+    },
+    "text": {
+      "type": "object",
+      "additionalProperties": {
+        "type": "string"
+      }
+    },
+    "scoreboard_columns": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "id",
+          "label"
+        ],
+        "properties": {
+          "id": {
+            "enum": [
+              "damage",
+              "healing",
+              "kills",
+              "interrupts",
+              "deaths"
+            ]
+          },
+          "label": {
+            "type": "string"
+          }
+        }
+      }
+    },
+    "style": {
+      "type": "object",
+      "additionalProperties": {
+        "$ref": "#/$defs/color"
+      }
+    },
+    "settings_panel": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "profile",
+        "rows"
+      ],
+      "description": "The Settings screen: values shown from a settings profile (data/settings) and the key bindings of the loaded keybind profile",
+      "properties": {
+        "profile": {
+          "$ref": "common.schema.json#/$defs/id"
+        },
+        "rows": {
+          "type": "array",
+          "minItems": 1,
+          "items": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": [
+              "label",
+              "path"
+            ],
+            "properties": {
+              "label": {
+                "type": "string",
+                "minLength": 1
+              },
+              "path": {
+                "type": "string",
+                "pattern": "^[a-z_]+(\\.[a-z_0-9]+)+$",
+                "description": "section.key in the settings profile"
+              },
+              "suffix": {
+                "type": "string"
+              }
+            }
+          }
+        },
+        "keys": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "pattern": "^[a-z0-9_]+$"
+          },
+          "uniqueItems": true,
+          "description": "Keybind actions whose keys the panel lists (from the loaded keybind profile)"
+        }
+      }
+    }
+  }
+}

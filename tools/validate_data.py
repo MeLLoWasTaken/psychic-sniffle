@@ -57,6 +57,7 @@ FOLDERS = {
     "acoustics": ("acoustics.schema.json", "id"),
     "capture_sources": ("capture_source.schema.json", "id"),
     "captures": ("capture.schema.json", "id"),
+    "menus": ("menu.schema.json", "id"),
 }
 
 # Ability kit template (docs/DESIGN.md, "Ability kit template"): slot -> (min, max)
@@ -379,6 +380,7 @@ def validate(data_dir: Path) -> list[str]:
     _check_effects(report, db, schemas)
     _check_hud_layouts(report, db)
     _check_icons_and_fonts(report, db, data_dir)
+    _check_menus(report, db)
     sys.path.insert(0, str(REPO / "tools" / "audio"))
     import sound_data  # sounds and the sound map (backlog M1-26); weapon sounds per spec
 
@@ -457,6 +459,101 @@ def validate(data_dir: Path) -> list[str]:
 EFFECT_STAGES = ("cast", "projectile", "impact", "ground", "melee", "displacement", "auras")
 CC_AURA_STYLES = {"stun", "disorient", "root", "silence", "ice_block"}
 UNIT_TARGETS = ("enemy", "ally", "any_unit")
+
+
+# Text keys the client reads from a menu (game/ui/main_menu.gd, match_overlay.gd, end_screen.gd).
+# Every text key the client's menu and match flow screens read (game/ui/main_menu.gd,
+# game/ui/match_screens.gd, game/ui/pause_menu.gd).
+MENU_TEXT_KEYS = [
+    "starting_server", "loading_arena", "connecting", "waiting", "preparation", "gates_in", "gates_open",
+    "fight", "victory", "defeat", "draw", "reason_enemy_eliminated", "reason_team_eliminated",
+    "reason_both_eliminated", "reason_time_limit", "failed", "failed_server_lost", "failed_disconnected",
+    "failed_rejected", "failed_start", "failed_silent", "back_to_menu", "menu_title", "resume",
+    "leave_match", "leave_practice", "leave_note", "your_team", "enemy_team", "you", "partner", "enemy",
+    "total", "player_column", "match_time", "settings_title", "settings_profile", "settings_keys",
+    "settings_note", "yes", "no", "close",
+]
+
+
+def _check_menus(report: Report, db: dict) -> None:
+    """Menus (backlog M1-28): picker specs are finished kits with a bot comp each, comps fill the
+    bracket with existing finished specs that have bot profiles, the map exists, every text key the
+    client reads is present."""
+    specs, bots = db["specs"], db["bots"]
+    for mid, m in db["menus"].items():
+        rel = f"menus/{mid}.json"
+        picker = m["spec_picker"]
+        if picker["default"] not in picker["specs"]:
+            report.error(rel, f"spec_picker.default '{picker['default']}' is not in spec_picker.specs")
+        pb = m["play_bots"]
+        if pb["map"] not in db["maps"]:
+            report.error(rel, f"play_bots.map '{pb['map']}' not found in maps")
+        lo, hi = pb["port_range"]
+        if lo > hi:
+            report.error(rel, "play_bots.port_range must be [low, high]")
+        size = int(pb["bracket"][0])
+        if size != 2:
+            report.error(rel, f"play_bots supports 2v2 (one partner); bracket is {pb['bracket']}")
+        if len(pb["bot_names"]["enemies"]) < size:
+            report.error(rel, f"play_bots.bot_names.enemies needs {size} names")
+        if pb["host_name"] == pb["bot_names"]["partner"] or pb["host_name"] in pb["bot_names"]["enemies"]:
+            report.error(rel, "play_bots.host_name must differ from every bot name")
+
+        def playable(sid: str, where: str, need_bot: bool) -> None:
+            if sid not in specs:
+                report.error(rel, f"{where}: unknown spec '{sid}'")
+            elif specs[sid].get("kit_status") != "complete":
+                report.error(rel, f"{where}: spec '{sid}' is not a complete kit")
+            elif need_bot and sid not in bots:
+                report.error(rel, f"{where}: spec '{sid}' has no bot profile")
+
+        for sid in picker["specs"]:
+            playable(sid, "spec_picker", False)
+            if sid not in pb["comps"]:
+                report.error(rel, f"play_bots.comps has no comp for picker spec '{sid}'")
+        for sid, comp in pb["comps"].items():
+            playable(sid, f"play_bots.comps.{sid}", False)
+            playable(comp["partner"], f"play_bots.comps.{sid}.partner", True)
+            if len(comp["enemies"]) != size:
+                report.error(rel, f"play_bots.comps.{sid}.enemies must have {size} specs for {pb['bracket']}")
+            for e in comp["enemies"]:
+                playable(e, f"play_bots.comps.{sid}.enemies", True)
+        for key in MENU_TEXT_KEYS:
+            if key not in m["text"]:
+                report.error(rel, f"text is missing '{key}'")
+        actions = {b["action"] for b in m["buttons"]}
+        for needed in ("play_bots", "quit"):
+            if needed not in actions:
+                report.error(rel, f"no button with action '{needed}'")
+        ids = [b["id"] for b in m["buttons"]]
+        if len(ids) != len(set(ids)):
+            report.error(rel, "button ids must be unique")
+        for face, spec in m["fonts"].items():
+            path = REPO / "game" / "assets" / "fonts" / spec["file"]
+            if not path.exists():
+                report.error(rel, f"fonts.{face}: font file '{spec['file']}' not found in game/assets/fonts")
+            elif not (path.parent / "OFL.txt").exists():
+                report.error(rel, f"fonts.{face}: no licence (OFL.txt) next to '{spec['file']}'")
+        panel = m.get("settings_panel")
+        if panel:
+            prof = db["settings"].get(panel["profile"])
+            if prof is None:
+                report.error(rel, f"settings_panel.profile '{panel['profile']}' not found in settings")
+            else:
+                for row in panel["rows"]:
+                    node = prof
+                    for part in row["path"].split("."):
+                        node = node.get(part) if isinstance(node, dict) else None
+                    if node is None or isinstance(node, (dict, list)):
+                        report.error(rel, f"settings_panel row '{row['label']}': no setting '{row['path']}' "
+                                          f"in settings/{panel['profile']}.json")
+            for kid, k in db["keybinds"].items():
+                bound = {b["action"] for b in k["binds"]}
+                for action in panel.get("keys", []):
+                    if action not in bound:
+                        report.error(rel, f"settings_panel.keys: '{action}' is not bound in keybinds/{kid}.json")
+        elif "settings" in actions:
+            report.error(rel, "a button opens the settings but there is no settings_panel")
 
 
 def _check_hud_layouts(report: Report, db: dict) -> None:
