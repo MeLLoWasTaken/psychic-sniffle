@@ -1,0 +1,1 @@
+{"description": "A clip names a capture source that does not exist.", "file": "animations/humanoid.json", "set": {"/clips/run/capture/source": "nope"}, "expect": "no capture source 'nope'"}

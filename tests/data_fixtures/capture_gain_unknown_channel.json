@@ -1,0 +1,1 @@
+{"description": "A capture gain names a joint the capture does not have.", "file": "animations/humanoid.json", "set": {"/clips/run/capture/gains": {"wing.swing": 1.2}}, "expect": "matches no captured channel"}

@@ -55,6 +55,8 @@ FOLDERS = {
     "hud_layouts": ("hud_layout.schema.json", "id"),
     "sound_processing": ("sound_processing.schema.json", "id"),
     "acoustics": ("acoustics.schema.json", "id"),
+    "capture_sources": ("capture_source.schema.json", "id"),
+    "captures": ("capture.schema.json", "id"),
 }
 
 # Ability kit template (docs/DESIGN.md, "Ability kit template"): slot -> (min, max)
@@ -339,6 +341,41 @@ def validate(data_dir: Path) -> list[str]:
         missing = [c for c in anim_mod.REQUIRED_CLIPS if c not in a["clips"]]
         if missing:
             report.error(rel, f"missing required clips: {', '.join(missing)}")
+        for cname, clip in a["clips"].items():
+            cap = clip.get("capture")
+            if not cap:
+                continue
+            src = cap["source"]
+            if src not in db["capture_sources"]:
+                report.error(rel, f"clip {cname}: no capture source '{src}' (data/capture_sources/{src}.json)")
+                continue
+            if src not in db["captures"]:
+                report.error(rel, f"clip {cname}: capture '{src}' not fitted (run tools/blender/build_capture.py)")
+                continue
+            fitted = db["captures"][src]
+            if fitted["loop"] != clip["loop"]:
+                report.error(rel, f"clip {cname}: loop is {clip['loop']} but capture '{src}' loop is {fitted['loop']}")
+            for bone in cap.get("bones", []):
+                if bone not in fitted["channels"]:
+                    report.error(rel, f"clip {cname}: capture '{src}' has no channels for bone '{bone}'")
+            for key in cap.get("gains", {}):
+                bone, _, term = key.partition(".")
+                if not any(anim_mod.family(b) == bone or b == bone for b in fitted["channels"]) or not term:
+                    report.error(rel, f"clip {cname}: gain '{key}' matches no captured channel")
+            if "capture_leg_m" not in a:
+                report.error(rel, "clips use captures but capture_leg_m (leg length per build) is missing")
+    for sid, src in db["capture_sources"].items():
+        if not (REPO / "tools" / "blender" / "mocap_src" / src["file"]).exists():
+            report.error(f"capture_sources/{sid}.json", f"file not found: tools/blender/mocap_src/{src['file']}")
+        if not src["loop"] and "length_s" not in src:
+            report.error(f"capture_sources/{sid}.json", "a capture that does not loop needs length_s")
+    for cid, c in db["captures"].items():
+        if cid not in db["capture_sources"]:
+            report.error(f"captures/{cid}.json", "no matching capture source (stale fitted file)")
+        for bone, terms in c["channels"].items():
+            for term, v in terms.items():
+                if len(v) != c["samples"]:
+                    report.error(f"captures/{cid}.json", f"{bone}.{term}: {len(v)} samples, expected {c['samples']}")
     _check_effects(report, db, schemas)
     _check_hud_layouts(report, db)
     _check_icons_and_fonts(report, db, data_dir)

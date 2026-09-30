@@ -1,0 +1,7 @@
+{
+  "id": "run",
+  "description": "CMU 09_01, run (subject 9). Its cycle (0.74 s) matches the run clip's length.",
+  "file": "cmu/09_01.bvh",
+  "loop": true,
+  "cycle_search_s": [0.6, 0.85]
+}

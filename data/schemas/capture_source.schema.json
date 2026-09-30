@@ -1,0 +1,19 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "capture_source.schema.json",
+  "title": "Motion-capture source",
+  "description": "Where a captured clip comes from (backlog X-01): a BVH file under tools/blender/mocap_src (see CREDITS.md) and the time window to fit. tools/blender/build_capture.py fits it to the standard skeleton and writes data/captures/<id>.json. A loop without start_s and cycle_s finds its cleanest cycle within cycle_search_s.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["id", "file", "loop"],
+  "properties": {
+    "id": {"$ref": "common.schema.json#/$defs/id"},
+    "description": {"type": "string"},
+    "file": {"type": "string", "pattern": "^[a-z0-9_/]+\\.bvh$"},
+    "loop": {"type": "boolean"},
+    "start_s": {"type": "number", "minimum": 0},
+    "cycle_s": {"type": "number", "exclusiveMinimum": 0},
+    "length_s": {"type": "number", "exclusiveMinimum": 0, "description": "Window length for clips that do not loop."},
+    "cycle_search_s": {"type": "array", "items": {"type": "number", "exclusiveMinimum": 0}, "minItems": 2, "maxItems": 2}
+  }
+}

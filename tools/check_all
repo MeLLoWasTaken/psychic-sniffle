@@ -28,7 +28,12 @@ def run(name: str, cmd: list[str], cwd: Path = REPO) -> tuple[str, str, float]:
     out = (proc.stdout + proc.stderr).strip()
     if proc.returncode == 0:
         return "PASS", "", took
-    tail = "\n".join(out.splitlines()[-25:])
+    lines = out.splitlines()
+    tail = "\n".join(lines[-25:])
+    if os.environ.get("GITHUB_ACTIONS"):
+        # CI: also the lines that say what broke (a crash's header and the test it was in)
+        key = [ln for ln in lines if any(k in ln for k in ("Fatal", "Error", "FAILED", "error:", "File \"/home", "tests/", "res://"))]
+        tail = "\n".join(key[:60]) + "\n...\n" + tail
     return "FAIL", tail, took
 
 

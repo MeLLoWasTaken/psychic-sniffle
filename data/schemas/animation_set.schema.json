@@ -79,6 +79,11 @@
       "minimum": 0,
       "maximum": 1
     },
+    "capture_leg_m": {
+      "type": "object",
+      "description": "Hip-to-ankle length per body build (metres), scaling captured root motion (build_capture.py checks it against the skeleton).",
+      "additionalProperties": {"type": "number", "exclusiveMinimum": 0}
+    },
     "clips": {
       "type": "object",
       "propertyNames": {
@@ -99,6 +104,18 @@
           },
           "loop": {
             "type": "boolean"
+          },
+          "capture": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": ["source"],
+            "description": "Captured motion under this clip (backlog X-01): the fitted capture data/captures/<source>.json supplies the listed bones (all captured bones if omitted); gains scale each channel around its mean ('thigh.swing' for both sides, 'thigh_l.swing' for one); the clip's keys add on top.",
+            "properties": {
+              "source": {"$ref": "common.schema.json#/$defs/id"},
+              "bones": {"type": "array", "items": {"type": "string", "pattern": "^(root|pelvis|spine|chest|neck|head|clavicle_[lr]|upperarm_[lr]|forearm_[lr]|hand_[lr]|thigh_[lr]|calf_[lr]|foot_[lr])$"}},
+              "gains": {"type": "object", "additionalProperties": {"type": "number", "minimum": 0, "maximum": 3}},
+              "relative": {"type": "boolean", "description": "Keep only the captured movement around its mean; the clip's keys set the posture."}
+            }
           },
           "keys": {
             "type": "array",

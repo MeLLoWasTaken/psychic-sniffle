@@ -265,21 +265,75 @@ def variant_name(clip: str, hold: str | None) -> str:
     return f"{clip}_{hold}" if hold else clip
 
 
+_CAPTURES: dict[str, dict] = {}
+
+
+def load_capture(source: str) -> dict:
+    """A fitted capture (data/captures/<source>.json, written by build_capture.py)."""
+    if source not in _CAPTURES:
+        _CAPTURES[source] = json.loads((REPO / "data" / "captures" / f"{source}.json").read_text())
+    return _CAPTURES[source]
+
+
+def _gain(gains: dict, bone: str, term: str) -> float:
+    """A capture gain by bone and term ("thigh_l.swing"), else by family ("thigh.swing"), else 1."""
+    return float(gains.get(f"{bone}.{term}", gains.get(f"{family(bone)}.{term}", 1.0)))
+
+
+def capture_channels(anim: dict, clip: dict, build: str | None) -> dict[tuple[str, str], object]:
+    """(bone, term) -> f(t) for a clip's captured motion: the fitted samples over the clip's
+    phase, scaled around their mean by the clip's gains (stylisation), root translation in
+    metres for the build's leg length. Only the clip's listed bones are taken. With "relative"
+    the capture's mean pose is dropped and only its movement is kept (an idle's breathing and
+    weight shifts over the clip's own posture)."""
+    cap = clip.get("capture")
+    if not cap:
+        return {}
+    data = load_capture(cap["source"])
+    bones = set(cap.get("bones", data["channels"].keys()))
+    gains = cap.get("gains", {})
+    leg = anim["capture_leg_m"][build or "heavy"]
+    length, loop = clip["length_s"], clip["loop"]
+    out = {}
+    for bone, terms in data["channels"].items():
+        if bone not in bones:
+            continue
+        for term, samples in terms.items():
+            v = np.array(samples, float) * (leg if bone == "root" else 1.0)
+            mean = float(np.mean(v[:-1] if loop else v))
+            # relative: only the captured movement, around the pose the clip's keys set
+            v = (0.0 if cap.get("relative") else mean) + _gain(gains, bone, term) * (v - mean)
+            u = np.linspace(0.0, 1.0, len(v))
+
+            def f(t: float, v=v, u=u) -> float:
+                p = (t / length) % 1.0 if loop else min(max(t / length, 0.0), 1.0)
+                return float(np.interp(p, u, v))
+
+            out[(bone, term)] = f
+    return out
+
+
 def sample_clip(anim: dict, clip_name: str, build: str | None = None) -> list[dict[str, dict[str, float]]]:
     """Pose (bone -> term -> degrees or metres) for every frame, with follow-through applied.
     `build` adds that body build's offsets for this clip (build_offsets in the set), e.g. arms
-    hanging closer on the slim build than plate allows on the heavy one."""
+    hanging closer on the slim build than plate allows on the heavy one. A clip with a capture
+    takes its listed bones from the fitted motion capture; its keys then add on top (offsets),
+    and follow-through applies to the keys only (the capture already has its own)."""
     clip = anim["clips"][clip_name]
     fps = anim["fps"]
     lag = anim.get("overlap_s", {})
     curves = clip_channels(clip)
+    captured = capture_channels(anim, clip, build)
     frames = []
     for fi in range(frame_count(clip, fps)):
         t = fi / fps
         pose: dict[str, dict[str, float]] = {}
+        for (bone, term), f in captured.items():
+            pose.setdefault(bone, {})[term] = f(t)
         for (bone, term), f in curves.items():
             delay = 0.0 if bone == "root" else lag.get(family(bone), 0.0)
-            pose.setdefault(bone, {})[term] = f(t - delay if clip["loop"] else max(0.0, t - delay))
+            value = f(t - delay if clip["loop"] else max(0.0, t - delay))
+            pose.setdefault(bone, {})[term] = pose.get(bone, {}).get(term, 0.0) + value
         for bone, terms in anim.get("build_offsets", {}).get(build or "", {}).get(clip_name, {}).items():
             for term, value in terms.items():
                 pose.setdefault(bone, {})[term] = pose.get(bone, {}).get(term, 0.0) + value

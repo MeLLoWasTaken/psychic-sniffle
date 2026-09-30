@@ -36,16 +36,16 @@
    "attack_1": {
     "arm_l/arm_r": {
      "depth_m": 0.059,
-     "verts": 73,
+     "verts": 68,
      "at": [
       "forearm_r",
       "forearm_r"
      ],
-     "frame": 16
+     "frame": 6
     },
     "arm_l/torso": {
-     "depth_m": 0.096,
-     "verts": 82,
+     "depth_m": 0.098,
+     "verts": 81,
      "at": [
       "clavicle_l",
       "clavicle_l"
@@ -53,8 +53,8 @@
      "frame": 8
     },
     "arm_r/torso": {
-     "depth_m": 0.131,
-     "verts": 42,
+     "depth_m": 0.13,
+     "verts": 41,
      "at": [
       "clavicle_r",
       "clavicle_r"
@@ -71,8 +71,8 @@
      "frame": 10
     },
     "weapon/arm_l": {
-     "depth_m": 0.027,
-     "verts": 41,
+     "depth_m": 0.026,
+     "verts": 40,
      "at": [
       "hand_l",
       "hand_l"
@@ -80,28 +80,28 @@
      "frame": 4
     },
     "weapon/torso": {
-     "depth_m": 0.021,
-     "verts": 15,
+     "depth_m": 0.024,
+     "verts": 22,
      "at": [
-      "hand_r",
-      "hand_r"
+      "head",
+      "head"
      ],
      "frame": 6
     }
    },
    "attack_2": {
     "arm_l/arm_r": {
-     "depth_m": 0.041,
-     "verts": 202,
+     "depth_m": 0.04,
+     "verts": 182,
      "at": [
       "hand_r",
       "hand_r"
      ],
-     "frame": 8
+     "frame": 6
     },
     "arm_l/torso": {
      "depth_m": 0.104,
-     "verts": 129,
+     "verts": 131,
      "at": [
       "clavicle_r",
       "forearm_l"
@@ -109,8 +109,8 @@
      "frame": 6
     },
     "arm_r/torso": {
-     "depth_m": 0.098,
-     "verts": 50,
+     "depth_m": 0.094,
+     "verts": 58,
      "at": [
       "clavicle_r",
       "clavicle_r"
@@ -127,8 +127,8 @@
      "frame": 16
     },
     "weapon/arm_l": {
-     "depth_m": 0.067,
-     "verts": 33,
+     "depth_m": 0.066,
+     "verts": 30,
      "at": [
       "clavicle_r",
       "forearm_l"
@@ -137,7 +137,7 @@
     },
     "weapon/torso": {
      "depth_m": 0.087,
-     "verts": 115,
+     "verts": 113,
      "at": [
       "clavicle_r",
       "clavicle_r"
@@ -147,8 +147,8 @@
    },
    "attack_3": {
     "arm_l/arm_r": {
-     "depth_m": 0.037,
-     "verts": 86,
+     "depth_m": 0.036,
+     "verts": 91,
      "at": [
       "hand_r",
       "hand_r"
@@ -156,8 +156,8 @@
      "frame": 8
     },
     "arm_l/torso": {
-     "depth_m": 0.094,
-     "verts": 135,
+     "depth_m": 0.095,
+     "verts": 149,
      "at": [
       "clavicle_l",
       "clavicle_l"
@@ -165,8 +165,8 @@
      "frame": 16
     },
     "arm_r/torso": {
-     "depth_m": 0.089,
-     "verts": 67,
+     "depth_m": 0.09,
+     "verts": 63,
      "at": [
       "clavicle_r",
       "clavicle_r"
@@ -183,17 +183,17 @@
      "frame": 6
     },
     "weapon/arm_l": {
-     "depth_m": 0.026,
-     "verts": 20,
+     "depth_m": 0.023,
+     "verts": 9,
      "at": [
       "hand_l",
       "hand_l"
      ],
-     "frame": 6
+     "frame": 18
     },
     "weapon/torso": {
-     "depth_m": 0.034,
-     "verts": 15,
+     "depth_m": 0.03,
+     "verts": 14,
      "at": [
       "spine",
       "spine"
@@ -206,7 +206,7 @@
    "feared_run": {
     "arm_l/arm_r": {
      "depth_m": 0.037,
-     "verts": 84,
+     "verts": 91,
      "at": [
       "hand_r",
       "hand_r"
@@ -214,8 +214,8 @@
      "frame": 2
     },
     "weapon/arm_l": {
-     "depth_m": 0.061,
-     "verts": 75,
+     "depth_m": 0.059,
+     "verts": 76,
      "at": [
       "forearm_l",
       "forearm_l"
@@ -265,8 +265,8 @@
      "frame": 12
     },
     "arm_r/torso": {
-     "depth_m": 0.083,
-     "verts": 59,
+     "depth_m": 0.084,
+     "verts": 51,
      "at": [
       "clavicle_r",
       "clavicle_r"
@@ -283,17 +283,17 @@
      "frame": 0
     },
     "weapon/arm_l": {
-     "depth_m": 0.028,
+     "depth_m": 0.026,
      "verts": 1,
      "at": [
-      "forearm_l",
+      "hand_l",
       "hand_l"
      ],
      "frame": 6
     },
     "weapon/torso": {
-     "depth_m": 0.144,
-     "verts": 74,
+     "depth_m": 0.146,
+     "verts": 73,
      "at": [
       "chest",
       "hand_r"

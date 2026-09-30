@@ -1,0 +1,1 @@
+{"description": "A capture source points at a missing BVH file.", "file": "capture_sources/run.json", "set": {"/file": "cmu/nope.bvh"}, "expect": "file not found: tools/blender/mocap_src/cmu/nope.bvh"}

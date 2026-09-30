@@ -51,12 +51,15 @@ Every humanoid clip is authored as a few key poses in `data/animations/humanoid.
 - Follow-through: chest, neck, head, forearms, hands and feet trail their parents by `overlap_s`; clavicles shrug as the arms lift past 50 degrees forward or 25 sideways.
 - Weapons sit in the right fist by the set's `weapon_grip`: the grip point and each hold's blade direction are given in rest-pose character terms, so they fit every build. Swords and maces are held "forward" (blade forward from the fist); staffs are held "upright", with a wrist rule that keeps them upright through arm swings, baked as `<clip>_upright` copies of every clip.
 - Clip names are lower snake case: idle, combat_idle, run, strafe_left, strafe_right, backpedal, jump, cast_start, cast_loop, cast_release, cast_release_<school> (frost and holy so far), channel, attack_1, attack_2, attack_3, ranged_shot, hit, stunned, feared_run, death, victory. A clip's length is a whole number of frames.
+- Motion capture (X-01): a clip may take bones from a fitted capture (`capture` in the clip: `source`, `bones`, `gains`, `relative`). `tools/blender/build_capture.py` fits a BVH window from `data/capture_sources` to the skeleton as term values (`data/captures`); the clip's keys add on top. Run and idle use captures; `tools/blender/compare_capture.py` measures foot slide against the running speed and renders side and three-quarter sheets for comparing candidates.
 - Review: pose sheets (`previews/animations/<character>_<locomotion|casting|combat>.png`, six frames per clip) and the clipping report (`anims_<build>_clipping.json`). Idle, combat idle, run and the cast clips must be free of clipping: no vertex more than 1.5 cm inside another body part or the weapon, outside the shoulder and hip zones.
 
 ## Lessons from reviews
 
 - Pose sheets must pose the rig with its baked tracks removed; left in place, the tracks override the pose on every render and every frame looks the same.
 - A staff held rigidly tips over whenever the elbow bends; a separate hold with a wrist rule keeps it upright. Its foot must stay well above the ground (grip 0.7 m from the foot), or the running feet kick it.
+- Captured arms swing across the chest and past the hip; plate armour does not allow that, so plate builds keep scripted arm swings (X-10).
+- Captured runs are much slower than a game's 7 m/s: scale the thigh swing (stride) and measure foot slide rather than guessing.
 - Heavy plate needs the arms wider than the lean build does; poses are tuned against the heavy build's clipping report first.
 - At a character's body density (4,000-6,500 triangles) fingers merge into mitts. Hands are covered by gauntlets or gloves extracted on a 2.5-3 mm grid with their own budget; the weapon hand is a fist around the grip, the other relaxed.
 - A face in a hood reads as a void only when the hood's rim stands about 12 cm in front of it; glowing eyes must sit in front of the face surface (brow and cheeks otherwise hide them) and glow strongly (emission 7).

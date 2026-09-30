@@ -1,0 +1,8 @@
+{
+  "id": "idle",
+  "description": "CMU 82_08, stand still (subject 82): 2.4 s of quiet standing with small weight shifts and breathing.",
+  "file": "cmu/82_08.bvh",
+  "loop": true,
+  "start_s": 0.5,
+  "cycle_s": 2.4
+}

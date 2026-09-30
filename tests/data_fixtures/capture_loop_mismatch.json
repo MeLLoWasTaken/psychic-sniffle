@@ -1,0 +1,1 @@
+{"description": "A looping clip uses a capture fitted as a one-shot.", "file": "captures/run.json", "set": {"/loop": false}, "expect": "but capture 'run' loop is False"}

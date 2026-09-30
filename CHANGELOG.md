@@ -2,6 +2,23 @@
 
 One entry per build-loop iteration, newest first. Format: date, backlog ID, what changed, how it was checked.
 
+## 2026-09-30 — X-01: motion-capture run and idle
+- New capture pipeline:
+  - `tools/blender/mocap.py` reads CMU BVH files.
+  - `build_capture.py` fits them to the standard skeleton as animation terms, so captured clips share the scripted pipeline. It uses a least-squares solve on our own pose code, finds cycles by autocorrelation, and applies seam correction and the shared phase convention.
+  - Clips take a `capture` with bones, gains and a relative mode; their keys add on top.
+- Run:
+  - Legs, torso and hips come from CMU 09_01, with the stride scaled 1.7× for the heroic look.
+  - Foot slide dropped to 27% of the running speed, from 46% for the scripted run, with more weight and push-off in the sheets.
+  - Arms stay scripted: the captured free arm could not clear heavy plate in 3 attempts (X-10).
+- Idle: the upper-body movement from CMU 82_08 (breathing, shoulder shifts, looking around) over the scripted posture. The first version also took the hips and legs; its feet slid 1.8 cm/s, which X-02's flat-floor tests caught.
+- Strafes, backpedal and jump stay scripted; the database has no sideways or backward running at game speed, and captured jumps start with a crouch.
+- Checked:
+  - Clipping gate passes on Warblade, Arcanist and Oracle.
+  - Side-by-side sheets reviewed (`compare_capture.py`); libraries rebuilt.
+  - 6 new Python tests and 5 validator fixtures.
+- CI: check_all reports failures as GitHub annotations, because job logs are not reachable from the workspace. The first CI runs found a native crash in the Python tests on the runner (being traced).
+
 ## 2026-09-30 — X-02, X-03, X-04, X-06: improvements from available tools
 - X-03 icons and fonts:
   - 47 game-icons.net glyphs (CC BY 3.0: Lorc, Delapouite, Skoll) cover all 67 abilities and auras, drawn as engraved glyphs in an iron frame over the school gradient.

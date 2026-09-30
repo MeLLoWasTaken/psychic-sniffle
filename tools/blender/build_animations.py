@@ -386,7 +386,7 @@ def framing(objs, yaw_deg: float):
 
 
 def render_sheet(body, weapon, rig, anim: dict, clips: list[str], out_png: Path, title: str, cell: int = 220,
-                 hold: str | None = None, build: str | None = None):
+                 hold: str | None = None, build: str | None = None, yaw: float = -62.0, count: int = 6):
     from PIL import Image, ImageDraw
 
     scene = bpy.context.scene
@@ -395,12 +395,12 @@ def render_sheet(body, weapon, rig, anim: dict, clips: list[str], out_png: Path,
     scene.camera = cam
     cam.data.type = "ORTHO"
     objs = [body] + ([weapon] if weapon else [])
-    yaw = -62.0  # front three-quarter from the character's right (weapon side)
+    # default yaw: front three-quarter from the character's right (weapon side); 90 is a side view
     rows = []
     for clip in clips:
         frames = animation.sample_clip(anim, clip, build)
         wrist = animation.wrist_rule(anim, hold, clip, build)
-        picks = sample_frames(anim, clip)
+        picks = sample_frames(anim, clip, count)
         # one camera for the whole row, fitted to every sampled pose, so motion reads as motion
         pts = []
         for f in picks:

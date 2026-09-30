@@ -1,0 +1,1 @@
+{"description": "A fitted capture channel has the wrong number of samples.", "file": "captures/run.json", "set": {"/channels/pelvis/bend": [1, 2]}, "expect": "pelvis.bend: 2 samples, expected"}

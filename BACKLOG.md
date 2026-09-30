@@ -295,17 +295,21 @@ The slice specs are Warblade Carnage (melee, rage), Arcanist Rime (casting, inte
 
 The human asked to incorporate any readily available offering that improves the end result, in every area. Checked from the cloud workspace: PyPI and GitHub (git) are reachable; asset websites and Hugging Face are not; no GPU. Licences recorded in CREDITS.md.
 
-### X-01 Motion-capture locomotion from the CMU database `[todo]`
-- [ ] Import CMU BVH clips (git: una-dinosauria/cmu-mocap; "free for use in research and commercial projects") in Blender, retarget to the standard skeleton, and bake run, strafe left/right, backpedal, idle and jump for both builds, cut to seamless loops with exact frame counts.
-- [ ] Stylise on top of the capture (data: per-clip exaggeration of arm swing, torso lean and bounce) so it matches the heroic look; the weapon holds, wrist rules and clipping gate apply unchanged.
-- [ ] Pose sheets compared side by side with the scripted versions; keep whichever reads better per clip and record it.
+### X-01 Motion-capture locomotion from the CMU database `[done]` (narrowed; see below)
+- [x] Import CMU BVH clips, fit them to the standard skeleton as animation terms (`tools/blender/mocap.py`, `build_capture.py`; sources in `data/capture_sources`, fitted curves in `data/captures`), so captured clips use the same pipeline (build offsets, holds, clipping gate, bake).
+- [x] Stylise by data: per-channel gains around the mean, the clip's keys added on top, and a relative mode that keeps only the captured movement.
+- [x] Compared side by side (`tools/blender/compare_capture.py`: foot slide, floor contact, bounce, side and three-quarter sheets). Kept: run (legs, torso, hips from CMU 09_01, stride gain 1.7: foot slide 27% of running speed against 46% for the scripted run; weapon arm and free arm stay scripted) and idle (CMU 82_08 upper-body movement over the scripted posture: breathing, shoulder shifts, looking around; hips and legs keyed so the feet stay planted). Strafes and backpedal stay scripted: the database has sideways and backward motion only as walks of about 1 m/s, against 7 and 4.2 m/s in the game. Jump stays scripted: captured jumps start with a crouch the game's instant take-off does not have, and the game's 8 m/s launch is far beyond a human jump.
+
+### X-10 Captured free arm on plate builds `[todo]`
+- [ ] The run's captured free arm swings across the chest and past the hip, which heavy plate does not allow (3 attempts: 3.5-7.6 cm contacts; raising the arm 24° still left 3.9 cm). The run uses the scripted free arm for now. Try a per-build arm corridor (limit the capture's arm direction to a cone that clears the torso and legs of each build) so the captured swing can be kept.
+- [ ] Remaining foot slide on the run (27%): foot locking on the baked clip (a leg IK pass in the bake that pins the supporting foot) or a runtime stride-matching modifier.
 
 ### X-02 Runtime character polish from Godot's built-in modifiers `[done]` (narrowed: spring bones split to X-07)
 - [x] Foot grounding with TwoBoneIK3D (ray per foot, pelvis drop, slope tilt; exact no-op on level floors) and feet planted while turning in place; head, neck and chest turn toward the target with LookAtModifier3D (±70° yaw, +30/−35° pitch, eased, off in crowd control, death and big swings).
 - [x] All tunable in `data/anim_states/humanoid.json` `rig_modifiers`; graphics toggle and 35 m cut-off; 13 tests; review scene `rig_view.tscn`. Cost 27-56 µs per character.
 
 ### X-07 Spring bones on loose cloth `[todo]`
-- [ ] Add cloth bones to the character build (hood tip, stole ends, sash tail, tabard, skirt panels), skinned from the Blender scripts, and drive them with SpringBoneSimulator3D and collision capsules on the legs and body; tunable in data; screenshots in motion.
+- [ ] Add cloth bones to the character build (hood tip, stole ends, sash tail, tabard, skirt panels; the Oracle's robe stretches at the captured run's full leg extension), skinned from the Blender scripts, and drive them with SpringBoneSimulator3D and collision capsules on the legs and body; tunable in data; screenshots in motion.
 
 ### X-08 Rig modifier follow-ups (from X-02) `[todo]`
 - [ ] The player's own character looks along the camera (hook `RigModifiers.look_override`, wired in `world_renderer.gd`).
