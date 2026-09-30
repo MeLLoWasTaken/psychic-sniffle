@@ -115,5 +115,6 @@
       "mix": 0.1,
       "brightness": 5000
     }
-  }
+  },
+  "processing": "impact_light"
 }

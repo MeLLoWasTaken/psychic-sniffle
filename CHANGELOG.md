@@ -2,6 +2,31 @@
 
 One entry per build-loop iteration, newest first. Format: date, backlog ID, what changed, how it was checked.
 
+## 2026-09-30 — X-02, X-03, X-04, X-06: improvements from available tools
+- X-03 icons and fonts:
+  - 47 game-icons.net glyphs (CC BY 3.0: Lorc, Delapouite, Skoll) cover all 67 abilities and auras, drawn as engraved glyphs in an iron frame over the school gradient.
+  - A glow shows when a cooldown ends and while an execute is usable.
+  - Cinzel and Fira Sans (OFL) replace the default font.
+  - The validator checks icon images and fonts; 8 new Godot tests.
+- X-04 sound processing:
+  - Every generated sound goes through a data-driven studio chain: EQ, saturation, transient shaping, compression, a clean limiter, chorus or phaser, plate reverb and pitch variation.
+  - Build checks catch clipping and cut-off tails.
+  - Arena reverb is set per map, and the world ducks about 5 dB under CC warnings.
+  - Impacts gained low-mid body (24% → 28%) with less harshness (15% → 12%); the CC warning's lead over the loudest other sound grew from 4.5 to 5.8 LU.
+  - The three human-approved sounds stay exactly as approved (decoded samples checked identical); their processed versions wait for the listening pass.
+  - Greatsword hits use the light chain, so they keep sounding like a slash rather than a blunt hit.
+- X-02 runtime character polish (narrowed; spring bones moved to X-07):
+  - Head, neck and chest turn toward the target, limited and eased, and switched off in crowd control, death and big swings.
+  - Feet stand on uneven floors (TwoBoneIK3D) and stay planted while turning in place; level floors are an exact no-op.
+  - Cost is 27-56 µs per character; 13 tests.
+- X-06 CI:
+  - `check` runs the full tools/check_all on every push.
+  - `nightly` runs 1,000 matches per bracket and the 20-player profile on separate GitHub runners (`tools/sim/nightly.py`).
+  - Pip packages are pinned in `tools/env/requirements.txt`.
+- Checked:
+  - Full tools/check_all passed locally.
+  - The workers reviewed icon sheets, HUD screenshots at 1280×720 to 2560×1440, spectrogram before/after sheets and rig screenshots (`previews/icons`, `previews/hud`, `previews/audio/x04`, `previews/rig_modifiers`).
+
 ## 2026-09-30 — Review pass 2 and M1-22 art gate
 - Balance, 1,000 simulated matches per bracket (`docs/reports/review_02/`):
   - Every match in all three brackets now ends by a kill, and team sides are even.

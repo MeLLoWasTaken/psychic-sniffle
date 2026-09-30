@@ -300,23 +300,36 @@ The human asked to incorporate any readily available offering that improves the 
 - [ ] Stylise on top of the capture (data: per-clip exaggeration of arm swing, torso lean and bounce) so it matches the heroic look; the weapon holds, wrist rules and clipping gate apply unchanged.
 - [ ] Pose sheets compared side by side with the scripted versions; keep whichever reads better per clip and record it.
 
-### X-02 Runtime character polish from Godot's built-in modifiers `[todo]`
-- [ ] Foot planting with TwoBoneIK3D (feet stay on the ground on idle and stop sliding on turns), head and chest turning toward the target with LookAtModifier3D (limited angles), SpringBoneSimulator3D on loose cloth (hood tip, stole ends, sash tail, tabard) with collision capsules.
-- [ ] All tunable in data; tests; screenshots.
+### X-02 Runtime character polish from Godot's built-in modifiers `[done]` (narrowed: spring bones split to X-07)
+- [x] Foot grounding with TwoBoneIK3D (ray per foot, pelvis drop, slope tilt; exact no-op on level floors) and feet planted while turning in place; head, neck and chest turn toward the target with LookAtModifier3D (±70° yaw, +30/−35° pitch, eased, off in crowd control, death and big swings).
+- [x] All tunable in `data/anim_states/humanoid.json` `rig_modifiers`; graphics toggle and 35 m cut-off; 13 tests; review scene `rig_view.tscn`. Cost 27-56 µs per character.
 
-### X-03 Ability icons and typography `[todo]`
-- [ ] Ability icons from game-icons.net (CC BY 3.0, attribution in CREDITS.md), chosen per ability in data and rendered in the game's style (school-colour gradient, bevelled iron frame, glow for off-cooldown), replacing the initials glyphs.
-- [ ] HUD and menu fonts from Google Fonts (SIL Open Font License): a display face for titles and names and a readable face for numbers and small text; minimum sizes kept.
+### X-07 Spring bones on loose cloth `[todo]`
+- [ ] Add cloth bones to the character build (hood tip, stole ends, sash tail, tabard, skirt panels), skinned from the Blender scripts, and drive them with SpringBoneSimulator3D and collision capsules on the legs and body; tunable in data; screenshots in motion.
 
-### X-04 Studio-grade sound processing `[todo]`
-- [ ] Add pedalboard (PyPI) effects to the sound build: convolution or algorithmic reverb, compression, saturation, EQ; an arena reverb on the world buses in Godot.
-- [ ] All existing audio tests still pass (peaks, tonality, clicks, CC warning loudest); spectrogram review; list for the human's listening pass.
+### X-08 Rig modifier follow-ups (from X-02) `[todo]`
+- [ ] The player's own character looks along the camera (hook `RigModifiers.look_override`, wired in `world_renderer.gd`).
+- [ ] Jump detection relative to the floor under the character (today any height above 0.02 m counts as airborne), before any map has steps or ramps.
+- [ ] The Warblade's hanging sword dips into a step when the pelvis drops.
+
+### X-03 Ability icons and typography `[done]`
+- [x] Ability icons from game-icons.net (CC BY 3.0, attribution in CREDITS.md), chosen per ability in data and rendered in the game's style (school-colour gradient, bevelled iron frame, glow for off-cooldown), replacing the initials glyphs.
+- [x] HUD and menu fonts from Google Fonts (SIL Open Font License): a display face for titles and names and a readable face for numbers and small text; minimum sizes kept.
+
+### X-04 Studio-grade sound processing `[done]`
+- [x] Add pedalboard (PyPI) effects to the sound build: convolution or algorithmic reverb, compression, saturation, EQ; an arena reverb on the world buses in Godot.
+- [x] All existing audio tests still pass (peaks, tonality, clicks, CC warning loudest); spectrogram review; list for the human's listening pass.
 
 ### X-05 Mesh quality pass `[todo]`
 - [ ] Try isotropic remeshing (pymeshlab) and quadric simplification that preserves UVs and normals (pyfqmr) on the SDF-extracted pieces; keep it only if shading is cleaner at the same triangle budget (before-and-after close-ups).
 
-### X-06 Continuous integration on GitHub Actions `[todo]`
+### X-06 Continuous integration on GitHub Actions `[doing]`
 - [ ] Run tools/check_all on every push, and a nightly job on a multi-core runner for the balance simulations and the 20-player performance profile (the workspace has 2 cores, which skews those numbers).
+
+### X-09 Follow-ups from X-03 and X-04 `[todo]`
+- [ ] Human listening pass on the processed sounds (start with `cc_warning`, `hit_mace_plate`, `hit_greatsword_plate`, `break_free`, `rime_bolt_release`, `frost_cast_start`, `red_mist`, `holy_heal`, then a practice fight in Gallows Courtyard for the room and the duck), and a choice for the three approved sounds kept unprocessed: approved original or processed alternative (`previews/audio/x04/listening_ab/`).
+- [ ] Tune the world duck under the CC warning by ear; acoustics file for every new map; model the reverb's stereo spread in the numpy check.
+- [ ] Lighter out-of-range tint on action buttons (the red covers the glyph); spec icons for unit-frame portraits; regenerate the combat-text review screenshot.
 
 ## Follow-ups from review pass 1
 

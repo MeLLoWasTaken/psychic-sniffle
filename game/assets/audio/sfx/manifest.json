@@ -250,7 +250,7 @@
   "category": "release"
  },
  "hit_greatsword_cloth": {
-  "hash": "8eb818e9a52516e8",
+  "hash": "c01844066890bf1d",
   "files": [
    "hit_greatsword_cloth_01",
    "hit_greatsword_cloth_02",
@@ -259,7 +259,7 @@
   "category": "impact"
  },
  "hit_greatsword_plate": {
-  "hash": "ba897f076a5554bd",
+  "hash": "f4b4d105966fb3e9",
   "files": [
    "hit_greatsword_plate_01",
    "hit_greatsword_plate_02",
@@ -277,7 +277,7 @@
   "category": "impact"
  },
  "hit_mace_plate": {
-  "hash": "9a5a728b8d8f892d",
+  "hash": "3631531e97a60f64",
   "files": [
    "hit_mace_plate_01",
    "hit_mace_plate_02",
@@ -318,7 +318,7 @@
   "category": "cast"
  },
  "holy_heal": {
-  "hash": "2453c063b2e01eb8",
+  "hash": "9c1632bd4a5c5a16",
   "files": [
    "holy_heal"
   ],
@@ -339,7 +339,7 @@
   "category": "release"
  },
  "impact_blunt": {
-  "hash": "c8243c25318f94b0",
+  "hash": "68eaa46fb2b1b1d7",
   "files": [
    "impact_blunt_01",
    "impact_blunt_02",
@@ -357,7 +357,7 @@
   "category": "impact"
  },
  "impact_slash": {
-  "hash": "3fa6386078071f26",
+  "hash": "2ee76afe770e4c52",
   "files": [
    "impact_slash_01",
    "impact_slash_02",

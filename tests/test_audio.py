@@ -253,6 +253,7 @@ PROCESSING = json.loads((REPO / "data" / "sound_processing" / "default.json").re
 ACOUSTICS = {p.stem: json.loads(p.read_text()) for p in sorted((REPO / "data" / "acoustics").glob("*.json"))}
 CATEGORY_OF = {stem: r["category"] for sid, r in RECIPES.items() for stem in files_of(sid)}
 PEAK_OF = {stem: r["peak_dbfs"] for sid, r in RECIPES.items() for stem in files_of(sid)}
+UNPROCESSED = {stem: r.get("processing") == "none" for sid, r in RECIPES.items() for stem in files_of(sid)}
 ONE_SHOTS = [stem for sid, r in RECIPES.items() if not r.get("loops") for stem in files_of(sid)]
 WORLD = [f for f in ALL_FILES if SOUND_MAP["categories"][CATEGORY_OF[f]]["positional"]]
 
@@ -276,9 +277,12 @@ def test_one_shot_tails_are_not_cut_off(name):
 @pytest.mark.parametrize("cat", sorted(PROCESSING["loudness"]))
 def test_loudness_per_category_within_its_window(cat):
     """Peak-to-loudness ratio (recipe peak minus loudest 400 ms) inside the category's window, and
-    its spread within the category no wider than allowed: consistent density after processing."""
+    its spread within the category no wider than allowed: consistent density after processing.
+    Sounds marked "processing": "none" (the human-approved originals, kept bit-exact) are not
+    processed, so this window does not apply to them; every other audio test still does."""
     lo, hi = PROCESSING["loudness"][cat]["plr_lu"]
-    plr = {f: PEAK_OF[f] - analysis.momentary_max(*load(f)) for f in ALL_FILES if CATEGORY_OF[f] == cat}
+    plr = {f: PEAK_OF[f] - analysis.momentary_max(*load(f)) for f in ALL_FILES
+           if CATEGORY_OF[f] == cat and not UNPROCESSED.get(f)}
     outside = {f: round(v, 1) for f, v in plr.items() if not lo <= v <= hi}
     assert not outside, f"outside {lo}..{hi} LU: {outside}"
     assert np.std(list(plr.values())) <= PROCESSING["loudness"][cat]["max_spread_lu"]
@@ -372,7 +376,7 @@ def _mean(sids, fn, processed_flag):
 
 @pytest.fixture(scope="module")
 def impact_features():
-    sids = [sid for sid, r in RECIPES.items() if r["category"] == "impact"]
+    sids = [sid for sid, r in RECIPES.items() if r["category"] == "impact" and r.get("processing") != "none"]
     feats = {"low_mid": analysis.low_mid_share, "crest": analysis.crest_factor_db, "mud": analysis.mud_share,
              "harsh": analysis.harsh_share, "momentary": analysis.momentary_max, "decay": analysis.decay_time}
     return {k: (_mean(sids, fn, False), _mean(sids, fn, True)) for k, fn in feats.items()}

@@ -1,0 +1,62 @@
+# Nightly balance simulations (1,000 bot matches per bracket) and the 20-player performance
+# profile, each on its own runner (backlog X-06). Results are uploaded as artifacts and the
+# balance table is shown in the run summary.
+name: nightly
+
+on:
+  schedule:
+    - cron: "17 3 * * *"
+  workflow_dispatch:
+    inputs:
+      matches:
+        description: Matches per bracket
+        default: "1000"
+
+jobs:
+  balance:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 240
+    strategy:
+      fail-fast: false
+      matrix:
+        bracket: ["1v1", "2v2", "3v3"]
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+          cache: pip
+          cache-dependency-path: tools/env/requirements.txt
+      - uses: ./.github/actions/setup
+      - name: Import the project
+        run: godot --headless --path game --import > /dev/null 2>&1 || true
+      - name: Simulate ${{ matrix.bracket }}
+        run: python3 tools/sim/nightly.py --bracket ${{ matrix.bracket }} --matches ${{ inputs.matches || '1000' }} --out nightly
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: balance-${{ matrix.bracket }}
+          path: nightly/
+
+  perf:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+          cache: pip
+          cache-dependency-path: tools/env/requirements.txt
+      - uses: ./.github/actions/setup
+      - name: Import the project
+        run: godot --headless --path game --import > /dev/null 2>&1 || true
+      - name: 20-player profile
+        run: |
+          nproc
+          python3 tools/sim/nightly.py --perf --out nightly
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: perf-20bots
+          path: nightly/

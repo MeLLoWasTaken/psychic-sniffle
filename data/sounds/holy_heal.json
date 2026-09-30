@@ -1,7 +1,8 @@
 {
   "id": "holy_heal",
-  "description": "Big heal landing (v2, human-approved): build-up, deep whomp, warm A major chord with sub, low bells.",
+  "description": "Big heal landing (v2, human-approved): build-up, deep whomp, warm A major chord with sub, low bells. Kept unprocessed: approved by the human before X-04; a processed alternative waits for the listening pass.",
   "category": "heal",
   "peak_dbfs": -4.0,
-  "builtin": "holy_heal"
+  "builtin": "holy_heal",
+  "processing": "none"
 }

@@ -1,0 +1,26 @@
+# Shared CI setup: runtime libraries for headless Godot, the Python tools, and the Godot 4.7.2
+# binary restored from the split archive in tools/env/bin (same as tools/env/setup_cloud.sh).
+name: setup
+description: Install Python packages and Godot 4.7.2 for the project's checks
+runs:
+  using: composite
+  steps:
+    - name: System libraries
+      shell: bash
+      run: |
+        sudo apt-get update -qq
+        sudo apt-get install -y -qq xvfb libgl1 libgl1-mesa-dri mesa-vulkan-drivers libasound2t64 \
+          libpulse0 libxcursor1 libxinerama1 libxi6 libxrandr2 libfontconfig1 libsndfile1 >/dev/null
+
+    - name: Python packages
+      shell: bash
+      run: pip install -q -r tools/env/requirements.txt
+
+    - name: Godot 4.7.2
+      shell: bash
+      run: |
+        cat tools/env/bin/godot-4.7.2-linux-x86_64.xz.part* | xz -dc > "$RUNNER_TEMP/godot"
+        echo "$(cat tools/env/bin/godot-4.7.2-linux-x86_64.sha256)  $RUNNER_TEMP/godot" | sha256sum -c -
+        chmod +x "$RUNNER_TEMP/godot"
+        sudo ln -sf "$RUNNER_TEMP/godot" /usr/local/bin/godot
+        godot --version

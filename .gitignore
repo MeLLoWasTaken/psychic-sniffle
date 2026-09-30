@@ -14,3 +14,4 @@ previews/**/_*.png
 tools/env/cache/
 game/reports/
 previews/matches/
+.claude/worktrees/

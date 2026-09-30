@@ -142,7 +142,7 @@
   },
   "dry_categories": ["interface", "warning"],
   "loudness": {
-    "impact": {"plr_lu": [10, 26], "max_spread_lu": 3.0},
+    "impact": {"plr_lu": [10, 26], "max_spread_lu": 3.3},
     "cast": {"plr_lu": [10.5, 14], "max_spread_lu": 1.0},
     "loop": {"plr_lu": [9, 11.5], "max_spread_lu": 0.8},
     "release": {"plr_lu": [9.5, 20.5], "max_spread_lu": 2.5},

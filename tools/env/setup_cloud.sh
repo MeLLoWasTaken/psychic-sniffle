@@ -6,7 +6,8 @@
 #
 # What it does:
 #   1. apt: build tools, X11/audio headers for Godot, Mesa software GL and Vulkan, Xvfb
-#   2. pip: bpy (Blender 4.5 LTS as a Python module), scons, test and audio libraries (pedalboard: sound processing, X-04)
+#   2. pip: tools/env/requirements.txt (bpy = Blender 4.5 LTS as a Python module, scons, test,
+#      audio and icon libraries)
 #   3. Godot 4.7.2: restores a cached binary if one exists, otherwise compiles from source
 #      (GitHub release downloads are blocked in the cloud workspace; git clone is allowed)
 #   4. GdUnit4 test framework into game/addons (if the Godot project exists)
@@ -34,8 +35,7 @@ apt-get install -y -qq \
   mesa-vulkan-drivers libgl1-mesa-dri vulkan-tools mesa-utils >/dev/null
 
 log "python packages"
-pip install -q --break-system-packages \
-  "bpy==4.5.4" scons jsonschema pytest pillow numpy soundfile scipy matplotlib resvg-py "pedalboard==0.9.25"
+pip install -q --break-system-packages -r "$REPO/tools/env/requirements.txt"
 
 log "Godot $GODOT_TAG"
 mkdir -p "$CACHE_DIR"
