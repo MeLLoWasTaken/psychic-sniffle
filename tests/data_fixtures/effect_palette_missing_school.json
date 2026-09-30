@@ -1,0 +1,6 @@
+{
+  "description": "The effect palette has no colors for one school.",
+  "file": "effect_palettes/default.json",
+  "delete": ["/schools/time"],
+  "expect": "no colors for school 'time'"
+}

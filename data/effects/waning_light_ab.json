@@ -1,0 +1,9 @@
+{
+  "id": "waning_light_ab",
+  "auras": {
+    "waning_light": {
+      "style": "shield",
+      "size": 0.9
+    }
+  }
+}

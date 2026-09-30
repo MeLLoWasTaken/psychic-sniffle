@@ -1,0 +1,1 @@
+{"description": "An impact recipe holds a pure tone above 200 Hz (human feedback: reads as scoring a point)", "file": "sounds/hit_mace_plate.json", "set": {"/layers/1": {"type": "tone", "freq": 440, "env": {"attack_s": 0.001, "decay_s": 0.3}}}, "expect": "holds a tone up to 440 Hz"}

@@ -1,0 +1,89 @@
+{
+  "id": "land_plate",
+  "description": "Plate landing from a jump: a heavy stomp with a clatter of plates.",
+  "category": "footstep",
+  "peak_dbfs": -9.0,
+  "variants": 2,
+  "duration_s": 0.5,
+  "layers": [
+    {
+      "type": "sub",
+      "from_hz": 120,
+      "to_hz": 45,
+      "curve": 8,
+      "env": {
+        "attack_s": 0.001,
+        "decay_s": 0.06
+      },
+      "gain": 1.0
+    },
+    {
+      "type": "noise",
+      "band": [
+        200,
+        2000
+      ],
+      "env": {
+        "attack_s": 0.001,
+        "decay_s": 0.04
+      },
+      "gain": 1.0
+    },
+    {
+      "type": "crackle",
+      "band": [
+        2000,
+        7000
+      ],
+      "per_second": 1800,
+      "grain_s": 0.002,
+      "env": {
+        "attack_s": 0.001,
+        "decay_s": 0.05
+      },
+      "gain": 0.4
+    },
+    {
+      "type": "resonant",
+      "base": 1900,
+      "jitter": 0.15,
+      "start_s": 0.01,
+      "partials": [
+        [
+          1,
+          14,
+          0.6,
+          0.05
+        ],
+        [
+          1.47,
+          16,
+          0.4,
+          0.04
+        ],
+        [
+          2.09,
+          18,
+          0.3,
+          0.03
+        ]
+      ],
+      "highpass": 1200,
+      "gain": 0.5,
+      "repeat": {
+        "times": [
+          0,
+          0.045
+        ],
+        "gain_jitter": 0.4
+      }
+    }
+  ],
+  "post": {
+    "reverb": {
+      "length_s": 0.45,
+      "mix": 0.12,
+      "brightness": 4000
+    }
+  }
+}

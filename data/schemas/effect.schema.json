@@ -1,0 +1,242 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "effect.schema.json",
+  "title": "Ability effects",
+  "description": "Visual effect stages of one ability (backlog M1-25, docs/DESIGN.md 'Spell effects'): cast glow, projectile, impact, ground effect, melee swing, displacement and the visuals of the auras it applies. The file name and id are the ability id. Colors come from the effect palette by school; the ground radius comes from the ability's radius effects. Styles are the generic builders in game/client/effects/effect_library.gd; there is no per-ability code.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "id"
+  ],
+  "$defs": {
+    "size": {
+      "type": "number",
+      "minimum": 0.2,
+      "maximum": 3,
+      "description": "Scale on the style's default size."
+    },
+    "aura_visual": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "style"
+      ],
+      "properties": {
+        "style": {
+          "enum": [
+            "shield",
+            "ice_block",
+            "stun",
+            "disorient",
+            "root",
+            "silence",
+            "hot",
+            "dot",
+            "slow",
+            "empower",
+            "speed"
+          ],
+          "description": "shield: bubble around the body; ice_block: encased in ice; stun: spinning crystals and a ring over the head; disorient: dark swirl over the head; root: spikes at the feet; silence: struck-through halo over the head; hot: rising motes; dot: falling drips; slow: mist at the feet; empower: body glow; speed: streaks at the feet."
+        },
+        "size": {
+          "$ref": "#/$defs/size"
+        }
+      }
+    }
+  },
+  "properties": {
+    "id": {
+      "$ref": "common.schema.json#/$defs/id",
+      "description": "The ability id (data/abilities/<id>.json)."
+    },
+    "description": {
+      "type": "string"
+    },
+    "none": {
+      "type": "boolean",
+      "description": "True when the ability deliberately has no visual effect; then no stage may be given and 'reason' is required."
+    },
+    "reason": {
+      "type": "string"
+    },
+    "school": {
+      "$ref": "common.schema.json#/$defs/school",
+      "description": "Color school; defaults to the ability's school. Only for abilities whose look must differ from their damage school (none yet)."
+    },
+    "trigger": {
+      "enum": [
+        "cast_success",
+        "damage"
+      ],
+      "default": "cast_success",
+      "description": "Event that releases the projectile, impact at the target, ground effect and melee swing. 'damage' for abilities that log no cast (auto attack)."
+    },
+    "cast": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "style"
+      ],
+      "description": "Glow on the hands while the cast bar or channel runs. Only for cast and channel abilities.",
+      "properties": {
+        "style": {
+          "enum": [
+            "hand_glow"
+          ]
+        },
+        "hands": {
+          "enum": [
+            "right",
+            "left",
+            "both"
+          ],
+          "default": "both"
+        },
+        "size": {
+          "$ref": "#/$defs/size"
+        }
+      }
+    },
+    "projectile": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "style"
+      ],
+      "description": "Flies from the caster's hand to the target on release; the impact plays when it arrives. Cosmetic: damage already landed.",
+      "properties": {
+        "style": {
+          "enum": [
+            "bolt",
+            "shard",
+            "orb",
+            "streak"
+          ]
+        },
+        "speed_mps": {
+          "type": "number",
+          "minimum": 5,
+          "maximum": 200
+        },
+        "size": {
+          "$ref": "#/$defs/size"
+        }
+      }
+    },
+    "impact": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "style"
+      ],
+      "properties": {
+        "style": {
+          "enum": [
+            "burst",
+            "shards",
+            "rays",
+            "spark",
+            "hail",
+            "ring",
+            "flash"
+          ],
+          "description": "burst: expanding shell and sparks; shards: crystals flying out; rays: vertical beam and rising motes (heals); spark: small hit flash (weapons); hail: shards falling from above; ring: expanding ring at chest height (interrupts, dispels); flash: bright pulse on the caster."
+        },
+        "at": {
+          "enum": [
+            "target",
+            "hits",
+            "self"
+          ],
+          "default": "target",
+          "description": "target: the ability's target on release (or on projectile arrival); hits: every unit a damage or heal event of the ability names (area and channel ticks, weapon hits); self: the caster on release."
+        },
+        "size": {
+          "$ref": "#/$defs/size"
+        }
+      }
+    },
+    "ground": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "style"
+      ],
+      "description": "Circle on the ground with the radius of the ability's radius effects; enemy casts get the palette's red outline.",
+      "properties": {
+        "style": {
+          "enum": [
+            "nova",
+            "zone"
+          ],
+          "description": "nova: the fill sweeps out from the centre; zone: the whole circle fills at once."
+        },
+        "center": {
+          "enum": [
+            "caster",
+            "target"
+          ],
+          "default": "caster"
+        },
+        "lifetime_s": {
+          "type": "number",
+          "minimum": 0.2,
+          "maximum": 30
+        }
+      }
+    },
+    "melee": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "style"
+      ],
+      "description": "Weapon swing trail in front of the attacker on release.",
+      "properties": {
+        "style": {
+          "enum": [
+            "arc",
+            "overhead",
+            "thrust"
+          ]
+        },
+        "size": {
+          "$ref": "#/$defs/size"
+        }
+      }
+    },
+    "displacement": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "style"
+      ],
+      "description": "Along the path of a charge or teleport the ability causes.",
+      "properties": {
+        "style": {
+          "enum": [
+            "dust",
+            "blink"
+          ]
+        }
+      }
+    },
+    "auras": {
+      "type": "object",
+      "description": "Aura id -> visual while the aura is on a unit, or \"none\". Each aura's visual is defined in exactly one effect file (the validator checks), even when several abilities apply it.",
+      "propertyNames": {
+        "$ref": "common.schema.json#/$defs/id"
+      },
+      "additionalProperties": {
+        "oneOf": [
+          {
+            "$ref": "#/$defs/aura_visual"
+          },
+          {
+            "const": "none"
+          }
+        ]
+      }
+    }
+  }
+}

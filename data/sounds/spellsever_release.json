@@ -1,0 +1,43 @@
+{
+  "id": "spellsever_release",
+  "description": "Spellsever: a sharp, bright slice through the air.",
+  "category": "release",
+  "peak_dbfs": -5.0,
+  "duration_s": 0.3,
+  "layers": [
+    {
+      "type": "noise",
+      "band": [
+        2000,
+        6000
+      ],
+      "sweep_to": [
+        6000,
+        12000
+      ],
+      "steps": 6,
+      "sweep_share": 0.4,
+      "env": {
+        "attack_s": 0.002,
+        "decay_s": 0.06
+      },
+      "gain": 1.0
+    },
+    {
+      "type": "noise",
+      "highpass": 3000,
+      "env": {
+        "attack_s": 0.0003,
+        "decay_s": 0.004
+      },
+      "gain": 0.8
+    }
+  ],
+  "post": {
+    "reverb": {
+      "length_s": 0.5,
+      "mix": 0.15,
+      "brightness": 9000
+    }
+  }
+}

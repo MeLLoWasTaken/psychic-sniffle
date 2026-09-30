@@ -1,0 +1,127 @@
+{
+  "id": "cc_warning",
+  "description": "You are crowd-controlled (stunned, feared, silenced...): an urgent, dissonant two-hit brass-like alarm with weight. The loudest sound in the game (DESIGN.md).",
+  "category": "warning",
+  "peak_dbfs": -1.0,
+  "duration_s": 0.9,
+  "layers": [
+    {
+      "type": "saw",
+      "freq": 311,
+      "to": 1.06,
+      "curve": 2,
+      "lowpass": 5000,
+      "env": {
+        "adsr": [
+          0.004,
+          0.08,
+          0.7,
+          0.12
+        ],
+        "length_s": 0.16
+      },
+      "gain": 1.0,
+      "repeat": {
+        "times": [
+          0
+        ]
+      }
+    },
+    {
+      "type": "saw",
+      "freq": 440,
+      "to": 1.06,
+      "curve": 2,
+      "lowpass": 5000,
+      "env": {
+        "adsr": [
+          0.004,
+          0.08,
+          0.7,
+          0.12
+        ],
+        "length_s": 0.16
+      },
+      "gain": 0.8
+    },
+    {
+      "type": "saw",
+      "freq": 311,
+      "to": 1.08,
+      "curve": 2,
+      "lowpass": 5000,
+      "start_s": 0.2,
+      "env": {
+        "adsr": [
+          0.004,
+          0.12,
+          0.75,
+          0.3
+        ],
+        "length_s": 0.6
+      },
+      "gain": 1.0
+    },
+    {
+      "type": "saw",
+      "freq": 440,
+      "to": 1.08,
+      "curve": 2,
+      "lowpass": 5000,
+      "start_s": 0.2,
+      "env": {
+        "adsr": [
+          0.004,
+          0.12,
+          0.75,
+          0.3
+        ],
+        "length_s": 0.6
+      },
+      "gain": 0.8
+    },
+    {
+      "type": "sub",
+      "from_hz": 95,
+      "to_hz": 45,
+      "curve": 6,
+      "env": {
+        "attack_s": 0.001,
+        "decay_s": 0.15
+      },
+      "gain": 0.9,
+      "repeat": {
+        "times": [
+          0,
+          0.2
+        ]
+      }
+    },
+    {
+      "type": "noise",
+      "highpass": 2500,
+      "env": {
+        "attack_s": 0.0005,
+        "decay_s": 0.01
+      },
+      "gain": 0.6,
+      "repeat": {
+        "times": [
+          0,
+          0.2
+        ]
+      }
+    }
+  ],
+  "post": {
+    "saturate": 2.2,
+    "reverb": {
+      "length_s": 0.5,
+      "mix": 0.12,
+      "brightness": 6000
+    }
+  },
+  "playback": {
+    "priority": 100
+  }
+}

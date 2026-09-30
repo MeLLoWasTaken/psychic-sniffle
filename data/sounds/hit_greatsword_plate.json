@@ -1,0 +1,144 @@
+{
+  "id": "hit_greatsword_plate",
+  "description": "Greatsword on plate: heavy slash. A bright-to-dark swish, the edge scraping plate (resonant noise, gone in ~50 ms), a short plate clang, a wet cut and a heavy low thud.",
+  "category": "impact",
+  "peak_dbfs": -3.0,
+  "variants": 3,
+  "duration_s": 0.7,
+  "layers": [
+    {
+      "type": "noise",
+      "band": [
+        4500,
+        9000
+      ],
+      "sweep_to": [
+        1200,
+        3000
+      ],
+      "steps": 6,
+      "env": {
+        "hold": [
+          0.003,
+          0.05
+        ],
+        "length_s": 0.16
+      },
+      "gain": 1.1
+    },
+    {
+      "type": "resonant",
+      "base": 2400,
+      "jitter": 0.08,
+      "partials": [
+        [
+          1,
+          18,
+          0.9,
+          0.045
+        ],
+        [
+          1.52,
+          20,
+          0.6,
+          0.035
+        ],
+        [
+          2.31,
+          22,
+          0.4,
+          0.028
+        ]
+      ],
+      "highpass": 1500,
+      "gain": 0.65
+    },
+    {
+      "type": "resonant",
+      "base": 950,
+      "jitter": 0.12,
+      "partials": [
+        [
+          1,
+          18,
+          0.9,
+          0.06
+        ],
+        [
+          1.73,
+          22,
+          0.7,
+          0.05
+        ],
+        [
+          2.61,
+          25,
+          0.5,
+          0.04
+        ],
+        [
+          3.94,
+          28,
+          0.35,
+          0.03
+        ]
+      ],
+      "highpass": 650,
+      "gain": 0.6
+    },
+    {
+      "type": "crackle",
+      "band": [
+        900,
+        3800
+      ],
+      "per_second": 1400,
+      "grain_s": 0.002,
+      "env": {
+        "attack_s": 0.001,
+        "decay_s": 0.05
+      },
+      "gain": 0.6
+    },
+    {
+      "type": "sub",
+      "from_hz": 150,
+      "to_hz": 48,
+      "curve": 10,
+      "env": {
+        "attack_s": 0.001,
+        "decay_s": 0.085
+      },
+      "gain": 0.85
+    },
+    {
+      "type": "noise",
+      "band": [
+        100,
+        600
+      ],
+      "env": {
+        "attack_s": 0.001,
+        "decay_s": 0.05
+      },
+      "gain": 0.9
+    },
+    {
+      "type": "noise",
+      "highpass": 3000,
+      "env": {
+        "attack_s": 0.0003,
+        "decay_s": 0.004
+      },
+      "gain": 0.8
+    }
+  ],
+  "post": {
+    "saturate": 2.5,
+    "reverb": {
+      "length_s": 0.5,
+      "mix": 0.1,
+      "brightness": 5000
+    }
+  }
+}

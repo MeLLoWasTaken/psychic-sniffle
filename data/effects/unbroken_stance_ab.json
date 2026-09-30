@@ -1,0 +1,9 @@
+{
+  "id": "unbroken_stance_ab",
+  "auras": {
+    "unbroken_stance": {
+      "style": "shield",
+      "size": 0.95
+    }
+  }
+}

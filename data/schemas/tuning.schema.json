@@ -18,7 +18,6 @@
     "battleground",
     "rating",
     "talents",
-    "audio",
     "combat"
   ],
   "properties": {
@@ -401,29 +400,6 @@
         },
         "loadouts_per_spec": {
           "type": "integer"
-        }
-      }
-    },
-    "audio": {
-      "type": "object",
-      "additionalProperties": false,
-      "required": [
-        "weapon_impact_sounds"
-      ],
-      "properties": {
-        "weapon_impact_sounds": {
-          "type": "object",
-          "description": "Weapon type -> impact sound (an AudioStreamRandomizer in game/assets/audio/sfx).",
-          "propertyNames": {
-            "$ref": "common.schema.json#/$defs/weapon_type"
-          },
-          "additionalProperties": {
-            "enum": [
-              "impact_blunt",
-              "impact_slash",
-              "impact_pierce"
-            ]
-          }
         }
       }
     },

@@ -1,0 +1,96 @@
+{
+  "id": "heartfreeze_impact",
+  "description": "Heartfreeze hits: a deep frozen crunch that stops the target (stun). Heavy low thump, ice crunch and shards.",
+  "category": "impact",
+  "peak_dbfs": -3.0,
+  "duration_s": 0.8,
+  "layers": [
+    {
+      "type": "noise",
+      "highpass": 1800,
+      "env": {
+        "attack_s": 0.0003,
+        "decay_s": 0.004
+      },
+      "gain": 1.0
+    },
+    {
+      "type": "sub",
+      "from_hz": 170,
+      "to_hz": 40,
+      "curve": 8,
+      "env": {
+        "attack_s": 0.002,
+        "decay_s": 0.12
+      },
+      "gain": 1.1
+    },
+    {
+      "type": "crackle",
+      "band": [
+        800,
+        4000
+      ],
+      "per_second": 1500,
+      "grain_s": 0.002,
+      "env": {
+        "attack_s": 0.001,
+        "decay_s": 0.12
+      },
+      "gain": 0.8
+    },
+    {
+      "type": "resonant",
+      "base": 1800,
+      "jitter": 0.1,
+      "partials": [
+        [
+          1,
+          20,
+          0.8,
+          0.07
+        ],
+        [
+          1.41,
+          22,
+          0.6,
+          0.05600000000000001
+        ],
+        [
+          2.13,
+          24,
+          0.5,
+          0.045500000000000006
+        ],
+        [
+          2.97,
+          26,
+          0.4,
+          0.035
+        ]
+      ],
+      "highpass": 1200,
+      "gain": 0.6
+    },
+    {
+      "type": "noise",
+      "band": [
+        100,
+        600
+      ],
+      "env": {
+        "attack_s": 0.001,
+        "decay_s": 0.08
+      },
+      "gain": 0.8
+    }
+  ],
+  "post": {
+    "saturate": 2.2,
+    "reverb": {
+      "length_s": 0.6,
+      "mix": 0.15,
+      "brightness": 7000
+    }
+  }
+}

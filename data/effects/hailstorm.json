@@ -1,0 +1,13 @@
+{
+  "id": "hailstorm",
+  "description": "Channel: glowing hands, hail on the target every tick.",
+  "cast": {
+    "style": "hand_glow",
+    "hands": "both",
+    "size": 1.2
+  },
+  "impact": {
+    "style": "hail",
+    "at": "hits"
+  }
+}

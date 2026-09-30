@@ -1,0 +1,18 @@
+{
+  "id": "winters_lash",
+  "projectile": {
+    "style": "bolt",
+    "speed_mps": 50,
+    "size": 0.9
+  },
+  "impact": {
+    "style": "burst",
+    "at": "target"
+  },
+  "auras": {
+    "frostbitten": {
+      "style": "dot",
+      "size": 0.9
+    }
+  }
+}

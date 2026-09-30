@@ -1,0 +1,87 @@
+{
+  "id": "break_free",
+  "description": "Break Free (any class): chains snapping - a burst of metal clanks and a release of force.",
+  "category": "release",
+  "peak_dbfs": -4.0,
+  "duration_s": 0.8,
+  "layers": [
+    {
+      "type": "resonant",
+      "base": 1600,
+      "jitter": 0.18,
+      "partials": [
+        [
+          1,
+          18,
+          0.9,
+          0.04
+        ],
+        [
+          1.73,
+          22,
+          0.7,
+          0.032
+        ],
+        [
+          2.61,
+          25,
+          0.5,
+          0.026000000000000002
+        ],
+        [
+          3.94,
+          28,
+          0.35,
+          0.02
+        ]
+      ],
+      "highpass": 900,
+      "gain": 0.8,
+      "repeat": {
+        "times": [
+          0,
+          0.05,
+          0.11
+        ],
+        "gain_jitter": 0.4
+      }
+    },
+    {
+      "type": "noise",
+      "band": [
+        500,
+        2000
+      ],
+      "sweep_to": [
+        2000,
+        8000
+      ],
+      "steps": 6,
+      "sweep_share": 0.5,
+      "env": {
+        "attack_s": 0.003,
+        "decay_s": 0.2
+      },
+      "gain": 0.7
+    },
+    {
+      "type": "sub",
+      "from_hz": 100,
+      "to_hz": 45,
+      "curve": 8,
+      "env": {
+        "attack_s": 0.002,
+        "decay_s": 0.1
+      },
+      "gain": 0.8
+    }
+  ],
+  "post": {
+    "saturate": 1.8,
+    "reverb": {
+      "length_s": 0.6,
+      "mix": 0.18,
+      "brightness": 6000
+    }
+  }
+}

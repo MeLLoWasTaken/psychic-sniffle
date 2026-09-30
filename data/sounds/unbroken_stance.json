@@ -1,0 +1,101 @@
+{
+  "id": "unbroken_stance",
+  "description": "Unbroken Stance: plate armour braced - a double metal clank, a heavy stomp and a solid low hum.",
+  "category": "buff",
+  "peak_dbfs": -5.0,
+  "duration_s": 2.05,
+  "layers": [
+    {
+      "type": "resonant",
+      "base": 1000,
+      "jitter": 0.18,
+      "partials": [
+        [
+          1,
+          18,
+          0.9,
+          0.05
+        ],
+        [
+          1.73,
+          22,
+          0.7,
+          0.04000000000000001
+        ],
+        [
+          2.61,
+          25,
+          0.5,
+          0.0325
+        ],
+        [
+          3.94,
+          28,
+          0.35,
+          0.025
+        ]
+      ],
+      "highpass": 700,
+      "gain": 0.7,
+      "repeat": {
+        "times": [
+          0,
+          0.06
+        ],
+        "gain_jitter": 0.3
+      }
+    },
+    {
+      "type": "sub",
+      "from_hz": 120,
+      "to_hz": 40,
+      "curve": 8,
+      "env": {
+        "attack_s": 0.002,
+        "decay_s": 0.12
+      },
+      "gain": 1.1
+    },
+    {
+      "type": "noise",
+      "lowpass": 600,
+      "env": {
+        "swell": [
+          0.1,
+          0.2
+        ],
+        "curve": 2.0
+      },
+      "gain": 0.5
+    },
+    {
+      "type": "tone",
+      "freqs": [
+        [
+          82.4,
+          1
+        ],
+        [
+          123.5,
+          0.5
+        ]
+      ],
+      "env": {
+        "swell": [
+          0.1,
+          0.5
+        ],
+        "curve": 2.0
+      },
+      "gain": 0.4
+    }
+  ],
+  "post": {
+    "saturate": 1.6,
+    "reverb": {
+      "length_s": 0.8,
+      "mix": 0.2,
+      "brightness": 4000
+    }
+  }
+}

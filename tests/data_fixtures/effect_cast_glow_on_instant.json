@@ -1,0 +1,6 @@
+{
+  "description": "A cast glow on an instant ability, which never has a cast bar.",
+  "file": "effects/grim_hack.json",
+  "set": {"/cast": {"style": "hand_glow"}},
+  "expect": "cast glow on a instant ability"
+}

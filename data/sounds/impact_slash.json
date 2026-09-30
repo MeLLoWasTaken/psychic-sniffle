@@ -1,0 +1,8 @@
+{
+  "id": "impact_slash",
+  "description": "Edged weapon cut (human-approved): bright swish, short metal edge, wet cut, light thud. Fallback hit for edged weapon types.",
+  "category": "impact",
+  "peak_dbfs": -3.0,
+  "variants": 3,
+  "builtin": "impact_slash"
+}

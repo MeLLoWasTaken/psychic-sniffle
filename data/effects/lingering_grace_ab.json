@@ -1,0 +1,13 @@
+{
+  "id": "lingering_grace_ab",
+  "impact": {
+    "style": "rays",
+    "at": "target",
+    "size": 0.6
+  },
+  "auras": {
+    "lingering_grace": {
+      "style": "hot"
+    }
+  }
+}

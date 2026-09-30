@@ -1,0 +1,13 @@
+{
+  "id": "headsmans_verdict",
+  "description": "The biggest swing in the kit.",
+  "impact": {
+    "style": "spark",
+    "at": "hits",
+    "size": 1.5
+  },
+  "melee": {
+    "style": "overhead",
+    "size": 1.4
+  }
+}

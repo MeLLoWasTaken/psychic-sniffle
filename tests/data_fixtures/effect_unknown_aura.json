@@ -1,0 +1,6 @@
+{
+  "description": "An effect file gives a visual to an aura that does not exist.",
+  "file": "effects/rime_bolt.json",
+  "set": {"/auras/not_an_aura": {"style": "slow"}},
+  "expect": "aura 'not_an_aura' not found"
+}

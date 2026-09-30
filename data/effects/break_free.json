@@ -1,0 +1,9 @@
+{
+  "id": "break_free",
+  "description": "Bright pulse as crowd control breaks.",
+  "impact": {
+    "style": "flash",
+    "at": "self",
+    "size": 1.0
+  }
+}

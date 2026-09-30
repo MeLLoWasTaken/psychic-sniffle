@@ -1,0 +1,13 @@
+{
+  "id": "red_mist_ab",
+  "impact": {
+    "style": "flash",
+    "at": "self",
+    "size": 1.2
+  },
+  "auras": {
+    "red_mist": {
+      "style": "empower"
+    }
+  }
+}

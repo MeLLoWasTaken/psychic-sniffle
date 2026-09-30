@@ -1,0 +1,82 @@
+{
+  "id": "interrupt_impact",
+  "description": "A cast is interrupted: a glassy snap as the spell breaks, then its energy fizzling down and out.",
+  "category": "impact",
+  "peak_dbfs": -3.0,
+  "duration_s": 0.6,
+  "layers": [
+    {
+      "type": "noise",
+      "highpass": 3000,
+      "env": {
+        "attack_s": 0.0003,
+        "decay_s": 0.004
+      },
+      "gain": 1.2
+    },
+    {
+      "type": "resonant",
+      "base": 2000,
+      "jitter": 0.1,
+      "partials": [
+        [
+          1,
+          20,
+          0.8,
+          0.03
+        ],
+        [
+          1.62,
+          22,
+          0.6,
+          0.025
+        ],
+        [
+          2.41,
+          24,
+          0.4,
+          0.02
+        ]
+      ],
+      "highpass": 1200,
+      "gain": 0.6
+    },
+    {
+      "type": "noise",
+      "band": [
+        4000,
+        10000
+      ],
+      "sweep_to": [
+        500,
+        2000
+      ],
+      "steps": 8,
+      "sweep_share": 0.7,
+      "env": {
+        "attack_s": 0.002,
+        "decay_s": 0.15
+      },
+      "gain": 0.7
+    },
+    {
+      "type": "sub",
+      "from_hz": 100,
+      "to_hz": 40,
+      "curve": 8,
+      "env": {
+        "attack_s": 0.002,
+        "decay_s": 0.05
+      },
+      "gain": 0.6
+    }
+  ],
+  "post": {
+    "saturate": 1.6,
+    "reverb": {
+      "length_s": 0.5,
+      "mix": 0.15,
+      "brightness": 7000
+    }
+  }
+}

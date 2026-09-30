@@ -1,0 +1,179 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "sound_map.schema.json",
+  "title": "Sound map",
+  "description": "Which sound plays when, on which bus and how (backlog M1-26, game/client/audio/audio_director.gd). Sound ids name data/sounds/<id>.json. '@weapon_swing' and '@weapon_hit' resolve through `weapons` from the caster's spec weapon and the target's class armor.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["id", "voices", "buses", "attenuation", "categories", "abilities", "auras", "weapons", "armor_fallback",
+    "footsteps", "movement", "interface", "cc_warning"],
+  "$defs": {
+    "sound": {"$ref": "common.schema.json#/$defs/id"},
+    "ref": {"type": "string", "pattern": "^(@weapon_swing|@weapon_hit|[a-z][a-z0-9_]*)$"},
+    "refs": {
+      "oneOf": [
+        {"$ref": "#/$defs/ref"},
+        {"type": "array", "items": {"$ref": "#/$defs/ref"}, "minItems": 1, "maxItems": 3}
+      ]
+    },
+    "bus": {"enum": ["Master", "Music", "Ambience", "Effects", "EffectsSelf", "EffectsAllies", "EffectsEnemies", "Interface", "Voice"]},
+    "stages": {
+      "type": "object",
+      "additionalProperties": false,
+      "minProperties": 1,
+      "properties": {
+        "cast_start": {"$ref": "#/$defs/refs", "description": "At the caster when a cast or channel starts"},
+        "cast_loop": {"$ref": "#/$defs/sound", "description": "Looping at the caster while the cast or channel runs"},
+        "release": {"$ref": "#/$defs/refs", "description": "At the caster when the ability goes off (cast_success)"},
+        "impact": {"$ref": "#/$defs/refs", "description": "At each unit the ability lands on (damage, heal, aura, dispel, interrupt), once per unit per tick"}
+      }
+    }
+  },
+  "properties": {
+    "id": {"$ref": "common.schema.json#/$defs/id"},
+    "description": {"type": "string"},
+    "voices": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["max", "never_drop_kit_slots", "never_drop_from"],
+      "properties": {
+        "max": {"type": "integer", "minimum": 8, "maximum": 256, "description": "Simultaneous sounds (DESIGN.md: 64)"},
+        "never_drop_kit_slots": {"type": "array", "items": {"type": "string"}, "description": "Abilities of these kit slots are never dropped for lack of voices"},
+        "never_drop_from": {"enum": ["enemies", "anyone"], "description": "Whose never-drop abilities are protected (DESIGN.md: enemy crowd control and burst)"}
+      }
+    },
+    "buses": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["self", "allies", "enemies", "interface", "warning"],
+      "properties": {
+        "self": {"$ref": "#/$defs/bus"},
+        "allies": {"$ref": "#/$defs/bus"},
+        "enemies": {"$ref": "#/$defs/bus"},
+        "interface": {"$ref": "#/$defs/bus"},
+        "warning": {"$ref": "#/$defs/bus"}
+      }
+    },
+    "attenuation": {
+      "type": "object",
+      "minProperties": 1,
+      "additionalProperties": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["unit_size_m", "max_distance_m"],
+        "properties": {
+          "unit_size_m": {"type": "number", "exclusiveMinimum": 0, "description": "Full level within this distance; -6 dB at twice it (inverse distance)"},
+          "max_distance_m": {"type": "number", "exclusiveMinimum": 0, "description": "Silent (and not played) beyond this"},
+          "max_db": {"type": "number", "maximum": 0},
+          "filter_cutoff_hz": {"type": "number", "exclusiveMinimum": 0, "description": "Distant sounds are low-passed toward this cutoff"},
+          "filter_db": {"type": "number", "maximum": 0}
+        }
+      }
+    },
+    "categories": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["impact", "heal", "buff", "cast", "loop", "release", "swing", "footstep", "interface", "warning"],
+      "patternProperties": {
+        "^[a-z]+$": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["priority", "max_instances", "positional"],
+          "properties": {
+            "priority": {"type": "integer", "minimum": 0, "maximum": 100, "description": "A new sound may take the voice of a lower-priority one"},
+            "max_instances": {"type": "integer", "minimum": 1, "maximum": 64, "description": "Copies of one sound playing at once; the oldest is replaced"},
+            "positional": {"type": "boolean", "description": "3D at the unit (true) or 2D (interface, warnings)"},
+            "attenuation": {"$ref": "common.schema.json#/$defs/id"},
+            "volume_db": {"type": "number", "minimum": -40, "maximum": 0}
+          }
+        }
+      }
+    },
+    "abilities": {
+      "type": "object",
+      "description": "Every ability (data/abilities) has an entry: its sounds per stage, or \"none\" for an explicit silence",
+      "additionalProperties": {"oneOf": [{"const": "none"}, {"$ref": "#/$defs/stages"}]}
+    },
+    "auras": {
+      "type": "object",
+      "description": "Aura id -> sound of each periodic tick (damage or heal over time)",
+      "additionalProperties": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["tick"],
+        "properties": {"tick": {"$ref": "#/$defs/sound"}}
+      }
+    },
+    "weapons": {
+      "type": "object",
+      "description": "Weapon key -> swing and hit sounds. The key is '<type>_2h' for a two-handed weapon when present, else '<type>'. Hits are chosen by the target's armor ('default' for any other).",
+      "additionalProperties": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["swing", "hit"],
+        "properties": {
+          "swing": {"$ref": "#/$defs/sound"},
+          "hit": {
+            "type": "object",
+            "minProperties": 1,
+            "propertyNames": {"anyOf": [{"$ref": "common.schema.json#/$defs/armor"}, {"const": "default"}]},
+            "additionalProperties": {"$ref": "#/$defs/sound"}
+          }
+        }
+      }
+    },
+    "armor_fallback": {
+      "type": "object",
+      "description": "Armor without its own hit or footstep sounds -> the armor to use instead",
+      "propertyNames": {"$ref": "common.schema.json#/$defs/armor"},
+      "additionalProperties": {"$ref": "common.schema.json#/$defs/armor"}
+    },
+    "footsteps": {
+      "type": "object",
+      "propertyNames": {"$ref": "common.schema.json#/$defs/armor"},
+      "additionalProperties": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["step", "land", "step_m"],
+        "properties": {
+          "step": {"$ref": "#/$defs/sound"},
+          "land": {"$ref": "#/$defs/sound"},
+          "step_m": {"type": "number", "minimum": 0.3, "maximum": 5, "description": "Ground distance per footstep; cadence follows speed"}
+        }
+      }
+    },
+    "movement": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["moving_min_mps", "teleport_min_mps", "airborne_min_height_m"],
+      "properties": {
+        "moving_min_mps": {"type": "number", "minimum": 0},
+        "teleport_min_mps": {"type": "number", "exclusiveMinimum": 0},
+        "airborne_min_height_m": {"type": "number", "minimum": 0}
+      }
+    },
+    "interface": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["click", "target", "error", "error_reasons", "error_throttle_s"],
+      "properties": {
+        "click": {"$ref": "#/$defs/sound"},
+        "target": {"$ref": "#/$defs/sound"},
+        "error": {"$ref": "#/$defs/sound"},
+        "error_reasons": {"type": "array", "items": {"type": "string"}, "description": "cast_failed reasons that play the error sound for the local player"},
+        "error_throttle_s": {"type": "number", "minimum": 0}
+      }
+    },
+    "cc_warning": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["sound", "incoming", "categories", "enabled_default"],
+      "properties": {
+        "sound": {"$ref": "#/$defs/sound", "description": "Plays once when crowd control of these categories lands on the local player"},
+        "incoming": {"$ref": "#/$defs/sound", "description": "Plays when an enemy starts a cast at the local player whose effects apply such crowd control"},
+        "categories": {"type": "array", "items": {"$ref": "common.schema.json#/$defs/cc_category"}, "minItems": 1},
+        "enabled_default": {"type": "boolean", "description": "DESIGN.md settings: CC warning sound on or off"}
+      }
+    }
+  }
+}

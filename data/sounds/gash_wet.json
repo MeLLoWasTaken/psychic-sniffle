@@ -1,0 +1,40 @@
+{
+  "id": "gash_wet",
+  "description": "Bleeding wound layer (Gashing Blow, Ruin Strike, Crippling Slash): a wet, tearing splash.",
+  "category": "impact",
+  "peak_dbfs": -9.0,
+  "variants": 2,
+  "duration_s": 0.5,
+  "layers": [
+    {
+      "type": "crackle",
+      "band": [
+        600,
+        3000
+      ],
+      "per_second": 2500,
+      "grain_s": 0.002,
+      "env": {
+        "attack_s": 0.003,
+        "decay_s": 0.12
+      },
+      "gain": 1.0
+    },
+    {
+      "type": "noise",
+      "lowpass": 700,
+      "env": {
+        "attack_s": 0.003,
+        "decay_s": 0.06
+      },
+      "gain": 0.7
+    }
+  ],
+  "post": {
+    "reverb": {
+      "length_s": 0.4,
+      "mix": 0.1,
+      "brightness": 4000
+    }
+  }
+}

@@ -1,0 +1,17 @@
+{
+  "id": "warpath_charge",
+  "impact": {
+    "style": "spark",
+    "at": "target",
+    "size": 1.3
+  },
+  "displacement": {
+    "style": "dust"
+  },
+  "auras": {
+    "charge_dazed": {
+      "style": "stun",
+      "size": 0.85
+    }
+  }
+}

@@ -1,0 +1,6 @@
+{
+  "description": "Two effect files define the visual of the same aura (chilled is drawn by rime_bolt's file).",
+  "file": "effects/rime_fan.json",
+  "set": {"/auras": {"chilled": {"style": "slow"}}},
+  "expect": "aura 'chilled' already has a visual"
+}

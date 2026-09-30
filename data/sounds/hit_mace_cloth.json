@@ -1,0 +1,73 @@
+{
+  "id": "hit_mace_cloth",
+  "description": "Mace into cloth and body: blunt crack, duller. A smaller crack, heavier meaty thud, a bone-like crunch; no clang.",
+  "category": "impact",
+  "peak_dbfs": -3.0,
+  "variants": 3,
+  "duration_s": 0.7,
+  "layers": [
+    {
+      "type": "noise",
+      "highpass": 1200,
+      "env": {
+        "attack_s": 0.0003,
+        "decay_s": 0.004
+      },
+      "gain": 1.1
+    },
+    {
+      "type": "sub",
+      "from_hz": 170,
+      "to_hz": 44,
+      "curve": 10,
+      "env": {
+        "attack_s": 0.001,
+        "decay_s": 0.09
+      },
+      "gain": 1.1
+    },
+    {
+      "type": "noise",
+      "band": [
+        90,
+        500
+      ],
+      "env": {
+        "attack_s": 0.001,
+        "decay_s": 0.07
+      },
+      "gain": 1.3
+    },
+    {
+      "type": "crackle",
+      "band": [
+        500,
+        2500
+      ],
+      "per_second": 700,
+      "grain_s": 0.003,
+      "env": {
+        "attack_s": 0.001,
+        "decay_s": 0.05
+      },
+      "gain": 0.7
+    },
+    {
+      "type": "noise",
+      "lowpass": 1500,
+      "env": {
+        "attack_s": 0.001,
+        "decay_s": 0.03
+      },
+      "gain": 0.6
+    }
+  ],
+  "post": {
+    "saturate": 2.6,
+    "reverb": {
+      "length_s": 0.45,
+      "mix": 0.08,
+      "brightness": 3000
+    }
+  }
+}

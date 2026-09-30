@@ -1,0 +1,37 @@
+{
+  "id": "ui_target",
+  "description": "Target selected: a soft two-step tick, rising.",
+  "category": "interface",
+  "peak_dbfs": -16.0,
+  "duration_s": 0.15,
+  "layers": [
+    {
+      "type": "tone",
+      "freq": 1200,
+      "env": {
+        "attack_s": 0.0005,
+        "decay_s": 0.02
+      },
+      "gain": 0.6
+    },
+    {
+      "type": "tone",
+      "freq": 1600,
+      "start_s": 0.035,
+      "env": {
+        "attack_s": 0.0005,
+        "decay_s": 0.025
+      },
+      "gain": 0.6
+    },
+    {
+      "type": "noise",
+      "highpass": 3000,
+      "env": {
+        "attack_s": 0.0002,
+        "decay_s": 0.003
+      },
+      "gain": 0.3
+    }
+  ]
+}

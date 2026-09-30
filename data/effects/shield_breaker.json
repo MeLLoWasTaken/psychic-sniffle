@@ -1,0 +1,13 @@
+{
+  "id": "shield_breaker",
+  "description": "Thrown weapon streak; the burst strips a shield.",
+  "projectile": {
+    "style": "streak",
+    "speed_mps": 45
+  },
+  "impact": {
+    "style": "burst",
+    "at": "target",
+    "size": 0.9
+  }
+}

@@ -1,0 +1,81 @@
+{
+  "id": "default",
+  "description": "School colors from docs/DESIGN.md 'Spell color language', with hues spread at least about 30 degrees apart (physical is a desaturated steel, blood is told from fire by its darkness). Checked by the effects screenshot test (tools/effects_hues.py).",
+  "schools": {
+    "physical": {
+      "primary": [0.86, 0.84, 0.78],
+      "secondary": [1.0, 0.92, 0.74],
+      "core": [1.0, 1.0, 0.97],
+      "note": "Not in the design table: weapons read as pale steel, low saturation, so no spell school is mistaken for a weapon hit."
+    },
+    "fire": {
+      "primary": [1.0, 0.25, 0.0],
+      "secondary": [0.78, 0.07, 0.02],
+      "core": [1.0, 0.62, 0.5]
+    },
+    "frost": {
+      "primary": [0.18, 0.74, 1.0],
+      "secondary": [0.62, 0.9, 1.0],
+      "core": [0.59, 0.87, 1.0]
+    },
+    "shadow": {
+      "primary": [0.7, 0.15, 1.0],
+      "secondary": [0.14, 0.03, 0.24],
+      "core": [0.85, 0.57, 1.0]
+    },
+    "holy": {
+      "primary": [1.0, 0.88, 0.1],
+      "secondary": [1.0, 0.93, 0.72],
+      "core": [1.0, 0.94, 0.55]
+    },
+    "nature": {
+      "primary": [0.15, 0.85, 0.35],
+      "secondary": [0.92, 0.66, 0.16],
+      "core": [0.575, 0.925, 0.675]
+    },
+    "storm": {
+      "primary": [0.3, 0.36, 1.0],
+      "secondary": [0.74, 0.84, 1.0],
+      "core": [0.65, 0.68, 1.0]
+    },
+    "blood": {
+      "primary": [0.6, 0.02, 0.22],
+      "secondary": [0.5, 0.64, 0.12],
+      "core": [0.72, 0.17, 0.3],
+      "gain": 0.7,
+      "note": "Dark crimson with sickly green drips: drawn dimmer (gain), so it reads darker than fire."
+    },
+    "fel": {
+      "primary": [0.62, 1.0, 0.05],
+      "secondary": [0.22, 0.52, 0.0],
+      "core": [0.81, 1.0, 0.525]
+    },
+    "time": {
+      "primary": [0.05, 0.8, 0.68],
+      "secondary": [0.78, 0.52, 0.22],
+      "core": [0.35, 0.95, 0.82]
+    }
+  },
+  "relation": {
+    "enemy_outline": [1.0, 0.1, 0.06, 0.95],
+    "ally_outline": [0.82, 0.86, 0.9, 0.55],
+    "outline_width_m": 0.3
+  },
+  "dust": [0.5, 0.45, 0.38],
+  "intensity": {
+    "core": 1.6,
+    "glow": 1.2,
+    "fill": 0.9
+  },
+  "budget": {
+    "max_effects": 200,
+    "max_particles": 4000,
+    "max_auras_per_unit": 4,
+    "max_impacts_per_tick": 24
+  },
+  "defaults": {
+    "projectile_speed_mps": 40,
+    "max_flight_s": 0.45,
+    "ground_lifetime_s": 0.9
+  }
+}

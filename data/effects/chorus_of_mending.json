@@ -1,0 +1,14 @@
+{
+  "id": "chorus_of_mending",
+  "description": "Group heal: a zone around the healed ally and a beam on everyone healed.",
+  "impact": {
+    "style": "rays",
+    "at": "hits",
+    "size": 0.8
+  },
+  "ground": {
+    "style": "zone",
+    "center": "target",
+    "lifetime_s": 1.2
+  }
+}

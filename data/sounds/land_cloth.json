@@ -1,0 +1,54 @@
+{
+  "id": "land_cloth",
+  "description": "Cloth landing from a jump: a soft thump and scuff.",
+  "category": "footstep",
+  "peak_dbfs": -12.0,
+  "variants": 2,
+  "duration_s": 0.4,
+  "layers": [
+    {
+      "type": "sub",
+      "from_hz": 100,
+      "to_hz": 45,
+      "curve": 8,
+      "env": {
+        "attack_s": 0.001,
+        "decay_s": 0.04
+      },
+      "gain": 0.7
+    },
+    {
+      "type": "noise",
+      "band": [
+        300,
+        2500
+      ],
+      "env": {
+        "attack_s": 0.001,
+        "decay_s": 0.035
+      },
+      "gain": 1.0
+    },
+    {
+      "type": "crackle",
+      "band": [
+        2500,
+        8000
+      ],
+      "per_second": 1200,
+      "grain_s": 0.002,
+      "env": {
+        "attack_s": 0.001,
+        "decay_s": 0.04
+      },
+      "gain": 0.3
+    }
+  ],
+  "post": {
+    "reverb": {
+      "length_s": 0.4,
+      "mix": 0.1,
+      "brightness": 4500
+    }
+  }
+}

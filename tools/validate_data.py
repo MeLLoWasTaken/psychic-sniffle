@@ -10,6 +10,10 @@ Checks, in order:
   5. Design rules for content marked "complete": ability kit template from docs/DESIGN.md,
      talent point totals from tuning.json.
   6. Maps have enough spawns for their brackets; keybind profiles have no conflicts.
+  7. Spell effects: every ability of a finished kit has an effect entry (or "none" with a
+     reason), stages fit the ability (cast glow only with a cast bar, ground only with a radius),
+     each applied aura has exactly one visual, crowd control uses a CC style, the palette covers
+     every school.
 
 Usage:
   python3 tools/validate_data.py [--data DIR]
@@ -43,6 +47,10 @@ FOLDERS = {
     "animations": ("animation_set.schema.json", "id"),
     "anim_states": ("anim_states.schema.json", "id"),
     "settings": ("settings.schema.json", "id"),
+    "effects": ("effect.schema.json", "id"),
+    "effect_palettes": ("effect_palette.schema.json", "id"),
+    "sounds": ("sound.schema.json", "id"),
+    "sound_map": ("sound_map.schema.json", "id"),
 }
 
 # Ability kit template (docs/DESIGN.md, "Ability kit template"): slot -> (min, max)
@@ -217,8 +225,6 @@ def validate(data_dir: Path) -> list[str]:
             report.error(rel, f"asset '{s['asset']}' not found")
         if s["kit_status"] == "complete":
             _check_kit(report, rel, s, abilities, auras)
-        if tuning and s["weapon"]["type"] not in tuning["audio"]["weapon_impact_sounds"]:
-            report.error(rel, f"weapon type '{s['weapon']['type']}' has no impact sound in tuning.json audio")
 
     # ---- abilities and auras ------------------------------------------------
     owners = set(classes) | set(specs) | {"shared"}
@@ -252,6 +258,11 @@ def validate(data_dir: Path) -> list[str]:
         missing = [c for c in anim_mod.REQUIRED_CLIPS if c not in a["clips"]]
         if missing:
             report.error(rel, f"missing required clips: {', '.join(missing)}")
+    _check_effects(report, db, schemas)
+    sys.path.insert(0, str(REPO / "tools" / "audio"))
+    import sound_data  # sounds and the sound map (backlog M1-26); weapon sounds per spec
+
+    sound_data.check(report.error, db, data_dir)
     for sid, st in db["anim_states"].items():
         _check_anim_states(report, f"anim_states/{sid}.json", st, db, schemas)
     for asid, asset in db["assets"].items():
@@ -320,6 +331,89 @@ def validate(data_dir: Path) -> list[str]:
             actions.add(b["action"])
 
     return report.errors
+
+
+# Spell effects (backlog M1-25): crowd control must be readable, so CC auras need a CC style.
+EFFECT_STAGES = ("cast", "projectile", "impact", "ground", "melee", "displacement", "auras")
+CC_AURA_STYLES = {"stun", "disorient", "root", "silence", "ice_block"}
+UNIT_TARGETS = ("enemy", "ally", "any_unit")
+
+
+def _check_effects(report: Report, db: dict, schemas: dict) -> None:
+    abilities, auras, effects = db["abilities"], db["auras"], db["effects"]
+    palettes = db["effect_palettes"]
+    if "default" not in palettes:
+        report.error("effect_palettes", "missing the 'default' palette")
+    schools = schemas["common.schema.json"]["$defs"]["school"]["enum"]
+    for pid, p in palettes.items():
+        for school in schools:
+            if school not in p["schools"]:
+                report.error(f"effect_palettes/{pid}.json", f"no colors for school '{school}'")
+    # every ability of a finished kit (and its class's shared abilities) has an entry
+    covered: set[str] = set()
+    for sid, s in db["specs"].items():
+        if s["kit_status"] != "complete":
+            continue
+        covered |= set(s["abilities"])
+        covered |= set(db["classes"].get(s["class"], {}).get("shared_abilities", []))
+    for aid in sorted(covered):
+        if aid in abilities and aid not in effects:
+            report.error(f"effects/{aid}.json", f"ability '{aid}' has no effect entry (add one, or \"none\": true with a reason)")
+    defined: dict[str, str] = {}  # aura id -> effect file defining its visual
+    for eid, e in effects.items():
+        rel = f"effects/{eid}.json"
+        a = abilities.get(eid)
+        if a is None:
+            report.error(rel, f"no ability '{eid}'")
+            continue
+        stages = [s for s in EFFECT_STAGES if s in e]
+        if e.get("none"):
+            if stages:
+                report.error(rel, f"marked none but has stages: {', '.join(stages)}")
+            if not e.get("reason"):
+                report.error(rel, "marked none without a reason")
+            continue
+        if not stages:
+            report.error(rel, "has no stages (mark it \"none\": true with a reason instead)")
+        effect_types = {x["type"] for x in a["effects"]}
+        radius = [x for x in a["effects"] if x.get("radius_m")]
+        applied = {x["aura"] for x in a["effects"] if x["type"] == "apply_aura"}
+        if "cast" in e and a["cast_type"] not in ("cast", "channel"):
+            report.error(rel, f"cast glow on a {a['cast_type']} ability")
+        if "projectile" in e and a["target"] not in UNIT_TARGETS:
+            report.error(rel, f"projectile needs a unit target, ability targets '{a['target']}'")
+        if e.get("impact", {}).get("at", "target") == "target" and "impact" in e and a["target"] not in UNIT_TARGETS:
+            report.error(rel, f"impact at the target, but the ability targets '{a['target']}' (use 'self' or 'hits')")
+        if "ground" in e:
+            if not radius:
+                report.error(rel, "ground effect on an ability without a radius effect (the radius comes from the ability)")
+            if e["ground"].get("center", "caster") == "target" and a["target"] not in UNIT_TARGETS:
+                report.error(rel, "ground effect centred on the target, but the ability has no unit target")
+        if "displacement" in e and not effect_types & {"charge", "teleport"}:
+            report.error(rel, "displacement on an ability that neither charges nor teleports")
+        if e.get("trigger") == "damage" and "damage" not in effect_types:
+            report.error(rel, "trigger 'damage' on an ability that deals no damage")
+        for auid, vis in e.get("auras", {}).items():
+            if auid not in auras:
+                report.error(rel, f"aura '{auid}' not found")
+                continue
+            if auid not in applied:
+                report.error(rel, f"aura '{auid}' is not applied by ability '{eid}'")
+            if auid in defined:
+                report.error(rel, f"aura '{auid}' already has a visual in effects/{defined[auid]}.json")
+            defined[auid] = eid
+            cat = auras[auid]["cc_category"]
+            if cat not in ("none", "knockback"):
+                style = vis if vis == "none" else vis["style"]
+                if style not in CC_AURA_STYLES:
+                    report.error(rel, f"aura '{auid}' is crowd control ({cat}) and needs a readable CC style "
+                                      f"({', '.join(sorted(CC_AURA_STYLES))}), not '{style}'")
+    # every aura a covered ability applies has a visual (or an explicit "none")
+    for aid in sorted(covered & set(abilities)):
+        for x in abilities[aid]["effects"]:
+            if x["type"] == "apply_aura" and x["aura"] in auras and x["aura"] not in defined:
+                report.error(f"effects/{aid}.json", f"aura '{x['aura']}' applied by '{aid}' has no visual in any effect file")
+                defined[x["aura"]] = aid  # report once
 
 
 def _check_tree_ref(report: Report, rel: str, trees: dict, tree_id: str, kind: str, owner: str) -> None:

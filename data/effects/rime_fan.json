@@ -1,0 +1,13 @@
+{
+  "id": "rime_fan",
+  "impact": {
+    "style": "shards",
+    "at": "hits",
+    "size": 0.7
+  },
+  "ground": {
+    "style": "nova",
+    "center": "caster",
+    "lifetime_s": 0.7
+  }
+}

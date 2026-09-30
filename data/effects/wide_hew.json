@@ -1,0 +1,11 @@
+{
+  "id": "wide_hew",
+  "impact": {
+    "style": "spark",
+    "at": "hits"
+  },
+  "melee": {
+    "style": "arc",
+    "size": 1.6
+  }
+}

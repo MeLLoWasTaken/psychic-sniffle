@@ -1,0 +1,14 @@
+{
+  "id": "dread_roar",
+  "description": "Shockwave out to the roar's radius; feared enemies get the disorient swirl.",
+  "ground": {
+    "style": "nova",
+    "center": "caster",
+    "lifetime_s": 0.8
+  },
+  "auras": {
+    "dread_roared": {
+      "style": "disorient"
+    }
+  }
+}

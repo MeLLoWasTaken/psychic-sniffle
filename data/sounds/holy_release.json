@@ -1,0 +1,73 @@
+{
+  "id": "holy_release",
+  "description": "Holy spell released (Castigate): a bright burst of light with a short sparkle.",
+  "category": "release",
+  "peak_dbfs": -5.0,
+  "duration_s": 1.0,
+  "layers": [
+    {
+      "type": "noise",
+      "band": [
+        1000,
+        4000
+      ],
+      "sweep_to": [
+        3000,
+        10000
+      ],
+      "steps": 8,
+      "sweep_share": 0.3,
+      "env": {
+        "attack_s": 0.003,
+        "decay_s": 0.15
+      },
+      "gain": 0.9
+    },
+    {
+      "type": "tone",
+      "freqs": [
+        [
+          440,
+          1
+        ],
+        [
+          660,
+          0.5
+        ]
+      ],
+      "harmonics": [
+        [
+          1,
+          1
+        ],
+        [
+          2.76,
+          0.15
+        ]
+      ],
+      "env": {
+        "attack_s": 0.003,
+        "decay_s": 0.25
+      },
+      "gain": 0.5
+    },
+    {
+      "type": "sub",
+      "from_hz": 110,
+      "to_hz": 55,
+      "curve": 8,
+      "env": {
+        "attack_s": 0.002,
+        "decay_s": 0.1
+      },
+      "gain": 0.7
+    }
+  ],
+  "post": {
+    "reverb": {
+      "length_s": 1.0,
+      "mix": 0.25,
+      "brightness": 8000
+    }
+  }
+}

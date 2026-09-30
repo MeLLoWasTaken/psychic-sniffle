@@ -1,0 +1,51 @@
+{
+  "id": "frost_hit_small",
+  "description": "A small frost hit (one target of an area spell): a crackle and a tick.",
+  "category": "impact",
+  "peak_dbfs": -8.0,
+  "variants": 3,
+  "duration_s": 0.35,
+  "layers": [
+    {
+      "type": "noise",
+      "highpass": 3000,
+      "env": {
+        "attack_s": 0.0003,
+        "decay_s": 0.004
+      },
+      "gain": 0.8
+    },
+    {
+      "type": "crackle",
+      "band": [
+        2000,
+        8000
+      ],
+      "per_second": 1200,
+      "grain_s": 0.002,
+      "env": {
+        "attack_s": 0.001,
+        "decay_s": 0.08
+      },
+      "gain": 0.8
+    },
+    {
+      "type": "sub",
+      "from_hz": 120,
+      "to_hz": 55,
+      "curve": 8,
+      "env": {
+        "attack_s": 0.002,
+        "decay_s": 0.035
+      },
+      "gain": 0.5
+    }
+  ],
+  "post": {
+    "reverb": {
+      "length_s": 0.4,
+      "mix": 0.1,
+      "brightness": 8000
+    }
+  }
+}

@@ -1,0 +1,13 @@
+{
+  "id": "spellsever",
+  "projectile": {
+    "style": "orb",
+    "speed_mps": 60,
+    "size": 0.6
+  },
+  "impact": {
+    "style": "ring",
+    "at": "target",
+    "size": 0.9
+  }
+}

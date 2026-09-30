@@ -1,0 +1,8 @@
+{
+  "id": "frost_cast_loop",
+  "description": "Held frost cast (human: sounds fine): icy wind, cold shimmering drone, crystal glints; loops.",
+  "category": "loop",
+  "peak_dbfs": -6.0,
+  "loops": true,
+  "builtin": "frost_cast_loop"
+}

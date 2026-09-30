@@ -1,0 +1,11 @@
+{
+  "id": "grim_hack",
+  "impact": {
+    "style": "spark",
+    "at": "hits"
+  },
+  "melee": {
+    "style": "arc",
+    "size": 1.1
+  }
+}

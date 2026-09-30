@@ -1,0 +1,54 @@
+{
+  "id": "charge_rush",
+  "description": "Warpath Charge: a heavy rush of air with pounding footfalls.",
+  "category": "release",
+  "peak_dbfs": -5.0,
+  "duration_s": 0.75,
+  "layers": [
+    {
+      "type": "noise",
+      "band": [
+        200,
+        800
+      ],
+      "sweep_to": [
+        600,
+        2500
+      ],
+      "steps": 8,
+      "sweep_share": 0.8,
+      "env": {
+        "swell": [
+          0.3,
+          0.1
+        ],
+        "curve": 2.0
+      },
+      "gain": 1.0
+    },
+    {
+      "type": "sub",
+      "from_hz": 100,
+      "to_hz": 50,
+      "curve": 8,
+      "env": {
+        "attack_s": 0.002,
+        "decay_s": 0.04
+      },
+      "gain": 0.6,
+      "repeat": {
+        "every_s": 0.09,
+        "count": 5,
+        "jitter_s": 0.01,
+        "gain_jitter": 0.3
+      }
+    }
+  ],
+  "post": {
+    "reverb": {
+      "length_s": 0.6,
+      "mix": 0.15,
+      "brightness": 4000
+    }
+  }
+}

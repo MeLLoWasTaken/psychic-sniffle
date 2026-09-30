@@ -1,0 +1,14 @@
+{
+  "id": "deep_winter_ab",
+  "impact": {
+    "style": "burst",
+    "at": "self",
+    "size": 1.2
+  },
+  "auras": {
+    "deep_winter": {
+      "style": "empower",
+      "size": 1.1
+    }
+  }
+}

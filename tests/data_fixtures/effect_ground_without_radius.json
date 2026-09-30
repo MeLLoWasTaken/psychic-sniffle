@@ -1,0 +1,6 @@
+{
+  "description": "A ground effect on a single-target ability: there is no radius to draw.",
+  "file": "effects/grim_hack.json",
+  "set": {"/ground": {"style": "nova"}},
+  "expect": "ground effect on an ability without a radius effect"
+}

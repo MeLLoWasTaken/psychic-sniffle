@@ -1,0 +1,12 @@
+{
+  "id": "mending_light",
+  "cast": {
+    "style": "hand_glow",
+    "hands": "both"
+  },
+  "impact": {
+    "style": "rays",
+    "at": "target",
+    "size": 1.2
+  }
+}

@@ -1,0 +1,113 @@
+{
+  "id": "hit_mace_plate",
+  "description": "Mace on plate: blunt crack. Sharp broadband crack, falling low thud with sub, crunching plates, short resonant clang (the approved impact_blunt, as data).",
+  "category": "impact",
+  "peak_dbfs": -3.0,
+  "variants": 3,
+  "duration_s": 0.8,
+  "layers": [
+    {
+      "type": "noise",
+      "highpass": 1500,
+      "env": {
+        "attack_s": 0.0003,
+        "decay_s": 0.004
+      },
+      "gain": 1.2
+    },
+    {
+      "type": "sub",
+      "from_hz": 190,
+      "to_hz": 48,
+      "curve": 10,
+      "env": {
+        "attack_s": 0.001,
+        "decay_s": 0.075
+      },
+      "gain": 1.0
+    },
+    {
+      "type": "sub",
+      "from_hz": 44,
+      "to_hz": 42,
+      "env": {
+        "attack_s": 0.003,
+        "decay_s": 0.05
+      },
+      "gain": 0.6
+    },
+    {
+      "type": "noise",
+      "band": [
+        120,
+        700
+      ],
+      "env": {
+        "attack_s": 0.001,
+        "decay_s": 0.05
+      },
+      "gain": 1.2
+    },
+    {
+      "type": "crackle",
+      "band": [
+        700,
+        4500
+      ],
+      "per_second": 900,
+      "grain_s": 0.003,
+      "env": {
+        "attack_s": 0.001,
+        "decay_s": 0.06
+      },
+      "gain": 0.8
+    },
+    {
+      "type": "resonant",
+      "base": 1100,
+      "jitter": 0.18,
+      "partials": [
+        [
+          1,
+          18,
+          0.9,
+          0.07
+        ],
+        [
+          1.73,
+          22,
+          0.7,
+          0.055
+        ],
+        [
+          2.61,
+          25,
+          0.5,
+          0.045
+        ],
+        [
+          3.94,
+          28,
+          0.35,
+          0.035
+        ],
+        [
+          5.37,
+          30,
+          0.25,
+          0.025
+        ]
+      ],
+      "highpass": 700,
+      "gain": 0.8
+    }
+  ],
+  "post": {
+    "saturate": 3.0,
+    "reverb": {
+      "length_s": 0.5,
+      "mix": 0.1,
+      "brightness": 3500
+    }
+  }
+}

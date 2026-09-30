@@ -1,0 +1,206 @@
+{
+  "image": "previews/effects/schools.png",
+  "min_hue_deg": 30.0,
+  "schools": {
+    "physical": {
+      "pixels": 12800,
+      "hue_deg": 33.0,
+      "hue_concentration": 0.992,
+      "saturation": 0.09,
+      "value": 0.755,
+      "mean_rgb": [
+        0.755,
+        0.727,
+        0.689
+      ],
+      "added_hue_deg": 93.5,
+      "added_saturation": 0.088
+    },
+    "fire": {
+      "pixels": 11723,
+      "hue_deg": 12.8,
+      "hue_concentration": 0.998,
+      "saturation": 0.45,
+      "value": 0.832,
+      "mean_rgb": [
+        0.832,
+        0.543,
+        0.461
+      ],
+      "added_hue_deg": 15.5,
+      "added_saturation": 0.618
+    },
+    "frost": {
+      "pixels": 12494,
+      "hue_deg": 195.8,
+      "hue_concentration": 0.989,
+      "saturation": 0.246,
+      "value": 0.747,
+      "mean_rgb": [
+        0.569,
+        0.703,
+        0.747
+      ],
+      "added_hue_deg": 191.2,
+      "added_saturation": 0.469
+    },
+    "shadow": {
+      "pixels": 12371,
+      "hue_deg": 289.4,
+      "hue_concentration": 0.864,
+      "saturation": 0.293,
+      "value": 0.76,
+      "mean_rgb": [
+        0.711,
+        0.56,
+        0.739
+      ],
+      "added_hue_deg": 273.7,
+      "added_saturation": 0.375
+    },
+    "holy": {
+      "pixels": 12645,
+      "hue_deg": 44.0,
+      "hue_concentration": 0.97,
+      "saturation": 0.358,
+      "value": 0.795,
+      "mean_rgb": [
+        0.794,
+        0.723,
+        0.523
+      ],
+      "added_hue_deg": 55.1,
+      "added_saturation": 0.457
+    },
+    "nature": {
+      "pixels": 18984,
+      "hue_deg": 108.2,
+      "hue_concentration": 0.963,
+      "saturation": 0.246,
+      "value": 0.742,
+      "mean_rgb": [
+        0.602,
+        0.739,
+        0.567
+      ],
+      "added_hue_deg": 124.6,
+      "added_saturation": 0.393
+    },
+    "storm": {
+      "pixels": 20609,
+      "hue_deg": 229.9,
+      "hue_concentration": 0.86,
+      "saturation": 0.268,
+      "value": 0.765,
+      "mean_rgb": [
+        0.578,
+        0.608,
+        0.749
+      ],
+      "added_hue_deg": 218.2,
+      "added_saturation": 0.452
+    },
+    "blood": {
+      "pixels": 12648,
+      "hue_deg": 354.5,
+      "hue_concentration": 0.856,
+      "saturation": 0.42,
+      "value": 0.624,
+      "mean_rgb": [
+        0.603,
+        0.401,
+        0.417
+      ],
+      "added_hue_deg": 353.4,
+      "added_saturation": 0.517
+    },
+    "fel": {
+      "pixels": 21354,
+      "hue_deg": 77.3,
+      "hue_concentration": 0.899,
+      "saturation": 0.33,
+      "value": 0.769,
+      "mean_rgb": [
+        0.7,
+        0.762,
+        0.539
+      ],
+      "added_hue_deg": 90.7,
+      "added_saturation": 0.444
+    },
+    "time": {
+      "pixels": 20136,
+      "hue_deg": 152.5,
+      "hue_concentration": 0.903,
+      "saturation": 0.258,
+      "value": 0.722,
+      "mean_rgb": [
+        0.554,
+        0.72,
+        0.643
+      ],
+      "added_hue_deg": 159.2,
+      "added_saturation": 0.477
+    }
+  },
+  "closest_pairs": [
+    {
+      "a": "physical",
+      "b": "holy",
+      "ok": true,
+      "hue_gap_deg": 11.0,
+      "why": "saturation differs 0.27, value 0.04"
+    },
+    {
+      "a": "fire",
+      "b": "blood",
+      "ok": true,
+      "hue_gap_deg": 18.3,
+      "why": "hue 18 deg apart, value differs 0.21"
+    },
+    {
+      "a": "physical",
+      "b": "fire",
+      "ok": true,
+      "hue_gap_deg": 20.2,
+      "why": "saturation differs 0.36, value 0.08"
+    },
+    {
+      "a": "nature",
+      "b": "fel",
+      "ok": true,
+      "hue_gap_deg": 30.9,
+      "why": "hue 31 deg apart"
+    },
+    {
+      "a": "fire",
+      "b": "holy",
+      "ok": true,
+      "hue_gap_deg": 31.2,
+      "why": "hue 31 deg apart"
+    },
+    {
+      "a": "holy",
+      "b": "fel",
+      "ok": true,
+      "hue_gap_deg": 33.3,
+      "why": "hue 33 deg apart"
+    },
+    {
+      "a": "frost",
+      "b": "storm",
+      "ok": true,
+      "hue_gap_deg": 34.1,
+      "why": "hue 34 deg apart"
+    },
+    {
+      "a": "physical",
+      "b": "blood",
+      "ok": true,
+      "hue_gap_deg": 38.5,
+      "why": "saturation differs 0.33, value 0.13"
+    }
+  ],
+  "failing_pairs": [],
+  "pass": true
+}

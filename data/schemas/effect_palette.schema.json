@@ -1,0 +1,195 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "effect_palette.schema.json",
+  "title": "Effect palette",
+  "description": "School color table and shared numbers for spell effects (backlog M1-25, docs/DESIGN.md 'Spell color language' and 'Spell effects'). Colors are sRGB 0-1; the game multiplies them by the intensities for bloom.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "id",
+    "schools",
+    "relation",
+    "dust",
+    "intensity",
+    "budget",
+    "defaults"
+  ],
+  "$defs": {
+    "rgb": {
+      "type": "array",
+      "items": {
+        "type": "number",
+        "minimum": 0,
+        "maximum": 1
+      },
+      "minItems": 3,
+      "maxItems": 3
+    },
+    "rgba": {
+      "type": "array",
+      "items": {
+        "type": "number",
+        "minimum": 0,
+        "maximum": 1
+      },
+      "minItems": 4,
+      "maxItems": 4
+    },
+    "school_colors": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "primary",
+        "secondary",
+        "core"
+      ],
+      "properties": {
+        "primary": {
+          "$ref": "#/$defs/rgb",
+          "description": "The school's identifying color: glows, shells, trails, ground fills."
+        },
+        "secondary": {
+          "$ref": "#/$defs/rgb",
+          "description": "Accent from the design table's second color: sparks, smoke, crystals."
+        },
+        "core": {
+          "$ref": "#/$defs/rgb",
+          "description": "Near-white hot centre of orbs and flashes, tinted toward the school."
+        },
+        "gain": {
+          "type": "number",
+          "minimum": 0.3,
+          "maximum": 2,
+          "description": "Brightness multiplier for the school's glows (below 1 for dark schools)."
+        },
+        "note": {
+          "type": "string"
+        }
+      }
+    }
+  },
+  "properties": {
+    "id": {
+      "$ref": "common.schema.json#/$defs/id"
+    },
+    "description": {
+      "type": "string"
+    },
+    "schools": {
+      "type": "object",
+      "description": "One entry per school in common.schema.json.",
+      "propertyNames": {
+        "$ref": "common.schema.json#/$defs/school"
+      },
+      "additionalProperties": {
+        "$ref": "#/$defs/school_colors"
+      }
+    },
+    "relation": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "enemy_outline",
+        "ally_outline"
+      ],
+      "properties": {
+        "enemy_outline": {
+          "$ref": "#/$defs/rgba",
+          "description": "Outline ring of ground effects cast by the local player's enemies (red-tinted)."
+        },
+        "ally_outline": {
+          "$ref": "#/$defs/rgba",
+          "description": "Outline ring of ground effects cast by the player or allies (neutral)."
+        },
+        "outline_width_m": {
+          "type": "number",
+          "minimum": 0.05,
+          "maximum": 2,
+          "description": "Outline ring width in metres, whatever the radius."
+        }
+      }
+    },
+    "dust": {
+      "$ref": "#/$defs/rgb",
+      "description": "Color of charge dust (not a school)."
+    },
+    "intensity": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "core",
+        "glow",
+        "fill"
+      ],
+      "properties": {
+        "core": {
+          "type": "number",
+          "minimum": 0
+        },
+        "glow": {
+          "type": "number",
+          "minimum": 0
+        },
+        "fill": {
+          "type": "number",
+          "minimum": 0
+        }
+      }
+    },
+    "budget": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "max_effects",
+        "max_particles",
+        "max_auras_per_unit",
+        "max_impacts_per_tick"
+      ],
+      "properties": {
+        "max_effects": {
+          "type": "integer",
+          "minimum": 1,
+          "description": "Live effect nodes at once (casts, projectiles, impacts, ground, auras)."
+        },
+        "max_particles": {
+          "type": "integer",
+          "minimum": 1,
+          "description": "Sum of the particle amounts of all live emitters; sized for 20 players."
+        },
+        "max_auras_per_unit": {
+          "type": "integer",
+          "minimum": 1,
+          "description": "Aura visuals shown on one unit; crowd control first, then newest."
+        },
+        "max_impacts_per_tick": {
+          "type": "integer",
+          "minimum": 1
+        }
+      }
+    },
+    "defaults": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "projectile_speed_mps",
+        "max_flight_s",
+        "ground_lifetime_s"
+      ],
+      "properties": {
+        "projectile_speed_mps": {
+          "type": "number",
+          "exclusiveMinimum": 0
+        },
+        "max_flight_s": {
+          "type": "number",
+          "exclusiveMinimum": 0,
+          "description": "Projectiles are cosmetic (damage lands at release), so flights are capped: faster over long distances."
+        },
+        "ground_lifetime_s": {
+          "type": "number",
+          "exclusiveMinimum": 0
+        }
+      }
+    }
+  }
+}

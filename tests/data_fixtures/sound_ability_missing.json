@@ -1,0 +1,1 @@
+{"description": "An ability has no entry in the sound map", "file": "sound_map/default.json", "delete": ["/abilities/rime_bolt"], "expect": "ability 'rime_bolt' has no sound entry"}

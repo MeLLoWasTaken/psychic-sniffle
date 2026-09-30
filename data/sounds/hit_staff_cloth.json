@@ -1,0 +1,86 @@
+{
+  "id": "hit_staff_cloth",
+  "description": "Staff into cloth and body: wooden thud. Hollow knock, soft body thump, no metal.",
+  "category": "impact",
+  "peak_dbfs": -4.0,
+  "variants": 3,
+  "duration_s": 0.6,
+  "layers": [
+    {
+      "type": "noise",
+      "band": [
+        220,
+        1300
+      ],
+      "env": {
+        "attack_s": 0.001,
+        "decay_s": 0.03
+      },
+      "gain": 1.3
+    },
+    {
+      "type": "resonant",
+      "base": 380,
+      "jitter": 0.12,
+      "partials": [
+        [
+          1,
+          6,
+          1.0,
+          0.045
+        ],
+        [
+          2.76,
+          7,
+          0.55,
+          0.03
+        ],
+        [
+          5.4,
+          8,
+          0.3,
+          0.02
+        ]
+      ],
+      "highpass": 200,
+      "gain": 1.2
+    },
+    {
+      "type": "sub",
+      "from_hz": 120,
+      "to_hz": 50,
+      "curve": 10,
+      "env": {
+        "attack_s": 0.001,
+        "decay_s": 0.045
+      },
+      "gain": 0.45
+    },
+    {
+      "type": "noise",
+      "lowpass": 1200,
+      "env": {
+        "attack_s": 0.001,
+        "decay_s": 0.03
+      },
+      "gain": 0.6
+    },
+    {
+      "type": "noise",
+      "highpass": 2500,
+      "env": {
+        "attack_s": 0.0003,
+        "decay_s": 0.004
+      },
+      "gain": 0.25
+    }
+  ],
+  "post": {
+    "saturate": 1.8,
+    "reverb": {
+      "length_s": 0.4,
+      "mix": 0.08,
+      "brightness": 3500
+    }
+  }
+}

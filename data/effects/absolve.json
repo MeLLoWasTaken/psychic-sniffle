@@ -1,0 +1,8 @@
+{
+  "id": "absolve",
+  "impact": {
+    "style": "rays",
+    "at": "target",
+    "size": 0.7
+  }
+}

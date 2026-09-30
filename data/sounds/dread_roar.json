@@ -1,0 +1,82 @@
+{
+  "id": "dread_roar",
+  "description": "Dread Roar (area fear): a savage, growling roar with a rough low voice and chest rumble.",
+  "category": "release",
+  "peak_dbfs": -3.0,
+  "duration_s": 1.75,
+  "layers": [
+    {
+      "type": "saw",
+      "freq": 95,
+      "to": 0.8,
+      "curve": 1,
+      "jitter": 0.3,
+      "formants": [
+        [
+          550,
+          6,
+          1.0
+        ],
+        [
+          950,
+          7,
+          0.7
+        ],
+        [
+          2400,
+          8,
+          0.35
+        ]
+      ],
+      "noise_mix": 0.4,
+      "am": [
+        22,
+        0.35
+      ],
+      "env": {
+        "swell": [
+          0.12,
+          0.4
+        ]
+      },
+      "gain": 1.0
+    },
+    {
+      "type": "noise",
+      "lowpass": 400,
+      "env": {
+        "swell": [
+          0.12,
+          0.4
+        ]
+      },
+      "gain": 0.6
+    },
+    {
+      "type": "noise",
+      "band": [
+        1500,
+        5000
+      ],
+      "env": {
+        "swell": [
+          0.1,
+          0.3
+        ],
+        "curve": 2.0
+      },
+      "gain": 0.25
+    }
+  ],
+  "post": {
+    "saturate": 2.0,
+    "reverb": {
+      "length_s": 1.2,
+      "mix": 0.25,
+      "brightness": 4000
+    }
+  },
+  "playback": {
+    "attenuation": "far"
+  }
+}

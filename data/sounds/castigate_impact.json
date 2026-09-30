@@ -1,0 +1,94 @@
+{
+  "id": "castigate_impact",
+  "description": "Castigate hits: searing radiance. A crack, a sizzling burn and a deep thump - no ringing note (impact rule).",
+  "category": "impact",
+  "peak_dbfs": -3.0,
+  "variants": 2,
+  "duration_s": 1.2,
+  "layers": [
+    {
+      "type": "noise",
+      "highpass": 2000,
+      "env": {
+        "attack_s": 0.0003,
+        "decay_s": 0.004
+      },
+      "gain": 1.0
+    },
+    {
+      "type": "crackle",
+      "band": [
+        2500,
+        9000
+      ],
+      "per_second": 1500,
+      "grain_s": 0.002,
+      "env": {
+        "attack_s": 0.001,
+        "decay_s": 0.2
+      },
+      "gain": 0.8
+    },
+    {
+      "type": "noise",
+      "band": [
+        1000,
+        5000
+      ],
+      "env": {
+        "swell": [
+          0.01,
+          0.3
+        ],
+        "curve": 2.0
+      },
+      "gain": 0.6
+    },
+    {
+      "type": "sub",
+      "from_hz": 180,
+      "to_hz": 50,
+      "curve": 8,
+      "env": {
+        "attack_s": 0.002,
+        "decay_s": 0.12
+      },
+      "gain": 1.1
+    },
+    {
+      "type": "resonant",
+      "base": 1300,
+      "jitter": 0.1,
+      "partials": [
+        [
+          1,
+          12,
+          0.7,
+          0.08
+        ],
+        [
+          1.5,
+          12,
+          0.5,
+          0.06
+        ],
+        [
+          2.0,
+          14,
+          0.3,
+          0.05
+        ]
+      ],
+      "highpass": 800,
+      "gain": 0.4
+    }
+  ],
+  "post": {
+    "saturate": 1.8,
+    "reverb": {
+      "length_s": 0.8,
+      "mix": 0.2,
+      "brightness": 7000
+    }
+  }
+}

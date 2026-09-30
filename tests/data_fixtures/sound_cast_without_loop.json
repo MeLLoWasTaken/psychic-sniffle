@@ -1,0 +1,1 @@
+{"description": "A cast-time ability has no cast loop", "file": "sound_map/default.json", "delete": ["/abilities/mending_light/cast_loop"], "expect": "a cast needs 'cast_loop'"}

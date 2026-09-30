@@ -1,0 +1,13 @@
+{
+  "id": "chains_of_awe",
+  "impact": {
+    "style": "ring",
+    "at": "target",
+    "size": 1.0
+  },
+  "auras": {
+    "awed_silence": {
+      "style": "silence"
+    }
+  }
+}

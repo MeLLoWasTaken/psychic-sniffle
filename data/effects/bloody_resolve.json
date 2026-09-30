@@ -1,0 +1,9 @@
+{
+  "id": "bloody_resolve",
+  "description": "Self heal: a pale beam over the Warblade.",
+  "impact": {
+    "style": "rays",
+    "at": "self",
+    "size": 0.8
+  }
+}

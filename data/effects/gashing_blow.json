@@ -1,0 +1,16 @@
+{
+  "id": "gashing_blow",
+  "impact": {
+    "style": "spark",
+    "at": "hits",
+    "size": 1.1
+  },
+  "melee": {
+    "style": "overhead"
+  },
+  "auras": {
+    "gashed": {
+      "style": "dot"
+    }
+  }
+}

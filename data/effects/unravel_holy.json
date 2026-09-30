@@ -1,0 +1,8 @@
+{
+  "id": "unravel_holy",
+  "impact": {
+    "style": "ring",
+    "at": "target",
+    "size": 0.8
+  }
+}

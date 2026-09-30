@@ -1,0 +1,52 @@
+{
+  "id": "dispel_impact",
+  "description": "A magic effect is stripped from the target: a short fizzing tear.",
+  "category": "impact",
+  "peak_dbfs": -5.0,
+  "duration_s": 0.8,
+  "layers": [
+    {
+      "type": "noise",
+      "band": [
+        3000,
+        9000
+      ],
+      "am": [
+        30,
+        0.6
+      ],
+      "env": {
+        "attack_s": 0.003,
+        "decay_s": 0.2
+      },
+      "gain": 1.0
+    },
+    {
+      "type": "noise",
+      "highpass": 3000,
+      "env": {
+        "attack_s": 0.0003,
+        "decay_s": 0.004
+      },
+      "gain": 0.7
+    },
+    {
+      "type": "sub",
+      "from_hz": 110,
+      "to_hz": 50,
+      "curve": 8,
+      "env": {
+        "attack_s": 0.002,
+        "decay_s": 0.04
+      },
+      "gain": 0.5
+    }
+  ],
+  "post": {
+    "reverb": {
+      "length_s": 0.5,
+      "mix": 0.15,
+      "brightness": 8000
+    }
+  }
+}

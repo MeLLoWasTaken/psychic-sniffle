@@ -1,0 +1,28 @@
+{
+  "id": "ui_error",
+  "description": "Action refused (not ready, out of range): two short low buzzes.",
+  "category": "interface",
+  "peak_dbfs": -14.0,
+  "duration_s": 0.3,
+  "layers": [
+    {
+      "type": "saw",
+      "freq": 140,
+      "lowpass": 1500,
+      "env": {
+        "hold": [
+          0.005,
+          0.03
+        ],
+        "length_s": 0.11
+      },
+      "gain": 1.0,
+      "repeat": {
+        "times": [
+          0,
+          0.15
+        ]
+      }
+    }
+  ]
+}

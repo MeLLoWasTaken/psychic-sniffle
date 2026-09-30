@@ -1,0 +1,54 @@
+{
+  "id": "throat_punch_impact",
+  "description": "Throat Punch: a fist into the throat - a dull meaty thud with a choked crunch.",
+  "category": "impact",
+  "peak_dbfs": -4.0,
+  "duration_s": 0.4,
+  "layers": [
+    {
+      "type": "sub",
+      "from_hz": 150,
+      "to_hz": 55,
+      "curve": 8,
+      "env": {
+        "attack_s": 0.002,
+        "decay_s": 0.05
+      },
+      "gain": 1.0
+    },
+    {
+      "type": "noise",
+      "band": [
+        150,
+        900
+      ],
+      "env": {
+        "attack_s": 0.001,
+        "decay_s": 0.04
+      },
+      "gain": 1.2
+    },
+    {
+      "type": "crackle",
+      "band": [
+        500,
+        2000
+      ],
+      "per_second": 800,
+      "grain_s": 0.003,
+      "env": {
+        "attack_s": 0.001,
+        "decay_s": 0.05
+      },
+      "gain": 0.4
+    }
+  ],
+  "post": {
+    "saturate": 2.0,
+    "reverb": {
+      "length_s": 0.4,
+      "mix": 0.1,
+      "brightness": 3500
+    }
+  }
+}

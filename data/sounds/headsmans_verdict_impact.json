@@ -1,0 +1,51 @@
+{
+  "id": "headsmans_verdict_impact",
+  "description": "Headsman's Verdict (execute) layer over the weapon hit: a deep, final boom and a bone crunch.",
+  "category": "impact",
+  "peak_dbfs": -4.0,
+  "duration_s": 0.9,
+  "layers": [
+    {
+      "type": "sub",
+      "from_hz": 80,
+      "to_hz": 35,
+      "curve": 8,
+      "env": {
+        "attack_s": 0.002,
+        "decay_s": 0.25
+      },
+      "gain": 1.2
+    },
+    {
+      "type": "noise",
+      "lowpass": 300,
+      "env": {
+        "attack_s": 0.001,
+        "decay_s": 0.15
+      },
+      "gain": 1.0
+    },
+    {
+      "type": "crackle",
+      "band": [
+        400,
+        2500
+      ],
+      "per_second": 1000,
+      "grain_s": 0.003,
+      "env": {
+        "attack_s": 0.001,
+        "decay_s": 0.1
+      },
+      "gain": 0.6
+    }
+  ],
+  "post": {
+    "saturate": 2.0,
+    "reverb": {
+      "length_s": 0.9,
+      "mix": 0.2,
+      "brightness": 3000
+    }
+  }
+}

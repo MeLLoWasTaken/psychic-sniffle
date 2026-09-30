@@ -52,9 +52,12 @@ func test_frost_cast_loop_is_marked_looping_on_import() -> void:
 	assert_bool(stream.loop).override_failure_message("frost_cast_loop must loop").is_true()
 
 
-func test_every_weapon_type_has_a_playable_impact_randomizer() -> void:
-	for weapon: String in Data.tuning["audio"]["weapon_impact_sounds"]:
-		var sound: String = Data.tuning["audio"]["weapon_impact_sounds"][weapon]
-		var r: AudioStreamRandomizer = load("res://assets/audio/sfx/%s.tres" % sound)
-		assert_object(r).override_failure_message("no randomizer for %s" % sound).is_not_null()
-		assert_int(r.streams_count).is_equal(3)
+func test_every_mapped_weapon_hit_is_a_playable_randomizer() -> void:
+	# weapon sounds moved from tuning.json to data/sound_map (M1-26)
+	var bank: SoundBank = SoundBank.shared()
+	for key: String in bank.map["weapons"]:
+		for armor: String in bank.map["weapons"][key]["hit"]:
+			var sound: String = bank.map["weapons"][key]["hit"][armor]
+			var r: AudioStreamRandomizer = load(bank.stream_path(sound))
+			assert_object(r).override_failure_message("no randomizer for %s" % sound).is_not_null()
+			assert_int(r.streams_count).is_equal(int(bank.sounds[sound]["variants"]))

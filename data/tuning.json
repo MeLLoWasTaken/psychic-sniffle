@@ -131,22 +131,6 @@
     "pvp_talents_per_spec": 12,
     "loadouts_per_spec": 10
   },
-  "audio": {
-    "weapon_impact_sounds": {
-      "sword": "impact_slash",
-      "axe": "impact_slash",
-      "polearm": "impact_slash",
-      "glaive": "impact_slash",
-      "mace": "impact_blunt",
-      "hammer": "impact_blunt",
-      "staff": "impact_blunt",
-      "fist": "impact_blunt",
-      "wand": "impact_blunt",
-      "dagger": "impact_pierce",
-      "spear": "impact_pierce",
-      "bow": "impact_pierce"
-    }
-  },
   "combat": {
     "in_combat_s": 5,
     "power_bonus": 0.0,

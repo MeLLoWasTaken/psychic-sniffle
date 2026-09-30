@@ -1,0 +1,15 @@
+{
+  "id": "castigate",
+  "cast": {
+    "style": "hand_glow",
+    "hands": "right"
+  },
+  "projectile": {
+    "style": "orb",
+    "speed_mps": 40
+  },
+  "impact": {
+    "style": "burst",
+    "at": "target"
+  }
+}

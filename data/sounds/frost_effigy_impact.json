@@ -1,0 +1,93 @@
+{
+  "id": "frost_effigy_impact",
+  "description": "Frost Effigy lands: the target freezes into ice. A growing crackle of ice forming, a hiss, and a solid thunk as it sets.",
+  "category": "impact",
+  "peak_dbfs": -4.0,
+  "duration_s": 1.5,
+  "layers": [
+    {
+      "type": "crackle",
+      "band": [
+        1500,
+        8000
+      ],
+      "per_second": 600,
+      "grain_s": 0.003,
+      "env": {
+        "swell": [
+          0.35,
+          0.2
+        ],
+        "curve": 2.0
+      },
+      "gain": 0.8
+    },
+    {
+      "type": "noise",
+      "band": [
+        5000,
+        12000
+      ],
+      "env": {
+        "swell": [
+          0.3,
+          0.3
+        ],
+        "curve": 2.0
+      },
+      "gain": 0.35
+    },
+    {
+      "type": "sub",
+      "from_hz": 130,
+      "to_hz": 50,
+      "curve": 8,
+      "env": {
+        "attack_s": 0.002,
+        "decay_s": 0.08
+      },
+      "gain": 1.0,
+      "start_s": 0.35
+    },
+    {
+      "type": "noise",
+      "highpass": 2000,
+      "env": {
+        "attack_s": 0.0003,
+        "decay_s": 0.004
+      },
+      "gain": 0.9,
+      "start_s": 0.35
+    },
+    {
+      "type": "resonant",
+      "base": 700,
+      "jitter": 0.1,
+      "start_s": 0.35,
+      "partials": [
+        [
+          1,
+          8,
+          0.8,
+          0.08
+        ],
+        [
+          2.3,
+          9,
+          0.5,
+          0.06
+        ]
+      ],
+      "highpass": 300,
+      "gain": 0.5
+    }
+  ],
+  "post": {
+    "saturate": 1.5,
+    "reverb": {
+      "length_s": 0.8,
+      "mix": 0.18,
+      "brightness": 8000
+    }
+  }
+}

@@ -1,0 +1,14 @@
+{
+  "id": "auto_attack",
+  "description": "Weapon swing on every auto-attack hit and a small spark on the target.",
+  "trigger": "damage",
+  "impact": {
+    "style": "spark",
+    "at": "hits",
+    "size": 0.7
+  },
+  "melee": {
+    "style": "arc",
+    "size": 0.9
+  }
+}

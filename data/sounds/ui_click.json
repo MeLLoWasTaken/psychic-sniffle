@@ -1,0 +1,27 @@
+{
+  "id": "ui_click",
+  "description": "Interface click: a tiny, dry tick.",
+  "category": "interface",
+  "peak_dbfs": -14.0,
+  "duration_s": 0.08,
+  "layers": [
+    {
+      "type": "tone",
+      "freq": 1800,
+      "env": {
+        "attack_s": 0.0005,
+        "decay_s": 0.012
+      },
+      "gain": 0.6
+    },
+    {
+      "type": "noise",
+      "highpass": 3000,
+      "env": {
+        "attack_s": 0.0002,
+        "decay_s": 0.004
+      },
+      "gain": 0.6
+    }
+  ]
+}

@@ -1,0 +1,52 @@
+{
+  "id": "root_ice_impact",
+  "description": "Rooted in ice: a quick clamp of crunching ice at the feet.",
+  "category": "impact",
+  "peak_dbfs": -7.0,
+  "variants": 2,
+  "duration_s": 0.4,
+  "layers": [
+    {
+      "type": "noise",
+      "highpass": 2000,
+      "env": {
+        "attack_s": 0.0003,
+        "decay_s": 0.004
+      },
+      "gain": 0.9
+    },
+    {
+      "type": "crackle",
+      "band": [
+        1000,
+        6000
+      ],
+      "per_second": 1400,
+      "grain_s": 0.002,
+      "env": {
+        "attack_s": 0.001,
+        "decay_s": 0.1
+      },
+      "gain": 0.9
+    },
+    {
+      "type": "sub",
+      "from_hz": 120,
+      "to_hz": 50,
+      "curve": 8,
+      "env": {
+        "attack_s": 0.002,
+        "decay_s": 0.04
+      },
+      "gain": 0.6
+    }
+  ],
+  "post": {
+    "saturate": 1.4,
+    "reverb": {
+      "length_s": 0.4,
+      "mix": 0.1,
+      "brightness": 7000
+    }
+  }
+}

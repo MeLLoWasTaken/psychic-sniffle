@@ -1,0 +1,16 @@
+{
+  "id": "pommel_crack",
+  "impact": {
+    "style": "spark",
+    "at": "target",
+    "size": 1.2
+  },
+  "melee": {
+    "style": "thrust"
+  },
+  "auras": {
+    "pommel_cracked": {
+      "style": "stun"
+    }
+  }
+}

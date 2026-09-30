@@ -1,0 +1,13 @@
+{
+  "id": "shiver_lance",
+  "projectile": {
+    "style": "shard",
+    "speed_mps": 60,
+    "size": 1.2
+  },
+  "impact": {
+    "style": "shards",
+    "at": "target",
+    "size": 1.1
+  }
+}

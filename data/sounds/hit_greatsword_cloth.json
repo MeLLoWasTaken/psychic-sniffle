@@ -1,0 +1,119 @@
+{
+  "id": "hit_greatsword_cloth",
+  "description": "Greatsword through cloth: heavy slash. Swish, a faint edge, a wet tearing cut, cloth rip and a heavy thud; no metal clang.",
+  "category": "impact",
+  "peak_dbfs": -3.0,
+  "variants": 3,
+  "duration_s": 0.7,
+  "layers": [
+    {
+      "type": "noise",
+      "band": [
+        4000,
+        8500
+      ],
+      "sweep_to": [
+        1000,
+        2600
+      ],
+      "steps": 6,
+      "env": {
+        "hold": [
+          0.003,
+          0.05
+        ],
+        "length_s": 0.16
+      },
+      "gain": 1.1
+    },
+    {
+      "type": "resonant",
+      "base": 2300,
+      "jitter": 0.08,
+      "partials": [
+        [
+          1,
+          18,
+          0.9,
+          0.03
+        ],
+        [
+          1.52,
+          20,
+          0.5,
+          0.025
+        ]
+      ],
+      "highpass": 1500,
+      "gain": 0.25
+    },
+    {
+      "type": "crackle",
+      "band": [
+        600,
+        3000
+      ],
+      "per_second": 2000,
+      "grain_s": 0.002,
+      "env": {
+        "attack_s": 0.001,
+        "decay_s": 0.07
+      },
+      "gain": 0.9
+    },
+    {
+      "type": "crackle",
+      "band": [
+        1500,
+        7000
+      ],
+      "per_second": 3000,
+      "grain_s": 0.001,
+      "env": {
+        "attack_s": 0.004,
+        "decay_s": 0.05
+      },
+      "gain": 0.5
+    },
+    {
+      "type": "sub",
+      "from_hz": 130,
+      "to_hz": 45,
+      "curve": 10,
+      "env": {
+        "attack_s": 0.001,
+        "decay_s": 0.08
+      },
+      "gain": 0.85
+    },
+    {
+      "type": "noise",
+      "band": [
+        90,
+        500
+      ],
+      "env": {
+        "attack_s": 0.001,
+        "decay_s": 0.06
+      },
+      "gain": 1.0
+    },
+    {
+      "type": "noise",
+      "highpass": 3000,
+      "env": {
+        "attack_s": 0.0003,
+        "decay_s": 0.004
+      },
+      "gain": 0.6
+    }
+  ],
+  "post": {
+    "saturate": 2.2,
+    "reverb": {
+      "length_s": 0.5,
+      "mix": 0.1,
+      "brightness": 5000
+    }
+  }
+}

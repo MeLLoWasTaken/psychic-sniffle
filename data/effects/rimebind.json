@@ -1,0 +1,13 @@
+{
+  "id": "rimebind",
+  "ground": {
+    "style": "nova",
+    "center": "caster",
+    "lifetime_s": 0.9
+  },
+  "auras": {
+    "rimebound": {
+      "style": "root"
+    }
+  }
+}

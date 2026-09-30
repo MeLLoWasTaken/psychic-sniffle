@@ -1,0 +1,7 @@
+{
+  "id": "holy_heal",
+  "description": "Big heal landing (v2, human-approved): build-up, deep whomp, warm A major chord with sub, low bells.",
+  "category": "heal",
+  "peak_dbfs": -4.0,
+  "builtin": "holy_heal"
+}

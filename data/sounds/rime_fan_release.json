@@ -1,0 +1,93 @@
+{
+  "id": "rime_fan_release",
+  "description": "Rime Fan: a burst of frost exploding outward around the caster; a low whoomph, spraying ice.",
+  "category": "release",
+  "peak_dbfs": -3.0,
+  "duration_s": 1.2,
+  "layers": [
+    {
+      "type": "noise",
+      "band": [
+        1000,
+        4000
+      ],
+      "sweep_to": [
+        3000,
+        11000
+      ],
+      "steps": 8,
+      "sweep_share": 0.3,
+      "env": {
+        "attack_s": 0.005,
+        "decay_s": 0.3
+      },
+      "gain": 1.0
+    },
+    {
+      "type": "crackle",
+      "band": [
+        2000,
+        9000
+      ],
+      "per_second": 2000,
+      "grain_s": 0.002,
+      "env": {
+        "attack_s": 0.001,
+        "decay_s": 0.25
+      },
+      "gain": 0.8
+    },
+    {
+      "type": "sub",
+      "from_hz": 110,
+      "to_hz": 45,
+      "curve": 8,
+      "env": {
+        "attack_s": 0.002,
+        "decay_s": 0.15
+      },
+      "gain": 0.9
+    },
+    {
+      "type": "resonant",
+      "base": 2400,
+      "jitter": 0.1,
+      "partials": [
+        [
+          1,
+          20,
+          0.8,
+          0.08
+        ],
+        [
+          1.41,
+          22,
+          0.6,
+          0.064
+        ],
+        [
+          2.13,
+          24,
+          0.5,
+          0.052000000000000005
+        ],
+        [
+          2.97,
+          26,
+          0.4,
+          0.04
+        ]
+      ],
+      "highpass": 1800,
+      "gain": 0.5
+    }
+  ],
+  "post": {
+    "saturate": 1.6,
+    "reverb": {
+      "length_s": 0.9,
+      "mix": 0.2,
+      "brightness": 9000
+    }
+  }
+}

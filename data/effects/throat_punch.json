@@ -1,0 +1,12 @@
+{
+  "id": "throat_punch",
+  "impact": {
+    "style": "ring",
+    "at": "target",
+    "size": 0.8
+  },
+  "melee": {
+    "style": "thrust",
+    "size": 0.9
+  }
+}

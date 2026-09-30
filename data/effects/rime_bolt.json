@@ -1,0 +1,20 @@
+{
+  "id": "rime_bolt",
+  "cast": {
+    "style": "hand_glow",
+    "hands": "right"
+  },
+  "projectile": {
+    "style": "bolt",
+    "speed_mps": 38
+  },
+  "impact": {
+    "style": "shards",
+    "at": "target"
+  },
+  "auras": {
+    "chilled": {
+      "style": "slow"
+    }
+  }
+}

@@ -1,0 +1,18 @@
+{
+  "id": "heartfreeze",
+  "projectile": {
+    "style": "shard",
+    "speed_mps": 55,
+    "size": 0.9
+  },
+  "impact": {
+    "style": "shards",
+    "at": "target",
+    "size": 1.1
+  },
+  "auras": {
+    "heartfrozen": {
+      "style": "stun"
+    }
+  }
+}

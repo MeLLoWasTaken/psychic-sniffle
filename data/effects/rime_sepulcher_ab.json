@@ -1,0 +1,9 @@
+{
+  "id": "rime_sepulcher_ab",
+  "auras": {
+    "rime_sepulcher": {
+      "style": "ice_block",
+      "size": 1.05
+    }
+  }
+}

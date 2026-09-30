@@ -1,0 +1,433 @@
+{
+  "id": "default",
+  "description": "Sound v1 (backlog M1-26): every ability of the Warblade Carnage, Arcanist Rime and Oracle Grace kits, weapon swings and hits by weapon type and armor, footsteps, interface clicks and the crowd-control warnings.",
+  "voices": {
+    "max": 64,
+    "never_drop_kit_slots": [
+      "cc",
+      "burst"
+    ],
+    "never_drop_from": "enemies"
+  },
+  "buses": {
+    "self": "EffectsSelf",
+    "allies": "EffectsAllies",
+    "enemies": "EffectsEnemies",
+    "interface": "Interface",
+    "warning": "Interface"
+  },
+  "attenuation": {
+    "world": {
+      "unit_size_m": 10,
+      "max_distance_m": 60,
+      "max_db": 0,
+      "filter_cutoff_hz": 6000,
+      "filter_db": -12
+    },
+    "near": {
+      "unit_size_m": 5,
+      "max_distance_m": 35,
+      "max_db": 0,
+      "filter_cutoff_hz": 5000,
+      "filter_db": -18
+    },
+    "far": {
+      "unit_size_m": 16,
+      "max_distance_m": 90,
+      "max_db": 0,
+      "filter_cutoff_hz": 8000,
+      "filter_db": -8
+    }
+  },
+  "categories": {
+    "impact": {
+      "priority": 60,
+      "max_instances": 10,
+      "positional": true,
+      "attenuation": "world"
+    },
+    "heal": {
+      "priority": 55,
+      "max_instances": 6,
+      "positional": true,
+      "attenuation": "world"
+    },
+    "buff": {
+      "priority": 55,
+      "max_instances": 4,
+      "positional": true,
+      "attenuation": "world"
+    },
+    "cast": {
+      "priority": 50,
+      "max_instances": 6,
+      "positional": true,
+      "attenuation": "world"
+    },
+    "loop": {
+      "priority": 65,
+      "max_instances": 10,
+      "positional": true,
+      "attenuation": "world"
+    },
+    "release": {
+      "priority": 55,
+      "max_instances": 8,
+      "positional": true,
+      "attenuation": "world"
+    },
+    "swing": {
+      "priority": 35,
+      "max_instances": 8,
+      "positional": true,
+      "attenuation": "world"
+    },
+    "footstep": {
+      "priority": 10,
+      "max_instances": 8,
+      "positional": true,
+      "attenuation": "near"
+    },
+    "interface": {
+      "priority": 90,
+      "max_instances": 3,
+      "positional": false
+    },
+    "warning": {
+      "priority": 100,
+      "max_instances": 2,
+      "positional": false
+    }
+  },
+  "abilities": {
+    "ruin_strike": {
+      "release": "@weapon_swing",
+      "impact": [
+        "@weapon_hit",
+        "gash_wet"
+      ]
+    },
+    "grim_hack": {
+      "release": "@weapon_swing",
+      "impact": "@weapon_hit"
+    },
+    "wide_hew": {
+      "release": "swing_greatsword_wide",
+      "impact": "@weapon_hit"
+    },
+    "gashing_blow": {
+      "release": "@weapon_swing",
+      "impact": [
+        "@weapon_hit",
+        "gash_wet"
+      ]
+    },
+    "headsmans_verdict": {
+      "release": "@weapon_swing",
+      "impact": [
+        "@weapon_hit",
+        "headsmans_verdict_impact"
+      ]
+    },
+    "red_mist_ab": {
+      "release": "red_mist"
+    },
+    "pommel_crack": {
+      "release": "@weapon_swing",
+      "impact": "pommel_crack_impact"
+    },
+    "dread_roar": {
+      "release": "dread_roar"
+    },
+    "throat_punch": {
+      "release": "swing_mace",
+      "impact": [
+        "throat_punch_impact",
+        "interrupt_impact"
+      ]
+    },
+    "unbroken_stance_ab": {
+      "release": "unbroken_stance"
+    },
+    "bloody_resolve": {
+      "release": "bloody_resolve"
+    },
+    "warpath_charge": {
+      "release": "charge_rush",
+      "impact": "charge_impact"
+    },
+    "crippling_slash": {
+      "release": "@weapon_swing",
+      "impact": [
+        "@weapon_hit",
+        "gash_wet"
+      ]
+    },
+    "shield_breaker": {
+      "release": "shield_breaker_release",
+      "impact": "shield_breaker_impact"
+    },
+    "rime_bolt": {
+      "cast_start": "frost_cast_start",
+      "cast_loop": "frost_cast_loop",
+      "release": "rime_bolt_release",
+      "impact": "rime_bolt_impact"
+    },
+    "frost_effigy": {
+      "cast_start": "frost_cast_start",
+      "cast_loop": "frost_cast_loop",
+      "release": "heartfreeze_release",
+      "impact": "frost_effigy_impact"
+    },
+    "hailstorm": {
+      "cast_start": "frost_cast_start",
+      "cast_loop": "frost_channel_loop",
+      "impact": "hail_impact"
+    },
+    "heartfreeze": {
+      "release": "heartfreeze_release",
+      "impact": "heartfreeze_impact"
+    },
+    "shiver_lance": {
+      "release": "shiver_lance_release",
+      "impact": "shiver_lance_impact"
+    },
+    "winters_lash": {
+      "release": "winters_lash_release",
+      "impact": "winters_lash_impact"
+    },
+    "rime_fan": {
+      "release": "rime_fan_release",
+      "impact": "frost_hit_small"
+    },
+    "rimebind": {
+      "release": "rimebind_release",
+      "impact": "root_ice_impact"
+    },
+    "spellsever": {
+      "release": "spellsever_release",
+      "impact": "interrupt_impact"
+    },
+    "unravel": {
+      "release": "dispel_frost",
+      "impact": "dispel_impact"
+    },
+    "frost_step": {
+      "release": "frost_step"
+    },
+    "glacier_shield_ab": {
+      "release": "glacier_shield"
+    },
+    "deep_winter_ab": {
+      "release": "deep_winter"
+    },
+    "rime_sepulcher_ab": {
+      "release": "rime_sepulcher"
+    },
+    "castigate": {
+      "cast_start": "holy_cast_start",
+      "cast_loop": "holy_cast_loop",
+      "release": "holy_release",
+      "impact": "castigate_impact"
+    },
+    "mending_light": {
+      "cast_start": "holy_cast_start",
+      "cast_loop": "holy_cast_loop",
+      "release": "heal_release",
+      "impact": "holy_heal"
+    },
+    "swift_benediction": {
+      "cast_start": "holy_cast_start",
+      "cast_loop": "holy_cast_loop",
+      "release": "heal_release",
+      "impact": "heal_quick"
+    },
+    "chorus_of_mending": {
+      "release": "heal_release",
+      "impact": "heal_chorus"
+    },
+    "absolve": {
+      "release": "dispel_holy",
+      "impact": "dispel_impact"
+    },
+    "unravel_holy": {
+      "release": "dispel_holy",
+      "impact": "dispel_impact"
+    },
+    "chains_of_awe": {
+      "release": "chains_of_awe_release",
+      "impact": "chains_of_awe_impact"
+    },
+    "hush": {
+      "release": "hush",
+      "impact": "interrupt_impact"
+    },
+    "lingering_grace_ab": {
+      "release": "heal_release",
+      "impact": "heal_hot_apply"
+    },
+    "veil_of_faith_ab": {
+      "release": "heal_release",
+      "impact": "veil_of_faith"
+    },
+    "waning_light_ab": {
+      "release": "waning_light"
+    },
+    "seraphic_surge_ab": {
+      "release": "seraphic_surge"
+    },
+    "winged_stride_ab": {
+      "release": "winged_stride"
+    },
+    "psalm_of_dread": {
+      "release": "psalm_of_dread"
+    },
+    "auto_attack": {
+      "release": "@weapon_swing",
+      "impact": "@weapon_hit"
+    },
+    "break_free": {
+      "release": "break_free"
+    }
+  },
+  "auras": {
+    "ruin_bleed": {
+      "tick": "bleed_tick"
+    },
+    "lingering_grace": {
+      "tick": "heal_hot_tick"
+    }
+  },
+  "weapons": {
+    "sword_2h": {
+      "swing": "swing_greatsword",
+      "hit": {
+        "plate": "hit_greatsword_plate",
+        "cloth": "hit_greatsword_cloth"
+      }
+    },
+    "mace": {
+      "swing": "swing_mace",
+      "hit": {
+        "plate": "hit_mace_plate",
+        "cloth": "hit_mace_cloth"
+      }
+    },
+    "staff": {
+      "swing": "swing_staff",
+      "hit": {
+        "plate": "hit_staff_plate",
+        "cloth": "hit_staff_cloth"
+      }
+    },
+    "sword": {
+      "swing": "swing_greatsword",
+      "hit": {
+        "default": "impact_slash"
+      }
+    },
+    "axe": {
+      "swing": "swing_greatsword",
+      "hit": {
+        "default": "impact_slash"
+      }
+    },
+    "polearm": {
+      "swing": "swing_greatsword",
+      "hit": {
+        "default": "impact_slash"
+      }
+    },
+    "glaive": {
+      "swing": "swing_greatsword",
+      "hit": {
+        "default": "impact_slash"
+      }
+    },
+    "hammer": {
+      "swing": "swing_mace",
+      "hit": {
+        "default": "impact_blunt"
+      }
+    },
+    "fist": {
+      "swing": "swing_mace",
+      "hit": {
+        "default": "impact_blunt"
+      }
+    },
+    "wand": {
+      "swing": "swing_staff",
+      "hit": {
+        "default": "impact_blunt"
+      }
+    },
+    "dagger": {
+      "swing": "swing_staff",
+      "hit": {
+        "default": "impact_pierce"
+      }
+    },
+    "spear": {
+      "swing": "swing_staff",
+      "hit": {
+        "default": "impact_pierce"
+      }
+    },
+    "bow": {
+      "swing": "swing_staff",
+      "hit": {
+        "default": "impact_pierce"
+      }
+    }
+  },
+  "armor_fallback": {
+    "leather": "cloth",
+    "mail": "plate"
+  },
+  "footsteps": {
+    "plate": {
+      "step": "footstep_plate",
+      "land": "land_plate",
+      "step_m": 2.55
+    },
+    "cloth": {
+      "step": "footstep_cloth",
+      "land": "land_cloth",
+      "step_m": 2.45
+    }
+  },
+  "movement": {
+    "moving_min_mps": 0.5,
+    "teleport_min_mps": 20.0,
+    "airborne_min_height_m": 0.05
+  },
+  "interface": {
+    "click": "ui_click",
+    "target": "ui_target",
+    "error": "ui_error",
+    "error_reasons": [
+      "not_ready",
+      "no_resource",
+      "out_of_range",
+      "line_of_sight",
+      "no_target",
+      "too_close",
+      "silenced",
+      "school_locked",
+      "target_health_too_high"
+    ],
+    "error_throttle_s": 0.5
+  },
+  "cc_warning": {
+    "sound": "cc_warning",
+    "incoming": "cc_incoming",
+    "categories": [
+      "stun",
+      "incapacitate",
+      "disorient",
+      "silence"
+    ],
+    "enabled_default": true
+  }
+}

@@ -1,0 +1,16 @@
+{
+  "id": "frost_effigy",
+  "cast": {
+    "style": "hand_glow",
+    "hands": "both"
+  },
+  "impact": {
+    "style": "shards",
+    "at": "target"
+  },
+  "auras": {
+    "effigy_encased": {
+      "style": "ice_block"
+    }
+  }
+}

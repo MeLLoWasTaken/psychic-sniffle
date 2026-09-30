@@ -1,0 +1,1 @@
+{"description": "A spec's weapon type has no swing and hit sounds", "file": "sound_map/default.json", "delete": ["/weapons/mace"], "expect": "weapon type 'mace' has no swing and hit sounds"}

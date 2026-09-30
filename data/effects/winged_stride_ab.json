@@ -1,0 +1,8 @@
+{
+  "id": "winged_stride_ab",
+  "auras": {
+    "winged_stride": {
+      "style": "speed"
+    }
+  }
+}

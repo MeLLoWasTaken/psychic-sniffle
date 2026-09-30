@@ -1,0 +1,8 @@
+{
+  "id": "veil_of_faith_ab",
+  "auras": {
+    "veil_of_faith": {
+      "style": "shield"
+    }
+  }
+}

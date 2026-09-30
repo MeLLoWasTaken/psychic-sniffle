@@ -5,14 +5,24 @@ Each recipe is a function that returns a mono float signal at SAMPLE_RATE. Recip
 from layers (tones, filtered noise, envelopes) so a sound can be tuned by editing numbers.
 The same recipe and seed always produce the same file.
 
+Every game sound is described by a data file, data/sounds/<id>.json (backlog M1-26): either a
+list of layers (tools/audio/layers.py) or "builtin", the name of a Python recipe below (the
+first sounds, kept exactly as the human approved them). The data file also gives the peak
+level, loop flag, number of seeded variations and the seed, so every file can be rebuilt from
+text.
+
 Usage:
-  python3 tools/audio/synth.py --list
-  python3 tools/audio/synth.py weapon_impact frost_cast_loop holy_heal
-  python3 tools/audio/synth.py --all --spectrograms previews/audio
-Output: game/assets/audio/sfx/<name>.ogg (Ogg Vorbis, 48 kHz mono).
+  python3 tools/audio/synth.py --list                 # data sounds and builtin recipes
+  python3 tools/audio/synth.py --data                 # build every data/sounds file that changed
+  python3 tools/audio/synth.py --data --force         # rebuild all
+  python3 tools/audio/synth.py rime_bolt_impact hit_mace_plate --spectrograms previews/audio
+Output: game/assets/audio/sfx/<id>.ogg (Ogg Vorbis, 48 kHz mono); sounds with variations are
+<id>_01.ogg ... plus <id>.tres, an AudioStreamRandomizer. `manifest.json` next to them records
+each sound's recipe hash (so --data skips unchanged sounds) and its measured levels.
 
 Loudness rule (docs/DESIGN.md): no sound is louder than the enemy CC warning. Every recipe
-declares a peak level in dBFS; the CC warning will use the highest (-1 dBFS), others stay below.
+declares a peak level in dBFS; the CC warning uses the highest (-1 dBFS), others stay below, and
+tests/test_audio.py checks peak and integrated loudness of every file against the warning's.
 """
 from __future__ import annotations
 
@@ -26,6 +36,7 @@ from scipy import signal
 
 REPO = Path(__file__).resolve().parents[2]
 OUT_DIR = REPO / "game" / "assets" / "audio" / "sfx"
+DATA_DIR = REPO / "data" / "sounds"
 SAMPLE_RATE = 48000
 
 RECIPES: dict[str, tuple[callable, float, bool]] = {}  # name -> (fn, peak_dbfs, loops)
@@ -306,26 +317,117 @@ def holy_heal(rng: np.random.Generator) -> np.ndarray:
 # ----------------------------------------------------------------------------- output
 
 def render(name: str, out_dir: Path, seed: int = 1, stem: str | None = None) -> Path:
+    """Render a builtin recipe with its registered peak and loop flag."""
     fn, peak_dbfs, loops = RECIPES[name]
-    rng = np.random.default_rng(seed)
-    x = normalize(fn(rng)) * 10 ** (peak_dbfs / 20)
+    return write_sound(fn(np.random.default_rng(seed)), peak_dbfs, loops, out_dir / f"{stem or name}.ogg")
+
+
+def write_sound(x: np.ndarray, peak_dbfs: float, loops: bool, path: Path, tolerance: float = 1.03) -> Path:
+    """Normalise to the peak, trim one-shots, encode Ogg Vorbis and correct the encoded peak.
+
+    `tolerance` is how far above the target the encoded peak may land (1.03 = 0.26 dB, what the
+    first builtin sounds were made with; data recipes use 1.0, so no file exceeds its peak)."""
+    x = normalize(np.asarray(x, dtype=np.float64)) * 10 ** (peak_dbfs / 20)
     if not loops:  # trim trailing silence below -60 dB and fade the last 20 ms
         idx = np.nonzero(np.abs(x) > 10 ** (-60 / 20))[0]
         x = x[: idx[-1] + 1] if len(idx) else x
         f = min(int(0.02 * SAMPLE_RATE), len(x))
         x[-f:] *= np.linspace(1, 0, f)
-    out_dir.mkdir(parents=True, exist_ok=True)
-    path = out_dir / f"{stem or name}.ogg"
+    path.parent.mkdir(parents=True, exist_ok=True)
+    tmp = path.with_name(path.stem + ".tmp.ogg")
     # Vorbis encoding can raise peaks by 1 to 2 dB; measure the encoded file and correct.
     target = 10 ** (peak_dbfs / 20)
-    for _ in range(4):
-        sf.write(path, x.astype(np.float32), SAMPLE_RATE, format="OGG", subtype="VORBIS")
-        peak = np.max(np.abs(sf.read(path)[0]))
-        if peak <= target * 1.03:
+    for _ in range(6):
+        sf.write(tmp, x.astype(np.float32), SAMPLE_RATE, format="OGG", subtype="VORBIS")
+        decoded = sf.read(tmp)[0]
+        peak = np.max(np.abs(decoded))
+        if peak <= target * tolerance:
             break
-        x = x * (target / peak)
+        x = x * (target / peak) * (0.995 if tolerance <= 1.0 else 1.0)
+    # Each encode gets a random Ogg stream serial, so identical sound still changes the file's
+    # bytes; keep the old file when the decoded samples are the same (no churn in git).
+    if path.exists():
+        old = sf.read(path)[0]
+        if old.shape == decoded.shape and np.array_equal(old, decoded):
+            tmp.unlink()
+            _set_godot_loop(path, loops)
+            return path
+    tmp.replace(path)
     _set_godot_loop(path, loops)
     return path
+
+
+# ----------------------------------------------------------------------------- data recipes
+
+def load_sound_data(data_dir: Path = DATA_DIR) -> dict[str, dict]:
+    import json
+    return {p.stem: json.loads(p.read_text()) for p in sorted(data_dir.glob("*.json"))}
+
+
+def recipe_hash(recipe: dict) -> str:
+    """Changes when the recipe text or the generator code changes."""
+    import hashlib
+    import json
+    h = hashlib.sha1(json.dumps(recipe, sort_keys=True).encode())
+    for src in ("synth.py", "layers.py"):
+        h.update((Path(__file__).parent / src).read_bytes())
+    return h.hexdigest()[:16]
+
+
+def signal_for(recipe: dict, seed: int) -> np.ndarray:
+    """The unnormalised signal of a data recipe for one seed."""
+    rng = np.random.default_rng(seed)
+    if "builtin" in recipe:
+        return RECIPES[recipe["builtin"]][0](rng)
+    import layers
+    return layers.render(recipe, rng)
+
+
+def output_stems(recipe: dict) -> list[str]:
+    count = int(recipe.get("variants", 1))
+    return [f"{recipe['id']}_{v:02d}" for v in range(1, count + 1)] if count > 1 else [recipe["id"]]
+
+
+def build_data_sound(recipe: dict, out_dir: Path, spectrograms: Path | None = None) -> list[Path]:
+    """Render every variation of a data recipe; write the randomizer when there are several."""
+    seed = int(recipe.get("seed", 1))
+    paths = []
+    for i, stem in enumerate(output_stems(recipe)):
+        x = signal_for(recipe, seed + i)
+        path = write_sound(x, float(recipe["peak_dbfs"]), bool(recipe.get("loops", False)), out_dir / f"{stem}.ogg",
+                           1.03 if "builtin" in recipe else 1.0)
+        paths.append(path)
+        if spectrograms:
+            spectrogram(path, spectrograms / f"{stem}.png")
+    if len(paths) > 1:
+        paths.append(write_randomizer(recipe["id"], paths))
+    return paths
+
+
+def build_all_data(out_dir: Path = OUT_DIR, force: bool = False, only: list[str] | None = None,
+                   spectrograms: Path | None = None, data_dir: Path = DATA_DIR) -> list[str]:
+    """Build data sounds whose recipe changed (all with force). Returns the ids built."""
+    import json
+    sys.path.insert(0, str(Path(__file__).parent))
+    sounds = load_sound_data(data_dir)
+    manifest_path = out_dir / "manifest.json"
+    manifest = json.loads(manifest_path.read_text()) if manifest_path.exists() else {}
+    built = []
+    for sid, recipe in sounds.items():
+        if only and sid not in only:
+            continue
+        h = recipe_hash(recipe)
+        files_ok = all((out_dir / f"{stem}.ogg").exists() for stem in output_stems(recipe))
+        if not force and not only and manifest.get(sid, {}).get("hash") == h and files_ok:
+            continue
+        build_data_sound(recipe, out_dir, spectrograms)
+        manifest[sid] = {"hash": h, "files": output_stems(recipe), "category": recipe["category"]}
+        built.append(sid)
+        print(f"BUILT {sid} ({len(output_stems(recipe))} file(s))")
+    for sid in [k for k in manifest if k not in sounds]:
+        del manifest[sid]  # recipe removed: forget it (its files stay until deleted by hand)
+    manifest_path.write_text(json.dumps(dict(sorted(manifest.items())), indent=1) + "\n")
+    return built
 
 
 def _set_godot_loop(path: Path, loops: bool) -> None:
@@ -376,8 +478,10 @@ def spectrogram(path: Path, out_png: Path) -> Path:
 
 def main(argv: list[str]) -> int:
     parser = argparse.ArgumentParser(description="Generate procedural sound effects")
-    parser.add_argument("names", nargs="*")
-    parser.add_argument("--all", action="store_true")
+    parser.add_argument("names", nargs="*", help="data sound ids (data/sounds) or builtin recipe names")
+    parser.add_argument("--data", action="store_true", help="build every data sound whose recipe changed")
+    parser.add_argument("--force", action="store_true", help="with --data: rebuild everything")
+    parser.add_argument("--all", action="store_true", help="every builtin recipe (legacy)")
     parser.add_argument("--list", action="store_true")
     parser.add_argument("--out", type=Path, default=OUT_DIR)
     parser.add_argument("--seed", type=int, default=1)
@@ -386,13 +490,24 @@ def main(argv: list[str]) -> int:
     args.out = args.out.resolve()
     if args.spectrograms:
         args.spectrograms = args.spectrograms.resolve()
+    data = load_sound_data()
     if args.list:
+        for sid, r in data.items():
+            print(f"{sid:28s} {r['category']:9s} peak {r['peak_dbfs']:5.1f} dBFS  {'loop' if r.get('loops') else 'one-shot'}"
+                  f"  x{r.get('variants', 1)}  {r.get('description', '')}")
         for name, (fn, peak, loops) in RECIPES.items():
-            print(f"{name:20s} peak {peak:5.1f} dBFS  {'loop' if loops else 'one-shot'}  {fn.__doc__.splitlines()[0]}")
+            print(f"builtin {name:20s} peak {peak:5.1f} dBFS  {'loop' if loops else 'one-shot'}  {fn.__doc__.splitlines()[0]}")
         return 0
-    names = list(RECIPES) if args.all else args.names
+    if args.data:
+        built = build_all_data(args.out, args.force, None, args.spectrograms)
+        print(f"{len(built)} sound(s) built, {len(data) - len(built)} up to date")
+        return 0
+    data_names = [n for n in args.names if n in data]
+    if data_names:
+        build_all_data(args.out, True, data_names, args.spectrograms)
+    names = list(RECIPES) if args.all else [n for n in args.names if n not in data]
     unknown = [n for n in names if n not in RECIPES]
-    if unknown or not names:
+    if unknown or not (names or data_names):
         parser.error(f"unknown or missing sound names: {unknown or '(none)'}; use --list")
     for name in names:
         count = VARIANTS.get(name, 1)

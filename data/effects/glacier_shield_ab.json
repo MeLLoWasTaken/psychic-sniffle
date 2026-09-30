@@ -1,0 +1,8 @@
+{
+  "id": "glacier_shield_ab",
+  "auras": {
+    "glacier_shield": {
+      "style": "shield"
+    }
+  }
+}

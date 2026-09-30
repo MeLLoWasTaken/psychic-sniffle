@@ -1,0 +1,41 @@
+{
+  "id": "bleed_tick",
+  "description": "A bleed ticks: a small wet drip and a faint thump.",
+  "category": "impact",
+  "peak_dbfs": -14.0,
+  "duration_s": 0.3,
+  "layers": [
+    {
+      "type": "crackle",
+      "band": [
+        500,
+        2500
+      ],
+      "per_second": 1500,
+      "grain_s": 0.002,
+      "env": {
+        "attack_s": 0.003,
+        "decay_s": 0.06
+      },
+      "gain": 1.0
+    },
+    {
+      "type": "sub",
+      "from_hz": 100,
+      "to_hz": 50,
+      "curve": 8,
+      "env": {
+        "attack_s": 0.002,
+        "decay_s": 0.03
+      },
+      "gain": 0.6
+    }
+  ],
+  "post": {
+    "reverb": {
+      "length_s": 0.3,
+      "mix": 0.1,
+      "brightness": 4000
+    }
+  }
+}

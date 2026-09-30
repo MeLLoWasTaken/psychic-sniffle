@@ -1,0 +1,67 @@
+{
+  "id": "frost_channel_loop",
+  "description": "Hailstorm channel: howling icy wind, rumbling low air and a patter of hail; loops.",
+  "category": "loop",
+  "peak_dbfs": -8.0,
+  "loops": true,
+  "duration_s": 3.0,
+  "layers": [
+    {
+      "type": "noise",
+      "band": [
+        700,
+        5000
+      ],
+      "am": [
+        0.6,
+        0.4
+      ],
+      "env": {
+        "hold": [
+          0,
+          0
+        ]
+      },
+      "gain": 1.0
+    },
+    {
+      "type": "crackle",
+      "band": [
+        1500,
+        5500
+      ],
+      "per_second": 70,
+      "grain_s": 0.006,
+      "env": {
+        "hold": [
+          0,
+          0
+        ]
+      },
+      "gain": 0.9
+    },
+    {
+      "type": "noise",
+      "lowpass": 220,
+      "am": [
+        0.35,
+        0.3
+      ],
+      "env": {
+        "hold": [
+          0,
+          0
+        ]
+      },
+      "gain": 0.6
+    }
+  ],
+  "post": {
+    "reverb": {
+      "length_s": 1.0,
+      "mix": 0.25,
+      "brightness": 8000
+    },
+    "loop_fade_s": 0.4
+  }
+}

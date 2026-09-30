@@ -1,0 +1,96 @@
+{
+  "id": "charge_impact",
+  "description": "Warpath Charge lands: a heavy body slam into the target, armour crashing and a daze.",
+  "category": "impact",
+  "peak_dbfs": -3.0,
+  "duration_s": 0.9,
+  "layers": [
+    {
+      "type": "sub",
+      "from_hz": 160,
+      "to_hz": 40,
+      "curve": 8,
+      "env": {
+        "attack_s": 0.002,
+        "decay_s": 0.15
+      },
+      "gain": 1.2
+    },
+    {
+      "type": "noise",
+      "highpass": 1500,
+      "env": {
+        "attack_s": 0.0003,
+        "decay_s": 0.004
+      },
+      "gain": 1.0
+    },
+    {
+      "type": "noise",
+      "band": [
+        100,
+        800
+      ],
+      "env": {
+        "attack_s": 0.001,
+        "decay_s": 0.08
+      },
+      "gain": 1.2
+    },
+    {
+      "type": "resonant",
+      "base": 900,
+      "jitter": 0.18,
+      "partials": [
+        [
+          1,
+          18,
+          0.9,
+          0.06
+        ],
+        [
+          1.73,
+          22,
+          0.7,
+          0.048
+        ],
+        [
+          2.61,
+          25,
+          0.5,
+          0.039
+        ],
+        [
+          3.94,
+          28,
+          0.35,
+          0.03
+        ]
+      ],
+      "highpass": 700,
+      "gain": 0.6
+    },
+    {
+      "type": "crackle",
+      "band": [
+        800,
+        5000
+      ],
+      "per_second": 900,
+      "grain_s": 0.003,
+      "env": {
+        "attack_s": 0.001,
+        "decay_s": 0.12
+      },
+      "gain": 0.6
+    }
+  ],
+  "post": {
+    "saturate": 2.5,
+    "reverb": {
+      "length_s": 0.7,
+      "mix": 0.15,
+      "brightness": 4000
+    }
+  }
+}

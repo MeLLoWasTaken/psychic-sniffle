@@ -1,0 +1,1 @@
+{"description": "The sound map names a sound that has no recipe (and so no generated file)", "file": "sound_map/default.json", "set": {"/abilities/castigate/impact": "no_such_sound"}, "expect": "sound 'no_such_sound' has no recipe"}

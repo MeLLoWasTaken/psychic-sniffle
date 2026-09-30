@@ -1,0 +1,13 @@
+{
+  "id": "psalm_of_dread",
+  "ground": {
+    "style": "nova",
+    "center": "caster",
+    "lifetime_s": 0.9
+  },
+  "auras": {
+    "psalm_dread": {
+      "style": "disorient"
+    }
+  }
+}

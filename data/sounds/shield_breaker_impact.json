@@ -1,0 +1,108 @@
+{
+  "id": "shield_breaker_impact",
+  "description": "Shield Breaker hits: a magic shield shattering like glass, debris raining down.",
+  "category": "impact",
+  "peak_dbfs": -3.0,
+  "duration_s": 0.9,
+  "layers": [
+    {
+      "type": "noise",
+      "highpass": 2500,
+      "env": {
+        "attack_s": 0.0003,
+        "decay_s": 0.004
+      },
+      "gain": 1.1
+    },
+    {
+      "type": "resonant",
+      "base": 2600,
+      "jitter": 0.1,
+      "partials": [
+        [
+          1,
+          25,
+          0.8,
+          0.07
+        ],
+        [
+          1.37,
+          25,
+          0.6,
+          0.06
+        ],
+        [
+          1.93,
+          28,
+          0.5,
+          0.05
+        ],
+        [
+          2.71,
+          30,
+          0.4,
+          0.04
+        ],
+        [
+          3.48,
+          32,
+          0.3,
+          0.03
+        ]
+      ],
+      "highpass": 1800,
+      "gain": 0.8
+    },
+    {
+      "type": "crackle",
+      "band": [
+        2000,
+        10000
+      ],
+      "per_second": 1500,
+      "grain_s": 0.002,
+      "env": {
+        "attack_s": 0.001,
+        "decay_s": 0.25
+      },
+      "gain": 0.7
+    },
+    {
+      "type": "noise",
+      "band": [
+        5000,
+        12000
+      ],
+      "sweep_to": [
+        1000,
+        3000
+      ],
+      "steps": 8,
+      "sweep_share": 0.6,
+      "env": {
+        "attack_s": 0.001,
+        "decay_s": 0.2
+      },
+      "gain": 0.4
+    },
+    {
+      "type": "sub",
+      "from_hz": 140,
+      "to_hz": 45,
+      "curve": 8,
+      "env": {
+        "attack_s": 0.002,
+        "decay_s": 0.07
+      },
+      "gain": 0.8
+    }
+  ],
+  "post": {
+    "saturate": 1.8,
+    "reverb": {
+      "length_s": 0.8,
+      "mix": 0.18,
+      "brightness": 8000
+    }
+  }
+}

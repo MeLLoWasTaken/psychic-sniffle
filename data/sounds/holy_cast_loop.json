@@ -1,0 +1,144 @@
+{
+  "id": "holy_cast_loop",
+  "description": "Held holy cast: a soft wordless choir 'ah', a warm chord and a faint shimmer; loops.",
+  "category": "loop",
+  "peak_dbfs": -8.0,
+  "loops": true,
+  "duration_s": 3.0,
+  "layers": [
+    {
+      "type": "saw",
+      "freq": 110,
+      "vibrato": [
+        5,
+        0.004
+      ],
+      "formants": [
+        [
+          700,
+          8,
+          1.0
+        ],
+        [
+          1150,
+          9,
+          0.5
+        ],
+        [
+          2700,
+          10,
+          0.2
+        ]
+      ],
+      "env": {
+        "hold": [
+          0,
+          0
+        ]
+      },
+      "gain": 0.6
+    },
+    {
+      "type": "saw",
+      "freq": 164.8,
+      "vibrato": [
+        4.6,
+        0.004
+      ],
+      "formants": [
+        [
+          700,
+          8,
+          1.0
+        ],
+        [
+          1150,
+          9,
+          0.5
+        ],
+        [
+          2700,
+          10,
+          0.2
+        ]
+      ],
+      "env": {
+        "hold": [
+          0,
+          0
+        ]
+      },
+      "gain": 0.45
+    },
+    {
+      "type": "tone",
+      "freqs": [
+        [
+          220,
+          1
+        ],
+        [
+          277.2,
+          0.7
+        ],
+        [
+          329.6,
+          0.7
+        ]
+      ],
+      "detune_cents": [
+        -4,
+        0,
+        4
+      ],
+      "am": [
+        0.4,
+        0.3
+      ],
+      "env": {
+        "hold": [
+          0,
+          0
+        ]
+      },
+      "gain": 0.5
+    },
+    {
+      "type": "noise",
+      "band": [
+        4000,
+        9000
+      ],
+      "am": [
+        0.5,
+        0.4
+      ],
+      "env": {
+        "hold": [
+          0,
+          0
+        ]
+      },
+      "gain": 0.15
+    },
+    {
+      "type": "tone",
+      "freq": 55,
+      "env": {
+        "hold": [
+          0,
+          0
+        ]
+      },
+      "gain": 0.5
+    }
+  ],
+  "post": {
+    "reverb": {
+      "length_s": 1.5,
+      "mix": 0.3,
+      "brightness": 7000
+    },
+    "loop_fade_s": 0.4
+  }
+}

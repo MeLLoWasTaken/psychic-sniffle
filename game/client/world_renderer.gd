@@ -10,7 +10,9 @@ extends Node3D
 ## and facings are interpolated between the last two views) and the frame time. Characters are the built models (CharacterRig) or a team-colored capsule
 ## when a spec has none. Each character is animated by a CharacterAnimator (M1-24) from its view
 ## entry (movement, cast, auras, health, match result) and the combat events fed with
-## push_events(). A ring on the ground marks the target.
+## push_events(). A ring on the ground marks the target. Spell effects (M1-25) come from the same
+## views and events through an EffectsDirector child, and sounds (M1-26) through an AudioDirector
+## child.
 
 const RING_RADIUS: float = 0.8
 const RING_COLORS: Dictionary = {"enemy": Color(0.95, 0.12, 0.08), "ally": Color(0.2, 0.95, 0.3)}
@@ -21,6 +23,8 @@ var view: Dictionary = {}  ## the newest view
 var units: Dictionary = {}  ## unit id -> entry (see _entry)
 var target_id: int = -1
 var ring: MeshInstance3D
+var effects: EffectsDirector  ## spell effects from the same views and events (M1-25)
+var audio: AudioDirector  ## sounds from the same views and events (M1-26)
 var _last_tick: int = -1
 
 
@@ -28,6 +32,10 @@ func _init() -> void:
 	ring = _make_ring()
 	ring.visible = false
 	add_child(ring)
+	effects = EffectsDirector.new(self)
+	add_child(effects)
+	audio = AudioDirector.new()
+	add_child(audio)
 
 
 ## Take the newest world view. Views with a tick already seen are ignored.
@@ -56,6 +64,8 @@ func push_view(v: Dictionary) -> void:
 		if not seen.has(id):
 			(units[id]["root"] as Node3D).queue_free()
 			units.erase(id)
+	effects.push_view(v)
+	audio.push_view(v)
 
 
 ## Combat events since the last call (MatchRunner.take_events or the client's event stream):
@@ -69,6 +79,8 @@ func push_events(evs: Array) -> void:
 			var e: Dictionary = units.get(id, {})
 			if not e.is_empty() and e["animator"] != null:
 				(e["animator"] as CharacterAnimator).push_event(ev)
+	effects.push_events(evs)
+	audio.push_events(evs)
 
 
 ## Place every unit for this frame, `alpha` (0..1) of the way from the previous view to the newest,
@@ -85,6 +97,8 @@ func draw(alpha: float, delta: float = 0.0) -> void:
 		if e["animator"] != null:
 			(e["animator"] as CharacterAnimator).update(e["unit"], view, (cur - prev) * tick_rate, delta)
 	_draw_ring()
+	effects.update(delta)
+	audio.update(delta, self)
 
 
 ## The animator of a unit, or null (not in the view, or a capsule stand-in).

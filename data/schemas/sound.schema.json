@@ -1,0 +1,123 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "sound.schema.json",
+  "title": "Sound recipe",
+  "description": "One game sound (backlog M1-26): how tools/audio/synth.py builds it (layers, or a builtin Python recipe) and its levels. Output: game/assets/audio/sfx/<id>.ogg, or <id>_01.ogg ... and <id>.tres (AudioStreamRandomizer) when it has variants. Layer and envelope fields are documented in tools/audio/layers.py.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["id", "description", "category", "peak_dbfs"],
+  "oneOf": [
+    {"required": ["builtin"], "not": {"required": ["layers"]}},
+    {"required": ["layers", "duration_s"], "not": {"required": ["builtin"]}}
+  ],
+  "$defs": {
+    "hz": {"type": "number", "exclusiveMinimum": 0, "maximum": 23000},
+    "band": {"type": "array", "items": {"$ref": "#/$defs/hz"}, "minItems": 2, "maxItems": 2},
+    "seconds": {"type": "number", "minimum": 0, "maximum": 10},
+    "envelope": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "attack_s": {"$ref": "#/$defs/seconds"},
+        "decay_s": {"$ref": "#/$defs/seconds"},
+        "adsr": {"type": "array", "items": {"type": "number", "minimum": 0}, "minItems": 4, "maxItems": 4},
+        "swell": {"type": "array", "items": {"$ref": "#/$defs/seconds"}, "minItems": 2, "maxItems": 2},
+        "hold": {"type": "array", "items": {"$ref": "#/$defs/seconds"}, "minItems": 2, "maxItems": 2},
+        "curve": {"type": "number", "minimum": 0.1, "maximum": 8},
+        "length_s": {"$ref": "#/$defs/seconds"}
+      }
+    },
+    "pairs": {"type": "array", "items": {"type": "array", "items": {"type": "number"}, "minItems": 2, "maxItems": 2}},
+    "layer": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["type"],
+      "properties": {
+        "type": {"enum": ["noise", "tone", "saw", "resonant", "crackle", "sub"]},
+        "gain": {"type": "number", "minimum": 0, "maximum": 4},
+        "start_s": {"$ref": "#/$defs/seconds"},
+        "env": {"$ref": "#/$defs/envelope"},
+        "am": {"type": "array", "items": {"type": "number", "minimum": 0}, "minItems": 2, "maxItems": 2},
+        "saturate": {"type": "number", "minimum": 0.1, "maximum": 10},
+        "repeat": {
+          "type": "object",
+          "additionalProperties": false,
+          "properties": {
+            "times": {"type": "array", "items": {"$ref": "#/$defs/seconds"}, "minItems": 1},
+            "every_s": {"$ref": "#/$defs/seconds"},
+            "count": {"type": "integer", "minimum": 1, "maximum": 64},
+            "jitter_s": {"$ref": "#/$defs/seconds"},
+            "gain_jitter": {"type": "number", "minimum": 0, "maximum": 1}
+          }
+        },
+        "band": {"$ref": "#/$defs/band"},
+        "sweep_to": {"$ref": "#/$defs/band"},
+        "steps": {"type": "integer", "minimum": 2, "maximum": 32},
+        "sweep_share": {"type": "number", "exclusiveMinimum": 0, "maximum": 1},
+        "lowpass": {"$ref": "#/$defs/hz"},
+        "highpass": {"$ref": "#/$defs/hz"},
+        "freq": {"$ref": "#/$defs/hz"},
+        "freqs": {"$ref": "#/$defs/pairs"},
+        "to": {"type": "number", "exclusiveMinimum": 0, "maximum": 8, "description": "tone and saw: end frequency as a ratio of the start (glide)"},
+        "from_hz": {"$ref": "#/$defs/hz", "description": "sub: start frequency"},
+        "to_hz": {"$ref": "#/$defs/hz", "description": "sub: end frequency"},
+        "curve": {"type": "number", "minimum": 0, "maximum": 20},
+        "detune_cents": {"type": "array", "items": {"type": "number"}},
+        "vibrato": {"type": "array", "items": {"type": "number", "minimum": 0}, "minItems": 2, "maxItems": 2},
+        "harmonics": {"$ref": "#/$defs/pairs"},
+        "formants": {"type": "array", "items": {"type": "array", "items": {"type": "number"}, "minItems": 3, "maxItems": 3}},
+        "noise_mix": {"type": "number", "minimum": 0, "maximum": 2},
+        "jitter": {"type": "number", "minimum": 0, "maximum": 1},
+        "base": {"$ref": "#/$defs/hz"},
+        "partials": {"type": "array", "items": {"type": "array", "items": {"type": "number"}, "minItems": 4, "maxItems": 4}, "minItems": 1},
+        "per_second": {"type": "number", "exclusiveMinimum": 0},
+        "grain_s": {"type": "number", "exclusiveMinimum": 0, "maximum": 0.1}
+      }
+    }
+  },
+  "properties": {
+    "id": {"$ref": "common.schema.json#/$defs/id"},
+    "description": {"type": "string", "description": "What it should sound like (for the human listening pass)"},
+    "category": {
+      "enum": ["impact", "heal", "buff", "cast", "loop", "release", "swing", "footstep", "interface", "warning"],
+      "description": "impact: hits and damage landing (no sustained pure tone above 200 Hz); heal: needs low-end weight; warning: the CC warnings, the loudest sounds in the game. Playback defaults per category are in data/sound_map."
+    },
+    "peak_dbfs": {"type": "number", "minimum": -40, "maximum": -1},
+    "loops": {"type": "boolean"},
+    "variants": {"type": "integer", "minimum": 1, "maximum": 8, "description": "Seeded variations, picked at random per play (AudioStreamRandomizer)"},
+    "seed": {"type": "integer", "minimum": 0},
+    "builtin": {"type": "string", "description": "Name of a Python recipe in tools/audio/synth.py"},
+    "duration_s": {"type": "number", "exclusiveMinimum": 0, "maximum": 10},
+    "layers": {"type": "array", "items": {"$ref": "#/$defs/layer"}, "minItems": 1},
+    "post": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "saturate": {"type": "number", "minimum": 0.1, "maximum": 10},
+        "lowpass": {"$ref": "#/$defs/hz"},
+        "highpass": {"$ref": "#/$defs/hz"},
+        "reverb": {
+          "type": "object",
+          "additionalProperties": false,
+          "properties": {
+            "length_s": {"$ref": "#/$defs/seconds"},
+            "mix": {"type": "number", "minimum": 0, "maximum": 1},
+            "brightness": {"$ref": "#/$defs/hz"}
+          }
+        },
+        "loop_fade_s": {"$ref": "#/$defs/seconds"}
+      }
+    },
+    "playback": {
+      "type": "object",
+      "additionalProperties": false,
+      "description": "Overrides of the category's playback defaults in data/sound_map",
+      "properties": {
+        "priority": {"type": "integer", "minimum": 0, "maximum": 100},
+        "max_instances": {"type": "integer", "minimum": 1, "maximum": 64},
+        "volume_db": {"type": "number", "minimum": -40, "maximum": 0},
+        "attenuation": {"$ref": "common.schema.json#/$defs/id"}
+      }
+    }
+  }
+}

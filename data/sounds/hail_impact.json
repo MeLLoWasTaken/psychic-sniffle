@@ -1,0 +1,98 @@
+{
+  "id": "hail_impact",
+  "description": "A burst of hail striking: two or three small ice hits in quick succession.",
+  "category": "impact",
+  "peak_dbfs": -7.0,
+  "variants": 3,
+  "duration_s": 0.45,
+  "layers": [
+    {
+      "type": "noise",
+      "highpass": 3000,
+      "env": {
+        "attack_s": 0.0003,
+        "decay_s": 0.004
+      },
+      "gain": 0.9,
+      "repeat": {
+        "times": [
+          0,
+          0.07,
+          0.15
+        ],
+        "jitter_s": 0.02,
+        "gain_jitter": 0.5
+      }
+    },
+    {
+      "type": "resonant",
+      "base": 3500,
+      "jitter": 0.25,
+      "partials": [
+        [
+          1,
+          20,
+          0.8,
+          0.03
+        ],
+        [
+          1.41,
+          22,
+          0.6,
+          0.024
+        ],
+        [
+          2.13,
+          24,
+          0.5,
+          0.0195
+        ],
+        [
+          2.97,
+          26,
+          0.4,
+          0.015
+        ]
+      ],
+      "highpass": 2500,
+      "gain": 0.6,
+      "repeat": {
+        "times": [
+          0,
+          0.07,
+          0.15
+        ],
+        "jitter_s": 0.02,
+        "gain_jitter": 0.5
+      }
+    },
+    {
+      "type": "sub",
+      "from_hz": 110,
+      "to_hz": 55,
+      "curve": 8,
+      "env": {
+        "attack_s": 0.002,
+        "decay_s": 0.03
+      },
+      "gain": 0.5,
+      "repeat": {
+        "times": [
+          0,
+          0.07,
+          0.15
+        ],
+        "jitter_s": 0.02,
+        "gain_jitter": 0.5
+      }
+    }
+  ],
+  "post": {
+    "saturate": 1.5,
+    "reverb": {
+      "length_s": 0.5,
+      "mix": 0.12,
+      "brightness": 8000
+    }
+  }
+}

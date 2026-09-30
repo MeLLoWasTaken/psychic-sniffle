@@ -1,0 +1,6 @@
+{
+  "description": "A stun aura drawn with a style that does not read as crowd control.",
+  "file": "effects/pommel_crack.json",
+  "set": {"/auras/pommel_cracked": {"style": "empower"}},
+  "expect": "needs a readable CC style"
+}

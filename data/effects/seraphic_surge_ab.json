@@ -1,0 +1,13 @@
+{
+  "id": "seraphic_surge_ab",
+  "impact": {
+    "style": "rays",
+    "at": "self",
+    "size": 1.0
+  },
+  "auras": {
+    "seraphic_surge": {
+      "style": "empower"
+    }
+  }
+}

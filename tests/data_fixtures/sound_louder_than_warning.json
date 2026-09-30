@@ -1,0 +1,1 @@
+{"description": "A sound peaks above the level reserved for the CC warnings", "file": "sounds/charge_impact.json", "set": {"/peak_dbfs": -1.0}, "expect": "only warnings may peak above -2 dBFS"}

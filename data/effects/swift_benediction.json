@@ -1,0 +1,12 @@
+{
+  "id": "swift_benediction",
+  "cast": {
+    "style": "hand_glow",
+    "hands": "right"
+  },
+  "impact": {
+    "style": "rays",
+    "at": "target",
+    "size": 0.9
+  }
+}

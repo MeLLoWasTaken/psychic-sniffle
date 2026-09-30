@@ -1,0 +1,15 @@
+{
+  "id": "crippling_slash",
+  "impact": {
+    "style": "spark",
+    "at": "hits"
+  },
+  "melee": {
+    "style": "arc"
+  },
+  "auras": {
+    "crippled": {
+      "style": "slow"
+    }
+  }
+}

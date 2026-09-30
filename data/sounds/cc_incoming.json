@@ -1,0 +1,66 @@
+{
+  "id": "cc_incoming",
+  "description": "An enemy started a crowd-control cast on you: two quick rising alert pings. Just below the CC warning.",
+  "category": "warning",
+  "peak_dbfs": -2.0,
+  "duration_s": 0.4,
+  "layers": [
+    {
+      "type": "saw",
+      "freq": 523,
+      "to": 1.25,
+      "curve": 3,
+      "lowpass": 6000,
+      "env": {
+        "adsr": [
+          0.003,
+          0.05,
+          0.6,
+          0.06
+        ],
+        "length_s": 0.12
+      },
+      "gain": 1.0,
+      "repeat": {
+        "times": [
+          0,
+          0.15
+        ]
+      }
+    },
+    {
+      "type": "saw",
+      "freq": 740,
+      "to": 1.25,
+      "curve": 3,
+      "lowpass": 6000,
+      "env": {
+        "adsr": [
+          0.003,
+          0.05,
+          0.6,
+          0.06
+        ],
+        "length_s": 0.12
+      },
+      "gain": 0.6,
+      "repeat": {
+        "times": [
+          0,
+          0.15
+        ]
+      }
+    }
+  ],
+  "post": {
+    "saturate": 1.6,
+    "reverb": {
+      "length_s": 0.4,
+      "mix": 0.1,
+      "brightness": 6000
+    }
+  },
+  "playback": {
+    "priority": 95
+  }
+}
