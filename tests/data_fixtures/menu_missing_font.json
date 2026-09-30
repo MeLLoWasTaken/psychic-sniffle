@@ -1,0 +1,6 @@
+{
+  "description": "menu font file that does not exist",
+  "file": "menus/main.json",
+  "expect": "fonts.display: font file 'cinzel/Missing.ttf' not found",
+  "set": {"/fonts/display/file": "cinzel/Missing.ttf"}
+}

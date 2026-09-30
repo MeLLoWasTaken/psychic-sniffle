@@ -38,11 +38,16 @@ func _init() -> void:
 	add_child(audio)
 
 
-## Take the newest world view. Views with a tick already seen are ignored.
+## Take the newest world view. Views with a tick already seen are ignored. A network client's
+## view carries "draw_tick" (NetClient.render_view: one step per local tick, so the predicted own
+## unit moves even on a tick without a new snapshot); it is used instead of "tick" when present.
 func push_view(v: Dictionary) -> void:
-	if v.is_empty() or int(v["tick"]) == _last_tick:
+	if v.is_empty():
 		return
-	_last_tick = int(v["tick"])
+	var t: int = int(v.get("draw_tick", v["tick"]))
+	if t == _last_tick:
+		return
+	_last_tick = t
 	tick_rate = int(v.get("tick_rate", tick_rate))
 	view = v
 	var seen: Dictionary = {}

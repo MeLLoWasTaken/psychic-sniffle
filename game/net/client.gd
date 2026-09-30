@@ -5,11 +5,21 @@ extends Node
 ##
 ## Command line (after `--`): [--host 127.0.0.1] [--port 24600] [--name player] [--spec id]
 ##   [--lag-ms 0] [--jitter-ms 0] [--loss 0] [--seconds 0] [--stats /abs/path.json]
+##   [--server-silence 20]
 ## An input source (player controls or BotBrain) must be set before connecting.
+##
+## Inside the game client (M1-28) set `owns_tree = false`: finishing (leave(), a disconnect, a
+## rejection) then emits `finished` instead of quitting the program, and the match scene draws
+## from render_view() once per `ticked`.
 
 signal welcomed(unit_id: int)
 signal snapshot_received(snap: Dictionary)
 signal events_received_signal(evs: Array)
+## Emitted once the client stops (left, disconnected, rejected or timed out); `code` 0 is a
+## normal end. Only when owns_tree is false does the program keep running afterwards.
+signal finished(code: int, reason: String)
+## Emitted at the end of every physics tick in which an input was sent (draw the new state).
+signal ticked()
 
 const SNAPSHOT_BUFFER: int = 64
 
@@ -24,6 +34,9 @@ var geometry: ArenaGeometry
 var connected: bool = false
 var quit_after_s: float = 0.0
 var stats_path: String = ""
+var owns_tree: bool = true  ## finishing quits the program (headless bots); false inside the game
+var server_silence_s: float = 20.0  ## finish when the server sends nothing for this long (0 = never)
+var finish_reason: String = ""
 
 ## Prediction: the local copy of our own unit, advanced every tick with our own inputs.
 var predicted: Unit
@@ -52,6 +65,11 @@ var _last_displaced_tick: int = -1
 var quit_on_match_end: bool = false  ## test bots leave one second after an arena match ends
 var _snap_window_start_usec: int = 0
 var _next_ping_usec: int = 0
+var _last_packet_usec: int = 0
+## Remote units are drawn at this server tick (fractional): it advances one tick per local
+## physics tick and is steered toward the newest snapshot tick minus the interpolation delay.
+var render_tick: float = -1.0
+var interpolation_delay_ticks: int = 3
 
 
 func _ready() -> void:
@@ -60,6 +78,8 @@ func _ready() -> void:
 	spec_id = NetServer._arg(args, "--spec", spec_id)
 	quit_after_s = float(NetServer._arg(args, "--seconds", "0"))
 	stats_path = NetServer._arg(args, "--stats", "")
+	server_silence_s = float(NetServer._arg(args, "--server-silence", str(server_silence_s)))
+	interpolation_delay_ticks = int(Data.tuning.get("simulation", {}).get("interpolation_delay_ticks", 3))
 	transport.configure_conditions(float(NetServer._arg(args, "--lag-ms", "0")),
 		float(NetServer._arg(args, "--jitter-ms", "0")), float(NetServer._arg(args, "--loss", "0")),
 		hash(player_name))
@@ -95,11 +115,18 @@ func _poll_network() -> void:
 				transport.send(server_peer, Protocol.CH_RELIABLE, Protocol.hello(player_name, spec_id), true)
 			"disconnect":
 				connected = false
-				Log.warn("client: disconnected from server")
-				_finish(1)
+				if _match_ended_usec > 0:
+					Log.info("client: the server closed after the match")  # expected
+					finish_reason = "server_closed"
+					_finish(0)
+				else:
+					Log.warn("client: disconnected from server")
+					finish_reason = "disconnected"
+					_finish(1)
 				return
 
 			"receive":
+				_last_packet_usec = Time.get_ticks_usec()
 				_on_packet(Protocol.decode(ev["data"]))
 
 
@@ -107,15 +134,28 @@ func _physics_process(_delta: float) -> void:
 	if server_peer == null or _finished:
 		return
 	_poll_network()
-	if unit_id != -1 and input_source.is_valid():
-		_send_and_predict_input()
+	if _finished:
+		return
+	_advance_render_tick()
 	var now: int = Time.get_ticks_usec()
+	if server_silence_s > 0.0 and _last_packet_usec > 0 and (now - _last_packet_usec) / 1e6 > server_silence_s:
+		Log.warn("client: nothing from the server for %.0f s; leaving" % server_silence_s)
+		finish_reason = "server_silent"
+		_finish(1)
+		return
+	# inputs start with the first snapshot: until then the input source cannot know the spawn
+	# facing, and an input would turn the unit away from it
+	if unit_id != -1 and input_source.is_valid() and _synced:
+		_send_and_predict_input()
+		ticked.emit()
 	if connected and now >= _next_ping_usec:
 		_next_ping_usec = now + 1_000_000
 		transport.send(server_peer, Protocol.CH_RELIABLE, Protocol.ping(now), true)
 	if quit_after_s > 0.0 and (now - _start_usec) / 1e6 >= quit_after_s:
+		finish_reason = "time_up"
 		_finish(0)
 	elif quit_on_match_end and _match_ended_usec > 0 and now - _match_ended_usec >= 1_000_000:
+		finish_reason = "match_over"
 		_finish(0)  # the arena match is over; leave before the server closes
 
 
@@ -132,6 +172,7 @@ func _on_packet(msg: Dictionary) -> void:
 			welcomed.emit(unit_id)
 		Protocol.Msg.REJECT:
 			Log.error("client: rejected by server: %s" % msg["reason"])
+			finish_reason = "rejected: %s" % msg["reason"]
 			_finish(1)
 		Protocol.Msg.SNAPSHOT:
 			_on_snapshot(msg)
@@ -151,6 +192,9 @@ func _on_snapshot(snap: Dictionary) -> void:
 		_stats["stale_snapshots"] += 1  # arrived out of order; a newer one was already applied
 		return
 	latest_tick = snap["tick"]
+	if geometry:
+		# the gates block movement only during preparation, as on the server (prediction must agree)
+		geometry.gates_open = int(snap["match"]["phase"]) != ArenaMatch.Phase.PREP
 	if int(snap["match"]["phase"]) == ArenaMatch.Phase.ENDED and _match_ended_usec == 0:
 		_match_ended_usec = Time.get_ticks_usec()
 		Log.info("client: match over, winner team %d" % snap["match"]["winner"])
@@ -182,6 +226,8 @@ func _reconcile(snap: Dictionary) -> void:
 	predicted.max_health = mine["max_health"]
 	predicted.target_id = mine["target_id"]
 	predicted.team = mine["team"]
+	if not _synced:
+		predicted.facing = float(mine["facing"])  # spawn facing (toward the gate); ours to steer from then on
 	var effect_changed: bool = _movement_effects_changed(own_auras, mine["auras"], int(snap["tick"]))
 	var displaced: int = int(own.get("displaced_tick", -1))
 	if displaced != _last_displaced_tick:
@@ -294,16 +340,36 @@ func _fear_source(active: Array) -> Vector3:
 ## Position of another unit, drawn `delay_ticks` behind the newest snapshot and interpolated
 ## between the two snapshots around that time.
 func interpolated_position(id: int, delay_ticks: int = 3) -> Vector3:
-	var render_tick: float = latest_tick - delay_ticks
+	return interpolated_position_at(id, float(latest_tick - delay_ticks))
+
+
+## Position of a unit at a (fractional) server tick, interpolated between the two snapshots
+## around it; the oldest or newest known position outside the buffer.
+func interpolated_position_at(id: int, at_tick: float) -> Vector3:
+	if not snapshots.is_empty() and at_tick >= float(snapshots[-1]["tick"]):
+		return _unit_pos(snapshots[-1], id)
 	for i: int in range(snapshots.size() - 1, 0, -1):
 		var a: Dictionary = snapshots[i - 1]
 		var b: Dictionary = snapshots[i]
-		if a["tick"] <= render_tick and render_tick <= b["tick"]:
-			var t: float = (render_tick - a["tick"]) / float(maxi(b["tick"] - a["tick"], 1))
+		if a["tick"] <= at_tick and at_tick <= b["tick"]:
+			var t: float = (at_tick - a["tick"]) / float(maxi(b["tick"] - a["tick"], 1))
 			var pa: Vector3 = _unit_pos(a, id)
 			var pb: Vector3 = _unit_pos(b, id)
 			return pa.lerp(pb, t)
 	return _unit_pos(snapshots[-1], id) if not snapshots.is_empty() else Vector3.ZERO
+
+
+## One local tick of the remote-unit clock: +1 tick, pulled 10% toward the newest snapshot tick
+## minus the delay (smooth under jitter and bursts), snapped when more than 10 ticks off.
+func _advance_render_tick() -> void:
+	if latest_tick < 0:
+		return
+	var goal: float = float(latest_tick - interpolation_delay_ticks)
+	if render_tick < 0.0 or absf(render_tick + 1.0 - goal) > 10.0:
+		render_tick = goal
+	else:
+		render_tick += 1.0
+		render_tick += (goal - render_tick) * 0.1
 
 
 static func _unit_pos(snap: Dictionary, id: int) -> Vector3:
@@ -342,6 +408,35 @@ func bot_view() -> Dictionary:
 		"school_locks": own.get("school_locks", {}), "match": snap["match"], "map": map_id}
 
 
+## The world for drawing (M1-28): bot_view() with the other units at their interpolated positions
+## on the render clock (DESIGN.md: others are drawn about 3 ticks in the past) and our own unit
+## at its predicted position. Same shape as MatchRunner.view_for, so WorldRenderer, the HUD and
+## PlayerController read it unchanged. Empty until the first snapshot with our unit.
+func render_view() -> Dictionary:
+	var v: Dictionary = bot_view()
+	if v.is_empty() or render_tick < 0.0:
+		return v
+	# the server tick our newest input will be applied on: one step per input sent, so it
+	# advances every local tick even when no new snapshot arrived (the renderer draws each)
+	v["draw_tick"] = latest_tick + _pending.size()
+	for u: Dictionary in v["units"]:
+		if int(u["id"]) != unit_id:
+			u["position"] = interpolated_position_at(int(u["id"]), render_tick)
+	return v
+
+
+## True once the client has stopped (left, disconnected, rejected or timed out).
+func is_finished() -> bool:
+	return _finished
+
+
+## Leave the server (the player left the match, or the match scene is closing).
+func leave() -> void:
+	if finish_reason == "":
+		finish_reason = "left"
+	_finish(0)
+
+
 func stats() -> Dictionary:
 	var secs: float = (Time.get_ticks_usec() - _snap_window_start_usec) / 1e6
 	var rtts: Array = _stats["rtt_ms"]
@@ -377,4 +472,9 @@ func _finish(code: int) -> void:
 	if server_peer and connected:
 		server_peer.peer_disconnect_later()
 		transport.poll()
-	get_tree().quit(code)
+	finished.emit(code, finish_reason)
+	if owns_tree:
+		get_tree().quit(code)
+	else:
+		transport.close()
+		connected = false

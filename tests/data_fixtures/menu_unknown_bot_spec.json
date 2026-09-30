@@ -1,0 +1,6 @@
+{
+  "description": "menu comp names a spec that does not exist",
+  "file": "menus/main.json",
+  "expect": "unknown spec 'shade_venom'",
+  "set": {"/play_bots/comps/arcanist_rime/partner": "shade_venom"}
+}

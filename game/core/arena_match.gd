@@ -37,6 +37,13 @@ func _init(tuning: Dictionary, p_bracket: String, p_tick_rate: int, p_geometry: 
 		geometry.gates_open = false
 
 
+## Keep the preparation countdown from running (a server waiting for its full roster, M1-28):
+## the gates open a full preparation phase after the last call. No effect once the gates are open.
+func hold_prep(tick: int) -> void:
+	if phase == Phase.PREP:
+		start_tick = tick + prep_ticks
+
+
 ## Seconds of match time since the gates opened (negative during preparation).
 func match_seconds(tick: int) -> float:
 	return float(tick - start_tick) / tick_rate

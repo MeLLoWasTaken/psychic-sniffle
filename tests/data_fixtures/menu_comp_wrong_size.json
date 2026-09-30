@@ -1,0 +1,6 @@
+{
+  "description": "menu comp with one enemy for a 2v2",
+  "file": "menus/main.json",
+  "expect": "enemies must have 2 specs",
+  "set": {"/play_bots/comps/warblade_carnage/enemies": ["arcanist_rime"]}
+}

@@ -1,0 +1,6 @@
+{
+  "description": "menu settings panel row naming a setting the profile does not have",
+  "file": "menus/main.json",
+  "expect": "no setting 'mouse.acceleration'",
+  "set": {"/settings_panel/rows/0/path": "mouse.acceleration"}
+}
