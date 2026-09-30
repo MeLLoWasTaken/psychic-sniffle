@@ -1,0 +1,68 @@
+{
+  "id": "humanoid",
+  "description": "How a humanoid character picks and blends the clips of the humanoid animation set in game (backlog M1-24, CharacterAnimator): locomotion blend space, actions triggered by ability data and combat events, crowd-control overrides, fade times.",
+  "fades": {
+    "blend_smoothing_s": 0.12,
+    "stand_s": 0.3,
+    "action_in_s": 0.1,
+    "action_out_s": 0.2,
+    "action_xfade_s": 0.12,
+    "full_body_s": 0.2,
+    "override_in_s": 0.1,
+    "override_out_s": 0.25,
+    "override_xfade_s": 0.15,
+    "jump_in_s": 0.08,
+    "jump_out_s": 0.2
+  },
+  "locomotion": {
+    "stand": "idle",
+    "combat_stand": "combat_idle",
+    "directions": {
+      "run": [0, 1],
+      "backpedal": [0, -1],
+      "strafe_right": [1, 0],
+      "strafe_left": [-1, 0]
+    },
+    "jump": "jump",
+    "moving_min_mps": 0.5,
+    "teleport_min_mps": 30.0,
+    "airborne_min_height_m": 0.02,
+    "speed_scale": {"min": 0.6, "max": 1.4}
+  },
+  "combat": {
+    "hostile_target_within_m": 40,
+    "recent_damage_s": 5
+  },
+  "body_split": {
+    "upper": ["spine", "chest", "neck", "head", "clavicle_l", "upperarm_l", "forearm_l", "hand_l", "clavicle_r", "upperarm_r", "forearm_r", "hand_r"],
+    "lower": ["root", "pelvis", "thigh_l", "calf_l", "foot_l", "thigh_r", "calf_r", "foot_r"]
+  },
+  "actions": {
+    "cast": {"start": "cast_start", "loop": "cast_loop", "priority": 3},
+    "channel": {"loop": "channel", "priority": 3},
+    "release": {"clip": "cast_release", "by_school": true, "priority": 3, "min_s": 0.25},
+    "melee": {"cycle": ["attack_1", "attack_2", "attack_3"], "reset_s": 3.0, "priority": 2, "min_s": 0.35},
+    "ranged": {"clip": "ranged_shot", "priority": 2, "min_s": 0.35},
+    "hit": {"clip": "hit", "priority": 1, "min_damage_pct": 5, "cooldown_s": 1.5}
+  },
+  "ability_rules": [
+    {"when": {"cast_type": ["channel"]}, "action": "channel"},
+    {"when": {"cast_type": ["cast"]}, "action": "cast"},
+    {"when": {"effect": ["charge"]}, "action": "melee"},
+    {"when": {"school": ["physical"], "target": ["enemy"], "range": "melee"}, "action": "melee"},
+    {"when": {"school": ["physical"], "target": ["enemy"], "range": "ranged"}, "action": "ranged"},
+    {"when": {"school": ["physical"]}, "action": "none"},
+    {"when": {}, "action": "release"}
+  ],
+  "ability_overrides": {
+    "dread_roar": "release"
+  },
+  "auto_attack": "melee",
+  "crowd_control": {
+    "stun": "stunned",
+    "incapacitate": "stunned",
+    "disorient": "feared_run"
+  },
+  "death": "death",
+  "victory": "victory"
+}

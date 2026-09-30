@@ -13,6 +13,10 @@ extends Node3D
 ##     [--auto "move_forward:3,target_nearest_enemy"]   scripted input, in simulation time
 ##     [--fast-forward 3] [--pause]   run the first seconds at once (then hold still: screenshots)
 ##     [--seconds 10]                 quit after this much simulation time (headless checks)
+##     [--player-bot]                 the player's unit is played by its bot (a real fight to watch)
+##     [--follow arcanist_rime] [--cam-yaw 90] [--cam-pitch 10] [--cam-zoom -2]
+##                                    camera framing for screenshots: follow another unit (looking
+##                                    along its facing), orbit by degrees, pitch, wheel notches
 ##     [--no-kit] [--no-gi]
 ## Tests set `options` before adding the scene to the tree and step it with run_ticks().
 
@@ -21,7 +25,8 @@ const DEFAULTS: Dictionary = {
 	"spec": "warblade_carnage", "ally": "oracle_grace", "enemies": "arcanist_rime,oracle_grace",
 	"map": "gallows_courtyard", "prep": 0.0, "seed": 1, "settings": "default", "keybinds": "default",
 	"auto": "", "fast_forward": 0.0, "pause": false, "seconds": 0.0, "kit": true, "gi": true,
-	"lighting": true, "manual": false,
+	"lighting": true, "manual": false, "player_bot": false, "follow": "", "cam_yaw": 0.0, "cam_pitch": "",
+	"cam_zoom": 0,
 }
 const MAX_FRAME_S: float = 0.25  ## longer frames are clamped, so a stall never runs away
 
@@ -53,7 +58,8 @@ func _ready() -> void:
 	var enemies: PackedStringArray = str(options["enemies"]).split(",", false)
 	var allies: PackedStringArray = str(options["ally"]).split(",", false)
 	world = LocalMatch.new(str(options["map"]), str(options["spec"]), Array(allies), Array(enemies),
-		"%dv%d" % [allies.size() + 1, enemies.size()], float(options["prep"]), int(options["seed"]))
+		"%dv%d" % [allies.size() + 1, enemies.size()], float(options["prep"]), int(options["seed"]),
+		bool(options["player_bot"]))
 	start_position = world.player.position
 
 	var map: Dictionary = Data.maps[str(options["map"])]
@@ -74,6 +80,9 @@ func _ready() -> void:
 	cam.geometry = world.geometry()
 	add_child(cam)
 	cam.camera.current = true
+	cam.zoom_steps(int(options["cam_zoom"]))
+	if str(options["cam_pitch"]) != "":
+		controller.pitch = clampf(deg_to_rad(float(options["cam_pitch"])), controller.pitch_min, controller.pitch_max)
 	scripted = ScriptedInput.new(str(options["auto"]))
 
 	renderer.push_view(world.view())
@@ -88,11 +97,11 @@ func _ready() -> void:
 func _options_from_args() -> Dictionary:
 	var args: PackedStringArray = OS.get_cmdline_user_args()
 	var out: Dictionary = {}
-	for key: String in ["spec", "ally", "enemies", "map", "settings", "keybinds", "auto"]:
+	for key: String in ["spec", "ally", "enemies", "map", "settings", "keybinds", "auto", "follow", "cam_pitch"]:
 		var v: String = _arg(args, "--" + key.replace("_", "-"), "")
 		if v != "":
 			out[key] = v
-	for key: String in ["prep", "fast_forward", "seconds"]:
+	for key: String in ["prep", "fast_forward", "seconds", "cam_yaw", "cam_zoom"]:
 		var v: String = _arg(args, "--" + key.replace("_", "-"), "")
 		if v != "":
 			out[key] = float(v)
@@ -100,6 +109,7 @@ func _options_from_args() -> Dictionary:
 	if seed_arg != "":
 		out["seed"] = int(seed_arg)
 	out["pause"] = "--pause" in args
+	out["player_bot"] = "--player-bot" in args
 	out["kit"] = not ("--no-kit" in args)
 	out["gi"] = not ("--no-gi" in args)
 	return out
@@ -134,6 +144,7 @@ func _tick() -> void:
 	world.step(inp)
 	sim_time += world.dt()
 	renderer.push_view(world.view())
+	renderer.push_events(world.take_events())
 	renderer.target_id = controller.target_id
 	var quit_after: float = float(options["seconds"])
 	if quit_after > 0.0 and sim_time + 1e-6 >= quit_after and not bool(options["manual"]):
@@ -141,7 +152,7 @@ func _tick() -> void:
 
 
 func _draw_frame(delta: float, instant: bool = false) -> void:
-	renderer.draw(_accum / world.dt())
+	renderer.draw(_accum / world.dt(), 0.0 if paused or instant else delta)  # paused: poses hold
 	var v: Dictionary = renderer.view
 	if not _gates_opened and not v.is_empty() and int(v["match"]["phase"]) != ArenaMatch.Phase.PREP:
 		_gates_opened = true
@@ -149,8 +160,23 @@ func _draw_frame(delta: float, instant: bool = false) -> void:
 	if controller.pending_zoom != 0:
 		cam.zoom_steps(controller.pending_zoom)
 		controller.pending_zoom = 0
-	cam.update(renderer.drawn_position(world.player.id), controller.camera_yaw(), controller.pitch,
+	var watched: int = _followed_id()
+	# the player's camera follows the controller; a watched unit (or a bot-played player) its facing
+	var own_camera: bool = watched == world.player.id and not bool(options["player_bot"])
+	var yaw: float = controller.camera_yaw() if own_camera or not renderer.units.has(watched) \
+		else float((renderer.units[watched] as Dictionary)["cur_facing"])
+	cam.update(renderer.drawn_position(watched), yaw + deg_to_rad(float(options["cam_yaw"])), controller.pitch,
 		delta if not instant else 10.0)
+
+
+## The unit the camera follows: the player's, or the first unit of the `follow` spec.
+func _followed_id() -> int:
+	var spec: String = str(options["follow"])
+	if spec != "":
+		for u: Dictionary in renderer.view.get("units", []):
+			if str(u["spec"]) == spec and renderer.units.has(int(u["id"])):
+				return int(u["id"])
+	return world.player.id
 
 
 func _unhandled_input(event: InputEvent) -> void:

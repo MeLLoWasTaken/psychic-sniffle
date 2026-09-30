@@ -1,0 +1,149 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "anim_states.schema.json",
+  "title": "Animation states",
+  "description": "How a character picks and blends the clips of an animation set in game (backlog M1-24, game/client/character_animator.gd). The id names the animation set (data/animations/<id>.json) whose clips it uses.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["id", "fades", "locomotion", "combat", "body_split", "actions", "ability_rules", "ability_overrides",
+    "auto_attack", "crowd_control", "death", "victory"],
+  "$defs": {
+    "clip": {"type": "string", "pattern": "^[a-z][a-z0-9_]*$", "description": "A clip of the animation set"},
+    "seconds": {"type": "number", "minimum": 0, "maximum": 2},
+    "action": {"enum": ["cast", "channel", "release", "melee", "ranged", "none"]},
+    "priority": {"type": "integer", "minimum": 0, "maximum": 9, "description": "A new action replaces a playing one of lower priority at once, of equal priority after min_s"},
+    "min_s": {"type": "number", "minimum": 0, "maximum": 2, "description": "Shortest time this action plays before one of equal priority replaces it"}
+  },
+  "properties": {
+    "id": {"$ref": "common.schema.json#/$defs/id"},
+    "description": {"type": "string"},
+    "fades": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["blend_smoothing_s", "stand_s", "action_in_s", "action_out_s", "action_xfade_s", "full_body_s",
+        "override_in_s", "override_out_s", "override_xfade_s", "jump_in_s", "jump_out_s"],
+      "properties": {
+        "blend_smoothing_s": {"$ref": "#/$defs/seconds", "description": "Time constant of the locomotion blend position following the velocity"},
+        "stand_s": {"$ref": "#/$defs/seconds", "description": "Idle to combat idle and back"},
+        "action_in_s": {"$ref": "#/$defs/seconds", "description": "Action layer fading in over locomotion"},
+        "action_out_s": {"$ref": "#/$defs/seconds", "description": "Action layer fading back to locomotion"},
+        "action_xfade_s": {"$ref": "#/$defs/seconds", "description": "Cross-fade from one action clip to the next"},
+        "full_body_s": {"$ref": "#/$defs/seconds", "description": "Legs joining or leaving an action as the character stops or starts moving"},
+        "override_in_s": {"$ref": "#/$defs/seconds", "description": "Crowd control, death or victory taking over"},
+        "override_out_s": {"$ref": "#/$defs/seconds", "description": "Recovery from crowd control"},
+        "override_xfade_s": {"$ref": "#/$defs/seconds"},
+        "jump_in_s": {"$ref": "#/$defs/seconds"},
+        "jump_out_s": {"$ref": "#/$defs/seconds"}
+      }
+    },
+    "locomotion": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["stand", "combat_stand", "directions", "jump", "moving_min_mps", "teleport_min_mps", "airborne_min_height_m", "speed_scale"],
+      "properties": {
+        "stand": {"$ref": "#/$defs/clip"},
+        "combat_stand": {"$ref": "#/$defs/clip", "description": "Standing clip while in combat"},
+        "directions": {
+          "type": "object",
+          "description": "Moving clips at their points of the 2D blend space: x is right, y is forward, in units of the direction's full ground speed",
+          "minProperties": 2,
+          "additionalProperties": {"type": "array", "items": {"type": "number", "minimum": -1, "maximum": 1}, "minItems": 2, "maxItems": 2}
+        },
+        "jump": {"$ref": "#/$defs/clip"},
+        "moving_min_mps": {"type": "number", "exclusiveMinimum": 0, "description": "Ground speed below which the character stands"},
+        "teleport_min_mps": {"type": "number", "exclusiveMinimum": 0, "description": "Apparent speeds above this are blinks or corrections, not movement"},
+        "airborne_min_height_m": {"type": "number", "exclusiveMinimum": 0},
+        "speed_scale": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["min", "max"],
+          "description": "Playback speed of the moving clips follows ground speed / full speed, within these limits",
+          "properties": {"min": {"type": "number", "exclusiveMinimum": 0}, "max": {"type": "number", "exclusiveMinimum": 0}}
+        }
+      }
+    },
+    "combat": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["hostile_target_within_m", "recent_damage_s"],
+      "description": "In combat (combat idle) = casting, a living hostile target within range, or damage dealt or taken recently",
+      "properties": {
+        "hostile_target_within_m": {"type": "number", "minimum": 0},
+        "recent_damage_s": {"type": "number", "minimum": 0}
+      }
+    },
+    "body_split": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["upper", "lower"],
+      "description": "Bones of the upper body (actions play here while moving) and of the legs (join the action when standing)",
+      "properties": {
+        "upper": {"type": "array", "items": {"type": "string"}, "minItems": 1, "uniqueItems": true},
+        "lower": {"type": "array", "items": {"type": "string"}, "minItems": 1, "uniqueItems": true}
+      }
+    },
+    "actions": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["cast", "channel", "release", "melee", "ranged", "hit"],
+      "properties": {
+        "cast": {"type": "object", "additionalProperties": false, "required": ["start", "loop", "priority"],
+          "description": "Cast-time abilities: start then loop while the cast bar runs; the release plays on success",
+          "properties": {"start": {"$ref": "#/$defs/clip"}, "loop": {"$ref": "#/$defs/clip"}, "priority": {"$ref": "#/$defs/priority"}, "min_s": {"$ref": "#/$defs/min_s"}}},
+        "channel": {"type": "object", "additionalProperties": false, "required": ["loop", "priority"],
+          "properties": {"loop": {"$ref": "#/$defs/clip"}, "priority": {"$ref": "#/$defs/priority"}, "min_s": {"$ref": "#/$defs/min_s"}}},
+        "release": {"type": "object", "additionalProperties": false, "required": ["clip", "by_school", "priority"],
+          "description": "by_school: play <clip>_<ability school> when the set has it",
+          "properties": {"clip": {"$ref": "#/$defs/clip"}, "by_school": {"type": "boolean"}, "priority": {"$ref": "#/$defs/priority"}, "min_s": {"$ref": "#/$defs/min_s"}}},
+        "melee": {"type": "object", "additionalProperties": false, "required": ["cycle", "reset_s", "priority"],
+          "description": "Melee swings cycle through these clips; the cycle restarts after reset_s without a swing",
+          "properties": {"cycle": {"type": "array", "items": {"$ref": "#/$defs/clip"}, "minItems": 1}, "reset_s": {"type": "number", "minimum": 0},
+            "priority": {"$ref": "#/$defs/priority"}, "min_s": {"$ref": "#/$defs/min_s"}}},
+        "ranged": {"type": "object", "additionalProperties": false, "required": ["clip", "priority"],
+          "properties": {"clip": {"$ref": "#/$defs/clip"}, "priority": {"$ref": "#/$defs/priority"}, "min_s": {"$ref": "#/$defs/min_s"}}},
+        "hit": {"type": "object", "additionalProperties": false, "required": ["clip", "priority", "min_damage_pct", "cooldown_s"],
+          "description": "Hit reaction on damage of at least min_damage_pct of maximum health, at most once per cooldown_s",
+          "properties": {"clip": {"$ref": "#/$defs/clip"}, "priority": {"$ref": "#/$defs/priority"}, "min_s": {"$ref": "#/$defs/min_s"},
+            "min_damage_pct": {"type": "number", "minimum": 0, "maximum": 100}, "cooldown_s": {"type": "number", "minimum": 0}}}
+      }
+    },
+    "ability_rules": {
+      "type": "array",
+      "minItems": 1,
+      "description": "Which action an ability plays: the first rule whose conditions all hold. The last rule must have no conditions, so every ability resolves",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["when", "action"],
+        "properties": {
+          "when": {
+            "type": "object",
+            "additionalProperties": false,
+            "properties": {
+              "cast_type": {"type": "array", "items": {"enum": ["instant", "cast", "channel", "passive"]}, "minItems": 1},
+              "school": {"type": "array", "items": {"$ref": "common.schema.json#/$defs/school"}, "minItems": 1},
+              "target": {"type": "array", "items": {"enum": ["enemy", "ally", "self", "any_unit", "ground", "none"]}, "minItems": 1},
+              "effect": {"type": "array", "items": {"type": "string"}, "minItems": 1, "description": "Any of the ability's effects has one of these types"},
+              "range": {"enum": ["melee", "ranged"], "description": "melee: range up to tuning ranges.melee_m (above 0); ranged: beyond it"}
+            }
+          },
+          "action": {"$ref": "#/$defs/action"}
+        }
+      }
+    },
+    "ability_overrides": {
+      "type": "object",
+      "description": "Ability id -> action, ahead of the rules",
+      "additionalProperties": {"$ref": "#/$defs/action"}
+    },
+    "auto_attack": {"$ref": "#/$defs/action"},
+    "crowd_control": {
+      "type": "object",
+      "description": "Crowd-control category (auras' cc_category) -> clip that overrides everything while it lasts",
+      "propertyNames": {"enum": ["stun", "incapacitate", "disorient", "silence", "root", "disarm", "knockback"]},
+      "additionalProperties": {"$ref": "#/$defs/clip"}
+    },
+    "death": {"$ref": "#/$defs/clip"},
+    "victory": {"$ref": "#/$defs/clip"}
+  }
+}

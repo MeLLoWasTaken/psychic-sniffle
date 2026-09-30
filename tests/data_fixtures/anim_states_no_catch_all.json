@@ -1,0 +1,1 @@
+{"description": "The last ability rule has conditions, so some abilities would resolve to nothing", "file": "anim_states/humanoid.json", "delete": ["/ability_rules/6"], "expect": "the last ability rule must have no conditions"}

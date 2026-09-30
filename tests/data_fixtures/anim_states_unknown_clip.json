@@ -1,0 +1,1 @@
+{"description": "An animation-states file names a clip its animation set does not have", "file": "anim_states/humanoid.json", "set": {"/actions/melee/cycle/2": "attack_9"}, "expect": "clip 'attack_9' is not in animation set 'humanoid'"}

@@ -1,0 +1,1 @@
+{"description": "A standard bone is in neither half of the body split", "file": "anim_states/humanoid.json", "delete": ["/body_split/lower/0"], "expect": "bone 'root' is in neither half of body_split"}

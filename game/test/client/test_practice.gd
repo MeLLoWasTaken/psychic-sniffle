@@ -1,7 +1,8 @@
 extends GdUnitTestSuite
 ## Practice scene (backlog M1-23): an in-process 2v2 on Gallows Courtyard with the player's unit
 ## under PlayerController and three bots runs 10 simulated seconds of scripted input without
-## errors; the player's unit moves and the renderer follows the world view.
+## errors; the player's unit moves and the renderer follows the world view. M1-24: every unit
+## is animated from the view and events for 15 s.
 
 const SCRIPT: String = "move_forward:3,target_nearest_enemy,turn_left:0.25,move_forward:2,camera_zoom_out,strafe_right:1,move_back:1,jump,wait:2.75"
 
@@ -43,13 +44,46 @@ func test_practice_runs_ten_seconds_with_scripted_input() -> void:
 	assert_bool(scene.builder.gates_open).is_true()
 
 
-func test_renderer_picks_clips_from_movement() -> void:
-	assert_str(WorldRenderer.clip_for(Vector3.ZERO, 0.0, true)).is_equal("idle")
-	assert_str(WorldRenderer.clip_for(Movement.forward_of(0.7) * 7.0, 0.7, true)).is_equal("run")
-	assert_str(WorldRenderer.clip_for(-Movement.forward_of(0.7) * 4.2, 0.7, true)).is_equal("backpedal")
-	assert_str(WorldRenderer.clip_for(Movement.right_of(0.7) * 7.0, 0.7, true)).is_equal("strafe_right")
-	assert_str(WorldRenderer.clip_for(-Movement.right_of(0.7) * 7.0, 0.7, true)).is_equal("strafe_left")
-	assert_str(WorldRenderer.clip_for(Vector3.ZERO, 0.0, false)).is_equal("death")
+func test_practice_animates_every_unit_for_fifteen_seconds() -> void:
+	# backlog M1-24: every character is animated from the view and the event stream
+	var errors_before: int = Log.error_count
+	var scene: Node3D = auto_free((load("res://scenes/game/practice.tscn") as PackedScene).instantiate())
+	scene.options = {"manual": true, "kit": false, "gi": false, "lighting": false, "auto": SCRIPT + ",move_forward:5"}
+	add_child(scene)
+	for i: int in 15 * scene.world.tick_rate():
+		scene.run_ticks(1)
+	assert_int(Log.error_count - errors_before).is_equal(0)
+	var r: WorldRenderer = scene.renderer
+	var all_seen: Dictionary = {}
+	for id: int in r.units:
+		var a: CharacterAnimator = r.animator_of(id)
+		assert_object(a).override_failure_message("unit %d has no animator" % id).is_not_null()
+		assert_int(a.state_changes).override_failure_message("unit %d never changed state" % id).is_greater(0)
+		all_seen.merge(a.seen_states)
+	# the fight shows movement, a cast and a melee swing or release somewhere
+	assert_bool(all_seen.has("run")).is_true()
+	assert_bool(all_seen.has("cast_loop") or all_seen.has("channel")).override_failure_message(
+		"states seen: %s" % [all_seen.keys()]).is_true()
+
+
+func test_renderer_animates_units_from_the_view() -> void:
+	var r: WorldRenderer = auto_free(WorldRenderer.new())
+	add_child(r)
+	var u: Dictionary = {"id": 3, "team": 1, "spec": "warblade_carnage", "position": Vector3.ZERO, "facing": 0.0,
+		"health": 60000, "max_health": 60000, "target_id": -1, "cast": {}, "auras": []}
+	r.push_view({"tick": 1, "tick_rate": 60, "me": u, "units": [u]})
+	var a: CharacterAnimator = r.animator_of(3)
+	assert_object(a).is_not_null()
+	for t: int in 30:  # running forward at 7 m/s
+		var moved: Dictionary = u.duplicate()
+		moved["position"] = Movement.forward_of(0.0) * 7.0 * (t + 1) / 60.0
+		r.push_view({"tick": t + 2, "tick_rate": 60, "me": moved, "units": [moved]})
+		r.draw(1.0, 1.0 / 60.0)
+	assert_str(a.locomotion).is_equal("run")
+	assert_float(a.time_scale).is_equal_approx(1.0, 0.01)
+	r.push_events([{"type": "cast_success", "source": 3, "target": 1, "ability": "grim_hack"}])
+	r.draw(1.0, 1.0 / 60.0)
+	assert_str(a.action).is_equal("attack_1")
 
 
 func test_renderer_interpolates_between_views() -> void:

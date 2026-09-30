@@ -12,7 +12,10 @@ extends RefCounted
 var runner: MatchRunner
 var player: Unit
 var brains: Dictionary = {}  ## unit id -> BotBrain, or the player's input source
+var events: Array = []  ## combat and match events not taken yet (take_events)
 var _source: PlayerInputSource
+
+const MAX_EVENTS: int = 2000  ## older events are dropped when nobody takes them
 
 
 ## Stands in for a bot brain in MatchRunner.bot_system, so the player's input is applied in the
@@ -26,12 +29,14 @@ class PlayerInputSource:
 
 
 func _init(map_id: String, player_spec: String, ally_specs: Array, enemy_specs: Array,
-		bracket: String = "2v2", prep_s: float = 0.0, seed_value: int = 1) -> void:
+		bracket: String = "2v2", prep_s: float = 0.0, seed_value: int = 1, player_bot: bool = false) -> void:
 	runner = MatchRunner.new(Data.maps[map_id], "arena", bracket, prep_s, seed_value)
 	player = runner.add_unit(player_spec, 0)
 	_source = PlayerInputSource.new()
 	_source.input = {"move": Vector2.ZERO, "yaw": player.facing}
-	brains[player.id] = _source
+	# player_bot: the player's unit is played by its bot brain and step()'s input is ignored
+	# (screenshots and demos of a real fight)
+	brains[player.id] = BotBrain.new(player_spec, seed_value * 1000 + player.id, runner.geometry) if player_bot else _source
 	for i: int in ally_specs.size():
 		_add_bot(str(ally_specs[i]), 0, seed_value)
 	for i: int in enemy_specs.size():
@@ -62,7 +67,16 @@ func geometry() -> ArenaGeometry:
 func step(player_input: Dictionary) -> void:
 	_source.input = player_input
 	runner.sim.step()
-	runner.take_events()  # combat log for the HUD comes with M1-27; drop it so it cannot pile up
+	events.append_array(runner.take_events())
+	if events.size() > MAX_EVENTS:
+		events = events.slice(events.size() - MAX_EVENTS)
+
+
+## Combat and match events since the last call (animation now; the HUD's combat log in M1-27).
+func take_events() -> Array:
+	var out: Array = events
+	events = []
+	return out
 
 
 ## The world as the player sees it.

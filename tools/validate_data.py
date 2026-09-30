@@ -41,6 +41,7 @@ FOLDERS = {
     "bots": ("bot_profile.schema.json", "id"),
     "lighting": ("lighting.schema.json", "id"),
     "animations": ("animation_set.schema.json", "id"),
+    "anim_states": ("anim_states.schema.json", "id"),
     "settings": ("settings.schema.json", "id"),
 }
 
@@ -82,6 +83,53 @@ def load_json(path: Path, report: Report, rel: str):
     except json.JSONDecodeError as exc:
         report.error(rel, f"invalid JSON: {exc}")
         return None
+
+
+def _humanoid_bones() -> set[str]:
+    """Standard bone names from tools/blender/humanoid.py (read as text: it needs bpy to import)."""
+    import ast
+    tree = ast.parse((REPO / "tools" / "blender" / "humanoid.py").read_text())
+    for node in tree.body:
+        if isinstance(node, ast.Assign) and any(getattr(t, "id", "") == "BONES" for t in node.targets):
+            return {row[0] for row in ast.literal_eval(node.value)}
+    return set()
+
+
+def _check_anim_states(report: Report, rel: str, st: dict, db: dict, schemas: dict) -> None:
+    """Animation states (backlog M1-24): every clip exists in the animation set of the same id,
+    bones are standard, the last ability rule catches everything, overrides name real abilities."""
+    aset = db["animations"].get(st["id"])
+    if aset is None:
+        report.error(rel, f"no animation set '{st['id']}' (data/animations/{st['id']}.json)")
+        return
+    clips = set(aset["clips"])
+    loco, actions = st["locomotion"], st["actions"]
+    used = [loco["stand"], loco["combat_stand"], loco["jump"], st["death"], st["victory"], *loco["directions"]]
+    used += [actions["cast"]["start"], actions["cast"]["loop"], actions["channel"]["loop"], actions["release"]["clip"],
+             actions["ranged"]["clip"], actions["hit"]["clip"], *actions["melee"]["cycle"]]
+    used += list(st["crowd_control"].values())
+    for clip in used:
+        if clip not in clips:
+            report.error(rel, f"clip '{clip}' is not in animation set '{st['id']}'")
+    for name, looped in (("cast loop", actions["cast"]["loop"]), ("channel", actions["channel"]["loop"])):
+        if looped in clips and not aset["clips"][looped].get("loop", False):
+            report.error(rel, f"{name} clip '{looped}' must loop")
+    bones = _humanoid_bones()
+    upper, lower = set(st["body_split"]["upper"]), set(st["body_split"]["lower"])
+    for bone in sorted((upper | lower) - bones):
+        report.error(rel, f"unknown bone '{bone}' in body_split")
+    for bone in sorted(upper & lower):
+        report.error(rel, f"bone '{bone}' is in both halves of body_split")
+    for bone in sorted(bones - upper - lower):
+        report.error(rel, f"bone '{bone}' is in neither half of body_split")
+    if st["ability_rules"][-1]["when"]:
+        report.error(rel, "the last ability rule must have no conditions, so every ability resolves")
+    for aid in st["ability_overrides"]:
+        if aid not in db["abilities"]:
+            report.error(rel, f"ability override for unknown ability '{aid}'")
+    speed = loco["speed_scale"]
+    if speed["min"] > 1.0 or speed["max"] < 1.0:
+        report.error(rel, "speed_scale must include 1.0 (full speed plays clips as authored)")
 
 
 def validate(data_dir: Path) -> list[str]:
@@ -204,6 +252,8 @@ def validate(data_dir: Path) -> list[str]:
         missing = [c for c in anim_mod.REQUIRED_CLIPS if c not in a["clips"]]
         if missing:
             report.error(rel, f"missing required clips: {', '.join(missing)}")
+    for sid, st in db["anim_states"].items():
+        _check_anim_states(report, f"anim_states/{sid}.json", st, db, schemas)
     for asid, asset in db["assets"].items():
         if asset["kind"] == "animation":
             set_id = asset.get("params", {}).get("set", "")

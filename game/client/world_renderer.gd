@@ -5,14 +5,13 @@ extends Node3D
 ## simulation objects, so the practice scene's in-process match can be swapped for the network
 ## client (M1-28) without changing this layer.
 ##
-## Feed one view per simulation tick with push_view(); call draw(alpha) every frame with the
-## fraction of the next tick that has elapsed: positions and facings are interpolated between
-## the last two views. Characters are the built models (CharacterRig) or a team-colored capsule
-## when a spec has none. Animation v1: idle, run, backpedal, strafes and death chosen from the
-## movement between views (the locomotion blend is M1-24). A ring on the ground marks the target.
+## Feed one view per simulation tick with push_view() and its events with push_events(); call
+## draw(alpha, delta) every frame with the fraction of the next tick that has elapsed (positions
+## and facings are interpolated between the last two views) and the frame time. Characters are the built models (CharacterRig) or a team-colored capsule
+## when a spec has none. Each character is animated by a CharacterAnimator (M1-24) from its view
+## entry (movement, cast, auras, health, match result) and the combat events fed with
+## push_events(). A ring on the ground marks the target.
 
-const MOVE_SPEED_MIN: float = 0.5  ## m/s below which a unit stands idle
-const BLEND_S: float = 0.15
 const RING_RADIUS: float = 0.8
 const RING_COLORS: Dictionary = {"enemy": Color(0.95, 0.12, 0.08), "ally": Color(0.2, 0.95, 0.3)}
 const CAPSULE_HEIGHT: float = 1.8
@@ -52,14 +51,29 @@ func push_view(v: Dictionary) -> void:
 		e["cur_facing"] = float(u["facing"])
 		e["health"] = int(u["health"])
 		e["team"] = int(u["team"])
+		e["unit"] = u
 	for id: int in units.keys():
 		if not seen.has(id):
 			(units[id]["root"] as Node3D).queue_free()
 			units.erase(id)
 
 
-## Place every unit for this frame, `alpha` (0..1) of the way from the previous view to the newest.
-func draw(alpha: float) -> void:
+## Combat events since the last call (MatchRunner.take_events or the client's event stream):
+## each goes to the animators of the units it names (cast releases, swings, hit reactions).
+func push_events(evs: Array) -> void:
+	for ev: Dictionary in evs:
+		var ids: Array[int] = [int(ev.get("source", -1))]
+		if int(ev.get("target", -1)) != ids[0]:
+			ids.append(int(ev.get("target", -1)))
+		for id: int in ids:
+			var e: Dictionary = units.get(id, {})
+			if not e.is_empty() and e["animator"] != null:
+				(e["animator"] as CharacterAnimator).push_event(ev)
+
+
+## Place every unit for this frame, `alpha` (0..1) of the way from the previous view to the newest,
+## and advance their animation by `delta` seconds (0 holds every pose, e.g. while paused).
+func draw(alpha: float, delta: float = 0.0) -> void:
 	alpha = clampf(alpha, 0.0, 1.0)
 	for id: int in units:
 		var e: Dictionary = units[id]
@@ -68,8 +82,14 @@ func draw(alpha: float) -> void:
 		var cur: Vector3 = e["cur_pos"]
 		root.position = prev.lerp(cur, alpha)
 		root.rotation.y = lerp_angle(float(e["prev_facing"]), float(e["cur_facing"]), alpha)
-		_animate(e, (cur - prev) * tick_rate)
+		if e["animator"] != null:
+			(e["animator"] as CharacterAnimator).update(e["unit"], view, (cur - prev) * tick_rate, delta)
 	_draw_ring()
+
+
+## The animator of a unit, or null (not in the view, or a capsule stand-in).
+func animator_of(id: int) -> CharacterAnimator:
+	return units.get(id, {}).get("animator", null)
 
 
 ## The drawn position of a unit (interpolated), or INF when it is not in the view.
@@ -89,35 +109,6 @@ func drawn_units() -> Array:
 	return out
 
 
-## Which clip a unit plays for a velocity in m/s: facing-relative direction picks run, backpedal
-## or a strafe; dead units play death.
-static func clip_for(velocity: Vector3, facing: float, alive: bool) -> String:
-	if not alive:
-		return "death"
-	var flat: Vector3 = Vector3(velocity.x, 0.0, velocity.z)
-	var speed: float = flat.length()
-	if speed < MOVE_SPEED_MIN:
-		return "idle"
-	var f: float = flat.dot(Movement.forward_of(facing)) / speed
-	var r: float = flat.dot(Movement.right_of(facing)) / speed
-	if f >= 0.5:
-		return "run"
-	if f <= -0.5:
-		return "backpedal"
-	return "strafe_right" if r > 0.0 else "strafe_left"
-
-
-func _animate(e: Dictionary, velocity: Vector3) -> void:
-	var player: AnimationPlayer = e["player"]
-	if player == null:
-		return
-	var clip: String = clip_for(velocity, float(e["cur_facing"]), int(e["health"]) > 0)
-	if clip == e["clip"] or not player.has_animation(clip):
-		return
-	e["clip"] = clip
-	player.play(clip, BLEND_S)
-
-
 func _draw_ring() -> void:
 	var e: Dictionary = units.get(target_id, {})
 	if e.is_empty() or view.is_empty():
@@ -134,12 +125,15 @@ func _entry(u: Dictionary) -> Dictionary:
 	var root: Node3D = Node3D.new()
 	root.name = "Unit%d" % int(u["id"])
 	add_child(root)
+	var asset: Dictionary = character_asset(str(u["spec"]))
 	var player: AnimationPlayer = _add_character(root, str(u["spec"]), int(u["team"]))
-	if player != null and player.has_animation("idle"):
-		player.play("idle")
-	return {"root": root, "player": player, "clip": "idle", "prev_pos": u["position"], "cur_pos": u["position"],
-		"prev_facing": float(u["facing"]), "cur_facing": float(u["facing"]), "health": int(u["health"]),
-		"team": int(u["team"])}
+	var animator: CharacterAnimator = null
+	if player != null:
+		var set_id: String = str(CharacterRig.animation_set(str(asset.get("body_build", ""))).get("id", "humanoid"))
+		animator = CharacterAnimator.create(player, int(u["id"]), int(u["team"]), set_id)
+	return {"root": root, "player": player, "animator": animator, "unit": u, "prev_pos": u["position"],
+		"cur_pos": u["position"], "prev_facing": float(u["facing"]), "cur_facing": float(u["facing"]),
+		"health": int(u["health"]), "team": int(u["team"])}
 
 
 ## The character asset for a spec (data/assets, kind "character"), or empty.
