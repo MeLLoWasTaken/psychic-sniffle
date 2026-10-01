@@ -24,8 +24,13 @@ Local rounds (named builds; 60 then 150 duels):
 | 2 (60) | 55% | 55% | 40% | 70% | 10% | 80% |
 | 3 (60) | 85% | 0% | 65% | 100% | 30% | 0% |
 | 4 (150) | 40% | 36% | 74% | 92% | 56% | 64% |
+| 5 (150) | 28% | 76% | 46% | 12% | 80% | 64% |
+| 6 (150) | 60% | 38% | 52% | 56% | 48% | 32% |
+| 7-9 (150) | 38-48% | 50-60% | 52% | 56% | 48% | 56-76% |
+| Check, new seed (210) | 31% | 63% | 56% | 49% | 63% | 74% |
+| Check after +4% Warblade, new seed (300) | 56% | 44% | 50% | 50% | 50% | 38% |
 
-Single duels are chaotic, so 10 per match-up swing widely; rounds of 150 are the minimum. Oracle
+Single duels are chaotic, so 10 per match-up swing widely; rounds of 150 are the minimum, and a tune fitted on one seed can miss on another (rounds 7-9 against the 210-duel check). The last check, 300 duels on a seed not used for tuning, has every spec within 40-60% and every match-up within 35-65%. A 1,000-duel confirmation is running on the workspace. (Match-ups: share of the first-named spec.) Oracle
 mirrors always reach the 12-minute limit: dampening from 1:00 at 1% per 10 s reaches only 66% by then.
 
 ## Problems found

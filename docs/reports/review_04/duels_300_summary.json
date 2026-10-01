@@ -1,0 +1,115 @@
+{
+ "matches": 300,
+ "kill_rate": 0.833,
+ "draws": 50,
+ "median_seconds": 170.6,
+ "team0_win_rate": 0.504,
+ "errors": 0,
+ "comps": {
+  "arcanist_rime": {
+   "win_rate": 0.5,
+   "games": 100
+  },
+  "oracle_grace": {
+   "win_rate": 0.44,
+   "games": 100
+  },
+  "warblade_carnage": {
+   "win_rate": 0.56,
+   "games": 100
+  }
+ },
+ "specs": {
+  "arcanist_rime": {
+   "win_rate": 0.5,
+   "games": 100
+  },
+  "oracle_grace": {
+   "win_rate": 0.44,
+   "games": 100
+  },
+  "warblade_carnage": {
+   "win_rate": 0.56,
+   "games": 100
+  }
+ },
+ "matchups": {
+  "arcanist_rime vs oracle_grace": {
+   "first_wins": 0.5,
+   "decided": 50
+  },
+  "arcanist_rime vs warblade_carnage": {
+   "first_wins": 0.5,
+   "decided": 50
+  },
+  "oracle_grace vs warblade_carnage": {
+   "first_wins": 0.38,
+   "decided": 50
+  }
+ },
+ "mirrors": {
+  "arcanist_rime": {
+   "games": 50,
+   "kills": 50,
+   "draws": 0
+  },
+  "oracle_grace": {
+   "games": 50,
+   "kills": 0,
+   "draws": 50
+  },
+  "warblade_carnage": {
+   "games": 50,
+   "kills": 50,
+   "draws": 0
+  }
+ },
+ "flags": [],
+ "builds": {
+  "arcanist_rime": {
+   "builds": {
+    "arcanist_rime@shatter_burst": {
+     "win_rate": 0.5,
+     "games": 100,
+     "viable": true
+    }
+   },
+   "viable": 1,
+   "top": [
+    "arcanist_rime@shatter_burst"
+   ],
+   "over_share": {},
+   "top_node_share": 1.0
+  },
+  "oracle_grace": {
+   "builds": {
+    "oracle_grace@radiant_mender": {
+     "win_rate": 0.44,
+     "games": 100,
+     "viable": true
+    }
+   },
+   "viable": 1,
+   "top": [
+    "oracle_grace@radiant_mender"
+   ],
+   "over_share": {},
+   "top_node_share": 1.0
+  },
+  "warblade_carnage": {
+   "builds": {
+    "warblade_carnage@headsman": {
+     "win_rate": 0.56,
+     "games": 100,
+     "viable": true
+    }
+   },
+   "viable": 1,
+   "top": [
+    "warblade_carnage@headsman"
+   ],
+   "over_share": {},
+   "top_node_share": 1.0
+  }
+ }
+}

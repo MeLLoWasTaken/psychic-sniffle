@@ -2,6 +2,11 @@
 
 One entry per build-loop iteration, newest first. Format: date, backlog ID, what changed, how it was checked.
 
+## 2026-10-01 — M2-07 duel tuning, review pass 4
+- Duels are balanced by the three bracket auras: after nine rounds on the workspace (the CI allowance ran out), a 300-duel check on an untouched seed gives Arcanist 50%, Oracle 44%, Warblade 56%, and every match-up within 35-65%. A 1,000-duel confirmation runs on the workspace.
+- Review pass 4 (`docs/reports/review_04/review_04.md`): the duel tables, unchanged lineup, both arenas, the 20-player profile measured on the workspace (server 4.2 ms average; bot clients about twice as heavy as at review 3), and the re-ordered backlog.
+- F-17: the game never clipped (the master limiter holds -0.5 dBFS); the video tool now leaves the AAC encoder 1 dB of headroom.
+
 ## 2026-10-01 — M2-07 duel balance tools (tuning in progress); bots follow twists
 - Bracket auras: tuning can give units standing auras in one bracket, by role or spec. Duels now use three (Duelist's Resolve for healers, Measured Blade for the Carnage Warblade, Steady Footing for the Rime Arcanist); the values are a first guess for the 1,000-duel CI runs to refine.
 - A `duels` workflow runs 1,000 duels in 8 parallel shards on demand; balance reports also post their tables as notices, which can be read back from a run.
