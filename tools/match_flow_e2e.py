@@ -180,6 +180,12 @@ def main() -> int:
     if failures:
         for f in failures:
             print(f"FAIL {f}")
+        # the run's timeline last: CI annotations keep only the end of this output
+        timeline = [ln for ln in text.splitlines()
+                    if re.search(r" INFO \[(client|server)\] ", ln) and not re.search(r"server: t=\d+ s", ln)]
+        print("timeline (last 18 client and server lines):")
+        for ln in timeline[-18:]:
+            print(f"  {ln}")
         return 1
     print("PASS match flow")
     return 0

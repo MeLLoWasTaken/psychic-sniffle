@@ -355,6 +355,7 @@ The human asked to incorporate any readily available offering that improves the 
 
 ### X-15 Renderer skipped ticks in the CI match flow `[todo]`
 - [ ] The CI run of 26e3202 failed the match-flow check with 418 of 8543 ticks not drawn (4.9%, limit 2%) and 14.6% of ticks without a new snapshot; earlier runs passed. Find out whether it is runner speed or a change in M2-13 (settings applied at match start), once the workspace CPU is free to run the check locally.
+- 2026-10-01: the CI run of 7576b97 failed the same check differently: the client timed out in the match step after 870 s with no tick drawn while the bots stayed connected. The same check passed locally on aa36784 (227 s, 1.2% of ticks not drawn, with the video render using the CPU). The check now prints the run's last client and server log lines on failure, so the next CI annotation shows where it stopped.
 
 ### X-06 Continuous integration on GitHub Actions `[doing]`
 - [ ] Run tools/check_all on every push, and a nightly job on a multi-core runner for the balance simulations and the 20-player performance profile (the workspace has 2 cores, which skews those numbers).
