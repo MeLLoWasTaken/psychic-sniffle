@@ -3,7 +3,7 @@
   "name": "Main menu",
   "description": "Client main menu and match flow screens (backlog M1-28). Buttons route by action; the Play preset picks the local server's map, bracket and the bots filling the other slots for each spec the player can choose. Fonts and colors match the HUD (data/hud_layouts/default.json).",
   "title": "ARENA PVP",
-  "subtitle": "Gallows Courtyard  ·  2v2 Arena",
+  "subtitle": "Gallows Courtyard  ·  1v1 and 2v2 Arena",
   "fonts": {
     "display": {
       "file": "cinzel/Cinzel-Variable.ttf",
@@ -19,6 +19,12 @@
       "label": "Play 2v2 vs bots",
       "action": "play_bots",
       "hint": "You and a bot partner against two bots, on a match server started on this machine."
+    },
+    {
+      "id": "play_1v1",
+      "label": "Play 1v1 vs a bot",
+      "action": "play_1v1",
+      "hint": "A duel against one bot on a match server started on this machine: dampening from 1:00, a 12-minute limit."
     },
     {
       "id": "practice",
@@ -64,21 +70,27 @@
     ],
     "comps": {
       "warblade_carnage": {
-        "partner": "oracle_grace",
+        "allies": [
+          "oracle_grace"
+        ],
         "enemies": [
           "arcanist_rime",
           "oracle_grace"
         ]
       },
       "arcanist_rime": {
-        "partner": "oracle_grace",
+        "allies": [
+          "oracle_grace"
+        ],
         "enemies": [
           "warblade_carnage",
           "oracle_grace"
         ]
       },
       "oracle_grace": {
-        "partner": "warblade_carnage",
+        "allies": [
+          "warblade_carnage"
+        ],
         "enemies": [
           "arcanist_rime",
           "oracle_grace"
@@ -86,7 +98,9 @@
       }
     },
     "bot_names": {
-      "partner": "partner",
+      "allies": [
+        "partner"
+      ],
       "enemies": [
         "enemy1",
         "enemy2"
@@ -275,5 +289,44 @@
     "row_self": "#c9a4621c",
     "dead": "#8a7e6c",
     "dim": "#000000b0"
+  },
+  "play_1v1": {
+    "map": "gallows_courtyard",
+    "bracket": "1v1",
+    "host_name": "player",
+    "port_range": [
+      24800,
+      24899
+    ],
+    "comps": {
+      "warblade_carnage": {
+        "allies": [],
+        "enemies": [
+          "arcanist_rime"
+        ]
+      },
+      "arcanist_rime": {
+        "allies": [],
+        "enemies": [
+          "warblade_carnage"
+        ]
+      },
+      "oracle_grace": {
+        "allies": [],
+        "enemies": [
+          "warblade_carnage"
+        ]
+      }
+    },
+    "bot_names": {
+      "allies": [],
+      "enemies": [
+        "opponent"
+      ]
+    },
+    "server_start_timeout_s": 30,
+    "server_silence_s": 10,
+    "end_banner_s": 3.0,
+    "gates_banner_s": 2.5
   }
 }

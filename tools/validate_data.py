@@ -477,6 +477,14 @@ def validate(data_dir: Path) -> list[str]:
                 blocker = _spawn_blocked(m, sp[0], sp[2])
                 if blocker:
                     report.error(rel, f"{team} spawn {sp} is inside or touching {blocker}")
+        pickup_brackets = set((tuning or {}).get("arena", {}).get("pickup_brackets", []))
+        if pickup_brackets & set(m["brackets"]) and not m.get("pickups"):
+            report.error(rel, f"hosts {', '.join(sorted(pickup_brackets & set(m['brackets'])))}, which spawn "
+                         "regeneration pickups, but lists no pickups")
+        for sp in m.get("pickups", []):
+            blocker = _spawn_blocked(m, sp[0], sp[2])
+            if blocker:
+                report.error(rel, f"pickup {sp} is inside or touching {blocker}")
 
     # ---- assets ------------------------------------------------------------------
     for asid, a in db["assets"].items():
@@ -557,19 +565,20 @@ def _check_menus(report: Report, db: dict) -> None:
         picker = m["spec_picker"]
         if picker["default"] not in picker["specs"]:
             report.error(rel, f"spec_picker.default '{picker['default']}' is not in spec_picker.specs")
-        pb = m["play_bots"]
-        if pb["map"] not in db["maps"]:
-            report.error(rel, f"play_bots.map '{pb['map']}' not found in maps")
-        lo, hi = pb["port_range"]
-        if lo > hi:
-            report.error(rel, "play_bots.port_range must be [low, high]")
-        size = int(pb["bracket"][0])
-        if size != 2:
-            report.error(rel, f"play_bots supports 2v2 (one partner); bracket is {pb['bracket']}")
-        if len(pb["bot_names"]["enemies"]) < size:
-            report.error(rel, f"play_bots.bot_names.enemies needs {size} names")
-        if pb["host_name"] == pb["bot_names"]["partner"] or pb["host_name"] in pb["bot_names"]["enemies"]:
-            report.error(rel, "play_bots.host_name must differ from every bot name")
+        presets = {k: m[k] for k in ("play_bots", "play_1v1") if k in m}
+        for key, pb in presets.items():
+            if pb["map"] not in db["maps"]:
+                report.error(rel, f"{key}.map '{pb['map']}' not found in maps")
+            elif pb["bracket"] not in db["maps"][pb["map"]]["brackets"]:
+                report.error(rel, f"{key}: map '{pb['map']}' does not host {pb['bracket']}")
+            lo, hi = pb["port_range"]
+            if lo > hi:
+                report.error(rel, f"{key}.port_range must be [low, high]")
+            size = int(pb["bracket"][0])
+            if len(pb["bot_names"]["enemies"]) < size or len(pb["bot_names"]["allies"]) < size - 1:
+                report.error(rel, f"{key}.bot_names needs {size - 1} ally and {size} enemy names")
+            if pb["host_name"] in pb["bot_names"]["allies"] + pb["bot_names"]["enemies"]:
+                report.error(rel, f"{key}.host_name must differ from every bot name")
 
         def playable(sid: str, where: str, need_bot: bool) -> None:
             if sid not in specs:
@@ -581,15 +590,21 @@ def _check_menus(report: Report, db: dict) -> None:
 
         for sid in picker["specs"]:
             playable(sid, "spec_picker", False)
-            if sid not in pb["comps"]:
-                report.error(rel, f"play_bots.comps has no comp for picker spec '{sid}'")
-        for sid, comp in pb["comps"].items():
-            playable(sid, f"play_bots.comps.{sid}", False)
-            playable(comp["partner"], f"play_bots.comps.{sid}.partner", True)
-            if len(comp["enemies"]) != size:
-                report.error(rel, f"play_bots.comps.{sid}.enemies must have {size} specs for {pb['bracket']}")
-            for e in comp["enemies"]:
-                playable(e, f"play_bots.comps.{sid}.enemies", True)
+        for key, pb in presets.items():
+            size = int(pb["bracket"][0])
+            for sid in picker["specs"]:
+                if sid not in pb["comps"]:
+                    report.error(rel, f"{key}.comps has no comp for picker spec '{sid}'")
+            for sid, comp in pb["comps"].items():
+                playable(sid, f"{key}.comps.{sid}", False)
+                if len(comp["allies"]) != size - 1:
+                    report.error(rel, f"{key}.comps.{sid}.allies must have {size - 1} specs for {pb['bracket']}")
+                for a in comp["allies"]:
+                    playable(a, f"{key}.comps.{sid}.allies", True)
+                if len(comp["enemies"]) != size:
+                    report.error(rel, f"{key}.comps.{sid}.enemies must have {size} specs for {pb['bracket']}")
+                for e in comp["enemies"]:
+                    playable(e, f"{key}.comps.{sid}.enemies", True)
         for key in MENU_TEXT_KEYS:
             if key not in m["text"]:
                 report.error(rel, f"text is missing '{key}'")

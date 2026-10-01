@@ -371,6 +371,9 @@
     },
     "lingering_grace": {
       "tick": "heal_hot_tick"
+    },
+    "arena_renewal": {
+      "tick": "heal_hot_tick"
     }
   },
   "weapons": {
@@ -504,5 +507,9 @@
       "silence"
     ],
     "enabled_default": true
+  },
+  "world": {
+    "pickup_spawned": "heal_hot_apply",
+    "pickup_taken": "heal_chorus"
   }
 }

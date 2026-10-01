@@ -2,6 +2,21 @@
 
 One entry per build-loop iteration, newest first. Format: date, backlog ID, what changed, how it was checked.
 
+## 2026-10-01 — M2-07 1v1 bracket (rules, pickups, menu; balance runs next)
+- "Play 1v1 vs a bot" in the main menu: a duel on a local match server against one bot. Dampening starts at 1:00, and a 1v1 is a draw at 12:00 (now tested).
+- Regeneration pickups, as DESIGN.md asks for 1v1 and 2v2:
+  - two spots light up once at 1:30; the first living player in reach takes one;
+  - each gives Renewal (health over 10 s, dampened) and Clarity (mana over 10 s);
+  - drawn as a pale green wisp with a soft light, with sounds when they appear and when taken;
+  - hurt bots go for a nearby one.
+  - The server sends the active spots in each snapshot (protocol version 6). The validator checks that every 1v1 or 2v2 map has clear pickup spots.
+- The Play presets list bot allies instead of one partner, ready for 3v3.
+- Checked:
+  - rules tests (12-minute draw; pickups only in 1v1 and 2v2, at 1:30; nearest takes; health and mana restored);
+  - a bot reaches a pickup; snapshots carry pickups; the menu entry;
+  - a real 1v1 run end to end with no errors or warnings (local server, bot opponent, client: preparation, fight, end screen, scoreboard, menu);
+  - all core, net and client tests pass.
+
 ## 2026-10-01 — CI: audio tests no longer call pedalboard's EQ
 - Two CI runs crashed natively inside pedalboard's EQ filter (the known intermittent crash). The shelf and peak EQ are now scipy biquads with the same formulas JUCE uses; the output matches pedalboard's within 0.006% (about -85 dB), and the 80 sounds were rebuilt because their hash covers the generator code.
 - check_all's CI annotation now starts with the crash header instead of keeping only the tail.

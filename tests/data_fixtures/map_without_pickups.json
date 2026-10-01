@@ -1,0 +1,1 @@
+{"description": "a 2v2 map without pickup spots", "file": "maps/gallows_courtyard.json", "expect": "which spawn regeneration pickups, but lists no pickups", "delete": ["/pickups"]}

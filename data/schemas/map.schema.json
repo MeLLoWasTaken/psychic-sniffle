@@ -527,6 +527,19 @@
           }
         }
       }
+    },
+    "pickups": {
+      "type": "array",
+      "maxItems": 4,
+      "items": {
+        "type": "array",
+        "items": {
+          "type": "number"
+        },
+        "minItems": 3,
+        "maxItems": 3
+      },
+      "description": "Spots of the regeneration pickups ([x, y, z]); needed when the map hosts a bracket in tuning arena.pickup_brackets."
     }
   }
 }

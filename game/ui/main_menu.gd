@@ -16,6 +16,7 @@ signal action_chosen(action: String, spec: String)
 const CARD_SIZE: Vector2 = Vector2(360, 196)
 const CARDS_Y: float = 364.0
 const BUTTONS_Y: float = 596.0
+const BUTTONS_BOTTOM: float = 940.0  ## the hint line sits below this
 
 var style: MenuStyle
 var menu: Dictionary
@@ -220,10 +221,14 @@ func _layout() -> void:
 		c.size = CARD_SIZE
 		i += 1
 	var y: float = BUTTONS_Y
+	var n_buttons: int = buttons.size()
+	var bgap: float = 10.0 if n_buttons <= 5 else 8.0
+	var h: float = minf(58.0, (BUTTONS_BOTTOM - BUTTONS_Y - bgap * (n_buttons - 1)) / maxi(n_buttons, 1))  # all above the hint line
 	for b: Button in buttons.values():
+		b.custom_minimum_size.y = h
 		b.size = b.custom_minimum_size
 		b.position = Vector2(cx - b.size.x * 0.5, y)
-		y += b.size.y + 10.0
+		y += b.size.y + bgap
 	queue_redraw()
 
 

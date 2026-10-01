@@ -4,6 +4,7 @@
   "description": "A walled execution yard at dusk: a 39 by 36 m courtyard with four stone pillars and a central gallows block, and a gated starting room 8 m deep beyond each end.",
   "mode": "arena",
   "brackets": [
+    "1v1",
     "2v2",
     "3v3"
   ],
@@ -1003,5 +1004,17 @@
         }
       ]
     }
-  }
+  },
+  "pickups": [
+    [
+      0,
+      0,
+      13
+    ],
+    [
+      0,
+      0,
+      -13
+    ]
+  ]
 }

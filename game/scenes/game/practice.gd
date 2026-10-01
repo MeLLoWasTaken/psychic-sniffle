@@ -166,6 +166,8 @@ func _draw_frame(delta: float, instant: bool = false) -> void:
 	if hud != null:
 		hud.update(0.0 if paused or instant else delta)
 	var v: Dictionary = renderer.view
+	if not v.is_empty() and builder != null:
+		builder.set_pickups(int(v["match"].get("pickups", 0)))
 	if not _gates_opened and not v.is_empty() and int(v["match"]["phase"]) != ArenaMatch.Phase.PREP:
 		_gates_opened = true
 		builder.set_gates_open(true, 0.0 if instant or float(options["fast_forward"]) > 0.0 else 1.5)

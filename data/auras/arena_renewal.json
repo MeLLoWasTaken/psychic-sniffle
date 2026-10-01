@@ -1,0 +1,25 @@
+{
+  "id": "arena_renewal",
+  "name": "Renewal",
+  "description": "An arena pickup: health returns over 10 s.",
+  "kind": "buff",
+  "duration_s": 10,
+  "refresh": "refresh",
+  "dispel_type": "none",
+  "cc_category": "none",
+  "periodic": {
+    "interval_s": 1,
+    "effect": {
+      "type": "heal",
+      "base": 1500,
+      "can_crit": false,
+      "school": "nature"
+    }
+  },
+  "hud_priority": "normal",
+  "icon": {
+    "symbol": "chalice",
+    "school": "nature",
+    "image": "lorc/chalice-drops"
+  }
+}

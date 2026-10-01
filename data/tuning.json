@@ -102,7 +102,25 @@
     "dampening_interval_s": 10,
     "time_limit_s": 1200,
     "time_limit_1v1_s": 720,
-    "pickup_spawn_s": 90
+    "pickup_spawn_s": 90,
+    "pickup_brackets": [
+      "1v1",
+      "2v2"
+    ],
+    "pickup_radius_m": 1.6,
+    "pickup_effects": [
+      {
+        "type": "apply_aura",
+        "aura": "arena_renewal",
+        "affects": "self"
+      },
+      {
+        "type": "apply_aura",
+        "aura": "arena_clarity",
+        "affects": "self"
+      }
+    ],
+    "pickup_effect": "arena_pickup"
   },
   "battleground": {
     "respawn_wave_s": 30,

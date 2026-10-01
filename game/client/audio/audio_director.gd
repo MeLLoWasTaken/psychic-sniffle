@@ -205,6 +205,12 @@ func _on_event(ev: Dictionary) -> void:
 	var src: int = int(ev.get("source", -1))
 	var tgt: int = int(ev.get("target", -1))
 	var ab: String = str(ev.get("ability", ""))
+	var world: String = str(bank.map.get("world", {}).get(type, ""))
+	if world != "":
+		if tgt >= 0:
+			play(world, tgt)
+		else:
+			play_2d(world, "world")
 	match type:
 		"cast_start":
 			_play_stage(ab, "cast_start", src, src, tgt)

@@ -1,110 +1,181 @@
 {
   "id": "warblade_carnage",
   "behavior": {
-    "preferred_range_m": [0, 3.5],
+    "preferred_range_m": [
+      0,
+      3.5
+    ],
     "target_priority": "healer_first",
-    "reaction_ms": [250, 600],
+    "reaction_ms": [
+      250,
+      600
+    ],
     "break_los_below_pct": 25,
-    "kill_window_pct": 40
+    "kill_window_pct": 40,
+    "take_pickup_below_pct": 70
   },
   "priorities": [
     {
       "ability": "throat_punch",
-      "when": {"target_casting": true},
+      "when": {
+        "target_casting": true
+      },
       "on": "enemy_caster"
     },
     {
       "ability": "break_free",
       "on": "self",
-      "when": {"self_hard_cc": true, "self_health_below_pct": 70}
+      "when": {
+        "self_hard_cc": true,
+        "self_health_below_pct": 70
+      }
     },
     {
       "ability": "iron_oath_ab",
       "on": "self",
-      "when": {"self_health_below_pct": 60}
+      "when": {
+        "self_health_below_pct": 60
+      }
     },
     {
       "ability": "unbroken_stance_ab",
       "on": "self",
-      "when": {"self_health_below_pct": 40}
+      "when": {
+        "self_health_below_pct": 40
+      }
     },
     {
       "ability": "bloody_resolve",
       "on": "self",
-      "when": {"self_health_below_pct": 55}
+      "when": {
+        "self_health_below_pct": 55
+      }
     },
     {
       "ability": "warpath_charge",
-      "when": {"target_distance_above_m": 8, "target_distance_below_m": 25}
+      "when": {
+        "target_distance_above_m": 8,
+        "target_distance_below_m": 25
+      }
     },
     {
       "ability": "hurtling_bound",
       "on": "self",
-      "when": {"target_distance_above_m": 12, "target_distance_below_m": 25}
+      "when": {
+        "target_distance_above_m": 12,
+        "target_distance_below_m": 25
+      }
     },
     {
       "ability": "gaolers_chain",
-      "when": {"target_distance_above_m": 6, "target_distance_below_m": 20, "target_not_cc": true}
+      "when": {
+        "target_distance_above_m": 6,
+        "target_distance_below_m": 20,
+        "target_not_cc": true
+      }
     },
     {
       "ability": "headsmans_verdict",
-      "when": {"target_health_below_pct": 20}
+      "when": {
+        "target_health_below_pct": 20
+      }
     },
     {
       "ability": "red_mist_ab",
       "on": "self",
-      "when": {"target_health_below_pct": 80, "target_distance_below_m": 5}
+      "when": {
+        "target_health_below_pct": 80,
+        "target_distance_below_m": 5
+      }
     },
     {
       "ability": "bonecleaver",
-      "when": {"self_has_aura": "red_mist"}
+      "when": {
+        "self_has_aura": "red_mist"
+      }
     },
     {
       "ability": "pommel_crack",
-      "when": {"target_not_cc": true, "target_health_below_pct": 70}
+      "when": {
+        "target_not_cc": true,
+        "target_health_below_pct": 70
+      }
     },
     {
       "ability": "shield_breaker",
-      "when": {"target_has_aura": "rime_sepulcher"}
+      "when": {
+        "target_has_aura": "rime_sepulcher"
+      }
     },
     {
       "ability": "wrench_grip",
       "on": "ally_attacker",
-      "when": {"target_not_cc": true}
+      "when": {
+        "target_not_cc": true
+      }
     },
     {
       "ability": "bonecleaver",
-      "when": {"target_health_below_pct": 40}
+      "when": {
+        "target_health_below_pct": 40
+      }
     },
     {
       "ability": "gashing_blow",
-      "when": {"target_not_has_aura": "gashed"}
+      "when": {
+        "target_not_has_aura": "gashed"
+      }
     },
     {
       "ability": "crippling_slash",
-      "when": {"target_not_has_aura": "crippled", "target_not_cc": true}
+      "when": {
+        "target_not_has_aura": "crippled",
+        "target_not_cc": true
+      }
     },
     {
       "ability": "dread_roar",
       "on": "self",
-      "when": {"enemies_within_m": [8, 2]}
+      "when": {
+        "enemies_within_m": [
+          8,
+          2
+        ]
+      }
     },
     {
       "ability": "reaping_turn",
       "on": "self",
-      "when": {"enemies_within_m": [8, 2]}
+      "when": {
+        "enemies_within_m": [
+          8,
+          2
+        ]
+      }
     },
-    {"ability": "ruin_strike"},
+    {
+      "ability": "ruin_strike"
+    },
     {
       "ability": "reaping_turn",
       "on": "self",
-      "when": {"enemies_within_m": [8, 1], "resource_at_least": 60}
+      "when": {
+        "enemies_within_m": [
+          8,
+          1
+        ],
+        "resource_at_least": 60
+      }
     },
     {
       "ability": "wide_hew",
-      "when": {"resource_at_least": 60}
+      "when": {
+        "resource_at_least": 60
+      }
     },
-    {"ability": "grim_hack"}
+    {
+      "ability": "grim_hack"
+    }
   ],
   "builds": [
     {
@@ -153,7 +224,11 @@
         "ravenous_edge": 2,
         "pit_hardened": 2
       },
-      "pvp": ["blood_wager_talent", "battering_charge", "hurled_breaker"]
+      "pvp": [
+        "blood_wager_talent",
+        "battering_charge",
+        "hurled_breaker"
+      ]
     },
     {
       "name": "butcher",
@@ -201,7 +276,11 @@
         "crushing_ruin": 2,
         "seething_mist": 1
       },
-      "pvp": ["festering_cut", "gangrenous_edge", "stiff_neck_talent"]
+      "pvp": [
+        "festering_cut",
+        "gangrenous_edge",
+        "stiff_neck_talent"
+      ]
     },
     {
       "name": "gaoler",
@@ -253,7 +332,11 @@
         "butchers_thrift": 1,
         "seeping_wound": 1
       },
-      "pvp": ["wrench_grip_talent", "crushed_windpipe", "close_quarters"]
+      "pvp": [
+        "wrench_grip_talent",
+        "crushed_windpipe",
+        "close_quarters"
+      ]
     }
   ]
 }

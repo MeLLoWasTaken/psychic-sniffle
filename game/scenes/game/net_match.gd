@@ -33,7 +33,7 @@ const DEFAULTS: Dictionary = {
 	"spec": "", "menu": "main", "prep": -1.0, "settings": "default", "keybinds": "default",
 	"kit": true, "gi": true, "lighting": true, "hud": true, "pilot": false, "auto": "", "seed": 0,
 	"port_min": 0, "port_max": 0, "lag_ms": 0.0, "jitter_ms": 0.0, "loss": 0.0,
-	"record": "", "playback": "", "talents": "",
+	"record": "", "playback": "", "talents": "", "preset": "play_bots",
 }
 
 var options: Dictionary = {}
@@ -80,13 +80,14 @@ func _ready() -> void:
 	opts.merge(options, true)
 	options = opts
 	style = MenuStyle.new(str(options["menu"]))
-	preset = style.menu.get("play_bots", {})
+	preset = style.menu.get(str(options["preset"]), {})
 	spec_id = str(options["spec"]) if str(options["spec"]) != "" else str(style.menu["spec_picker"]["default"])
 	var comp: Dictionary = preset["comps"][spec_id]
 	Keybinds.load_profile(str(options["keybinds"]))
 	_settings = Data.settings.get(str(options["settings"]), {})
 	var enemies: Array = comp["enemies"]
-	flow = MatchFlow.new(float(preset["end_banner_s"]), 2 + enemies.size())
+	var allies: Array = comp["allies"]
+	flow = MatchFlow.new(float(preset["end_banner_s"]), 1 + allies.size() + enemies.size())
 	flow.state_changed.connect(_on_state_changed)
 
 	renderer = WorldRenderer.new()
@@ -108,7 +109,8 @@ func _ready() -> void:
 	screens = MatchScreens.new(style, flow)
 	var map: Dictionary = Data.maps.get(str(preset["map"]), {})
 	screens.title = str(map.get("name", preset["map"]))
-	screens.lineup = "%s & %s   vs   %s" % [HudStyle.spec_label(spec_id), HudStyle.spec_label(str(comp["partner"])),
+	var mine: Array = [spec_id] + allies
+	screens.lineup = "%s   vs   %s" % [" & ".join(mine.map(func(s: String) -> String: return HudStyle.spec_label(s))),
 		" & ".join(enemies.map(func(s: String) -> String: return HudStyle.spec_label(s)))]
 	screens.back_pressed.connect(func() -> void: flow.continue_to_menu())
 	screens.resume_pressed.connect(func() -> void: screens.show_pause(false))
@@ -132,7 +134,9 @@ func _ready() -> void:
 	local_server.failed.connect(func(_reason: String) -> void: flow.fail("start"))
 	local_server.server_exited.connect(_on_server_exited)
 	add_child(local_server)
-	var bots: Array = [{"name": preset["bot_names"]["partner"], "spec": comp["partner"], "team": 0}]
+	var bots: Array = []
+	for i: int in allies.size():
+		bots.append({"name": preset["bot_names"]["allies"][i], "spec": allies[i], "team": 0})
 	for i: int in enemies.size():
 		bots.append({"name": preset["bot_names"]["enemies"][i], "spec": enemies[i], "team": 1})
 	var ports: Array = preset["port_range"]
@@ -141,7 +145,7 @@ func _ready() -> void:
 	var prep: float = float(options["prep"]) if float(options["prep"]) >= 0.0 else float(preset.get("prep_s", -1.0))
 	local_server.start(str(preset["map"]), str(preset["bracket"]), str(preset["host_name"]), bots, prep, ports,
 		int(options["seed"]))
-	Log.info("match: %s as %s with %s vs %s" % [preset["map"], spec_id, comp["partner"], ", ".join(enemies)])
+	Log.info("match: %s %s as %s with %s vs %s" % [preset["map"], preset["bracket"], spec_id, ", ".join(allies), ", ".join(enemies)])
 	_build_arena.call_deferred()  # after the loading screen has drawn once
 
 
@@ -292,6 +296,8 @@ func _process(delta: float) -> void:
 	if not renderer.view.is_empty():
 		if not fast:
 			renderer.draw(Engine.get_physics_interpolation_fraction(), delta)
+		if builder != null:
+			builder.set_pickups(int(renderer.view["match"].get("pickups", 0)))
 		if not _gates_opened and int(renderer.view["match"]["phase"]) != ArenaMatch.Phase.PREP and builder != null:
 			_gates_opened = true
 			builder.set_gates_open(true, 0.0 if fast else 1.5)

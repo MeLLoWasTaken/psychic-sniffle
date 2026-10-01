@@ -144,3 +144,28 @@ func test_low_health_melee_duel_keeps_fighting() -> void:
 			break
 	assert_float(ended_s).override_failure_message("the duel stalled: nobody died in 30 s").is_greater_equal(0.0)
 	duel.sim._systems.clear()
+
+
+func test_a_hurt_bot_goes_for_an_active_pickup() -> void:
+	var runner: MatchRunner = MatchRunner.new(Data.maps["gallows_courtyard"], "arena", "1v1", 0.0, 4)
+	var nav: NavGrid = NavGrid.new(runner.geometry)
+	var bot: Unit = runner.add_unit("oracle_grace", 0)
+	runner.add_unit("warblade_carnage", 1)  # no brain: stays in its room
+	var brains: Dictionary = {bot.id: BotBrain.new("oracle_grace", 41, runner.geometry, nav)}
+	runner.sim.add_system(runner.bot_system(brains))
+	runner.sim.add_system(runner.system_combat_and_rules)
+	runner.sim.step()
+	bot.position = Vector3(-10, 0, 10)
+	bot.health = 20000
+	for p: Dictionary in runner.arena.pickups:
+		p["active"] = true
+	runner.arena._pickups_spawned = true
+	var took: bool = false
+	for i: int in 15 * 60:
+		runner.sim.step()
+		for e: Dictionary in runner.take_events():
+			if e["type"] == "pickup_taken" and int(e["target"]) == bot.id:
+				took = true
+		if took:
+			break
+	assert_bool(took).override_failure_message("the bot at %s never reached a pickup" % bot.position).is_true()

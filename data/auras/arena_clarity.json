@@ -1,0 +1,24 @@
+{
+  "id": "arena_clarity",
+  "name": "Clarity",
+  "description": "An arena pickup: mana returns over 10 s.",
+  "kind": "buff",
+  "duration_s": 10,
+  "refresh": "refresh",
+  "dispel_type": "none",
+  "cc_category": "none",
+  "periodic": {
+    "interval_s": 1,
+    "effect": {
+      "type": "resource",
+      "resource": "mana",
+      "amount": 2000
+    }
+  },
+  "hud_priority": "normal",
+  "icon": {
+    "symbol": "vapors",
+    "school": "storm",
+    "image": "lorc/bottle-vapors"
+  }
+}

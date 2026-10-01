@@ -118,6 +118,7 @@ unmodified; the game renders them with its own colors, outline, shading and fram
 | book-aura | Lorc | CC BY 3.0 | talent:unyielding_prayer |
 | boot-prints | Lorc | CC BY 3.0 | talent:far_step, talent:long_bound |
 | boot-stomp | Lorc | CC BY 3.0 | talent:striding_storm, talent:hurtling_fury |
+| bottle-vapors | Lorc | CC BY 3.0 | aura:arena_clarity |
 | brain | Lorc | CC BY 3.0 | aura:unhurried_mind_passive, talent:unhurried_mind |
 | brain-freeze | Lorc | CC BY 3.0 | aura:frostbitten |
 | breastplate | Lorc | CC BY 3.0 | aura:plate_ward, talent:plate_ward |
@@ -133,7 +134,7 @@ unmodified; the game renders them with its own colors, outline, shading and fram
 | candlebright | Lorc | CC BY 3.0 | talent:frugal_light |
 | chained-arrow-heads | Lorc | CC BY 3.0 | talent:humbling_chains |
 | chained-heart | Lorc | CC BY 3.0 | talent:long_stillness |
-| chalice-drops | Lorc | CC BY 3.0 | talent:hidden_cistern |
+| chalice-drops | Lorc | CC BY 3.0 | aura:arena_renewal, talent:hidden_cistern |
 | checked-shield | Lorc | CC BY 3.0 | aura:guarded_posture, talent:sealed_ice, talent:guarded_posture |
 | chopped-skull | Lorc | CC BY 3.0 | talent:sentence, talent:early_sentence |
 | circle-sparks | Lorc | CC BY 3.0 | talent:enduring_grace |

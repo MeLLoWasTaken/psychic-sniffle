@@ -64,3 +64,74 @@ func test_draw_at_20_minutes() -> void:
 	arena.update(arena.start_tick + 20 * 60 * TR, units)
 	assert_int(arena.phase).is_equal(ArenaMatch.Phase.ENDED)
 	assert_int(arena.winner_team).is_equal(-2)
+
+
+# ------------------------------------------------------------ M2-07 1v1 and pickups
+
+func test_one_v_one_is_a_draw_at_12_minutes() -> void:
+	var duel: Dictionary = {1: Unit.new(1, 0), 2: Unit.new(2, 1)}
+	var a1: ArenaMatch = ArenaMatch.new(Data.tuning, "1v1", TR, null, 0)
+	a1.update(a1.start_tick, duel)
+	a1.update(a1.start_tick + 12 * 60 * TR - 1, duel)
+	assert_int(a1.phase).is_equal(ArenaMatch.Phase.ACTIVE)
+	a1.update(a1.start_tick + 12 * 60 * TR, duel)
+	assert_int(a1.phase).is_equal(ArenaMatch.Phase.ENDED)
+	assert_int(a1.winner_team).is_equal(-2)
+
+
+func _pickup_arena(bracket: String) -> ArenaMatch:
+	return ArenaMatch.new(Data.tuning, bracket, TR, null, 0, [[0, 0, 13], [0, 0, -13]])
+
+
+func test_pickups_light_up_once_at_1_30_in_1v1_and_2v2_only() -> void:
+	for bracket: String in ["1v1", "2v2", "3v3"]:
+		var a: ArenaMatch = _pickup_arena(bracket)
+		var far: Dictionary = {1: Unit.new(1, 0), 2: Unit.new(2, 1)}
+		a.update(a.start_tick, far)
+		a.update(a.start_tick + 90 * TR - 1, far)
+		assert_int(a.pickup_mask()).is_equal(0)
+		a.update(a.start_tick + 90 * TR, far)
+		var expect: int = 0b11 if bracket in Data.tuning["arena"]["pickup_brackets"] else 0
+		assert_int(a.pickup_mask()).override_failure_message(bracket).is_equal(expect)
+
+
+func test_the_first_player_in_reach_takes_a_pickup_and_it_does_not_return() -> void:
+	var a: ArenaMatch = _pickup_arena("2v2")
+	var near: Unit = Unit.new(1, 0)
+	var nearer: Unit = Unit.new(2, 1)
+	var dead: Unit = Unit.new(3, 0)
+	near.position = Vector3(1.0, 0, 13)
+	nearer.position = Vector3(0.4, 0, 13)
+	dead.position = Vector3(0, 0, 13)
+	dead.health = 0
+	var us: Dictionary = {1: near, 2: nearer, 3: dead}
+	a.update(a.start_tick, us)
+	a.update(a.start_tick + 90 * TR, us)
+	var taken: Array[Dictionary] = a.take_pickups()
+	assert_int(taken.size()).is_equal(1)
+	assert_int(int(taken[0]["unit"])).is_equal(2)  # the nearest living one
+	assert_int(a.pickup_mask()).is_equal(0b10)  # spot 0 gone, spot 1 still lit
+	a.update(a.start_tick + 200 * TR, us)
+	assert_int(a.pickup_mask()).is_equal(0b10)
+	assert_array(a.take_pickups()).is_empty()
+
+
+func test_a_pickup_restores_health_and_mana_over_time_through_the_runner() -> void:
+	var runner: MatchRunner = MatchRunner.new(Data.maps["gallows_courtyard"], "arena", "1v1", 0.0, 3)
+	var healer: Unit = runner.add_unit("oracle_grace", 0)
+	var foe: Unit = runner.add_unit("warblade_carnage", 1)
+	runner.sim.add_system(runner.system_combat_and_rules)
+	runner.sim.step()
+	healer.health = 30000
+	healer.resources["mana"] = 0.0
+	healer.position = Vector3(0, 0, 13)
+	while runner.arena.match_seconds(runner.sim.tick) < 90.2:
+		runner.sim.step()
+		runner.take_events()
+	assert_bool(runner.combat.has_aura(healer, "arena_renewal")).is_true()
+	assert_bool(runner.combat.has_aura(healer, "arena_clarity")).is_true()
+	for i: int in 11 * 60:
+		runner.sim.step()
+	assert_int(healer.health).is_greater(30000 + 9000)  # 10 heals of 1,500, dampened in 1v1
+	assert_float(float(healer.resources["mana"])).is_greater(15000.0)
+	assert_int(runner.match_state()["pickups"]).is_equal(0b10)

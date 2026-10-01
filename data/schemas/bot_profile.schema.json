@@ -68,6 +68,12 @@
         "kill_window_pct": {
           "type": "number",
           "description": "Switch to (and stay on) any enemy below this health that can be attacked."
+        },
+        "take_pickup_below_pct": {
+          "type": "number",
+          "minimum": 0,
+          "maximum": 100,
+          "description": "Go for an active regeneration pickup within 25 m when health is under this percent (0 or absent: never)."
         }
       }
     },

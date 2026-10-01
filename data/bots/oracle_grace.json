@@ -13,7 +13,8 @@
     "kite_melee": true,
     "stay_near_allies_m": 25,
     "break_los_below_pct": 30,
-    "kite_distance_m": 10
+    "kite_distance_m": 10,
+    "take_pickup_below_pct": 80
   },
   "priorities": [
     {

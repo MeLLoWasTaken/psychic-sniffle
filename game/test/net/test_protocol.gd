@@ -84,3 +84,8 @@ func test_snapshot_size_fits_bandwidth_budget() -> void:
 		units.append(u)
 	var bytes_per_second: int = Protocol.snapshot(1, 1, units).size() * 60
 	assert_int(bytes_per_second).is_less(96 * 1024)
+
+
+func test_snapshots_carry_the_active_pickups() -> void:
+	var data: PackedByteArray = Protocol.snapshot(100, 3, [], {"phase": 1, "start_tick": 60, "dampening_pct": 0, "winner": -1, "pickups": 2})
+	assert_int(int(Protocol.decode(data)["match"]["pickups"])).is_equal(2)

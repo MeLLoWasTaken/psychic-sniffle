@@ -13,7 +13,7 @@ extends Control
 ##   --no-kit --no-gi --no-hud   lighter arena art     --port-min <n>  local server port range start
 ##   --pilot                ScriptedPilot plays the player's controls (decides like a bot)
 ##   --auto <script>        ScriptedInput steps for the player's controls
-##   --auto-flow play       click Play, play the match, click Back to menu on the end screen, then
+##   --auto-flow play       click Play (--play play_1v1 for the duel), play the match, click Back to menu on the end screen, then
 ##                          write --flow-report <abs path> (JSON) and quit (exit 1 on any failure)
 ##   --scoreboard-s <s>     seconds the end screen stays before the click (default 2)
 ##   --flow-timeout <s>     give up after this long (default 900)
@@ -116,6 +116,8 @@ func _on_action(action: String, spec: String) -> void:
 	match action:
 		"play_bots":
 			start_match(spec)
+		"play_1v1":
+			start_match(spec, "play_1v1")
 		"practice":
 			start_practice(spec)
 		"settings":
@@ -126,12 +128,14 @@ func _on_action(action: String, spec: String) -> void:
 			get_tree().quit(0)
 
 
-## Start "Play 2v2 vs bots" with a spec: the menu hides, the match scene takes over.
-func start_match(spec: String) -> Node:
+## Start a match against bots with a spec and a menu preset ("play_bots" is the 2v2,
+## "play_1v1" the duel): the menu hides, the match scene takes over.
+func start_match(spec: String, preset: String = "play_bots") -> Node:
 	if match_scene != null or practice != null:
 		return null
 	match_scene = (load(NET_MATCH) as PackedScene).instantiate()
 	match_scene.options = _match_options(spec)
+	match_scene.options["preset"] = preset
 	match_scene.exited.connect(_on_match_exited)
 	menu.visible = false
 	add_child(match_scene)
@@ -258,7 +262,8 @@ func _drive(_delta: float) -> void:
 			var spec: String = _arg("--spec", menu.spec)
 			if menu.cards.has(spec) and spec != menu.spec:
 				click(menu.cards[spec], "spec card %s" % spec)
-			if not click(menu.buttons["play_bots"], "Play 2v2 vs bots"):
+			var play: String = _arg("--play", "play_bots")  # the button to press: play_bots (2v2) or play_1v1
+			if not menu.buttons.has(play) or not click(menu.buttons[play], play):
 				_fail_auto("the Play button did not take the click")
 				return
 			_go_step("match")

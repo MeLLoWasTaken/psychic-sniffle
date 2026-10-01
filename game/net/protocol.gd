@@ -6,7 +6,7 @@ extends RefCounted
 ## Abilities, auras and specs travel as small indexes into their sorted id lists (both sides
 ## load the same data, and the protocol version changes whenever that could differ).
 
-const VERSION: int = 5
+const VERSION: int = 6
 const CH_RELIABLE: int = 0
 const CH_UNRELIABLE: int = 1
 const CHANNELS: int = 2
@@ -122,7 +122,7 @@ static func input_packet(inputs: Array) -> PackedByteArray:
 
 ## One snapshot per client: world tick, the last input the server applied for that client,
 ## match state, every unit's state, and the receiving player's own cooldowns.
-## `match_state` = {phase, start_tick, dampening_pct, winner}. (Delta compression: backlog F-01.)
+## `match_state` = {phase, start_tick, dampening_pct, winner, pickups (bit mask of active spots)}. (Delta compression: backlog F-01.)
 static func snapshot(tick: int, ack_seq: int, units: Array, match_state: Dictionary = {},
 		own: Unit = null) -> PackedByteArray:
 	var b: StreamPeerBuffer = _buf()
@@ -133,6 +133,7 @@ static func snapshot(tick: int, ack_seq: int, units: Array, match_state: Diction
 	b.put_u32(int(match_state.get("start_tick", 0)))
 	b.put_u8(int(match_state.get("dampening_pct", 0)))
 	b.put_8(int(match_state.get("winner", -1)))
+	b.put_u8(int(match_state.get("pickups", 0)))
 	b.put_u8(units.size())
 	for u: Unit in units:
 		# Compact encoding (bandwidth budget): positions in centimetres (16 bits, +/-327 m),
@@ -261,7 +262,7 @@ static func decode(data: PackedByteArray) -> Dictionary:
 		Msg.SNAPSHOT:
 			var snap: Dictionary = {"type": t, "tick": b.get_u32(), "ack_seq": b.get_u32(),
 				"match": {"phase": b.get_u8(), "start_tick": b.get_u32(), "dampening_pct": b.get_u8(),
-					"winner": b.get_8()}, "units": []}
+					"winner": b.get_8(), "pickups": b.get_u8()}, "units": []}
 			var count: int = b.get_u8()
 			for i: int in count:
 				var u: Dictionary = {"id": b.get_u8(), "team": b.get_u8(), "spec": id_at("specs", b.get_u8())}

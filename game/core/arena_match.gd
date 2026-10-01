@@ -2,6 +2,9 @@ class_name ArenaMatch
 extends RefCounted
 ## Arena match rules (backlog M1-09): preparation phase behind closed gates, dampening, win
 ## when a team is fully dead, draw at the time limit. Numbers come from tuning.json "arena".
+## Regeneration pickups (M2-07): in the brackets tuning names, the map's pickup spots light up
+## once, pickup_spawn_s after the gates open; the first living player within the radius takes
+## one (lowest unit id on a tie). The caller applies its effects (take_pickups).
 
 enum Phase { PREP, ACTIVE, ENDED }
 
@@ -17,10 +20,16 @@ var time_limit_ticks: int
 var winner_team: int = -1  ## -1 while running; -2 for a draw
 var geometry: ArenaGeometry
 var events: Array[Dictionary] = []
+var pickups: Array[Dictionary] = []  ## {"pos": Vector3, "active": bool}
+var pickup_ticks: int = -1  ## match ticks until they light up; -1 when this bracket has none
+var pickup_radius: float = 1.5
+var pickup_effects: Array = []
+var _pickups_spawned: bool = false
+var _taken: Array[Dictionary] = []  ## {"unit", "pickup"} since the last take_pickups()
 
 
 func _init(tuning: Dictionary, p_bracket: String, p_tick_rate: int, p_geometry: ArenaGeometry,
-		now_tick: int = 0) -> void:
+		now_tick: int = 0, pickup_spots: Array = []) -> void:
 	var a: Dictionary = tuning["arena"]
 	bracket = p_bracket
 	tick_rate = p_tick_rate
@@ -33,6 +42,12 @@ func _init(tuning: Dictionary, p_bracket: String, p_tick_rate: int, p_geometry: 
 	var limit_s: float = a["time_limit_1v1_s"] if bracket == "1v1" else a["time_limit_s"]
 	time_limit_ticks = roundi(float(limit_s) * tick_rate)
 	start_tick = now_tick + prep_ticks
+	if bracket in a.get("pickup_brackets", []) and not pickup_spots.is_empty():
+		pickup_ticks = roundi(float(a["pickup_spawn_s"]) * tick_rate)
+		pickup_radius = float(a["pickup_radius_m"])
+		pickup_effects = a["pickup_effects"]
+		for sp: Array in pickup_spots:
+			pickups.append({"pos": Vector3(sp[0], sp[1], sp[2]), "active": false})
 	if geometry:
 		geometry.gates_open = false
 
@@ -84,6 +99,52 @@ func update(tick: int, units: Dictionary) -> void:
 			elif tick - start_tick >= time_limit_ticks:
 				winner_team = -2
 				_end(tick, "time_limit")
+			if phase == Phase.ACTIVE:
+				_update_pickups(tick, units)
+
+
+func _update_pickups(tick: int, units: Dictionary) -> void:
+	if pickup_ticks < 0:
+		return
+	if not _pickups_spawned and tick - start_tick >= pickup_ticks:
+		_pickups_spawned = true
+		for p: Dictionary in pickups:
+			p["active"] = true
+		events.append({"tick": tick, "type": "pickup_spawned", "count": pickups.size()})
+	var ids: Array = units.keys()
+	ids.sort()
+	for i: int in pickups.size():
+		var p: Dictionary = pickups[i]
+		if not p["active"]:
+			continue
+		var best: Unit = null
+		var best_d: float = INF
+		for id: int in ids:
+			var u: Unit = units[id]
+			var d: float = Vector2(u.position.x - p["pos"].x, u.position.z - p["pos"].z).length()
+			if u.is_alive() and d <= pickup_radius and d < best_d:
+				best = u
+				best_d = d
+		if best != null:
+			p["active"] = false
+			_taken.append({"unit": best.id, "pickup": i})
+			events.append({"tick": tick, "type": "pickup_taken", "target": best.id, "pickup": i})
+
+
+## Pickups taken since the last call, [{"unit", "pickup"}]; the caller applies pickup_effects.
+func take_pickups() -> Array[Dictionary]:
+	var out: Array[Dictionary] = _taken.duplicate()
+	_taken.clear()
+	return out
+
+
+## Active pickups as bits (bit i = spot i), for snapshots.
+func pickup_mask() -> int:
+	var m: int = 0
+	for i: int in pickups.size():
+		if pickups[i]["active"]:
+			m |= 1 << i
+	return m
 
 
 func _end(tick: int, reason: String) -> void:

@@ -32,7 +32,7 @@ func _init(p_map: Dictionary, p_mode: String = "skirmish", bracket: String = "2v
 		var tuning: Dictionary = Data.tuning.duplicate(true)
 		if prep_s >= 0.0:
 			tuning["arena"]["prep_phase_s"] = prep_s
-		arena = ArenaMatch.new(tuning, bracket, sim.tick_rate, geometry, sim.tick)
+		arena = ArenaMatch.new(tuning, bracket, sim.tick_rate, geometry, sim.tick, map.get("pickups", []))
 		combat.arena = arena
 	_header = {"map": map["id"], "mode": mode, "bracket": bracket, "prep_s": prep_s, "seed": seed_value,
 		"tick_rate": sim.tick_rate}
@@ -163,6 +163,10 @@ func system_combat_and_rules(s: Sim, _inputs: Dictionary) -> void:
 	combat.tick()
 	if arena:
 		arena.update(s.tick, s.units)
+		for t: Dictionary in arena.take_pickups():
+			var u: Unit = s.units.get(int(t["unit"]))
+			if u:
+				combat.apply_world_effects(u, arena.pickup_effects, "arena_pickup")
 
 
 ## Combat log and match events produced since the last call.
@@ -177,9 +181,9 @@ func take_events() -> Array:
 
 func match_state() -> Dictionary:
 	if arena == null:
-		return {"phase": ArenaMatch.Phase.ACTIVE, "start_tick": 0, "dampening_pct": 0, "winner": -1}
+		return {"phase": ArenaMatch.Phase.ACTIVE, "start_tick": 0, "dampening_pct": 0, "winner": -1, "pickups": 0}
 	return {"phase": arena.phase, "start_tick": arena.start_tick, "dampening_pct": arena.dampening_pct(sim.tick),
-		"winner": arena.winner_team}
+		"winner": arena.winner_team, "pickups": arena.pickup_mask()}
 
 
 ## The world as a bot sees it: the same shape a client builds from snapshots.

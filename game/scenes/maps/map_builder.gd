@@ -41,6 +41,7 @@ const SURFACE_COLORS: Dictionary = {
 var map: Dictionary = {}
 var gates: Array[Node3D] = []
 var gates_open: bool = false
+var pickups: Array[Node3D] = []  ## one per map pickup spot (M2-07), shown while it can be taken
 var _materials: Dictionary = {}
 var _kit: String = ""
 var _kit_scenes: Dictionary = {}
@@ -65,6 +66,7 @@ func build() -> void:
 	for child: Node in get_children():
 		child.queue_free()
 	gates.clear()
+	pickups.clear()
 	_kit = str(map.get("kit", "")) if use_kit else ""
 	if _kit != "" and _kit_piece("floor_tile") == null:
 		Log.warn("map: kit %s is not built; using greybox" % _kit)
@@ -79,8 +81,31 @@ func build() -> void:
 		_build_starting_rooms()
 	else:
 		_dress_with_kit()
+	_build_pickups()
 	if build_lighting and bake_gi:
 		_bake_gi()
+
+
+## The regeneration pickups: the tuning's ambient effect at each spot, hidden until set_pickups.
+func _build_pickups() -> void:
+	var fx_id: String = str(Data.tuning.get("arena", {}).get("pickup_effect", ""))
+	var spots: Array = map.get("pickups", [])
+	for i: int in spots.size():
+		var holder: Node3D = Node3D.new()
+		holder.name = "Pickup_%d" % i
+		holder.position = Vector3(spots[i][0], spots[i][1], spots[i][2])
+		holder.visible = false
+		var fx: AmbientFx = AmbientFx.create(fx_id, hash(map_id) + 100 + i) if fx_id != "" else null
+		if fx:
+			holder.add_child(fx)
+		add_child(holder)
+		pickups.append(holder)
+
+
+## Show the pickups whose bit is set in `mask` (the match state's "pickups").
+func set_pickups(mask: int) -> void:
+	for i: int in pickups.size():
+		pickups[i].visible = mask & (1 << i) != 0
 
 
 ## Triangles of every visible mesh in the arena (multimesh copies counted), for the budget

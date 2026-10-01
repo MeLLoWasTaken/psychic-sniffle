@@ -4,6 +4,7 @@ extends RefCounted
 ## from network snapshots or straight from an in-process simulation) and returns one input per
 ## tick. Behaviour and ability priorities come from data/bots/<spec>.json.
 
+const PICKUP_REACH_M: float = 25.0  ## bots walk to a pickup at most this far away
 const RETARGET_S: float = 3.0
 const LOCAL_PRESS_LOCK_TICKS: int = 12
 const KITE_STEP_M: float = 6.0  ## do not re-press the same ability while the server catches up
@@ -416,6 +417,10 @@ func _movement_goal(view: Dictionary, me: Dictionary, target: Dictionary, enemie
 				return hide
 	else:
 		_hide_since = -1
+	# a hurt bot goes for an active regeneration pickup nearby (M2-07)
+	var pickup: Variant = _pickup_goal(view, me, float(b.get("take_pickup_below_pct", 0.0)))
+	if pickup != null:
+		return pickup
 	# healers stay near the ally who needs them
 	if b.has("stay_near_allies_m"):
 		var ally: Dictionary = _lowest(allies, me)
@@ -439,6 +444,25 @@ func _movement_goal(view: Dictionary, me: Dictionary, target: Dictionary, enemie
 	if d < lo:
 		return _kite_point(pos, target["position"])
 	return pos
+
+
+## The nearest active pickup within PICKUP_REACH_M when the bot's health is under `below_pct`.
+func _pickup_goal(view: Dictionary, me: Dictionary, below_pct: float) -> Variant:
+	var mask: int = int(view.get("match", {}).get("pickups", 0))
+	if mask == 0 or below_pct <= 0.0 or _pct(me) >= below_pct:
+		return null
+	var spots: Array = Data.maps.get(str(view.get("map", "")), {}).get("pickups", [])
+	var best: Variant = null
+	var best_d: float = PICKUP_REACH_M
+	for i: int in spots.size():
+		if mask & (1 << i) == 0:
+			continue
+		var p: Vector3 = Vector3(spots[i][0], spots[i][1], spots[i][2])
+		var d: float = Vector2(p.x - me["position"].x, p.z - me["position"].z).length()
+		if d < best_d:
+			best = p
+			best_d = d
+	return best
 
 
 func _reset_progress(pos: Vector3, tick: int) -> void:

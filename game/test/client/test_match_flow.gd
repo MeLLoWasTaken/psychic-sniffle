@@ -268,3 +268,22 @@ func test_pilot_drives_the_controls_with_input_events() -> void:
 		controller.handle_event(ev)
 	assert_bool(controller.steering).is_false()
 	assert_bool(controller.held["move_forward"]).is_false()
+
+
+func test_the_menu_offers_a_1v1_against_a_bot() -> void:
+	var m: MainMenu = auto_free(MainMenu.new())
+	add_child(m)
+	m.size = Vector2(1920, 1080)
+	m._layout()
+	var got: Array = []
+	m.action_chosen.connect(func(a: String, s: String) -> void: got.append([a, s]))
+	assert_str((m.buttons["play_1v1"] as Button).text).is_equal("Play 1v1 vs a bot")
+	(m.buttons["play_1v1"] as Button).pressed.emit()
+	assert_array(got).is_equal([["play_1v1", m.spec]])
+	var last: Button = m.buttons.values()[-1]
+	assert_float(last.position.y + last.size.y).is_less_equal(MainMenu.BUTTONS_BOTTOM + 0.5)
+	var preset: Dictionary = Data.menus["main"]["play_1v1"]
+	assert_str(str(preset["bracket"])).is_equal("1v1")
+	for sid: String in preset["comps"]:
+		assert_int((preset["comps"][sid]["allies"] as Array).size()).is_equal(0)
+		assert_int((preset["comps"][sid]["enemies"] as Array).size()).is_equal(1)

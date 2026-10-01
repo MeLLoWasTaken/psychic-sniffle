@@ -275,7 +275,10 @@
         "dampening_interval_s",
         "time_limit_s",
         "time_limit_1v1_s",
-        "pickup_spawn_s"
+        "pickup_spawn_s",
+        "pickup_brackets",
+        "pickup_radius_m",
+        "pickup_effects"
       ],
       "properties": {
         "prep_phase_s": {
@@ -301,6 +304,34 @@
         },
         "pickup_spawn_s": {
           "type": "number"
+        },
+        "pickup_brackets": {
+          "type": "array",
+          "items": {
+            "enum": [
+              "1v1",
+              "2v2",
+              "3v3"
+            ]
+          },
+          "description": "Brackets whose maps spawn the regeneration pickups (DESIGN.md: 1v1 and 2v2)."
+        },
+        "pickup_radius_m": {
+          "type": "number",
+          "exclusiveMinimum": 0,
+          "description": "A living player this close to an active pickup takes it."
+        },
+        "pickup_effects": {
+          "type": "array",
+          "minItems": 1,
+          "items": {
+            "$ref": "ability.schema.json#/$defs/effect"
+          },
+          "description": "What taking a pickup does to the player (ability effects, applied as if by the player)."
+        },
+        "pickup_effect": {
+          "type": "string",
+          "description": "Ambient effect (data/ambient_effects) drawn on an active pickup."
         }
       }
     },

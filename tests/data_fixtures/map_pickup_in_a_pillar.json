@@ -1,0 +1,1 @@
+{"description": "a pickup spot inside a pillar", "file": "maps/gallows_courtyard.json", "expect": "pickup [8, 0, 7] is inside or touching", "set": {"/pickups/0": [8, 0, 7]}}

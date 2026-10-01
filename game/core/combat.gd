@@ -415,6 +415,13 @@ func _affected(u: Unit, ab: Dictionary, target: Unit, eff: Dictionary) -> Array:
 	return out
 
 
+## Effects the world gives a unit (an arena pickup): applied as if the unit used an ability on itself.
+func apply_world_effects(u: Unit, effects: Array, source_id: String) -> void:
+	var ab: Dictionary = {"id": source_id, "name": source_id, "school": "nature", "effects": effects, "target": "self",
+		"pvp_modifier": 1.0}
+	_apply_effects(u, ab, u, 1.0)
+
+
 func apply_effect(u: Unit, t: Unit, eff: Dictionary, ab: Dictionary, scale: float = 1.0) -> void:
 	if not t.is_alive() and eff["type"] != "resource":
 		return
