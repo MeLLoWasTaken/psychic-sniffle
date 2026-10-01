@@ -283,8 +283,9 @@ The slice specs are Warblade Carnage (melee, rage), Arcanist Rime (casting, inte
 - [ ] `tools/match_video.sh`: a recorded networked 2v2 drawn through the client with Godot's Movie Maker at 30 fps with game audio, encoded to MP4; shared with the human.
 
 ### M1-32 Match flow follow-ups `[todo]`
-- [ ] The preparation camera sits very close in the small starting room: pull it back or raise it.
-- [ ] Hide the action bars once the match has ended; bots log a warning when the player leaves mid-match; `LocalServer.stop()` blocks up to 2 s.
+- [x] The preparation camera sat very close: the starting rooms were 4.5 m deep with spawns 2.2 m from the back wall. Rooms deepened to 8 m (bounds 25 to 28.5 m), spawns 3 m behind the gate; bots unaffected (42 of 42 matches to a kill, median 93 s); `previews/m1_32/prep_room_1280x720.png`.
+- [x] Action bars, the cast bar and the loss-of-control alert hide once the match has ended (`hide_on_match_end` in the HUD layout).
+- [ ] Bots log a warning when the player leaves mid-match; `LocalServer.stop()` blocks up to 2 s.
 - [ ] The server tick peaked once at 43 ms (average 0.30 ms): find the spike (M1-31 profile).
 - [ ] The game has no name yet; the menu says "Arena PvP" (working title in `data/menus/main.json`). Ask the human.
 

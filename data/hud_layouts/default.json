@@ -2,6 +2,7 @@
   "id": "default",
   "name": "Default",
   "description": "Basic arena HUD (backlog M1-27). Positions are logical pixels on the 1920x1080 base, measured from each element's anchor; the whole HUD scales with the resolution, the ui_scale setting and the min_text_px floor. The M2 edit mode moves, scales and hides elements by editing a copy of this file.",
+  "hide_on_match_end": ["action_bar", "cast_bar", "loss_of_control"],
   "base_resolution": [1920, 1080],
   "style": {
     "font_px": {"small": 14, "normal": 16, "large": 19, "timer": 28, "alert": 32, "combat_text": 24, "combat_text_crit": 36},

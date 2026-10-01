@@ -130,7 +130,7 @@ func test_dressed_arena_stays_under_the_triangle_budget() -> void:
 
 ## Guard: dressing must never change gameplay collision. When a collider change is deliberate,
 ## check bot navigation and balance, then update this fingerprint.
-const COLLIDERS_MD5: String = "3d94e803c690d86cb92abb42e5631ae4"
+const COLLIDERS_MD5: String = "6c6eb84b4aa202d8f4067a92c7a4d663"  # 2026-10-01: starting rooms deepened from 4.5 to 8 m (M1-32)
 
 
 func _dressed_builder() -> MapBuilder:

@@ -50,6 +50,7 @@
     }
   },
   "properties": {
+    "hide_on_match_end": {"type": "array", "items": {"enum": ["action_bar", "unit_frame", "cast_bar", "match_timer", "loss_of_control", "combat_text"]}, "description": "Element types hidden once the match has ended (the end banner and scoreboard take over)"},
     "id": {"$ref": "common.schema.json#/$defs/id"},
     "name": {"type": "string"},
     "description": {"type": "string"},

@@ -1,48 +1,48 @@
 {
   "id": "gallows_courtyard",
   "name": "Gallows Courtyard",
-  "description": "A walled execution yard at dusk: a 39 by 36 m courtyard with four stone pillars and a central gallows block, and a gated starting room beyond each end.",
+  "description": "A walled execution yard at dusk: a 39 by 36 m courtyard with four stone pillars and a central gallows block, and a gated starting room 8 m deep beyond each end.",
   "mode": "arena",
   "brackets": [
     "2v2",
     "3v3"
   ],
   "size_m": 40,
-  "bounds_half_m": 25.0,
+  "bounds_half_m": 28.5,
   "scene": "res://scenes/maps/gallows_courtyard.tscn",
   "lighting_preset": "dusk_grim",
   "twist": "The gallows platform collapses at 5:00, opening the center.",
   "spawns": {
     "team_a": [
       [
-        -22.8,
+        -23.5,
         0,
         -2
       ],
       [
-        -22.8,
+        -23.5,
         0,
         2
       ],
       [
-        -22.8,
+        -23.5,
         0,
         0
       ]
     ],
     "team_b": [
       [
-        22.8,
+        23.5,
         0,
         -2
       ],
       [
-        22.8,
+        23.5,
         0,
         2
       ],
       [
-        22.8,
+        23.5,
         0,
         0
       ]
@@ -115,7 +115,7 @@
       ],
       "max": [
         19.5,
-        25.0
+        28.5
       ],
       "height": 6,
       "blocks_los": true,
@@ -125,7 +125,7 @@
       "type": "box",
       "min": [
         -19.5,
-        -25.0
+        -28.5
       ],
       "max": [
         19.5,
@@ -138,8 +138,8 @@
     {
       "type": "box",
       "min": [
-        -25.0,
-        -25.0
+        -28.5,
+        -28.5
       ],
       "max": [
         -19.5,
@@ -152,12 +152,12 @@
     {
       "type": "box",
       "min": [
-        -25.0,
+        -28.5,
         4
       ],
       "max": [
         -19.5,
-        25.0
+        28.5
       ],
       "height": 6,
       "blocks_los": true,
@@ -182,10 +182,10 @@
       "type": "box",
       "min": [
         19.5,
-        -25.0
+        -28.5
       ],
       "max": [
-        25.0,
+        28.5,
         -4
       ],
       "height": 6,
@@ -199,8 +199,8 @@
         4
       ],
       "max": [
-        25.0,
-        25.0
+        28.5,
+        28.5
       ],
       "height": 6,
       "blocks_los": true,
@@ -244,7 +244,7 @@
     {
       "piece": "brazier",
       "pos": [
-        -24.0,
+        -27.5,
         -3.1
       ],
       "effect": "brazier_fire"
@@ -268,7 +268,7 @@
     {
       "piece": "brazier",
       "pos": [
-        24.0,
+        27.5,
         -3.1
       ],
       "effect": "brazier_fire"
@@ -294,7 +294,7 @@
     {
       "piece": "banner_crimson",
       "pos": [
-        -25.0,
+        -28.5,
         0
       ],
       "yaw_deg": 90,
@@ -321,7 +321,7 @@
     {
       "piece": "banner_steel",
       "pos": [
-        25.0,
+        28.5,
         0
       ],
       "yaw_deg": -90,
@@ -552,7 +552,7 @@
     {
       "piece": "barrel_group",
       "pos": [
-        -24.25,
+        -27.75,
         3.3
       ],
       "yaw_deg": 200
@@ -560,7 +560,7 @@
     {
       "piece": "weapon_rack",
       "pos": [
-        -22.6,
+        -26.1,
         3.55
       ],
       "yaw_deg": 180
@@ -568,7 +568,7 @@
     {
       "piece": "crate",
       "pos": [
-        -24.4,
+        -27.9,
         -1.2
       ],
       "yaw_deg": 95
@@ -576,7 +576,7 @@
     {
       "piece": "barrel_group",
       "pos": [
-        24.25,
+        27.75,
         3.3
       ],
       "yaw_deg": 160
@@ -584,7 +584,7 @@
     {
       "piece": "weapon_rack",
       "pos": [
-        22.6,
+        26.1,
         3.55
       ],
       "yaw_deg": 180
@@ -592,7 +592,7 @@
     {
       "piece": "crate",
       "pos": [
-        24.4,
+        27.9,
         -1.2
       ],
       "yaw_deg": -85
@@ -856,62 +856,62 @@
         {
           "piece": "skyline_keep",
           "pos": [
-            70.0,
-            -8.0
+            73.5,
+            -8.4
           ],
           "yaw_deg": -90
         },
         {
           "piece": "skyline_tower",
           "pos": [
-            50.0,
-            24.0
+            53.2,
+            25.5
           ]
         },
         {
           "piece": "skyline_tower",
           "pos": [
-            54.0,
-            -36.0
+            56.9,
+            -37.9
           ],
           "scale": 1.1
         },
         {
           "piece": "skyline_tower",
           "pos": [
-            -50.0,
-            -30.0
+            -53.0,
+            -31.8
           ],
           "scale": 0.9
         },
         {
           "piece": "skyline_tower",
           "pos": [
-            -44.0,
-            46.0
+            -46.4,
+            48.5
           ]
         },
         {
           "piece": "skyline_spire",
           "pos": [
-            -64.0,
-            8.0
+            -67.5,
+            8.4
           ],
           "yaw_deg": 15
         },
         {
           "piece": "skyline_spire",
           "pos": [
-            32.0,
-            -62.0
+            33.6,
+            -65.1
           ],
           "yaw_deg": -20
         },
         {
           "piece": "skyline_houses",
           "pos": [
-            36.0,
-            9.0
+            40.9,
+            10.2
           ],
           "yaw_deg": -90,
           "scale": 1.15
@@ -919,8 +919,8 @@
         {
           "piece": "skyline_houses_b",
           "pos": [
-            38.0,
-            -15.0
+            42.7,
+            -16.9
           ],
           "yaw_deg": -90,
           "scale": 1.1
@@ -928,16 +928,16 @@
         {
           "piece": "skyline_houses",
           "pos": [
-            35.0,
-            32.0
+            38.7,
+            35.4
           ],
           "yaw_deg": -120
         },
         {
           "piece": "skyline_houses",
           "pos": [
-            -36.0,
-            -10.0
+            -40.8,
+            -11.3
           ],
           "yaw_deg": 90,
           "scale": 1.1
@@ -945,8 +945,8 @@
         {
           "piece": "skyline_houses_b",
           "pos": [
-            -37.0,
-            15.0
+            -41.6,
+            16.9
           ],
           "yaw_deg": 90,
           "scale": 1.15
@@ -954,8 +954,8 @@
         {
           "piece": "skyline_houses_b",
           "pos": [
-            -9.0,
-            37.0
+            -10.2,
+            41.9
           ],
           "yaw_deg": 180,
           "scale": 1.1
@@ -963,8 +963,8 @@
         {
           "piece": "skyline_houses",
           "pos": [
-            17.0,
-            39.0
+            19.0,
+            43.6
           ],
           "yaw_deg": 180,
           "scale": 1.2
@@ -972,32 +972,32 @@
         {
           "piece": "skyline_houses",
           "pos": [
-            9.0,
-            -37.0
+            10.2,
+            -41.9
           ],
           "scale": 1.15
         },
         {
           "piece": "skyline_houses_b",
           "pos": [
-            -17.0,
-            -39.0
+            -19.0,
+            -43.6
           ],
           "scale": 1.1
         },
         {
           "piece": "skyline_houses",
           "pos": [
-            -39.0,
-            -39.0
+            -42.6,
+            -42.6
           ],
           "yaw_deg": 45
         },
         {
           "piece": "skyline_houses_b",
           "pos": [
-            39.0,
-            40.0
+            42.4,
+            43.6
           ],
           "yaw_deg": -135
         }

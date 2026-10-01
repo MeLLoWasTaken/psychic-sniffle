@@ -544,3 +544,20 @@ func test_practice_scene_feeds_the_hud() -> void:
 	assert_bool((arena[2] as UnitFrame).visible).is_false()
 	assert_int(scene.controller.bar_actions.size()).is_greater(12)
 	assert_array(["0:03", "0:04"]).contains([(h.elements["match_timer"] as MatchTimer).time_text()])
+
+
+func test_action_bars_step_aside_when_the_match_ends() -> void:
+	var v: Dictionary = _view()
+	hud.push(v)
+	hud.update(0.0)
+	for b: ActionBar in hud.bars.values():
+		assert_bool(b.visible).is_true()
+	var ended: Dictionary = v.duplicate(true)
+	ended["match"] = {"phase": ArenaMatch.Phase.ENDED, "start_tick": 0, "dampening_pct": 0, "winner": 1}
+	hud.push(ended)
+	hud.update(0.0)
+	for b: ActionBar in hud.bars.values():
+		assert_bool(b.visible).is_false()
+	for id: String in hud.elements:
+		if str(hud.layout["elements"][id]["type"]) == "unit_frame" and not hud.elements[id] is Array:
+			assert_bool((hud.elements[id] as CanvasItem).visible).is_true()  # frames stay for the end banner

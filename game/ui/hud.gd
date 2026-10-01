@@ -179,6 +179,7 @@ func update(delta: float) -> void:
 				(elements[id] as MatchTimer).set_view(view)
 			"loss_of_control":
 				(elements[id] as LossOfControlAlert).set_view(view)
+	_hide_after_end()  # last, so per-element updates cannot show them again
 
 
 ## The player's target: the controller's, else the server's (a bot-played player unit).
@@ -445,3 +446,26 @@ func _all_of_type(kind: String) -> Array:
 		if str(layout["elements"][id]["type"]) == kind:
 			out.append(elements[id])
 	return out
+
+
+## Once the match has ended, the element types the layout lists step aside for the end banner and
+## scoreboard (hide_on_match_end); elements the layout hides stay hidden either way.
+func _hide_after_end() -> void:
+	var hide: Array = layout.get("hide_on_match_end", [])
+	if hide.is_empty():
+		return
+	var ended: bool = int(view.get("match", {}).get("phase", -1)) == ArenaMatch.Phase.ENDED
+	var els: Dictionary = layout["elements"]
+	for id: String in elements:
+		var e: Dictionary = els[id]
+		if not str(e["type"]) in hide:
+			continue
+		var show: bool = bool(e.get("visible", true)) and not ended
+		if elements[id] is Array:
+			for f: CanvasItem in elements[id]:
+				if not show:
+					f.visible = false
+		elif not show:
+			(elements[id] as CanvasItem).visible = false
+		elif ended == false and str(e["type"]) == "action_bar":
+			(elements[id] as CanvasItem).visible = bool(e.get("visible", true))
