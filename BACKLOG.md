@@ -446,9 +446,9 @@ The human asked to incorporate any readily available offering that improves the 
 
 Exit gate (DESIGN.md): every combat rule has passing tests; every action is rebindable; UI layouts save and load. Order: the M1 follow-ups above first (M1-32, F-06), then these.
 
-### M2-01 Combat rules test matrix `[todo]`
-- [ ] `docs/combat_rules.md`: every rule in DESIGN.md "Core combat system" (GCD and its haste floor, spell queue window, cast and channel rules, moving while casting, school lock, strongest slow only, damage formula terms, armor, resources, DR steps and reset, the 8 s CC cap, Break Free, dispel types, LoS at cast start and finish, ranges, arena rules) with the test that covers it.
-- [ ] A test for every rule that has none; a check that fails when a rule in the document names no test.
+### M2-01 Combat rules test matrix `[done]`
+- [x] `docs/combat_rules.md`: every rule in DESIGN.md "Core combat system" (GCD and its haste floor, spell queue window, cast and channel rules, moving while casting, school lock, strongest slow only, damage formula terms, armor, resources, DR steps and reset, the 8 s CC cap, Break Free, dispel types, LoS at cast start and finish, ranges, arena rules) with the test that covers it.
+- [x] A test for every rule that has none; a check that fails when a rule in the document names no test. (Rules owned by later items name them: energy GCD M3, queue window setting M2-13, CC break rules M2-02, targeting keybinds M2-11, 1v1 time limit M2-07.)
 
 ### M2-02 Full crowd control and diminishing returns `[todo]`
 - [ ] Disarm (no weapon abilities or auto attack, own DR category) and knockback (displacement, no DR) in data and combat; at least one ability of each in the slice kits or a test-only ability.

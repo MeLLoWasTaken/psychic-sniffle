@@ -140,7 +140,7 @@ func test_heartfreeze_needs_a_frozen_target() -> void:
 	assert_bool(cb.has_aura(war, "heartfrozen")).is_true()
 
 
-func test_spellsever_locks_holy_for_5_s() -> void:
+func test_spellsever_locks_holy_for_4_s() -> void:
 	cb.press(foe_heal, "mending_light", 4)
 	_run(10)
 	cb.press(arc, "spellsever", 4)
@@ -148,7 +148,11 @@ func test_spellsever_locks_holy_for_5_s() -> void:
 	_ready_all()
 	cb.press(foe_heal, "mending_light", 4)
 	assert_str(_fail()).is_equal("school_locked")
-	_run(5 * TR)
+	_run(4 * TR - 1)
+	_ready_all()
+	cb.press(foe_heal, "mending_light", 4)
+	assert_str(_fail()).is_equal("school_locked")  # one tick before the 4 s lock ends
+	_run(1)
 	_ready_all()
 	cb.press(foe_heal, "mending_light", 4)
 	assert_bool(foe_heal.is_casting()).is_true()

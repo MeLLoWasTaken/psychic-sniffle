@@ -318,3 +318,80 @@ func test_cast_fails_if_target_steps_behind_a_pillar_before_it_finishes() -> voi
 	_run(60)
 	assert_str(_last_fail()).is_equal("line_of_sight")
 	assert_int(foe.health).is_equal(60000)
+
+
+# ------------------------------------------------------------ M2-01 rules without a test until now
+
+func _learn(id: String, ab: Dictionary) -> void:
+	abilities[id] = ab
+	for u: Unit in [me, foe]:
+		u.known_abilities.append(id)
+
+
+func test_only_the_strongest_slow_applies() -> void:
+	auras["chill"] = _aura("chill", {"modifiers": [{"stat": "move_speed", "op": "multiply", "value": 0.5}]})
+	auras["hobble"] = _aura("hobble", {"modifiers": [{"stat": "move_speed", "op": "multiply", "value": 0.7}]})
+	auras["sprint"] = _aura("sprint", {"kind": "buff", "modifiers": [{"stat": "move_speed", "op": "multiply", "value": 1.3}]})
+	assert_float(Combat.speed_multiplier_from([{"id": "chill"}, {"id": "hobble"}], auras)).is_equal_approx(0.5, 0.0001)
+	assert_float(Combat.speed_multiplier_from([{"id": "hobble"}], auras)).is_equal_approx(0.7, 0.0001)
+	# a speed boost still counts on top of the strongest slow
+	assert_float(Combat.speed_multiplier_from([{"id": "chill"}, {"id": "hobble"}, {"id": "sprint"}], auras)).is_equal_approx(0.65, 0.0001)
+
+
+func test_power_bonus_damage_taken_and_pvp_modifier_scale_damage() -> void:
+	me.stats["power_bonus"] = 0.5
+	cb.press(me, "bolt", 2)
+	assert_int(60000 - foe.health).is_equal(1500)  # 1000 x (1 + 0.5)
+	auras["exposed"] = _aura("exposed", {"modifiers": [{"stat": "damage_taken", "op": "multiply", "value": 1.2}]})
+	_learn("expose", _ab("expose", {"triggers_gcd": false, "effects": [{"type": "apply_aura", "aura": "exposed"}]}))
+	cb.press(me, "expose", 2)
+	foe.health = 60000
+	me.gcd_ready_tick = 0
+	cb.press(me, "bolt", 2)
+	assert_int(60000 - foe.health).is_equal(1800)  # x 1.2 damage taken
+	_learn("tuned_bolt", _ab("tuned_bolt", {"pvp_modifier": 0.8, "effects": [{"type": "damage", "base": 1000}]}))
+	foe.health = 60000
+	me.gcd_ready_tick = 0
+	cb.press(me, "tuned_bolt", 2)
+	assert_int(60000 - foe.health).is_equal(1440)  # x 0.8 PvP modifier
+
+
+func test_break_free_waits_90_s_between_uses() -> void:
+	cb.press(me, "free", 1)
+	assert_int(_count("cast_success")).is_equal(1)
+	_run(89 * TR)
+	cb.press(me, "free", 1)
+	assert_str(_last_fail()).is_equal("not_ready")
+	_run(TR)
+	cb.press(me, "free", 1)
+	assert_int(_count("cast_success")).is_equal(2)
+
+
+func test_offensive_dispel_strips_one_magic_buff() -> void:
+	auras["ward"] = _aura("ward", {"kind": "buff"})
+	auras["quicken"] = _aura("quicken", {"kind": "buff"})
+	auras["fury"] = _aura("fury", {"kind": "buff", "dispel_type": "none"})
+	_learn("ward_up", _ab("ward_up", {"target": "self", "triggers_gcd": false,
+		"effects": [{"type": "apply_aura", "aura": "ward"}, {"type": "apply_aura", "aura": "quicken"}, {"type": "apply_aura", "aura": "fury"}]}))
+	_learn("purge", _ab("purge", {"triggers_gcd": false, "effects": [{"type": "dispel", "dispel_types": ["magic"]}]}))
+	cb.press(foe, "ward_up", 2)
+	cb.press(me, "burn", 2)  # a magic debuff on the target: an offensive dispel leaves it alone
+	cb.press(me, "purge", 2)
+	var magic_buffs: int = int(cb.has_aura(foe, "ward")) + int(cb.has_aura(foe, "quicken"))
+	assert_int(magic_buffs).is_equal(1)
+	assert_bool(cb.has_aura(foe, "fury")).is_true()
+	assert_bool(cb.has_aura(foe, "burning")).is_true()
+	assert_int(_count("dispel")).is_equal(1)
+
+
+func test_spec_health_comes_from_the_role_template() -> void:
+	var specs: Dictionary = {}
+	for role: String in ["dps", "healer", "tank"]:
+		specs["t_" + role] = {"class": "c", "role": role, "primary_resource": "mana", "abilities": []}
+	var c2: Combat = Combat.new(sim, Data.tuning, abilities, auras, specs, {"c": {"armor": "plate"}}, null)
+	var expected: Dictionary = {"dps": 60000, "healer": 60000, "tank": 72000}
+	for role: String in expected:
+		var u: Unit = Unit.new(10, 0, "t_" + role)
+		c2.init_unit(u)
+		assert_int(u.max_health).override_failure_message(role).is_equal(expected[role])
+		assert_int(u.health).is_equal(expected[role])

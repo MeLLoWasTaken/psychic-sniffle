@@ -2,6 +2,23 @@
 
 One entry per build-loop iteration, newest first. Format: date, backlog ID, what changed, how it was checked.
 
+## 2026-10-01 — M2-01 combat rules matrix; spellsever lock 4 s
+- `docs/combat_rules.md` lists all 42 combat and arena rules from DESIGN.md with the test that proves each. `tests/test_combat_rules_doc.py` fails if a rule names no test (or no backlog item for later work), or names a test that does not exist.
+- New tests for the eight rules that had none:
+  - only the strongest slow applies;
+  - power bonus, damage-taken modifiers and the PvP modifier each scale damage;
+  - Break Free waits 90 s;
+  - an offensive dispel strips one magic buff and leaves debuffs and non-magic buffs;
+  - health comes from the role template (60,000; tanks 72,000);
+  - data checks: interrupt locks 3 to 4 s, interrupt cooldowns 15 to 24 s (a healer's may be longer), all healing at 40 m and most ranged abilities at 40 m.
+- Spellsever locked a school for 5 s, past the design's 3 to 4 s. It now locks for 4 s; its test checks the lock is still on one tick before 4 s and off at 4 s.
+- Checked: the combat and kit suites (40 Godot tests), the Python rule tests and data validation pass.
+
+## 2026-10-01 — M1-32: deeper starting rooms, action bars hide at match end
+- Gallows Courtyard starting rooms are 8 m deep instead of 4.5 m, so the camera no longer hits the back wall during preparation. Spawns sit 3 m behind the gate.
+- The action bar, cast bar and loss-of-control display hide when the match ends (`hide_on_match_end` in the HUD layout).
+- Checked: map and HUD tests; 42 bot matches all ended in a kill (median 93 s).
+
 ## 2026-10-01 — M1 gate passed; codex; slash v4; melee hits land on the strike
 - The human passed the M1 gate.
 - New "Arena PvP Codex" page, generated from data (`tools/codex/build_codex.py`): every ability with icons and computed numbers, and the talent trees (placeholders until M2).
