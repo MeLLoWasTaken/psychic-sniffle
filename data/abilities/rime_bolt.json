@@ -1,7 +1,7 @@
 {
   "id": "rime_bolt",
   "name": "Rime Bolt",
-  "description": "Hurl a bolt of rime: 5,200 damage and a 40% slow for 6 s.",
+  "description": "Hurl a bolt of rime: 7,800 damage and a 40% slow for 6 s.",
   "owner": "arcanist_rime",
   "kit_slot": "core",
   "school": "frost",

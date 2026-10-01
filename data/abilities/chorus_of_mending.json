@@ -1,7 +1,7 @@
 {
   "id": "chorus_of_mending",
   "name": "Chorus of Mending",
-  "description": "Heal the ally and every ally within 12 of them for 4,000.",
+  "description": "Heal the ally and every ally within 12 of them for 5,500.",
   "owner": "oracle_grace",
   "kit_slot": "core",
   "school": "holy",

@@ -1,7 +1,7 @@
 {
   "id": "hailstorm",
   "name": "Hailstorm",
-  "description": "Channel a hailstorm on the target for 3 s: 3 strikes of 2,200.",
+  "description": "Channel a hailstorm on the target for 3 s: 3 strikes of 3,000.",
   "owner": "arcanist_rime",
   "kit_slot": "core",
   "school": "frost",

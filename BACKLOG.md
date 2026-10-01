@@ -276,6 +276,12 @@ The slice specs are Warblade Carnage (melee, rage), Arcanist Rime (casting, inte
 - [x] Menu → "Play 2v2 vs bots" → preparation room → gates open → fight → end screen with damage and healing scoreboard → back to menu (`game/ui/main_menu.gd`, `game/client/match_flow.gd`, `local_server.gd`, `match_scoreboard.gd`; menus in `data/menus`).
 - [x] A human player can play a full match with a bot partner against two bots: `tools/match_flow_e2e.py` clicks the real buttons and plays to a kill through keyboard and mouse events (259 s, in check_all full mode); the scoreboard equals the server's totals. Failure paths (server lost, cannot start, leaving) end at the menu.
 
+### M1-33 Slash sound, chosen by the human `[todo]`
+- [ ] Build the human's pick of the four slash readings (`previews/audio/slash_candidates/`, KNOWN_ISSUES 2026-10-01) into impact_slash, hit_greatsword_plate and hit_greatsword_cloth as data, keeping the weapon and armor identity tests; adjust build rules only by an explicit DECISIONS entry (B and D carry a metallic ring the tonal rule may flag).
+
+### M1-34 Reference video of a bot match `[doing]`
+- [ ] `tools/match_video.sh`: a recorded networked 2v2 drawn through the client with Godot's Movie Maker at 30 fps with game audio, encoded to MP4; shared with the human.
+
 ### M1-32 Match flow follow-ups `[todo]`
 - [ ] The preparation camera sits very close in the small starting room: pull it back or raise it.
 - [ ] Hide the action bars once the match has ended; bots log a warning when the player leaves mid-match; `LocalServer.stop()` blocks up to 2 s.

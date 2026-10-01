@@ -1,0 +1,71 @@
+/* Layout: a single reading column of specs; each spec opens with its class-colored header and
+   fact strip, abilities sit in a two-column grid of icon cards grouped by kit slot. The look
+   follows the game's HUD: iron panels, gold rules, Cinzel for names, Fira Sans for text. */
+:root {
+  --bg: #e9e6e1; --panel: #f6f4f0; --ink: #1f1b16; --muted: #6b6257; --line: #cfc6b8;
+  --gold: #8a6a24; --stale: #a3361f; --chip: #e0dbd2;
+  --display: "Cinzel", "Trajan Pro", Georgia, serif;
+  --text: "Fira Sans", "Segoe UI", system-ui, sans-serif;
+  --frost: #1f8fd0; --holy: #a8870a; --physical: #7a6a52; --shadow: #8a3fc4; --fire: #c4401a; --nature: #3f8a2a; --blood: #a3222f;
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --bg: #14110e; --panel: #1d1915; --ink: #ece4d6; --muted: #a59a8a; --line: #3a322a;
+    --gold: #d8b46a; --stale: #f08a6a; --chip: #2a241e;
+    --frost: #62c4ff; --holy: #ffe066; --physical: #cbbfa8; --shadow: #c48aff; --fire: #ff7a4a; --nature: #8ad86a; --blood: #ff6a76;
+    color-scheme: dark;
+  }
+}
+:root[data-theme="dark"] {
+  --bg: #14110e; --panel: #1d1915; --ink: #ece4d6; --muted: #a59a8a; --line: #3a322a;
+  --gold: #d8b46a; --stale: #f08a6a; --chip: #2a241e;
+  --frost: #62c4ff; --holy: #ffe066; --physical: #cbbfa8; --shadow: #c48aff; --fire: #ff7a4a; --nature: #8ad86a; --blood: #ff6a76;
+  color-scheme: dark;
+}
+body { background: var(--bg); color: var(--ink); font: 15px/1.55 var(--text); }
+.wrap { max-width: 1080px; margin: 0 auto; padding-inline: 20px; padding-block: 28px 48px; display: grid; gap: 40px; }
+h1, h2, h3, h4 { font-family: var(--display); text-wrap: balance; margin: 0; }
+h1 { font-size: clamp(2rem, 5vw, 3rem); letter-spacing: .02em; color: var(--gold); }
+h2 { font-size: clamp(1.6rem, 4vw, 2.2rem); }
+h3 { font-size: 1.05rem; letter-spacing: .08em; text-transform: uppercase; color: var(--gold); border-bottom: 1px solid var(--line); padding-bottom: 6px; margin-top: 8px; }
+h4 { font-size: 1.05rem; }
+p { margin: 0; }
+.eyebrow { font-size: .78rem; letter-spacing: .14em; text-transform: uppercase; color: var(--muted); }
+.lede { max-width: 68ch; color: var(--muted); }
+.top { display: grid; gap: 14px; }
+.note { max-width: 68ch; color: var(--stale); }
+.specnav { display: flex; flex-wrap: wrap; gap: 10px; }
+.specnav a { text-decoration: none; color: var(--muted); border: 1px solid var(--line); border-left: 4px solid var(--class); padding: 8px 14px; background: var(--panel); }
+.specnav a span { font-family: var(--display); color: var(--ink); font-weight: 700; }
+.specnav a:hover, .specnav a:focus-visible { border-color: var(--gold); border-left-color: var(--class); outline: none; }
+.search { display: grid; gap: 6px; max-width: 420px; font-size: .85rem; color: var(--muted); }
+.search input { font: inherit; font-size: 1rem; padding: 9px 12px; background: var(--panel); color: var(--ink); border: 1px solid var(--line); }
+.search input:focus-visible { outline: 2px solid var(--gold); outline-offset: 1px; }
+.spec { display: grid; gap: 16px; scroll-margin-top: 16px; }
+.spec-head { display: grid; gap: 10px; padding: 22px 22px 18px; background: var(--panel); border-top: 4px solid var(--class); }
+.facts { display: grid; grid-template-columns: repeat(auto-fit, minmax(120px, 1fr)); gap: 10px 18px; margin: 6px 0 0; }
+.facts div { display: grid; gap: 2px; }
+.facts dt { font-size: .72rem; letter-spacing: .12em; text-transform: uppercase; color: var(--muted); }
+.facts dd { margin: 0; font-weight: 600; text-transform: capitalize; font-variant-numeric: tabular-nums; }
+.grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(min(100%, 440px), 1fr)); gap: 12px; }
+.ability { display: grid; grid-template-columns: 56px minmax(0, 1fr); gap: 14px; padding: 14px; background: var(--panel); border: 1px solid var(--line); }
+.ability .icon { width: 56px; height: 56px; image-rendering: auto; }
+.ability .body { display: grid; gap: 6px; min-width: 0; }
+.ability header { display: flex; flex-wrap: wrap; align-items: baseline; gap: 8px 10px; justify-content: space-between; }
+.school { font-size: .72rem; letter-spacing: .1em; text-transform: uppercase; font-weight: 600; padding: 1px 8px; background: var(--chip); }
+.s-frost { color: var(--frost); } .s-holy { color: var(--holy); } .s-physical { color: var(--physical); }
+.s-shadow { color: var(--shadow); } .s-fire { color: var(--fire); } .s-nature { color: var(--nature); } .s-blood { color: var(--blood); }
+.meta { font-size: .85rem; color: var(--muted); font-variant-numeric: tabular-nums; }
+.desc { font-style: italic; }
+.stale { font-size: .82rem; color: var(--stale); }
+.fx { margin: 0; padding-left: 18px; display: grid; gap: 3px; }
+.num { font-variant-numeric: tabular-nums; color: var(--gold); }
+.tags { font-size: .8rem; color: var(--muted); }
+.aura .mini { width: 18px; height: 18px; vertical-align: -3px; margin-right: 4px; }
+.dim { color: var(--muted); font-weight: 400; }
+.trees { display: grid; grid-template-columns: repeat(auto-fill, minmax(min(100%, 320px), 1fr)); gap: 12px; }
+.tree { padding: 14px 16px; background: var(--panel); border: 1px solid var(--line); display: grid; gap: 8px; }
+.tree ol { margin: 0; padding-left: 20px; display: grid; gap: 8px; }
+.draft { font-size: .85rem; color: var(--muted); border-left: 3px solid var(--gold); padding-left: 10px; }
+.foot { font-size: .8rem; color: var(--muted); border-top: 1px solid var(--line); padding-top: 14px; }
+@media (max-width: 520px) { .spec-head { padding: 16px; } .ability { grid-template-columns: 44px minmax(0, 1fr); } .ability .icon { width: 44px; height: 44px; } }

@@ -1,7 +1,7 @@
 {
   "id": "lingering_grace_ab",
   "name": "Lingering Grace",
-  "description": "Heal an ally for 1,500 every 3 s for 15 s.",
+  "description": "Heal an ally for 2,000 every 3 s for 15 s.",
   "owner": "oracle_grace",
   "kit_slot": "core",
   "school": "holy",

@@ -1,7 +1,7 @@
 {
   "id": "swift_benediction",
   "name": "Swift Benediction",
-  "description": "A fast, costly heal for 6,000.",
+  "description": "A fast, costly heal for 8,000.",
   "owner": "oracle_grace",
   "kit_slot": "core",
   "school": "holy",

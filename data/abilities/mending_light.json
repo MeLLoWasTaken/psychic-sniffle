@@ -1,7 +1,7 @@
 {
   "id": "mending_light",
   "name": "Mending Light",
-  "description": "A steady heal for 9,000.",
+  "description": "A steady heal for 11,500.",
   "owner": "oracle_grace",
   "kit_slot": "core",
   "school": "holy",

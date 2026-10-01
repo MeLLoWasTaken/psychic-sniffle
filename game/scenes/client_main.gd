@@ -22,6 +22,8 @@ extends Control
 ##                          and quit, instead of after a frame count
 ##   --also-shot prep=<abs>,fight@25=<abs>   extra screenshots on the way (same states; @s sets
 ##                          the seconds in that state)
+##   --render-scale <0.25-1>  draw the 3D scene at this share of the resolution (FSR upscaled; the
+##                          HUD stays sharp): reference videos on the software renderer
 ##   --record <abs>         write the match as drawn (views, events, camera) to a compressed file
 ##   --playback <abs>       draw such a recording instead of joining a server; with shots pending
 ##                          it fast-forwards at a tenth of the 3D resolution and slows to real ticks before
@@ -52,6 +54,10 @@ var _shooting: bool = false
 
 func _ready() -> void:
 	args = OS.get_cmdline_user_args()
+	var render_scale: float = float(_arg("--render-scale", "1"))
+	if render_scale < 1.0:
+		get_viewport().scaling_3d_mode = Viewport.SCALING_3D_MODE_FSR
+		get_viewport().scaling_3d_scale = clampf(render_scale, 0.25, 1.0)
 	set_anchors_preset(Control.PRESET_FULL_RECT)
 	mouse_filter = Control.MOUSE_FILTER_IGNORE  # clicks on the arena reach the player controls
 	Keybinds.load_profile("default")  # the settings panel lists the keys

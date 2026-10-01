@@ -75,6 +75,28 @@ KIT_BAR_RANGE = (14, 18)
 BRACKET_SIZE = {"1v1": 1, "2v2": 2, "3v3": 3, "10v10": 10}
 
 
+def _check_ability_text(report: "Report", data_dir: Path) -> None:
+    """Numbers written in an ability's description must be ones the data produces (computed as the
+    codex does: base x (1 + power bonus x coefficient), per tick and in total), so the text cannot
+    fall behind a balance change (review 3 found six that had)."""
+    if data_dir.resolve() != (REPO / "data").resolve():
+        return  # the fixtures' copies: the codex reads the real data folder
+    sys.path.insert(0, str(REPO / "tools" / "codex"))
+    import build_codex
+
+    cx = build_codex.Codex()
+    for spec in cx.specs.values():
+        cls = cx.classes.get(spec["class"], {})
+        for aid in spec["abilities"] + cls.get("shared_abilities", []):
+            ab = cx.abilities.get(aid)
+            if ab is None or aid in cx.stale:
+                continue
+            _lines, numbers = cx.effects(ab, cx.unit_stats(spec))
+            if not cx.check_text(ab, numbers):
+                report.error(f"abilities/{aid}.json", "description numbers differ from what the data computes "
+                             f"({', '.join(build_codex.fmt(n) for n in sorted(set(numbers)))}) for {spec['id']}")
+
+
 class Report:
     def __init__(self) -> None:
         self.errors: list[str] = []
@@ -378,6 +400,7 @@ def validate(data_dir: Path) -> list[str]:
             for term, v in terms.items():
                 if len(v) != c["samples"]:
                     report.error(f"captures/{cid}.json", f"{bone}.{term}: {len(v)} samples, expected {c['samples']}")
+    _check_ability_text(report, data_dir)
     _check_effects(report, db, schemas)
     _check_hud_layouts(report, db)
     _check_icons_and_fonts(report, db, data_dir)
