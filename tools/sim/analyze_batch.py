@@ -67,6 +67,47 @@ def summarise(report: dict) -> dict:
                     for kind, table in (("comp", out["comps"]), ("spec", out["specs"]))
                     for name, v in table.items()
                     if v["games"] >= MIN_GAMES and v["win_rate"] is not None and not LOW <= v["win_rate"] <= HIGH]
+    if any(u.get("build", "none") != "none" for m in ms for u in m["units"].values()):
+        out["builds"] = builds(report)
+    return out
+
+
+TOP_SHARE = 0.9  # M2-04: no talent node in more than 90% of the top builds
+
+
+def builds(report: dict) -> dict:
+    """Talent builds (M2-04): each spec@build's win rate over non-mirror compositions (counted like
+    specs), which builds are viable (40-60% with at least MIN_GAMES games), and, among each
+    spec's top half of builds by win rate (at least 3), the share of builds taking each node; a
+    node in more than TOP_SHARE of them means the trees push every good build the same way."""
+    ms = report["matches"]
+    nodes = {k: v.get("nodes", []) for k, v in report.get("summary", {}).get("builds", {}).items()}
+    tally = defaultdict(lambda: [0, 0])
+    for m in ms:
+        a, b = comp_of(m, 0), comp_of(m, 1)
+        if a == b:
+            continue
+        for u in m["units"].values():
+            k = f"{u['spec']}@{u.get('build', 'none')}"
+            tally[k][1] += 1
+            tally[k][0] += m["winner"] == u["team"]
+    per_spec = defaultdict(dict)
+    for k, (w, g) in tally.items():
+        sp = k.split("@")[0]
+        per_spec[sp][k] = {"win_rate": round(w / g, 3), "games": g, "viable": g >= MIN_GAMES and LOW <= w / g <= HIGH}
+    out = {}
+    for sp, bs in sorted(per_spec.items()):
+        ranked = sorted((k for k in bs if bs[k]["games"] >= MIN_GAMES), key=lambda k: -bs[k]["win_rate"])
+        top = ranked[:max(3, len(ranked) // 2)]
+        share = defaultdict(int)
+        for k in top:
+            for n in {x.split(":")[0] for x in nodes.get(k, [])}:  # a node counts once whatever its rank
+                share[n] += 1
+        shares = {n: round(c / len(top), 3) for n, c in sorted(share.items(), key=lambda kv: -kv[1])} if top else {}
+        out[sp] = {"builds": dict(sorted(bs.items(), key=lambda kv: -kv[1]["win_rate"])),
+                   "viable": sum(v["viable"] for v in bs.values()), "top": top,
+                   "over_share": {n: v for n, v in shares.items() if v > TOP_SHARE and len(top) >= 3},
+                   "top_node_share": next(iter(shares.values()), None)}
     return out
 
 

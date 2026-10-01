@@ -13,6 +13,7 @@ var _results: Array = []
 var _team1_first: bool = false
 var _trace_path: String = ""
 var _builds: Dictionary = {}  ## unit id -> talent build name (per match)
+var _build_nodes: Dictionary = {}  ## "spec@build" -> the talent nodes it takes (Talents.picked_nodes)
 
 
 func _ready() -> void:
@@ -62,6 +63,9 @@ func _run_match(team_specs: Array, seed_value: int, max_minutes: float) -> Dicti
 			var build: Dictionary = BotBrain.build_talents(spec, entry.get_slice("@", 1) if "@" in entry else "")
 			var u: Unit = runner.add_unit(spec, team, build["talents"])
 			_builds[u.id] = build["name"]
+			var bkey: String = "%s@%s" % [spec, build["name"]]
+			if not _build_nodes.has(bkey):
+				_build_nodes[bkey] = Talents.picked_nodes(u.loadout, Talents.trees_for(spec, Data.specs, Data.classes, Data.talents))
 			brains[u.id] = BotBrain.new(spec, seed_value * 100 + u.id, runner.geometry, nav)
 			brains[u.id].explain = _trace_path != "" and _results.is_empty()
 	var errors_before: int = Log.error_count
@@ -165,6 +169,7 @@ func _summarise() -> Dictionary:
 			builds[bk] = bs
 	for k: String in builds:
 		builds[k]["win_rate"] = float(builds[k]["wins"]) / builds[k]["games"]
+		builds[k]["nodes"] = _build_nodes.get(k, [])
 	for k: String in spec:
 		var s: Dictionary = spec[k]
 		s["win_rate"] = float(s["wins"]) / s["games"]

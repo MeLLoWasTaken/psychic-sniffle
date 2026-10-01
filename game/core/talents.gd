@@ -123,6 +123,62 @@ static func check(loadout: Dictionary, trees: Dictionary) -> String:
 	return ""
 
 
+## A random legal loadout (balance simulations, M2-04): each tree's points go one rank at a
+## time to a random node that can take it (a choice node takes a random option), until none can;
+## then random PvP talents fill the slots. The same seed always gives the same loadout.
+static func random_build(trees: Dictionary, seed_value: int) -> Dictionary:
+	var rng: RandomNumberGenerator = RandomNumberGenerator.new()
+	rng.seed = seed_value
+	var lo: Dictionary = {"class": {}, "spec": {}, "pvp": []}
+	for layer: String in ["class", "spec"]:
+		var tree: Dictionary = trees.get(layer, {})
+		var picks: Dictionary = lo[layer]
+		while true:
+			var options: Array = []
+			for n: Dictionary in tree.get("nodes", []):
+				var v: int = int(picks.get(n["id"], 0))
+				if n["type"] == "choice":
+					if v == 0:
+						options.append([n["id"], rng.randi_range(1, n["choices"].size())])
+				elif v < max_rank(n):
+					options.append([n["id"], v + 1])
+			var placed: bool = false
+			while not options.is_empty():
+				var o: Array = options.pop_at(rng.randi() % options.size())
+				var before: Variant = picks.get(o[0])
+				picks[o[0]] = o[1]
+				if check(lo, trees) == "":
+					placed = true
+					break
+				if before == null:
+					picks.erase(o[0])
+				else:
+					picks[o[0]] = before
+			if not placed:
+				break
+	var pool: Array = trees.get("pvp", {}).get("nodes", []).map(func(n: Dictionary) -> String: return n["id"])
+	for i: int in mini(int(trees.get("pvp", {}).get("points", 0)), pool.size()):
+		lo["pvp"].append(pool.pop_at(rng.randi() % pool.size()))
+	return lo
+
+
+## The node ids a loadout takes, with ranks ("id" or "id:2"; a choice as "id/option"), sorted.
+static func picked_nodes(loadout: Dictionary, trees: Dictionary) -> Array:
+	var out: Array = []
+	for layer: String in ["class", "spec"]:
+		for id: String in loadout.get(layer, {}):
+			var n: Dictionary = node_of(trees.get(layer, {}), id)
+			var v: int = int(loadout[layer][id])
+			if n.get("type", "") == "choice":
+				out.append("%s/%s" % [id, n["choices"][v - 1]["id"]])
+			else:
+				out.append(id if v == 1 else "%s:%d" % [id, v])
+	for id: String in loadout.get("pvp", []):
+		out.append("pvp:" + id)
+	out.sort()
+	return out
+
+
 ## What a legal loadout does to one unit: patched copies of the abilities and auras it changes,
 ## changes to the unit itself, and abilities it grants. Trees are walked in data order, so the
 ## result never depends on dictionary order.

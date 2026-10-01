@@ -2,6 +2,12 @@
 
 One entry per build-loop iteration, newest first. Format: date, backlog ID, what changed, how it was checked.
 
+## 2026-10-01 — M2-04 build simulations; parallel nightly jobs
+- `Talents.random_build` makes random legal builds (all points spent, PvP slots filled, the same build for the same seed); bots and the batch simulator accept them as `spec@randomN`.
+- The batch report lists the talent nodes of each build; `analyze_batch.py` adds per-build win rates over non-mirror compositions, viable builds (40-60% over 30+ games) and the node shares among each spec's top half of builds (flagged above 90%).
+- `tools/sim/nightly.py --random-builds N --jobs J` gives every unit a random build of its spec and runs J simulation processes at once; the nightly workflow uses both (9 random builds, one process per core) and shows build tables in the run summary.
+- Checked: a talent test (random builds of all three specs are legal, spend every point and repeat by seed), two analysis tests, an 8-match local run of the whole path; all Godot and Python tests pass (pre-commit run).
+
 ## 2026-10-01 — M2-14c and M2-16 screenshot reviews
 - A recorded 3v3 played back through the client shows nameplates in a real fight. Floating combat text was drawn under the plates; it now draws over them (test added).
 - The gallows wreck, seen in a new map screenshot mode (`tools/ui_shot.gd --screen map --match-time <s>`), was sparse and its dust a bright white puff. It now has beams, planks and broken plinth stones across the footprint, and the dust is dim grit.

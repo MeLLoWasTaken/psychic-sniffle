@@ -47,6 +47,11 @@ var explanation: Array = []
 ## A bot's talent build as {"name", "talents"} (the shared text form, Talents.encode). The bot
 ## profile's builds are named; "" picks the first (the bot's default), "none" plays without talents.
 static func build_talents(p_spec_id: String, build_name: String = "") -> Dictionary:
+	if build_name.begins_with("random") and build_name.substr(6).is_valid_int():
+		# a random legal build for balance simulations (M2-04): "random7" is the same build every time
+		var rtrees: Dictionary = Talents.trees_for(p_spec_id, Data.specs, Data.classes, Data.talents)
+		var rlo: Dictionary = Talents.random_build(rtrees, hash(p_spec_id) + int(build_name.substr(6)))
+		return {"name": build_name, "talents": Talents.encode(rlo, rtrees)}
 	var builds: Array = Data.bots.get(p_spec_id, {}).get("builds", [])
 	if build_name == "none" or builds.is_empty():
 		return {"name": "none", "talents": ""}

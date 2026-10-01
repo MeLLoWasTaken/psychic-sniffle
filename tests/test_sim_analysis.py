@@ -1,0 +1,42 @@
+"""Balance simulation analysis (tools/sim/analyze_batch.py, tools/sim/nightly.py): talent build
+win rates, viability and the shared-node check of backlog M2-04, on synthetic reports."""
+import sys
+from pathlib import Path
+
+REPO = Path(__file__).resolve().parent.parent
+sys.path.insert(0, str(REPO / "tools" / "sim"))
+import analyze_batch  # noqa: E402
+import nightly  # noqa: E402
+
+
+def _match(a_build: str, b_build: str, winner: int) -> dict:
+    return {"winner": winner, "end_reason": "team_eliminated", "seconds": 90.0, "errors": 0,
+            "units": {"1": {"spec": "warblade_carnage", "build": a_build, "team": 0},
+                      "2": {"spec": "oracle_grace", "build": b_build, "team": 1}}}
+
+
+def test_build_win_rates_viability_and_the_shared_node_check():
+    ms = []
+    # four warblade builds against one oracle build; w1 wins 50%, w2 45%, w3 55%, w4 never
+    for build, wins in (("w1", 15), ("w2", 14), ("w3", 17), ("w4", 0)):
+        ms += [_match(build, "o1", 0) for _ in range(wins)] + [_match(build, "o1", 1) for _ in range(31 - wins)]
+    nodes = {"warblade_carnage@w1": ["core", "a"], "warblade_carnage@w2": ["core:2", "b"],
+             "warblade_carnage@w3": ["core", "c"], "warblade_carnage@w4": ["d"], "oracle_grace@o1": ["x"]}
+    report = {"matches": ms, "summary": {"builds": {k: {"nodes": v} for k, v in nodes.items()}}}
+    b = analyze_batch.summarise(report)["builds"]["warblade_carnage"]
+    assert b["viable"] == 3
+    assert b["builds"]["warblade_carnage@w4"]["win_rate"] == 0.0
+    assert set(b["top"]) == {"warblade_carnage@w1", "warblade_carnage@w2", "warblade_carnage@w3"}
+    assert b["over_share"] == {"core": 1.0}  # every top build takes it, whatever the rank
+    assert b["top_node_share"] == 1.0
+
+
+def test_build_compositions_give_every_unit_a_build_of_its_spec():
+    cs = nightly.build_comps(2, 30, 4, seed=3)
+    assert len(cs) == 30
+    for c in cs:
+        for side in c.split(":"):
+            for unit in side.split("+"):
+                spec, build = unit.split("@")
+                assert build in nightly.build_names(spec, 4)
+    assert nightly.build_comps(2, 30, 4, seed=3) == cs  # the same seed, the same matches

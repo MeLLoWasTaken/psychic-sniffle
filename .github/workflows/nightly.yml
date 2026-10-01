@@ -11,6 +11,9 @@ on:
       matches:
         description: Matches per bracket
         default: "1000"
+      random_builds:
+        description: Random legal talent builds per spec besides the named ones (M2-04)
+        default: "9"
 
 jobs:
   balance:
@@ -31,7 +34,10 @@ jobs:
       - name: Import the project
         run: godot --headless --path game --import > /dev/null 2>&1 || true
       - name: Simulate ${{ matrix.bracket }}
-        run: python3 tools/sim/nightly.py --bracket ${{ matrix.bracket }} --matches ${{ inputs.matches || '1000' }} --out nightly
+        run: |
+          nproc
+          python3 tools/sim/nightly.py --bracket ${{ matrix.bracket }} --matches ${{ inputs.matches || '1000' }} \
+            --random-builds ${{ inputs.random_builds || '9' }} --out nightly
       - uses: actions/upload-artifact@v4
         if: always()
         with:

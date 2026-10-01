@@ -369,6 +369,7 @@ The human asked to incorporate any readily available offering that improves the 
 
 ### X-06 Continuous integration on GitHub Actions `[doing]`
 - [ ] Run tools/check_all on every push, and a nightly job on a multi-core runner for the balance simulations and the 20-player performance profile (the workspace has 2 cores, which skews those numbers).
+- 2026-10-01: the nightly schedule (03:17 UTC) has not fired on two nights (no scheduled runs in the history); the workflow was started by hand with workflow_dispatch. The balance jobs now run one simulation process per core and simulate random talent builds (M2-04).
 
 ### X-09 Follow-ups from X-03 and X-04 `[todo]`
 - [x] Listening pass on the approved sounds: the human preferred every processed version; the slash still did not read as a slash (redone as v3) and the mace should be lower (impact_low).
@@ -490,6 +491,7 @@ Exit gate (DESIGN.md): every combat rule has passing tests; every action is rebi
 - [x] Warblade, Arcanist and Oracle class trees (about 40 nodes), Carnage, Rime and Grace spec trees (about 40), 12 PvP talents each; original names; icons from game-icons.net in the HUD style.
 - [ ] At least three viable builds per spec in bot simulations (each within 40-60%), and no node taken by more than 90% of the top simulated builds.
 - Trees, builds, new abilities and icons are in (2026-10-01). Left: the bot simulations for the second criterion, after the reference video render frees the CPU; a six-match smoke run had matches up to 11 minutes, so survival and healing talents likely need trimming.
+- 2026-10-01: the simulation for the second criterion is built. `tools/sim/nightly.py --random-builds 9` gives every unit a random build of its spec (the three named builds or one of nine random legal builds, `Talents.random_build`), runs the matches in parallel processes, and reports each build's win rate over non-mirror compositions, how many are viable, and the share of each node among each spec's top half of builds. A local 2v2 match takes about 23 s of one core, so the 1,000-match runs go to the nightly workflow on 4-core runners (dispatched by hand: the schedule has not fired yet, X-06).
 - Follow-ups: auras applied only through talents cannot have visual effects yet (X-13); bots read their own talented numbers but not an enemy's.
 
 ### M2-05 Talent screen and loadouts `[done]`

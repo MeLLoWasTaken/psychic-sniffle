@@ -284,3 +284,20 @@ func test_every_bot_build_is_legal_and_round_trips() -> void:
 			assert_str(Talents.check(lo, trees)).override_failure_message("%s@%s" % [spec_id, b["name"]]).is_equal("")
 			var text: String = BotBrain.build_talents(spec_id, b["name"])["talents"]
 			assert_str(Talents.decode(text, trees)["error"]).is_equal("")
+
+
+func test_random_builds_are_legal_spend_the_points_and_repeat_by_seed() -> void:
+	# M2-04 balance simulations: random legal builds of the real slice trees
+	for spec_id: String in Data.specs:
+		var t: Dictionary = Talents.trees_for(spec_id, Data.specs, Data.classes, Data.talents)
+		for seed_value: int in [1, 2, 3]:
+			var lo: Dictionary = Talents.random_build(t, seed_value)
+			assert_str(Talents.check(lo, t)).override_failure_message("%s seed %d" % [spec_id, seed_value]).is_empty()
+			for layer: String in ["class", "spec"]:
+				assert_int(Talents.spent(t[layer], lo[layer])).is_equal(int(t[layer]["points"]))
+			assert_int((lo["pvp"] as Array).size()).is_equal(int(t["pvp"]["points"]))
+			assert_dict(Talents.random_build(t, seed_value)).is_equal(lo)
+		assert_bool(Talents.random_build(t, 1) != Talents.random_build(t, 2)).is_true()
+	var named: Dictionary = BotBrain.build_talents("warblade_carnage", "random4")
+	assert_str(str(named["name"])).is_equal("random4")
+	assert_str(str(named["talents"])).is_equal(str(BotBrain.build_talents("warblade_carnage", "random4")["talents"]))
