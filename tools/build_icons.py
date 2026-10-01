@@ -66,7 +66,7 @@ BRONZE = np.array([0.48, 0.39, 0.26])  # hud style frame_border #7a6443
 
 
 def used_images(data: Path) -> dict[str, list[str]]:
-    """image id -> ids of the abilities, auras and talents that use it."""
+    """image id -> ids of the abilities, auras, specs and talents that use it."""
     out: dict[str, list[str]] = {}
     for folder in ("abilities", "auras"):
         for path in sorted((data / folder).glob("*.json")):
@@ -74,6 +74,11 @@ def used_images(data: Path) -> dict[str, list[str]]:
             img = doc.get("icon", {}).get("image")
             if img:
                 out.setdefault(img, []).append(f"{folder[:-1] if folder == 'auras' else 'ability'}:{doc['id']}")
+    for path in sorted((data / "specs").glob("*.json")):
+        doc = json.loads(path.read_text())
+        img = doc.get("icon", {}).get("image")
+        if img:
+            out.setdefault(img, []).append(f"spec:{doc['id']}")
     for path in sorted((data / "talents").glob("*.json")):
         doc = json.loads(path.read_text())
         for n in doc["nodes"]:

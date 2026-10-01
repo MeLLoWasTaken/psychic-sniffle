@@ -495,3 +495,144 @@ def test_eq_filters_give_their_gain_where_they_should(kind, hz, gain_db):
         assert abs(db[2] - gain_db) < 0.05 and abs(db[0]) < 0.05
     else:
         assert abs(db[1] - gain_db) < 0.05 and abs(db[0]) < 0.05
+
+
+# The effects that replaced pedalboard's (KNOWN_ISSUES: its native code died with "Illegal
+# instruction" on some CI runners). Compared with pedalboard where it runs: in a subprocess, so a
+# native crash there skips the comparison instead of killing the test run.
+
+def _fx_test_signals() -> dict[str, np.ndarray]:
+    sr = processing.SR
+    rng = np.random.default_rng(5)
+    t = np.arange(int(1.5 * sr)) / sr
+    burst = rng.standard_normal(len(t)) * np.exp(-t / 0.12)
+    burst[int(0.8 * sr):int(0.9 * sr)] += 0.5 * rng.standard_normal(int(0.1 * sr))
+    tone = sum(np.sin(2 * np.pi * f * t) * np.exp(-t / d) for f, d in [(220, 0.8), (1330, 0.3), (5100, 0.1)])
+    return {"noise_bursts": burst / np.max(np.abs(burst)), "decaying_tones": tone / np.max(np.abs(tone))}
+
+
+def _fx_cases() -> list[tuple[str, dict]]:
+    """Every parameter set the chains use for the replaced effects, plus two reverb settings."""
+    seen, cases = set(), []
+    for chain in PROCESSING["chains"].values():
+        for fx in chain["effects"]:
+            if fx["fx"] in ("saturate", "compressor", "chorus", "phaser"):
+                params = {k: v for k, v in fx.items() if k not in ("fx", "mix", "above_hz", "band")}
+                key = json.dumps([fx["fx"], params], sort_keys=True)
+                if key not in seen:
+                    seen.add(key)
+                    cases.append((fx["fx"], params))
+    return cases + [("room", {"room_size": 0.5, "damping": 0.5}), ("room", {"room_size": 0.85, "damping": 0.2})]
+
+
+def _own_fx(kind: str, p: dict, x: np.ndarray) -> np.ndarray:
+    if kind == "saturate":
+        return processing.juce_distortion(x, p["drive_db"])
+    if kind == "compressor":
+        return processing.juce_compressor(x, p["threshold_db"], p["ratio"], p["attack_ms"], p["release_ms"])
+    if kind == "chorus":
+        return processing.juce_chorus(x, p["rate_hz"], p["depth"], p["centre_delay_ms"], p["feedback"])
+    if kind == "phaser":
+        return processing.juce_phaser(x, p["rate_hz"], p["depth"], p["centre_hz"], p["feedback"])
+    return processing.juce_reverb(x, p["room_size"], p["damping"])
+
+
+_PEDALBOARD_REFERENCE = r'''
+import json, sys
+import numpy as np
+import pedalboard as pb
+cases, names = json.loads(sys.argv[1]), sys.argv[2:]
+signals = np.load(names[0])
+make = {
+    "saturate": lambda p: pb.Distortion(drive_db=p["drive_db"]),
+    "compressor": lambda p: pb.Compressor(threshold_db=p["threshold_db"], ratio=p["ratio"],
+                                          attack_ms=p["attack_ms"], release_ms=p["release_ms"]),
+    "chorus": lambda p: pb.Chorus(rate_hz=p["rate_hz"], depth=p["depth"], centre_delay_ms=p["centre_delay_ms"],
+                                  feedback=p["feedback"], mix=1.0),
+    "phaser": lambda p: pb.Phaser(rate_hz=p["rate_hz"], depth=p["depth"], centre_frequency_hz=p["centre_hz"],
+                                  feedback=p["feedback"], mix=1.0),
+    "room": lambda p: pb.Reverb(room_size=p["room_size"], damping=p["damping"], wet_level=1.0, dry_level=0.0,
+                                width=0.0),
+}
+out = {}
+for i, (kind, p) in enumerate(cases):
+    for name in signals.files:
+        out[f"{i}/{name}"] = pb.Pedalboard([make[kind](p)])(signals[name].astype(np.float32), 48000)
+np.savez(names[1], **out)
+'''
+
+
+@pytest.fixture(scope="module")
+def pedalboard_reference(tmp_path_factory):
+    import subprocess
+    d = tmp_path_factory.mktemp("pedalboard")
+    sig = _fx_test_signals()
+    np.savez(d / "in.npz", **sig)
+    cases = _fx_cases()
+    proc = subprocess.run([sys.executable, "-c", _PEDALBOARD_REFERENCE, json.dumps(cases), str(d / "in.npz"),
+                           str(d / "out.npz")], capture_output=True, text=True, timeout=600)
+    if proc.returncode != 0:
+        pytest.skip(f"pedalboard reference unavailable (exit {proc.returncode}): {proc.stderr.strip()[-300:]}")
+    ref = np.load(d / "out.npz")
+    return sig, cases, {k: ref[k].astype(np.float64) for k in ref.files}
+
+
+@pytest.mark.parametrize("kind", ["saturate", "compressor", "chorus", "phaser", "room"])
+def test_own_effects_match_pedalboard(kind, pedalboard_reference):
+    """Each replacement matches pedalboard 0.9.25 (the sounds were approved through it) within 1e-3
+    of the peak, sample by sample, for every parameter set the chains use."""
+    sig, cases, ref = pedalboard_reference
+    checked = 0
+    for i, (k, p) in enumerate(cases):
+        if k != kind:
+            continue
+        for name, x in sig.items():
+            want = ref[f"{i}/{name}"]
+            got = _own_fx(k, p, x)
+            assert got.shape == want.shape
+            peak = np.max(np.abs(want))
+            rel = np.max(np.abs(got - want)) / peak
+            rms_db = 20 * np.log10(np.sqrt(np.mean((got - want) ** 2)) / np.sqrt(np.mean(want ** 2)) + 1e-20)
+            assert rel < 1e-3 and rms_db < -90, (k, p, name, rel, rms_db)
+            checked += 1
+    assert checked
+
+
+def test_own_effects_behave_without_pedalboard():
+    """Behaviour of the replacements, checked without pedalboard."""
+    sr = processing.SR
+    t = np.arange(sr) / sr
+    # distortion: odd-symmetric, bounded, small signals gain the drive, monotonic
+    ramp = np.linspace(-4, 4, 4001)
+    d = processing.juce_distortion(ramp, 12.0)
+    assert np.allclose(d, -d[::-1], atol=1e-7) and np.max(np.abs(d)) <= 1.0 and np.all(np.diff(d) >= 0)
+    assert abs(processing.juce_distortion(np.array([1e-4]), 12.0)[0] / 1e-4 - 10 ** (12 / 20)) < 1e-3
+    # compressor: a steady tone 20 dB over the threshold comes out 20 / ratio dB over it after the
+    # attack; a tone under the threshold passes untouched
+    tone = np.sin(2 * np.pi * 1000 * t)
+    y = processing.juce_compressor(tone, -20.0, 4.0, 1.0, 500.0)
+    out_db = 20 * np.log10(np.max(np.abs(y[sr // 2:])))
+    assert abs(out_db - (-20.0 + 20.0 / 4.0)) < 0.2, out_db
+    quiet = 0.05 * tone
+    assert np.allclose(processing.juce_compressor(quiet, -20.0, 4.0, 1.0, 500.0), quiet.astype(np.float32))
+    # chorus without depth or feedback is a plain delay of the centre time (10 ms = 480 samples)
+    noise = np.random.default_rng(3).uniform(-1, 1, sr)
+    c = processing.juce_chorus(noise, 0.5, 0.0, 10.0, 0.0)
+    assert len(c) == len(noise) and np.allclose(c[480:], noise[:-480], atol=1e-6) and not np.any(c[:480])
+    # modulated: same length, about the same level (linear interpolation between samples dulls the
+    # top octave of white noise, up to 1.8 dB of its total level on average, as in JUCE)
+    c = processing.juce_chorus(noise, 0.5, 0.3, 10.0, 0.1)
+    assert len(c) == len(noise) and abs(20 * np.log10(np.std(c[2000:]) / np.std(noise))) < 3.0
+    # phaser without depth or feedback is a fixed allpass chain: flat magnitude response
+    imp = np.zeros(8192)
+    imp[0] = 1.0
+    h = processing.juce_phaser(imp, 0.8, 0.0, 1800.0, 0.0)
+    assert np.allclose(np.abs(np.fft.rfft(h)), 1.0, atol=1e-3)
+    ph = processing.juce_phaser(noise, 0.8, 0.5, 1800.0, 0.3)
+    assert len(ph) == len(noise) and abs(20 * np.log10(np.std(ph) / np.std(noise))) < 3.0
+    # reverb: an impulse rings and dies away
+    imp = np.zeros(3 * sr)
+    imp[0] = 1.0
+    r = processing.juce_reverb(imp, 0.5, 0.5)
+    early, late = np.max(np.abs(r[: sr // 2])), np.max(np.abs(r[-sr // 2:]))
+    assert early > 0 and late < early * 1e-3

@@ -212,8 +212,8 @@ func _begin(u: Unit, ab: Dictionary, target: Unit) -> void:
 		u.gcd_ready_tick = now + _gcd_length(u, ab)
 	var tid: int = target.id if target else -1
 	if ab["cast_type"] == "instant":
-		_pay_and_cooldown(u, ab)
-		_log({"type": "cast_success", "source": u.id, "target": tid, "ability": ab["id"]})
+		var cd: int = _pay_and_cooldown(u, ab)
+		_log({"type": "cast_success", "source": u.id, "target": tid, "ability": ab["id"], "cooldown_ticks": cd})
 		_apply_effects(u, ab, target, 1.0)
 		_on_hostile_action(u, target, ab)
 		return
@@ -238,17 +238,22 @@ func _haste_mult(u: Unit) -> float:
 	return (1.0 + float(u.stats["haste"])) * _mod(u, "haste", 1.0) * _mod(u, "cast_speed", 1.0)
 
 
-func _pay_and_cooldown(u: Unit, ab: Dictionary) -> void:
+## Pays the cost, adds generated resource and starts the cooldown; returns the cooldown in ticks
+## (0 without one), which the cast_success event carries so every client can show it as talented.
+func _pay_and_cooldown(u: Unit, ab: Dictionary) -> int:
 	var cost: Dictionary = ab.get("cost", {})
 	if not cost.is_empty():
 		u.resources[cost["resource"]] = float(u.resources.get(cost["resource"], 0.0)) - float(cost["amount"])
 	var gen: Dictionary = ab.get("generates", {})
 	if not gen.is_empty():
 		_add_resource(u, gen["resource"], float(gen["amount"]))
+	var cd: int = 0
 	if float(ab["cooldown_s"]) > 0.0:
-		u.cooldowns[ab["id"]] = sim.tick + _ticks(float(ab["cooldown_s"]) / _mod(u, "cooldown_rate", 1.0))
+		cd = _ticks(float(ab["cooldown_s"]) / _mod(u, "cooldown_rate", 1.0))
+		u.cooldowns[ab["id"]] = sim.tick + cd
 	if ab.has("consumes_aura"):
 		_remove_aura_by_id(u, ab["consumes_aura"], "consumed")
+	return cd
 
 
 func _cc_blocks(u: Unit, ab: Dictionary) -> String:
@@ -377,8 +382,8 @@ func _update_cast(u: Unit) -> void:
 	if reason != "":
 		_log({"type": "cast_failed", "source": u.id, "ability": ab["id"], "reason": reason})
 		return
-	_pay_and_cooldown(u, ab)
-	_log({"type": "cast_success", "source": u.id, "target": target.id if target else -1, "ability": ab["id"]})
+	var cd: int = _pay_and_cooldown(u, ab)
+	_log({"type": "cast_success", "source": u.id, "target": target.id if target else -1, "ability": ab["id"], "cooldown_ticks": cd})
 	_apply_effects(u, ab, target, 1.0)
 	_on_hostile_action(u, target, ab)
 

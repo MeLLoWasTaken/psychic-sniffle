@@ -34,6 +34,20 @@
     "role": {
       "$ref": "common.schema.json#/$defs/role"
     },
+    "icon": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "image"
+      ],
+      "properties": {
+        "image": {
+          "type": "string",
+          "pattern": "^[a-z0-9-]+/[a-z0-9-]+$",
+          "description": "game-icons.net glyph as '<author>/<name>' for the spec portrait in unit and arena frames (tools/build_icons.py renders it). Without it the frame shows the spec's initials."
+        }
+      }
+    },
     "range": {
       "enum": [
         "melee",

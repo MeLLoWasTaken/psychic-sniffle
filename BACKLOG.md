@@ -350,6 +350,12 @@ The human asked to incorporate any readily available offering that improves the 
 ### X-13 Visual effects for talent-applied auras `[todo]`
 - [ ] The effects validator accepts entries for auras that only talents apply (bound_dazed, windpipe_crushed, stiff_neck and others), and those auras get readable effects like the kit's.
 
+### X-14 Sound processing without native plugins `[done]`
+- [x] The five pedalboard effects (distortion, compressor, chorus, phaser, reverb) are our own numpy and scipy code matching pedalboard within 1e-3 of peak (most within 1e-6); pedalboard is only a test reference, run in a separate process so a crash skips those comparisons. Done 2026-10-01 after pedalboard's Distortion crashed a CI run with an illegal instruction.
+
+### X-15 Renderer skipped ticks in the CI match flow `[todo]`
+- [ ] The CI run of 26e3202 failed the match-flow check with 418 of 8543 ticks not drawn (4.9%, limit 2%) and 14.6% of ticks without a new snapshot; earlier runs passed. Find out whether it is runner speed or a change in M2-13 (settings applied at match start), once the workspace CPU is free to run the check locally.
+
 ### X-06 Continuous integration on GitHub Actions `[doing]`
 - [ ] Run tools/check_all on every push, and a nightly job on a multi-core runner for the balance simulations and the 20-player performance profile (the workspace has 2 cores, which skews those numbers).
 
@@ -467,7 +473,7 @@ Exit gate (DESIGN.md): every combat rule has passing tests; every action is rebi
 - [x] Node types passive, active (grants an ability), choice and capstone; gates at 8 and 20 points; a node unlocks when a connected node above is fully ranked; 30 + 30 points and 3 PvP slots.
 - [x] Talent effects apply to units at match start from data paths (ability numbers, aura numbers, unit stats, cooldowns), with no per-class code; talents lock when the gates open.
 - [x] Validator: unreachable nodes, broken references, wrong point totals, duplicate positions.
-- Follow-ups: the client predicts movement with untalented aura data (a talented slow mispredicts until the next snapshot corrects it; X-12); the arena frame's enemy Break Free timer uses the untalented 90 s (M2-14); talent-granted abilities need action bar slots (M2-05); bots and the batch simulator need loadouts for build simulations (M2-04).
+- Follow-ups: the client predicts movement with untalented aura data (a talented slow mispredicts until the next snapshot corrects it; X-12); the arena frame's enemy Break Free timer uses the untalented 90 s (M2-14, fixed); talent-granted abilities need action bar slots (M2-05); bots and the batch simulator need loadouts for build simulations (M2-04).
 
 ### M2-04 Talent trees for the three slice specs `[doing]`
 - [x] Warblade, Arcanist and Oracle class trees (about 40 nodes), Carnage, Rime and Grace spec trees (about 40), 12 PvP talents each; original names; icons from game-icons.net in the HUD style.
@@ -501,17 +507,23 @@ Exit gate (DESIGN.md): every combat rule has passing tests; every action is rebi
 
 ### M2-11 Keybinding screen `[done]`
 - [x] Every action, bar button and interface toggle rebindable; Shift, Ctrl and Alt; mouse buttons 1 to 5 and wheel; a target mode per bind (target, focus, mouseover, self, arena 1 to 3); conflict warning; reset to default; import and export.
-- Follow-up: mouseover reads units in the world; hovering a unit frame does not count as mouseover yet (M2-14).
+- Follow-up: mouseover reads units in the world; hovering a unit frame does not count as mouseover yet (M2-14, fixed).
 
 ### M2-12 HUD edit mode `[done]`
 - [x] Toggle with labeled outlines; drag to move with grid snap; scale 50-200%; opacity; per-element options; layouts saved as named profiles (optionally per spec), exported and imported as text; checked at the five DESIGN.md resolutions.
 
 ### M2-13 Settings suite `[done]`
 - [x] Interface, Gameplay, Graphics, Audio and Accessibility pages with every setting in DESIGN.md; each applies instantly except resolution; saved per profile.
-- Follow-ups: nameplate settings take effect when nameplates exist (M2-14); "reduce camera shake" has nothing to reduce until the camera shakes.
+- Follow-ups: nameplate settings take effect when nameplates exist (M2-14, fixed); "reduce camera shake" has nothing to reduce until the camera shakes.
 
-### M2-14 Arena HUD for 2v2 and 3v3 `[todo]`
-- [ ] Arena enemy frames with spec icon, cast bar, Break Free cooldown and a DR tracker per CC category; focus target frame and cast bar; nameplates with class color, health, cast bar and important debuffs.
+### M2-14 Arena HUD for 2v2 and 3v3 `[doing]`
+- [x] Arena enemy frames with spec icon, cast bar, Break Free cooldown and a DR tracker per CC category; focus target frame and cast bar; nameplates with class color, health, cast bar and important debuffs.
+- [ ] Screenshot of a 3v3 fight reviewed (waits for the reference video render to free the CPU: two Godot clients on two cores stall the match start).
+- Done (2026-10-01): spec icons in frame portraits (spec data `icon`); nameplates as a HUD layout element following the three nameplate settings; a unit frame under the pointer counts as mouseover; the arena Break Free box uses the cooldown the server started (talents included; cast_success events carry `cooldown_ticks`).
+- Follow-ups: clicking or hovering a nameplate does not target or count as mouseover yet (M2-14b); nameplates do not fade with distance or line of sight.
+
+### M2-14b Nameplate clicks and mouseover `[todo]`
+- [ ] A click on a nameplate targets its unit and the pointer over a plate counts as mouseover, like unit frames; tests with the plate rectangles.
 
 ### M2-15 Review pass and M2 gate `[todo]`
 - [ ] Full review pass; the M2 gate checked and written to CHANGELOG.md.

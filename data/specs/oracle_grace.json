@@ -4,6 +4,9 @@
   "class": "oracle",
   "description": "Direct and area healing, fear, strong dispels.",
   "role": "healer",
+  "icon": {
+    "image": "lorc/winged-emblem"
+  },
   "range": "ranged",
   "primary_resource": "mana",
   "abilities": [

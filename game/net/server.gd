@@ -18,7 +18,9 @@ extends Node
 ##     preparation time to loading.
 ##   --host: the client that owns this server. If it has not joined within HOST_JOIN_TIMEOUT_S,
 ##     disconnects, or sends nothing for HOST_SILENCE_S, the server writes its summary and exits
-##     (no server outlives the game that started it).
+##     (no server outlives the game that started it). Between its hello and its first input the
+##     host is loading the map, which can stall a slow machine, so that silence gets
+##     HOST_JOIN_TIMEOUT_S instead.
 ##   --ready-file: written once the server listens, so the launcher knows when to connect.
 
 const CATCH_UP_BUFFER: int = 6  ## above this many queued inputs, apply two per tick to catch up
@@ -57,6 +59,7 @@ var host_name: String = ""  ## the client that owns this server (hosted matches)
 var end_reason: String = ""  ## why the server finished: match_end, time_limit, host_left...
 var _started_usec: int = 0
 var _host_seen: bool = false
+var _host_active: bool = false  ## the host has sent an input (its map has loaded)
 var _host_last_usec: int = 0
 
 
@@ -149,16 +152,20 @@ func _physics_process(_delta: float) -> void:
 		_finish()
 
 
+## Why a hosted match should end for its host, or "": it never joined (`since_start_s` after the
+## server started), or went silent for `silent_s` (a longer allowance while it loads the map).
+static func host_problem(seen: bool, active: bool, since_start_s: float, silent_s: float) -> String:
+	if not seen:
+		return "host_never_joined" if since_start_s > HOST_JOIN_TIMEOUT_S else ""
+	return "host_silent" if silent_s > (HOST_SILENCE_S if active else HOST_JOIN_TIMEOUT_S) else ""
+
+
 ## Hosted matches: finish when the host never came, left, or went silent. True when finished.
 func _check_host() -> bool:
 	if host_name == "":
 		return false
 	var now: int = Time.get_ticks_usec()
-	var reason: String = ""
-	if not _host_seen and (now - _started_usec) / 1e6 > HOST_JOIN_TIMEOUT_S:
-		reason = "host_never_joined"
-	elif _host_seen and (now - _host_last_usec) / 1e6 > HOST_SILENCE_S:
-		reason = "host_silent"
+	var reason: String = host_problem(_host_seen, _host_active, (now - _started_usec) / 1e6, (now - _host_last_usec) / 1e6)
 	if reason == "":
 		return false
 	Log.info("server: finishing (%s)" % reason)
@@ -191,9 +198,12 @@ func _handle_network() -> void:
 						return
 			"receive":
 				var from: Dictionary = clients.get(key, {})
+				var msg: Dictionary = Protocol.decode(ev["data"])
 				if host_name != "" and not from.is_empty() and from["name"] == host_name:
 					_host_last_usec = Time.get_ticks_usec()
-				_on_packet(peer, key, Protocol.decode(ev["data"]))
+					if msg.get("type", 0) == Protocol.Msg.INPUT:
+						_host_active = true  # its match scene runs: the map has loaded
+				_on_packet(peer, key, msg)
 
 
 func _on_packet(peer: ENetPacketPeer, key: int, msg: Dictionary) -> void:

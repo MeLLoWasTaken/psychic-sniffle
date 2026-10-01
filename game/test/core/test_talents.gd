@@ -156,6 +156,9 @@ func test_pvp_talents_apply_and_cooldowns_follow_the_unit() -> void:
 	cb.press(u, "bolt", 2)
 	assert_int(60000 - foe.health).is_equal(1301)
 	assert_int(int(u.cooldowns["bolt"]) - sim.tick).is_equal(6 * TR)  # 10 s - 2 x 2 s
+	# the cast event carries the talented cooldown, so every client shows it (arena Break Free box)
+	var cast: Array = cb.events.filter(func(e: Dictionary) -> bool: return e["type"] == "cast_success")
+	assert_int(int(cast[-1]["cooldown_ticks"])).is_equal(6 * TR)
 
 
 # ------------------------------------------------------------ loadout rules

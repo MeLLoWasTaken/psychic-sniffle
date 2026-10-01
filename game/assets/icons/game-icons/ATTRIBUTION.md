@@ -17,6 +17,7 @@ unmodified; the game renders them with its own colors, outline, shading and fram
 | angry-eyes | Delapouite | CC BY 3.0 | talent:battle_fever |
 | anticlockwise-rotation | Delapouite | CC BY 3.0 | talent:stretched_hour |
 | arrow-wings | Delapouite | CC BY 3.0 | talent:pilgrims_benediction |
+| axe-sword | Delapouite | CC BY 3.0 | spec:warblade_carnage |
 | backward-time | Delapouite | CC BY 3.0 | talent:lasting_grace |
 | brass-knuckles | Delapouite | CC BY 3.0 | talent:hard_knuckles |
 | cape-armor | Delapouite | CC BY 3.0 | aura:padded_lining_passive, talent:padded_lining |
@@ -51,6 +52,7 @@ unmodified; the game renders them with its own colors, outline, shading and fram
 | ice-golem | Delapouite | CC BY 3.0 | talent:quick_sculpting |
 | ice-iris | Delapouite | CC BY 3.0 | ability:deep_winter_ab, aura:deep_winter |
 | ice-skate | Delapouite | CC BY 3.0 | talent:gliding_ice |
+| ice-spell-cast | Delapouite | CC BY 3.0 | spec:arcanist_rime |
 | iceberg | Delapouite | CC BY 3.0 | ability:calving_ice, talent:calving_ice_talent |
 | jump-across | Delapouite | CC BY 3.0 | ability:hurtling_bound, talent:hurtling_bound_talent |
 | kneeling | Delapouite | CC BY 3.0 | ability:hallowed_stillness_ab, aura:stilled_in_reverence, talent:hallowed_stillness |
@@ -319,6 +321,7 @@ unmodified; the game renders them with its own colors, outline, shading and fram
 | windy-stripes | Lorc | CC BY 3.0 | talent:drifting_rime |
 | wing-cloak | Lorc | CC BY 3.0 | aura:oracle_hallowed_mantle, talent:hallowed_mantle |
 | winged-arrow | Lorc | CC BY 3.0 | aura:oracle_unshackled_stride, talent:unshackled, talent:unshackled_stride |
+| winged-emblem | Lorc | CC BY 3.0 | spec:oracle_grace |
 | winged-leg | Lorc | CC BY 3.0 | aura:unbowed_stride, talent:unbowed |
 | winged-shield | Lorc | CC BY 3.0 | talent:steadfast_veil |
 | wingfoot | Lorc | CC BY 3.0 | aura:light_tread_passive, talent:light_tread, talent:far_bound |

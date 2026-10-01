@@ -89,3 +89,14 @@ func test_snapshot_size_fits_bandwidth_budget() -> void:
 func test_snapshots_carry_the_active_pickups() -> void:
 	var data: PackedByteArray = Protocol.snapshot(100, 3, [], {"phase": 1, "start_tick": 60, "dampening_pct": 0, "winner": -1, "pickups": 2})
 	assert_int(int(Protocol.decode(data)["match"]["pickups"])).is_equal(2)
+
+
+func test_a_hosted_server_gives_its_host_time_to_load_before_calling_it_silent() -> void:
+	assert_str(NetServer.host_problem(false, false, 30.0, 0.0)).is_empty()
+	assert_str(NetServer.host_problem(false, false, 61.0, 0.0)).is_equal("host_never_joined")
+	# joined but still loading the map: a long stall on a slow machine is allowed
+	assert_str(NetServer.host_problem(true, false, 40.0, 20.0)).is_empty()
+	assert_str(NetServer.host_problem(true, false, 90.0, 61.0)).is_equal("host_silent")
+	# playing: silence ends the match sooner
+	assert_str(NetServer.host_problem(true, true, 90.0, 16.0)).is_equal("host_silent")
+	assert_str(NetServer.host_problem(true, true, 90.0, 2.0)).is_empty()

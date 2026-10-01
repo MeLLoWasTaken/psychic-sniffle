@@ -5,9 +5,12 @@ extends Control
 ## larger. While the unit is crowd-controlled the portrait becomes a big CC icon (category glyph,
 ## short label, seconds), so a controlled ally or enemy reads at a glance and never by color
 ## alone. Arena frames add a Break Free cooldown box and a diminishing-returns tracker.
-## A click on the frame emits clicked with the unit's id (select it as target).
+## A click on the frame emits clicked with the unit's id (select it as target); the pointer over
+## it emits hovered, so a mouseover cast can land on a frame as well as on the unit in the world.
 
 signal clicked(unit_id: int)
+## The pointer entered (the unit's id) or left (-1) the frame: mouseover casts use it (M2-14).
+signal hovered(unit_id: int)
 
 var style: HudStyle
 var element: Dictionary
@@ -22,6 +25,7 @@ var break_free: Dictionary = {}  ## {ready_tick, total_ticks} for the arena fram
 var aura_px: float = 26.0
 var aura_scale: float = 1.0  ## settings: buff and debuff size (M2-13)
 var drawn_auras: Array = []  ## the auras drawn last, in order (for tests): {id, size_px, cc}
+var portrait_glyph: bool = false  ## the last portrait drew the spec's glyph (not initials)
 
 
 func setup(p_style: HudStyle, p_element: Dictionary) -> void:
@@ -31,6 +35,8 @@ func setup(p_style: HudStyle, p_element: Dictionary) -> void:
 	size = Vector2(float(sz[0]), float(sz[1]))
 	aura_px = roundf(size.y * 0.4)
 	mouse_filter = Control.MOUSE_FILTER_STOP
+	mouse_entered.connect(func() -> void: hovered.emit(unit_id()))
+	mouse_exited.connect(func() -> void: hovered.emit(-1))
 
 
 func set_unit(p_unit: Dictionary, p_view: Dictionary, p_hostile: bool, p_selected: bool,
@@ -175,8 +181,14 @@ func _spec_portrait(r: Rect2, dead: bool) -> void:
 	draw_polygon(PackedVector2Array([p, p + Vector2(s.x, 0), p + s, p + Vector2(0, s.y)]),
 		PackedColorArray([c.darkened(0.2), c.darkened(0.35), c.darkened(0.8), c.darkened(0.7)]))
 	var spec: Dictionary = Data.specs.get(spec_id, {})
-	style.text_in(self, r, HudStyle.initials(str(spec.get("name", spec_id))), style.fs("large"), Color(1, 1, 1, 0.95),
-		HORIZONTAL_ALIGNMENT_CENTER, 0.0, &"display")
+	var glyph: Texture2D = style.icon_texture(spec.get("icon", {}))
+	if glyph != null:
+		# the spec's glyph in warm bone over the class color (the same art as the ability icons)
+		draw_texture_rect(glyph, r, false, Color(1.0, 0.96, 0.88, 0.25 if dead else 0.95))
+	else:
+		style.text_in(self, r, HudStyle.initials(str(spec.get("name", spec_id))), style.fs("large"), Color(1, 1, 1, 0.95),
+			HORIZONTAL_ALIGNMENT_CENTER, 0.0, &"display")
+	portrait_glyph = glyph != null
 	var role: String = str(spec.get("role", ""))
 	var role_txt: String = {"healer": "HEAL", "tank": "TANK"}.get(role, "")
 	if role_txt != "":

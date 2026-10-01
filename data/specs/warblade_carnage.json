@@ -4,6 +4,9 @@
   "class": "warblade",
   "description": "Two-handed sword, huge single hits, execute on low-health targets.",
   "role": "dps",
+  "icon": {
+    "image": "delapouite/axe-sword"
+  },
   "range": "melee",
   "primary_resource": "rage",
   "abilities": [

@@ -9,4 +9,4 @@ Everything not listed here is original to this project. Material below is used u
 | Cinzel, designed by Natanael Gama, © The Cinzel Project Authors | git: github.com/google/fonts (ofl/cinzel) | SIL Open Font License 1.1; licence in `game/assets/fonts/cinzel/OFL.txt` | Display face: names, titles, timer, big numbers (X-03) |
 | Fira Sans, designed by Carrois Apostrophe, © The Mozilla Foundation and Telefonica S.A. | git: github.com/google/fonts (ofl/firasans) | SIL Open Font License 1.1; licence in `game/assets/fonts/firasans/OFL.txt` | Text face: small text, numbers, cast bars, default interface font (X-03) |
 | resvg-py (bindings to resvg) | PyPI | MIT (resvg: Apache-2.0 or MIT), used only as a build tool | Rasterizing the icon SVGs in `tools/build_icons.py` (X-03) |
-| pedalboard (Spotify) | PyPI | GPL-3.0, used only as a build tool; generated sounds are original works | Sound processing (X-04) |
+| pedalboard (Spotify) | PyPI | GPL-3.0, used only as a test reference; not part of the build since the effects were reimplemented | Reference output for the sound processing tests (X-04) |

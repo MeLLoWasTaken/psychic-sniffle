@@ -4,6 +4,9 @@
   "class": "arcanist",
   "description": "Frost control: roots, freezes and shatter combos.",
   "role": "dps",
+  "icon": {
+    "image": "delapouite/ice-spell-cast"
+  },
   "range": "ranged",
   "primary_resource": "mana",
   "abilities": [

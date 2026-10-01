@@ -3,7 +3,7 @@ extends CanvasLayer
 ## The basic arena HUD (backlog M1-27), built from a HUD layout (data/hud_layouts/<id>.json,
 ## picked by the settings profile's interface.hud_layout): two action bars, a player cast bar,
 ## player, target, focus, party and arena enemy frames, the match timer with dampening, the
-## loss-of-control alert and floating combat text. Every element's type, anchor, offset, scale,
+## loss-of-control alert, floating combat text and nameplates. Every element's type, anchor, offset, scale,
 ## opacity and size is data, so the M2 edit mode moves things by editing a copy of the layout.
 ##
 ## Reads only the world view and combat events (the shapes MatchRunner.view_for / take_events
@@ -27,6 +27,7 @@ const ANCHORS: Dictionary = {
 	"bottom_left": Vector2(0, 1), "bottom_center": Vector2(0.5, 1), "bottom_right": Vector2(1, 1),
 }
 const PHYSICAL_TEXT: Color = Color(1.0, 0.95, 0.82)
+const WORLD_TYPES: Array[String] = ["combat_text", "nameplates"]  ## elements drawn over units, covering the screen
 
 var talent_abilities: Array = []  ## abilities the player's talents grant (set_loadout)
 var talent_view: Dictionary = {"abilities": {}, "auras": {}, "stats": {}}  ## the player's talented numbers (tooltips)
@@ -97,6 +98,7 @@ func _build() -> void:
 					var f: UnitFrame = UnitFrame.new()
 					f.setup(style, e)
 					f.clicked.connect(_on_frame_clicked)
+					f.hovered.connect(_on_frame_hovered)
 					f.visible = false
 					frames.append(f)
 				ctrl = frames
@@ -118,6 +120,13 @@ func _build() -> void:
 				ct.setup(style, e)
 				ct.visible = bool(interface.get("combat_text", true))
 				ctrl = ct
+			"nameplates":
+				var np: Nameplates = Nameplates.new()
+				np.setup(style, e)
+				np.visible = bool(interface.get("nameplates", true))
+				np.show_cast_bars = bool(interface.get("nameplate_cast_bars", true))
+				np.show_auras = bool(interface.get("nameplate_debuffs", true))
+				ctrl = np
 		if ctrl == null:
 			continue
 		elements[id] = ctrl
@@ -127,8 +136,8 @@ func _build() -> void:
 			if not bool(e.get("visible", true)):
 				c.visible = false
 			root.add_child(c)
-	# combat text sits behind the frames
-	for c: Control in _all_of_type("combat_text"):
+	# nameplates and combat text sit behind the frames, combat text over the plates
+	for c: Control in _all_of_type("nameplates") + _all_of_type("combat_text"):
 		root.move_child(c, 0)
 	event_text = EventText.new()
 	event_text.name = "EventText"
@@ -154,6 +163,10 @@ func bind(p_controller: PlayerController, camera: Camera3D = null, p_renderer: W
 		ct.camera = camera
 		if renderer != null:
 			ct.position_of = renderer.drawn_position
+	for np: Nameplates in _all_of_type("nameplates"):
+		np.camera = camera
+		if renderer != null:
+			np.position_of = renderer.drawn_position
 	_sync_bar_actions()
 
 
@@ -211,6 +224,8 @@ func update(delta: float) -> void:
 				(elements[id] as MatchTimer).set_view(view)
 			"loss_of_control":
 				(elements[id] as LossOfControlAlert).set_view(view)
+			"nameplates":
+				(elements[id] as Nameplates).set_view(view, target_id(), failures, clock)
 	_hide_after_end()  # last, so per-element updates cannot show them again
 
 
@@ -299,6 +314,14 @@ func _on_setting(p: String, v: Variant) -> void:
 			interface["combat_text"] = bool(v)
 			for ct: CombatText in _all_of_type("combat_text"):
 				ct.visible = bool(v)
+		"interface.nameplates", "interface.nameplate_cast_bars", "interface.nameplate_debuffs":
+			interface[p.get_slice(".", 1)] = bool(v)
+			for np: Nameplates in _all_of_type("nameplates"):
+				np.visible = bool(interface.get("nameplates", true))
+				np.show_cast_bars = bool(interface.get("nameplate_cast_bars", true))
+				np.show_auras = bool(interface.get("nameplate_debuffs", true))
+				np.queue_redraw()
+			return
 		"interface.aura_scale", "interface.tooltip_position":
 			interface[p.get_slice(".", 1)] = v
 		"accessibility.colorblind":
@@ -549,6 +572,11 @@ func _on_frame_clicked(unit_id: int) -> void:
 		_play_click()
 
 
+func _on_frame_hovered(unit_id: int) -> void:
+	if controller != null:
+		controller.frame_mouseover = unit_id
+
+
 func _play_click() -> void:
 	clicks += 1
 	if renderer != null and renderer.audio != null:
@@ -604,9 +632,9 @@ func _on_event(ev: Dictionary) -> void:
 						ct.error(msg)
 		"cast_success":
 			if str(ev.get("ability", "")) == "break_free":
-				var cd: float = float(Data.abilities.get("break_free", {}).get("cooldown_s", 90.0))
-				break_free[src] = {"ready_tick": int(ev.get("tick", view["tick"])) + roundi(cd * rate),
-					"total_ticks": roundi(cd * rate)}
+				# the cooldown the server started (talents change it), else the data's
+				var cd: int = int(ev.get("cooldown_ticks", roundi(float(Data.abilities.get("break_free", {}).get("cooldown_s", 90.0)) * rate)))
+				break_free[src] = {"ready_tick": int(ev.get("tick", view["tick"])) + cd, "total_ticks": cd}
 
 
 func _combat_text(unit_id: int, text: String, col: Color, crit: bool) -> void:
@@ -660,11 +688,11 @@ func relayout() -> void:
 	var els: Dictionary = layout["elements"]
 	for id: String in elements:
 		var e: Dictionary = els[id]
-		if str(e["type"]) == "combat_text":
-			var ct: CombatText = elements[id]
-			ct.position = Vector2.ZERO
-			ct.size = screen
-			ct.ui_scale = s
+		if str(e["type"]) in WORLD_TYPES:  # drawn over units in the world: the whole screen, unscaled
+			var wc: Control = elements[id]
+			wc.position = Vector2.ZERO
+			wc.size = screen
+			wc.set("ui_scale", s)
 			continue
 		var k: float = s * float(e.get("scale", 1.0))
 		var a: Vector2 = ANCHORS.get(str(e["anchor"]), Vector2.ZERO)
@@ -695,7 +723,7 @@ func element_rects() -> Dictionary:
 		var ctrls: Array = elements[id] if elements[id] is Array else [elements[id]]
 		for i: int in ctrls.size():
 			var c: Control = ctrls[i]
-			if c is CombatText:
+			if c is CombatText or c is Nameplates:
 				continue
 			var ext: Rect2 = (c as UnitFrame).extent() if c is UnitFrame else Rect2(Vector2.ZERO, c.size)
 			out["%s_%d" % [id, i + 1] if elements[id] is Array else id] = Rect2(c.position + ext.position * c.scale,

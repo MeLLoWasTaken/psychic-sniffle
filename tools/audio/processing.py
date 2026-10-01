@@ -8,24 +8,35 @@ sound category, and per category a window for the peak-to-loudness ratio and its
 tests/test_audio.py checks on every file. A sound
 picks another chain with "processing": "<chain id>" in data/sounds/<id>.json, or "none".
 
+Every effect is own numpy/scipy code; the ones that replaced pedalboard (Spotify's wrapper of
+JUCE, whose native code crashed on some CI runners, KNOWN_ISSUES) follow JUCE's algorithms and
+match pedalboard 0.9.25's output to within about 1e-4 of the peak (most within 1e-6), so the
+sounds approved through pedalboard did not change audibly.
+
 The chain's input is normalised to a peak of 1.0 (0 dBFS). Compressor and limiter thresholds are
 relative to the peak of the signal reaching them (-18 = 18 dB below it), so an EQ boost or a
 transient shaper earlier in the chain does not change how hard they work.
 
 Effects ("fx") and their parameters:
   highpass / lowpass   hz, order (Butterworth, default 2)             rumble removal, top cut
-  low_shelf / high_shelf / peak   hz, gain_db, q (default 0.707)     tone shaping (pedalboard)
+  low_shelf / high_shelf / peak   hz, gain_db, q (default 0.707)     tone shaping (biquads with the
+              formulas of JUCE's IIR filters, which pedalboard used)
   saturate    drive_db, mix, band [lo, hi] (optional)                 parallel tanh saturation of the
-              band (or the whole sound), level-matched: out = x + mix * (sat(src) - src)
+              band (or the whole sound), level-matched: out = x + mix * (sat(src) - src); sat is
+              tanh(drive * x), as JUCE's Gain + WaveShaper (pedalboard's Distortion)
   transient   attack_db, sustain_db, fast_ms (1), slow_ms (25)       transient shaper: gain follows
               the ratio of a fast and a slow envelope (onsets louder, tails quieter or louder)
-  compressor  threshold_db, ratio, attack_ms, release_ms, mix (1)     (pedalboard)
+  compressor  threshold_db, ratio, attack_ms, release_ms, mix (1)     peak-detecting compressor, hard
+              knee (juce::dsp::Compressor with its BallisticsFilter)
   limiter     threshold_db, release_ms, lookahead_ms (1.5)           look-ahead peak limiter, smooth
               gain, no hard clipping (own code: pedalboard's Limiter hard-clips at its ceiling)
-  chorus      rate_hz, depth, centre_delay_ms, feedback, mix          (pedalboard)
-  phaser      rate_hz, depth, centre_hz, feedback, mix                (pedalboard)
-  room        room_size, damping, wet, dry (1)                        algorithmic reverb (pedalboard's
-              Freeverb, the same family as Godot's AudioEffectReverb on the arena bus)
+  chorus      rate_hz, depth, centre_delay_ms, feedback, mix          sine-modulated delay line with
+              linear interpolation and feedback (juce::dsp::Chorus)
+  phaser      rate_hz, depth, centre_hz, feedback, mix                six swept first-order allpass
+              stages with feedback (juce::dsp::Phaser)
+  room        room_size, damping, wet, dry (1)                        algorithmic reverb (juce::Reverb,
+              i.e. Freeverb, the same family as Godot's AudioEffectReverb on the arena bus; no chain
+              uses it at present)
   plate       decay_s (time to -60 dB), predelay_ms, damping_hz, wet  convolution with a generated
               plate-like impulse (dense noise, highs dying faster than lows), energy-normalised
   varispeed   semitones [lo, hi]                                     per variation, a seeded pitch
@@ -96,11 +107,6 @@ def chain_for(recipe: dict, data: dict | None = None) -> list[dict]:
 
 # ----------------------------------------------------------------------------- effects
 
-def _pb(plugins: list, x: np.ndarray) -> np.ndarray:
-    import pedalboard
-    return pedalboard.Pedalboard(plugins)(x.astype(np.float32), SR).astype(np.float64)
-
-
 def _butter(x: np.ndarray, fx: dict, kind: str) -> np.ndarray:
     sos = signal.butter(int(fx.get("order", 2)), float(fx["hz"]), btype=kind, fs=SR, output="sos")
     return signal.sosfilt(sos, x)
@@ -139,15 +145,190 @@ def _rms(x: np.ndarray) -> float:
     return float(np.sqrt(np.mean(x ** 2)) + 1e-12)
 
 
+# Own versions of the JUCE dsp effects pedalboard wrapped (Distortion, Compressor, Chorus, Phaser,
+# Reverb). pedalboard's native code died with "Illegal instruction" on some GitHub Actions CPUs
+# (KNOWN_ISSUES), so these follow JUCE 7's juce_dsp code step by step, in float32 where it matters
+# (oscillator phase, delay times, filter cutoffs), and match pedalboard's output to about 1e-6 of
+# the peak (the chorus to 1e-4: the wheel's sinf differs from a correctly rounded one by ~1e-6,
+# which moves a delay time by a float32 step now and then); tests/test_audio.py compares them with
+# pedalboard where it runs. They process one mono channel with the parameters fixed, as pedalboard
+# did (it resets every plugin per call, which snaps JUCE's parameter smoothing to its target).
+
+F32 = np.float32
+TWO_PI_F32 = F32(2.0 * np.pi)
+
+
+def juce_distortion(x: np.ndarray, drive_db: float) -> np.ndarray:
+    """juce::dsp::Gain then WaveShaper(tanh), as pedalboard.Distortion: tanh(x * gain), float32."""
+    gain = F32(10.0) ** (F32(drive_db) * F32(0.05))
+    return np.tanh(x.astype(F32) * gain).astype(np.float64)
+
+
+def juce_compressor(x: np.ndarray, threshold_db: float, ratio: float, attack_ms: float,
+                    release_ms: float) -> np.ndarray:
+    """juce::dsp::Compressor: a peak BallisticsFilter (attack when the level rises, release when it
+    falls), then gain = (env / threshold) ** (1 / ratio - 1) above the threshold."""
+    exp_factor = -2.0 * np.pi * 1000.0 / SR
+
+    def cte(ms: float) -> float:
+        return 0.0 if ms < 1e-3 else float(F32(np.exp(exp_factor / float(F32(ms)))))
+
+    c_att, c_rel = cte(attack_ms), cte(release_ms)
+    rect = np.abs(x.astype(F32)).astype(np.float64).tolist()
+    env = rect  # overwritten in place: env[i] only needs rect[i] and env[i - 1]
+    y = 0.0
+    for i, v in enumerate(rect):
+        y = v + (c_att if v > y else c_rel) * (y - v)
+        env[i] = y
+    env = np.array(env)
+    thr = float(F32(10.0) ** (F32(threshold_db) * F32(0.05)))
+    gain = np.ones_like(env)
+    over = env >= thr
+    gain[over] = (env[over] / thr) ** (1.0 / float(F32(ratio)) - 1.0)
+    return gain * x.astype(F32)
+
+
+def juce_oscillator(n: int, rate_hz: float, sr: float) -> np.ndarray:
+    """n values of juce::dsp::Oscillator with sin as its function: sin(phase - pi), the phase
+    starting at 0 and advancing by 2*pi*rate/sr per value, accumulated and wrapped in float32 like
+    juce::dsp::Phase (float32 rounding shifts the LFO by several samples over a second)."""
+    inc = (TWO_PI_F32 / F32(sr)) * F32(rate_hz)
+    phases = np.empty(n, dtype=F32)
+    p = F32(0.0)
+    i = 0
+    while i < n:
+        m = min(n - i, int((float(TWO_PI_F32) - float(p)) / max(float(inc), 1e-30)) + 3)
+        seg = np.full(m, inc, dtype=F32)
+        seg[0] = p
+        seg = np.cumsum(seg, dtype=F32)  # sequential float32 adds, like the C++ loop
+        wrap = np.nonzero(seg >= TWO_PI_F32)[0]
+        if len(wrap) == 0:
+            phases[i:i + m] = seg
+            p = seg[-1] + inc
+            i += m
+            if p >= TWO_PI_F32:
+                p = p - TWO_PI_F32
+            continue
+        j = int(wrap[0])
+        phases[i:i + j] = seg[:j]
+        p = seg[j] - TWO_PI_F32
+        i += j
+    return np.sin((phases - F32(np.pi)).astype(np.float64)).astype(F32)  # sinf, correctly rounded
+
+
+def juce_chorus(x: np.ndarray, rate_hz: float, depth: float, centre_delay_ms: float,
+                feedback: float) -> np.ndarray:
+    """juce::dsp::Chorus at mix 1: a linearly interpolated delay line whose delay swings
+    20 ms * depth/2 * sin around the centre delay (at least 1 ms), with feedback subtracted from the
+    input. Computed in blocks shorter than the shortest delay, so the feedback needs no
+    per-sample loop."""
+    n = len(x)
+    if n == 0:
+        return np.zeros(0)
+    centre = F32(min(max(centre_delay_ms, 1.0), 100.0))
+    lfo = juce_oscillator(n, rate_hz, SR) * (F32(depth) * F32(0.5))
+    # 20 * lfo + centre in one rounding: the pedalboard wheel was built with fused multiply-add
+    ms = np.maximum(1.0, 20.0 * lfo.astype(np.float64) + float(centre)).astype(F32)
+    d = (ms.astype(np.float64) * SR / 1000.0).astype(F32)
+    d_int = np.floor(d).astype(np.int64)
+    frac = (d - d_int.astype(F32)).astype(np.float64)
+    fb = float(F32(feedback))
+    xin = x.astype(F32).astype(np.float64)
+    w = np.zeros(n)  # what goes into the delay line: input minus fed-back output
+    y = np.zeros(n)
+    step = int(d_int.min())
+    idx = np.arange(n)
+    for s in range(0, n, step):
+        e = min(n, s + step)
+        i1 = idx[s:e] - d_int[s:e]
+        v1 = np.where(i1 >= 0, w[np.maximum(i1, 0)], 0.0)
+        v2 = np.where(i1 - 1 >= 0, w[np.maximum(i1 - 1, 0)], 0.0)
+        y[s:e] = v1 + frac[s:e] * (v2 - v1)
+        prev = np.concatenate([[y[s - 1] if s > 0 else 0.0], y[s:e - 1]])
+        w[s:e] = xin[s:e] - fb * prev
+    return y
+
+
+def juce_phaser(x: np.ndarray, rate_hz: float, depth: float, centre_hz: float, feedback: float) -> np.ndarray:
+    """juce::dsp::Phaser at mix 1: six first-order TPT allpass stages sharing one cutoff, which an
+    LFO (updated every 4 samples) sweeps on a log scale from 20 Hz to 20 kHz around the centre
+    frequency; the output, times feedback, is subtracted from the next input."""
+    lo, hi = F32(20.0), F32(20000.0)
+    log_lo, log_hi = np.log10(lo), np.log10(hi)
+    norm_centre = (np.log10(F32(centre_hz)) - log_lo) / (log_hi - log_lo)
+    n = len(x)
+    lfo = juce_oscillator((n + 3) // 4, rate_hz, SR / 4) * (F32(depth) * F32(0.5))
+    v = np.clip(lfo + norm_centre, F32(0.0), F32(1.0))
+    cutoff = F32(10.0) ** (v * (log_hi - log_lo) + log_lo)
+    g = np.tan(np.pi * cutoff.astype(np.float64) / SR).astype(F32)
+    big_g = (g / (F32(1.0) + g)).astype(np.float64).tolist()
+    fb = float(F32(feedback))
+    xin = x.astype(F32).astype(np.float64).tolist()
+    out = [0.0] * n
+    s1 = s2 = s3 = s4 = s5 = s6 = 0.0
+    last = 0.0
+    gg = 0.0
+    for i in range(n):
+        if i & 3 == 0:
+            gg = big_g[i >> 2]
+        u = xin[i] - last
+        v_ = gg * (u - s1); yy = v_ + s1; s1 = yy + v_; u = 2.0 * yy - u  # noqa: E702
+        v_ = gg * (u - s2); yy = v_ + s2; s2 = yy + v_; u = 2.0 * yy - u  # noqa: E702
+        v_ = gg * (u - s3); yy = v_ + s3; s3 = yy + v_; u = 2.0 * yy - u  # noqa: E702
+        v_ = gg * (u - s4); yy = v_ + s4; s4 = yy + v_; u = 2.0 * yy - u  # noqa: E702
+        v_ = gg * (u - s5); yy = v_ + s5; s5 = yy + v_; u = 2.0 * yy - u  # noqa: E702
+        v_ = gg * (u - s6); yy = v_ + s6; s6 = yy + v_; u = 2.0 * yy - u  # noqa: E702
+        out[i] = u
+        last = u * fb
+    return np.array(out)
+
+
+FREEVERB_COMBS = (1116, 1188, 1277, 1356, 1422, 1491, 1557, 1617)  # samples at 44.1 kHz
+FREEVERB_ALLPASSES = (556, 441, 341, 225)
+
+
+def juce_reverb(x: np.ndarray, room_size: float, damping: float) -> np.ndarray:
+    """The wet output of juce::Reverb (Freeverb) on one channel at width 0, as pedalboard.Reverb
+    with wet_level 1, dry_level 0: 8 damped feedback combs in parallel into 4 allpasses in series.
+    Each comb and allpass is computed in blocks of its own length (its feedback is that late)."""
+    damp = float(F32(damping) * F32(0.4))
+    fb = float(F32(room_size) * F32(0.28) + F32(0.7))
+    inp = x.astype(F32).astype(np.float64) * float(F32(0.015))
+    n = len(x)
+    acc = np.zeros(n)
+    for tuning in FREEVERB_COMBS:
+        size = (SR * tuning) // 44100
+        w = np.zeros(n + size)  # w[k + size] is what was written at sample k; the first size are 0
+        last = 0.0
+        for s in range(0, n, size):
+            e = min(n, s + size)
+            out = w[s:e]  # written `size` samples ago
+            lp, _ = signal.lfilter([1.0 - damp], [1.0, -damp], out, zi=[damp * last])
+            last = float(lp[-1])
+            w[s + size:e + size] = inp[s:e] + lp * fb
+            acc[s:e] += out
+    y = acc
+    for tuning in FREEVERB_ALLPASSES:
+        size = (SR * tuning) // 44100
+        t = np.zeros(n + size)
+        out = np.empty(n)
+        for s in range(0, n, size):
+            e = min(n, s + size)
+            buffered = t[s:e]
+            t[s + size:e + size] = y[s:e] + buffered * 0.5
+            out[s:e] = buffered - y[s:e]
+        y = out
+    return y * float(F32(1.5))
+
+
 def _saturate(x: np.ndarray, fx: dict) -> np.ndarray:
-    import pedalboard
     if "band" in fx:
         lo, hi = fx["band"]
         src = signal.sosfilt(signal.butter(2, [lo, hi], btype="band", fs=SR, output="sos"), x)
     else:
         src = x
     peak = np.max(np.abs(src)) + 1e-12
-    wet = _pb([pedalboard.Distortion(drive_db=float(fx["drive_db"]))], src / peak)
+    wet = juce_distortion(src / peak, float(fx["drive_db"]))
     wet *= _rms(src) / _rms(wet)  # level-matched: saturation adds harmonics, not loudness
     return x + float(fx.get("mix", 0.5)) * (wet - src)
 
@@ -173,9 +354,8 @@ def _peak_db(x: np.ndarray) -> float:
 
 
 def _compressor(x: np.ndarray, fx: dict) -> np.ndarray:
-    import pedalboard
-    return _pb([pedalboard.Compressor(threshold_db=_peak_db(x) + float(fx["threshold_db"]), ratio=float(fx["ratio"]),
-                                      attack_ms=float(fx["attack_ms"]), release_ms=float(fx["release_ms"]))], x)
+    return juce_compressor(x, _peak_db(x) + float(fx["threshold_db"]), float(fx["ratio"]),
+                           float(fx["attack_ms"]), float(fx["release_ms"]))
 
 
 def _limiter(x: np.ndarray, fx: dict) -> np.ndarray:
@@ -199,23 +379,17 @@ def _limiter(x: np.ndarray, fx: dict) -> np.ndarray:
 
 
 def _chorus(x: np.ndarray, fx: dict) -> np.ndarray:
-    import pedalboard
-    return _pb([pedalboard.Chorus(rate_hz=float(fx["rate_hz"]), depth=float(fx["depth"]),
-                                  centre_delay_ms=float(fx.get("centre_delay_ms", 7.0)),
-                                  feedback=float(fx.get("feedback", 0.0)), mix=1.0)], x)
+    return juce_chorus(x, float(fx["rate_hz"]), float(fx["depth"]), float(fx.get("centre_delay_ms", 7.0)),
+                       float(fx.get("feedback", 0.0)))
 
 
 def _phaser(x: np.ndarray, fx: dict) -> np.ndarray:
-    import pedalboard
-    return _pb([pedalboard.Phaser(rate_hz=float(fx["rate_hz"]), depth=float(fx["depth"]),
-                                  centre_frequency_hz=float(fx.get("centre_hz", 1300.0)),
-                                  feedback=float(fx.get("feedback", 0.0)), mix=1.0)], x)
+    return juce_phaser(x, float(fx["rate_hz"]), float(fx["depth"]), float(fx.get("centre_hz", 1300.0)),
+                       float(fx.get("feedback", 0.0)))
 
 
 def _room(x: np.ndarray, fx: dict) -> np.ndarray:
-    import pedalboard
-    wet = _pb([pedalboard.Reverb(room_size=float(fx["room_size"]), damping=float(fx["damping"]),
-                                 wet_level=1.0, dry_level=0.0, width=0.0)], x)
+    wet = juce_reverb(x, float(fx["room_size"]), float(fx["damping"]))
     return float(fx.get("dry", 1.0)) * x + float(fx["wet"]) * wet
 
 

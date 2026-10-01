@@ -1,27 +1,27 @@
 {
  "bleed_tick": {
-  "hash": "a07f24d8ff84875e",
+  "hash": "fc56d0f784ad913d",
   "files": [
    "bleed_tick"
   ],
   "category": "impact"
  },
  "bloody_resolve": {
-  "hash": "0798ca7c67610678",
+  "hash": "69ea136e480e8aab",
   "files": [
    "bloody_resolve"
   ],
   "category": "heal"
  },
  "break_free": {
-  "hash": "4aa0cca0aac0f844",
+  "hash": "b85ce22276a24e8c",
   "files": [
    "break_free"
   ],
   "category": "release"
  },
  "castigate_impact": {
-  "hash": "56def149d5044ead",
+  "hash": "046b886c36cef0df",
   "files": [
    "castigate_impact_01",
    "castigate_impact_02"
@@ -29,84 +29,84 @@
   "category": "impact"
  },
  "cc_incoming": {
-  "hash": "089b80a4b982c308",
+  "hash": "03975d04cf82a427",
   "files": [
    "cc_incoming"
   ],
   "category": "warning"
  },
  "cc_warning": {
-  "hash": "f7f045e2d81521c3",
+  "hash": "34037d4636508271",
   "files": [
    "cc_warning"
   ],
   "category": "warning"
  },
  "chains_of_awe_impact": {
-  "hash": "d98ac94bca04d926",
+  "hash": "9ce5d3e1c7c3dcc9",
   "files": [
    "chains_of_awe_impact"
   ],
   "category": "impact"
  },
  "chains_of_awe_release": {
-  "hash": "97255387c9b10611",
+  "hash": "b96583acf1bdc6c6",
   "files": [
    "chains_of_awe_release"
   ],
   "category": "release"
  },
  "charge_impact": {
-  "hash": "47545bd465c0c359",
+  "hash": "a537abda36ffb8e5",
   "files": [
    "charge_impact"
   ],
   "category": "impact"
  },
  "charge_rush": {
-  "hash": "11c0116b670ad259",
+  "hash": "bbc73f387814530e",
   "files": [
    "charge_rush"
   ],
   "category": "release"
  },
  "deep_winter": {
-  "hash": "81dd82ae74b38692",
+  "hash": "9dcd0609b78da0cc",
   "files": [
    "deep_winter"
   ],
   "category": "buff"
  },
  "dispel_frost": {
-  "hash": "9a973920daaf667d",
+  "hash": "465a46dbf5f03c3b",
   "files": [
    "dispel_frost"
   ],
   "category": "release"
  },
  "dispel_holy": {
-  "hash": "ad282a4323d8590a",
+  "hash": "12c621bcf446dc57",
   "files": [
    "dispel_holy"
   ],
   "category": "release"
  },
  "dispel_impact": {
-  "hash": "512aac866b40937e",
+  "hash": "89696d643c98f2ac",
   "files": [
    "dispel_impact"
   ],
   "category": "impact"
  },
  "dread_roar": {
-  "hash": "2fd691f4241d8f42",
+  "hash": "474f1c150b81eca8",
   "files": [
    "dread_roar"
   ],
   "category": "release"
  },
  "footstep_cloth": {
-  "hash": "6ea5a49c27bfa98d",
+  "hash": "87586c17509a562c",
   "files": [
    "footstep_cloth_01",
    "footstep_cloth_02",
@@ -116,7 +116,7 @@
   "category": "footstep"
  },
  "footstep_plate": {
-  "hash": "9d4f8d24d7d6a481",
+  "hash": "91982e58fda62248",
   "files": [
    "footstep_plate_01",
    "footstep_plate_02",
@@ -126,35 +126,35 @@
   "category": "footstep"
  },
  "frost_cast_loop": {
-  "hash": "aa35bb53cebd1db4",
+  "hash": "2faaca65ac21508f",
   "files": [
    "frost_cast_loop"
   ],
   "category": "loop"
  },
  "frost_cast_start": {
-  "hash": "f89175753d3565d5",
+  "hash": "976dee3afaceba19",
   "files": [
    "frost_cast_start"
   ],
   "category": "cast"
  },
  "frost_channel_loop": {
-  "hash": "0f9a881ad8088350",
+  "hash": "f2b72055467c1263",
   "files": [
    "frost_channel_loop"
   ],
   "category": "loop"
  },
  "frost_effigy_impact": {
-  "hash": "61db391d9557c208",
+  "hash": "522f5da7cbe2a373",
   "files": [
    "frost_effigy_impact"
   ],
   "category": "impact"
  },
  "frost_hit_small": {
-  "hash": "144ee01e5534a1db",
+  "hash": "7ed3190b4d50b447",
   "files": [
    "frost_hit_small_01",
    "frost_hit_small_02",
@@ -163,14 +163,14 @@
   "category": "impact"
  },
  "frost_step": {
-  "hash": "bfdd7ac9567a2694",
+  "hash": "24c4f086c15ce212",
   "files": [
    "frost_step"
   ],
   "category": "release"
  },
  "gash_wet": {
-  "hash": "04421968237e3ca0",
+  "hash": "490396e41a11b9c5",
   "files": [
    "gash_wet_01",
    "gash_wet_02"
@@ -178,14 +178,14 @@
   "category": "impact"
  },
  "glacier_shield": {
-  "hash": "3e436197b550763c",
+  "hash": "2aeb8991de33421f",
   "files": [
    "glacier_shield"
   ],
   "category": "buff"
  },
  "hail_impact": {
-  "hash": "8f48c2e3cdc636d2",
+  "hash": "f2b9f8c612918ae9",
   "files": [
    "hail_impact_01",
    "hail_impact_02",
@@ -194,63 +194,63 @@
   "category": "impact"
  },
  "headsmans_verdict_impact": {
-  "hash": "af4b5cf1e2c6b193",
+  "hash": "6f3a63537e1d7c95",
   "files": [
    "headsmans_verdict_impact"
   ],
   "category": "impact"
  },
  "heal_chorus": {
-  "hash": "6e92d0ee1dc97715",
+  "hash": "93d83c197ebae258",
   "files": [
    "heal_chorus"
   ],
   "category": "heal"
  },
  "heal_hot_apply": {
-  "hash": "545a86715cf0eef0",
+  "hash": "6c56f9e92eb505c3",
   "files": [
    "heal_hot_apply"
   ],
   "category": "heal"
  },
  "heal_hot_tick": {
-  "hash": "c201ccaf35a099f1",
+  "hash": "b65b73314d852180",
   "files": [
    "heal_hot_tick"
   ],
   "category": "heal"
  },
  "heal_quick": {
-  "hash": "dbba41796cac3527",
+  "hash": "c56d8debdd81bffe",
   "files": [
    "heal_quick"
   ],
   "category": "heal"
  },
  "heal_release": {
-  "hash": "72ae89ea77b5f6b2",
+  "hash": "8b1aa20169d51119",
   "files": [
    "heal_release"
   ],
   "category": "release"
  },
  "heartfreeze_impact": {
-  "hash": "e45a7ae9d265fe16",
+  "hash": "ac40c51a750ae29e",
   "files": [
    "heartfreeze_impact"
   ],
   "category": "impact"
  },
  "heartfreeze_release": {
-  "hash": "9680d046db269480",
+  "hash": "a6a6986cd966e0c1",
   "files": [
    "heartfreeze_release"
   ],
   "category": "release"
  },
  "hit_greatsword_cloth": {
-  "hash": "2da90f52acf1e776",
+  "hash": "1cd76b8637af3f17",
   "files": [
    "hit_greatsword_cloth_01",
    "hit_greatsword_cloth_02",
@@ -259,7 +259,7 @@
   "category": "impact"
  },
  "hit_greatsword_plate": {
-  "hash": "f82fe0ec73ab4911",
+  "hash": "c4f152a2031e0dec",
   "files": [
    "hit_greatsword_plate_01",
    "hit_greatsword_plate_02",
@@ -268,7 +268,7 @@
   "category": "impact"
  },
  "hit_mace_cloth": {
-  "hash": "f82b502722c2915b",
+  "hash": "ff7bb781da87e828",
   "files": [
    "hit_mace_cloth_01",
    "hit_mace_cloth_02",
@@ -277,7 +277,7 @@
   "category": "impact"
  },
  "hit_mace_plate": {
-  "hash": "41c75c3775598408",
+  "hash": "296939f90514e772",
   "files": [
    "hit_mace_plate_01",
    "hit_mace_plate_02",
@@ -286,7 +286,7 @@
   "category": "impact"
  },
  "hit_staff_cloth": {
-  "hash": "c6ac62fb618023ae",
+  "hash": "9c7b854c6e3dbf53",
   "files": [
    "hit_staff_cloth_01",
    "hit_staff_cloth_02",
@@ -295,7 +295,7 @@
   "category": "impact"
  },
  "hit_staff_plate": {
-  "hash": "87c723c1cfe77f79",
+  "hash": "cb3344ab15201d51",
   "files": [
    "hit_staff_plate_01",
    "hit_staff_plate_02",
@@ -304,42 +304,42 @@
   "category": "impact"
  },
  "holy_cast_loop": {
-  "hash": "2b21d9b70af09969",
+  "hash": "5a62f4bb60ee1d30",
   "files": [
    "holy_cast_loop"
   ],
   "category": "loop"
  },
  "holy_cast_start": {
-  "hash": "a83c0ce2585a5466",
+  "hash": "424afef3b4c4c941",
   "files": [
    "holy_cast_start"
   ],
   "category": "cast"
  },
  "holy_heal": {
-  "hash": "92426bc8dff4e905",
+  "hash": "e88068ab8605425e",
   "files": [
    "holy_heal"
   ],
   "category": "heal"
  },
  "holy_release": {
-  "hash": "c2076d83bc00f683",
+  "hash": "9b79ee7497dd1b1b",
   "files": [
    "holy_release"
   ],
   "category": "release"
  },
  "hush": {
-  "hash": "95c333ab78254fba",
+  "hash": "2623f9a7923ae86a",
   "files": [
    "hush"
   ],
   "category": "release"
  },
  "impact_blunt": {
-  "hash": "f3d51fe88c315417",
+  "hash": "be372500be7b4109",
   "files": [
    "impact_blunt_01",
    "impact_blunt_02",
@@ -348,7 +348,7 @@
   "category": "impact"
  },
  "impact_pierce": {
-  "hash": "f402e79fe3a00e01",
+  "hash": "5cbff8312b8848d2",
   "files": [
    "impact_pierce_01",
    "impact_pierce_02",
@@ -357,7 +357,7 @@
   "category": "impact"
  },
  "impact_slash": {
-  "hash": "7e1cd4931c2df7dd",
+  "hash": "f435280a72cc2773",
   "files": [
    "impact_slash_01",
    "impact_slash_02",
@@ -366,14 +366,14 @@
   "category": "impact"
  },
  "interrupt_impact": {
-  "hash": "b1250e1b5f9e3ec6",
+  "hash": "90d4f510b42e7c87",
   "files": [
    "interrupt_impact"
   ],
   "category": "impact"
  },
  "land_cloth": {
-  "hash": "f64d10a220ea9087",
+  "hash": "8e8d58af1cd907a5",
   "files": [
    "land_cloth_01",
    "land_cloth_02"
@@ -381,7 +381,7 @@
   "category": "footstep"
  },
  "land_plate": {
-  "hash": "771f5744c4f87b0b",
+  "hash": "25b53da7e8d37097",
   "files": [
    "land_plate_01",
    "land_plate_02"
@@ -389,28 +389,28 @@
   "category": "footstep"
  },
  "pommel_crack_impact": {
-  "hash": "b9e7e069e3242d55",
+  "hash": "c007dbff6ef5ea84",
   "files": [
    "pommel_crack_impact"
   ],
   "category": "impact"
  },
  "psalm_of_dread": {
-  "hash": "6dd05c1b7810b2ad",
+  "hash": "180e4c1acb86cf1a",
   "files": [
    "psalm_of_dread"
   ],
   "category": "release"
  },
  "red_mist": {
-  "hash": "80afbf9372491645",
+  "hash": "c87664118fcf9521",
   "files": [
    "red_mist"
   ],
   "category": "buff"
  },
  "rime_bolt_impact": {
-  "hash": "28e12c0b60021bdd",
+  "hash": "f01c08320880badc",
   "files": [
    "rime_bolt_impact_01",
    "rime_bolt_impact_02"
@@ -418,35 +418,35 @@
   "category": "impact"
  },
  "rime_bolt_release": {
-  "hash": "8682ad34fdcbd129",
+  "hash": "72c919dab64ef1a9",
   "files": [
    "rime_bolt_release"
   ],
   "category": "release"
  },
  "rime_fan_release": {
-  "hash": "a21c94fab79f3dd0",
+  "hash": "0687f052100ce925",
   "files": [
    "rime_fan_release"
   ],
   "category": "release"
  },
  "rime_sepulcher": {
-  "hash": "4a32487cfe3936bd",
+  "hash": "91432b1382d2ed20",
   "files": [
    "rime_sepulcher"
   ],
   "category": "buff"
  },
  "rimebind_release": {
-  "hash": "09dc872b070a44b3",
+  "hash": "4291aac19baf35a5",
   "files": [
    "rimebind_release"
   ],
   "category": "release"
  },
  "root_ice_impact": {
-  "hash": "b0d751b9017ff9c2",
+  "hash": "2e184c2e97737ef8",
   "files": [
    "root_ice_impact_01",
    "root_ice_impact_02"
@@ -454,49 +454,49 @@
   "category": "impact"
  },
  "seraphic_surge": {
-  "hash": "66f0348d17b49d5d",
+  "hash": "6e80c1926f0786ab",
   "files": [
    "seraphic_surge"
   ],
   "category": "buff"
  },
  "shield_breaker_impact": {
-  "hash": "238893ab8377bb01",
+  "hash": "04032e7e6e1a08d9",
   "files": [
    "shield_breaker_impact"
   ],
   "category": "impact"
  },
  "shield_breaker_release": {
-  "hash": "e99042d61c571068",
+  "hash": "e24a5ee5822d3a29",
   "files": [
    "shield_breaker_release"
   ],
   "category": "release"
  },
  "shiver_lance_impact": {
-  "hash": "c0b0b390bd876ed7",
+  "hash": "a455647363d784a8",
   "files": [
    "shiver_lance_impact"
   ],
   "category": "impact"
  },
  "shiver_lance_release": {
-  "hash": "ba62ab40b0147e82",
+  "hash": "c8444d6c670878d3",
   "files": [
    "shiver_lance_release"
   ],
   "category": "release"
  },
  "spellsever_release": {
-  "hash": "abb891685b0d5939",
+  "hash": "2126730f3e0b8bf5",
   "files": [
    "spellsever_release"
   ],
   "category": "release"
  },
  "swing_greatsword": {
-  "hash": "0a0f4fce96a9443e",
+  "hash": "252f79ac17589130",
   "files": [
    "swing_greatsword_01",
    "swing_greatsword_02",
@@ -505,7 +505,7 @@
   "category": "swing"
  },
  "swing_greatsword_wide": {
-  "hash": "3b0d28d2a947705a",
+  "hash": "cf2f702d6ddf5669",
   "files": [
    "swing_greatsword_wide_01",
    "swing_greatsword_wide_02"
@@ -513,7 +513,7 @@
   "category": "swing"
  },
  "swing_mace": {
-  "hash": "0546e116dab01f71",
+  "hash": "1d8693443a955a1a",
   "files": [
    "swing_mace_01",
    "swing_mace_02",
@@ -522,7 +522,7 @@
   "category": "swing"
  },
  "swing_staff": {
-  "hash": "5f9d0c11d94ef57b",
+  "hash": "ca4e9822ca673428",
   "files": [
    "swing_staff_01",
    "swing_staff_02",
@@ -531,70 +531,70 @@
   "category": "swing"
  },
  "throat_punch_impact": {
-  "hash": "6915b5b25ee02d75",
+  "hash": "3c9d1a35a66f7741",
   "files": [
    "throat_punch_impact"
   ],
   "category": "impact"
  },
  "ui_click": {
-  "hash": "c15149ce68b500ab",
+  "hash": "7b4a989aa3c48942",
   "files": [
    "ui_click"
   ],
   "category": "interface"
  },
  "ui_error": {
-  "hash": "efd9e2ef4726710b",
+  "hash": "2a3b8825d327002d",
   "files": [
    "ui_error"
   ],
   "category": "interface"
  },
  "ui_target": {
-  "hash": "549321446d9f3ddb",
+  "hash": "c19f2d8a0cd8e837",
   "files": [
    "ui_target"
   ],
   "category": "interface"
  },
  "unbroken_stance": {
-  "hash": "910b4ec9d7581003",
+  "hash": "e788e9fb83edb05e",
   "files": [
    "unbroken_stance"
   ],
   "category": "buff"
  },
  "veil_of_faith": {
-  "hash": "380b52142a4f04c6",
+  "hash": "184a7c8fa2f6f7c2",
   "files": [
    "veil_of_faith"
   ],
   "category": "buff"
  },
  "waning_light": {
-  "hash": "5d10f4a1f1201bab",
+  "hash": "442bc199c68fbb41",
   "files": [
    "waning_light"
   ],
   "category": "buff"
  },
  "winged_stride": {
-  "hash": "1b86df3f47ebcce8",
+  "hash": "520df8582532a7f7",
   "files": [
    "winged_stride"
   ],
   "category": "buff"
  },
  "winters_lash_impact": {
-  "hash": "c2f4007c5f2cfca6",
+  "hash": "ad7a6348b696d90f",
   "files": [
    "winters_lash_impact"
   ],
   "category": "impact"
  },
  "winters_lash_release": {
-  "hash": "239b6d364483c5a2",
+  "hash": "c69e93a915608a30",
   "files": [
    "winters_lash_release"
   ],

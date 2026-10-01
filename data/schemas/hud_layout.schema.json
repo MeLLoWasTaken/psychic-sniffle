@@ -16,7 +16,7 @@
       "additionalProperties": false,
       "required": ["type", "anchor", "offset"],
       "properties": {
-        "type": {"enum": ["action_bar", "unit_frame", "cast_bar", "match_timer", "loss_of_control", "combat_text"]},
+        "type": {"enum": ["action_bar", "unit_frame", "cast_bar", "match_timer", "loss_of_control", "combat_text", "nameplates"]},
         "anchor": {"enum": ["top_left", "top_center", "top_right", "center_left", "center", "center_right", "bottom_left", "bottom_center", "bottom_right"]},
         "offset": {"type": "array", "items": {"type": "number"}, "minItems": 2, "maxItems": 2},
         "scale": {"type": "number", "minimum": 0.5, "maximum": 2.0, "description": "Edit mode scale, 50 to 200% (DESIGN.md)"},
@@ -38,19 +38,26 @@
         "max_live": {"type": "integer", "minimum": 1, "maximum": 200},
         "lifetime_s": {"type": "number", "exclusiveMinimum": 0},
         "rise_px": {"type": "number"},
-        "height_m": {"type": "number", "minimum": 0}
+        "height_m": {"type": "number", "minimum": 0, "description": "combat_text and nameplates: metres above the unit's feet"},
+        "width_px": {"type": "number", "minimum": 60, "maximum": 300, "description": "nameplates: plate width"},
+        "health_px": {"type": "number", "minimum": 4, "maximum": 30, "description": "nameplates: health bar height"},
+        "cast_px": {"type": "number", "minimum": 10, "maximum": 30, "description": "nameplates: cast bar height"},
+        "aura_px": {"type": "number", "minimum": 12, "maximum": 48, "description": "nameplates: aura icon size (crowd control 20% larger)"},
+        "max_distance_m": {"type": "number", "exclusiveMinimum": 0, "description": "nameplates: units farther from the camera get no plate"},
+        "friendly": {"type": "boolean", "description": "nameplates: plates on allies too"}
       },
       "allOf": [
         {"if": {"properties": {"type": {"const": "action_bar"}}}, "then": {"required": ["action_prefix", "buttons", "columns", "button_px", "spacing_px"]}},
         {"if": {"properties": {"type": {"const": "unit_frame"}}}, "then": {"required": ["unit", "size", "cast_bar", "aura_side", "max_auras"]}},
         {"if": {"properties": {"type": {"const": "cast_bar"}}}, "then": {"required": ["unit", "size"]}},
         {"if": {"properties": {"type": {"enum": ["match_timer", "loss_of_control"]}}}, "then": {"required": ["size"]}},
-        {"if": {"properties": {"type": {"const": "combat_text"}}}, "then": {"required": ["max_live", "lifetime_s", "rise_px", "height_m"]}}
+        {"if": {"properties": {"type": {"const": "combat_text"}}}, "then": {"required": ["max_live", "lifetime_s", "rise_px", "height_m"]}},
+        {"if": {"properties": {"type": {"const": "nameplates"}}}, "then": {"required": ["height_m", "width_px", "health_px", "cast_px", "aura_px", "max_auras", "max_distance_m", "friendly"]}}
       ]
     }
   },
   "properties": {
-    "hide_on_match_end": {"type": "array", "items": {"enum": ["action_bar", "unit_frame", "cast_bar", "match_timer", "loss_of_control", "combat_text"]}, "description": "Element types hidden once the match has ended (the end banner and scoreboard take over)"},
+    "hide_on_match_end": {"type": "array", "items": {"enum": ["action_bar", "unit_frame", "cast_bar", "match_timer", "loss_of_control", "combat_text", "nameplates"]}, "description": "Element types hidden once the match has ended (the end banner and scoreboard take over)"},
     "id": {"$ref": "common.schema.json#/$defs/id"},
     "name": {"type": "string"},
     "description": {"type": "string"},

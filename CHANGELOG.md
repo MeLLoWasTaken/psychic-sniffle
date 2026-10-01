@@ -2,6 +2,22 @@
 
 One entry per build-loop iteration, newest first. Format: date, backlog ID, what changed, how it was checked.
 
+## 2026-10-01 — M2-14 arena HUD (nameplates, spec portraits), X-14 sound effects without pedalboard
+- Nameplates over every other unit: name in team colors, class-colored health with absorbs, cast bar, and up to four important auras (crowd control, major defensives and offensives, the player's own debuffs).
+  - The target's plate has a gold border and is larger; overlapping plates step apart.
+  - The three nameplate settings (plates, cast bars, auras) switch them while playing.
+  - A new HUD layout element type, `nameplates`, with its sizes in the layout data.
+- Unit frame portraits show the spec's icon (new `icon` field on specs) instead of initials.
+- A unit frame under the pointer counts as mouseover for keys set to the mouseover target mode.
+- The arena frames' Break Free box shows the enemy's real cooldown, talents included: cast events now carry the cooldown the server started.
+- A hosted server no longer ends a match whose host stalls while loading the map (it allowed only 15 s of silence after the hello).
+- X-14: the sound build's distortion, compressor, chorus, phaser and reverb are now our own code. pedalboard's native code crashed a CI run with an illegal instruction. The new code matches pedalboard within 1e-3 of peak (most effects within 1e-6), so the approved sounds stay as they were.
+- Checked:
+  - 7 new nameplate and arena HUD tests, a talent test for the cooldown in the event, a host timeout test;
+  - 6 new sound effect tests (comparisons with pedalboard in a separate process, and behaviour without it);
+  - all 346 Godot tests and all 587 Python tests pass;
+  - the 3v3 screenshot review waits for the reference video render (M2-14 stays open until then).
+
 ## 2026-10-01 — M2-13 settings suite
 - Settings (main menu, and the pause menu in a match) has Interface, Gameplay, Graphics, Audio, Accessibility and Key bindings pages with every setting DESIGN.md lists.
   - Each change applies at once: HUD scale and text size, aura size, combat text, tooltip position, mouse, turning, targeting, camera, field of view, render scale and FSR, quality presets, shadows, glow, ambient occlusion, fog, particle density, other players' effect opacity, window mode, vsync, frame cap, bus volumes, output device, mute in background, the crowd-control warning, color-blind team colors, larger text, reduced flashing, event text.

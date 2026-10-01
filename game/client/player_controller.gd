@@ -53,6 +53,7 @@ signal ability_pressed(ability_id: String, action: String)
 
 var _presses: Array[Dictionary] = []  ## {ability, action} pressed and not sent yet, oldest first
 var mouse_pos: Vector2 = Vector2(-1, -1)  ## the pointer on screen (mouseover target mode)
+var frame_mouseover: int = -1  ## the unit whose HUD frame is under the pointer (Hud sets it), or -1
 
 var _requests: Array = []  ## ["tab"], ["clear"], ["click", screen position], in arrival order
 var _press_pos: Dictionary = {}  ## "steer"/"orbit" -> screen position of the press
@@ -267,7 +268,7 @@ func next_input(dt: float, view: Dictionary = {}, camera: Camera3D = null, units
 
 
 ## The unit a key's target mode (Keybinds.target_mode) aims its ability at: the focus, the unit
-## under the pointer, the player, arena enemy 1 to 3 or party member 1 to 4 (the HUD frames'
+## under the pointer (in the world or on its HUD frame), the player, arena enemy 1 to 3 or party member 1 to 4 (the HUD frames'
 ## order, by unit id); -1 for the default (the target) or when that unit is missing.
 func ability_target_for(action: String, view: Dictionary, camera: Camera3D = null, units: Array = [],
 		geometry: ArenaGeometry = null) -> int:
@@ -278,6 +279,8 @@ func ability_target_for(action: String, view: Dictionary, camera: Camera3D = nul
 		"self":
 			return int(view.get("me", {}).get("id", -1))
 		"mouseover":
+			if frame_mouseover >= 0:
+				return frame_mouseover  # a unit frame under the pointer counts, as in the world
 			if camera == null or mouse_pos.x < 0.0:
 				return -1
 			return targeting.pick_at(camera, mouse_pos, units if not units.is_empty() else view.get("units", []), geometry)
