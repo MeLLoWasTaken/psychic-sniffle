@@ -27,12 +27,20 @@ func _init(p_geometry: ArenaGeometry) -> void:
 	rebuild()
 
 
-## Re-mark blocked cells (call when gates open or close).
+## Re-mark blocked cells (call when gates open or close, or a twist changes the arena). Flooded
+## cells cost more to cross by the inverse of the wading speed, so paths keep to dry ground when
+## it is not much longer (M2-09).
 func rebuild() -> void:
 	for x: int in size:
 		for z: int in size:
 			var p: Vector3 = cell_center(Vector2i(x, z))
 			_astar.set_point_solid(Vector2i(x, z), _blocked_at(p))
+			_astar.set_point_weight_scale(Vector2i(x, z), 1.0 / maxf(geometry.ground_speed(p), 0.05))
+
+
+## A key for what the grid was last built from (gates, twists); bots rebuild when it changes.
+func state_key() -> String:
+	return "%s|%s|%s" % [geometry.gates_open, geometry.removed_tags.keys(), not geometry.flood.is_empty()]
 
 
 func _blocked_at(p: Vector3) -> bool:
@@ -42,10 +50,10 @@ func _blocked_at(p: Vector3) -> bool:
 		return true
 	var q: Vector2 = Vector2(p.x, p.z)
 	for c: Dictionary in geometry.circles:
-		if q.distance_to(c["center"]) < float(c["radius"]) + r:
+		if geometry.stands(c) and q.distance_to(c["center"]) < float(c["radius"]) + r:
 			return true
 	for b: Dictionary in geometry.boxes:
-		if b["gate"] and geometry.gates_open:
+		if not geometry.stands(b):
 			continue
 		if q.x > b["min"].x - r and q.x < b["max"].x + r and q.y > b["min"].y - r and q.y < b["max"].y + r:
 			return true
@@ -98,10 +106,10 @@ func walkable(a: Vector3, b: Vector3) -> bool:
 	var pa: Vector2 = Vector2(a.x, a.z)
 	var pb: Vector2 = Vector2(b.x, b.z)
 	for c: Dictionary in geometry.circles:
-		if ArenaGeometry._segment_hits_circle(pa, pb, c["center"], float(c["radius"]) + grow):
+		if geometry.stands(c) and ArenaGeometry._segment_hits_circle(pa, pb, c["center"], float(c["radius"]) + grow):
 			return false
 	for bx: Dictionary in geometry.boxes:
-		if bx["gate"] and geometry.gates_open:
+		if not geometry.stands(bx):
 			continue
 		if ArenaGeometry._segment_hits_box(pa, pb, bx["min"] - Vector2.ONE * grow, bx["max"] + Vector2.ONE * grow):
 			return false

@@ -19,6 +19,7 @@ unmodified; the game renders them with its own colors, outline, shading and fram
 | arrow-wings | Delapouite | CC BY 3.0 | talent:pilgrims_benediction |
 | axe-sword | Delapouite | CC BY 3.0 | spec:warblade_carnage |
 | backward-time | Delapouite | CC BY 3.0 | talent:lasting_grace |
+| body-balance | Delapouite | CC BY 3.0 | aura:steady_footing |
 | brass-knuckles | Delapouite | CC BY 3.0 | talent:hard_knuckles |
 | cape-armor | Delapouite | CC BY 3.0 | aura:padded_lining_passive, talent:padded_lining |
 | charging-bull | Delapouite | CC BY 3.0 | ability:warpath_charge, aura:charge_dazed |
@@ -29,6 +30,7 @@ unmodified; the game renders them with its own colors, outline, shading and fram
 | executioner-hood | Delapouite | CC BY 3.0 | ability:headsmans_verdict |
 | extra-time | Delapouite | CC BY 3.0 | talent:peal_swiftness |
 | falling-star | Delapouite | CC BY 3.0 | talent:swift_plea |
+| fencer | Delapouite | CC BY 3.0 | aura:measured_blade |
 | frozen-body | Delapouite | CC BY 3.0 | ability:frost_effigy, aura:effigy_encased |
 | frozen-ring | Delapouite | CC BY 3.0 | ability:hoarfrost_snare, aura:hoarfrost_snared, talent:hoarfrost_snare_talent |
 | fur-boot | Delapouite | CC BY 3.0 | aura:long_stride_passive, talent:long_stride |
@@ -227,6 +229,7 @@ unmodified; the game renders them with its own colors, outline, shading and fram
 | lantern-flame | Lorc | CC BY 3.0 | aura:oracle_enduring_vigil, talent:enduring_vigil |
 | large-wound | Lorc | CC BY 3.0 | talent:open_veins |
 | layered-armor | Lorc | CC BY 3.0 | aura:unbending, talent:lining, talent:unbending |
+| life-in-the-balance | Lorc | CC BY 3.0 | aura:duelists_resolve |
 | lips | Lorc | CC BY 3.0 | talent:quickened_hush |
 | lotus | Lorc | CC BY 3.0 | aura:oracle_stillness_of_spirit, talent:stillness_of_spirit |
 | lyre | Lorc | CC BY 3.0 | talent:swelling_chorus |

@@ -1,0 +1,23 @@
+{
+  "id": "measured_blade",
+  "name": "Measured Blade",
+  "description": "Duels only: the Carnage Warblade's burst is tempered against a lone opponent.",
+  "kind": "buff",
+  "duration_s": 0,
+  "refresh": "refresh",
+  "dispel_type": "none",
+  "cc_category": "none",
+  "modifiers": [
+    {
+      "stat": "damage_done",
+      "op": "multiply",
+      "value": 0.9
+    }
+  ],
+  "hud_priority": "normal",
+  "icon": {
+    "symbol": "shield",
+    "school": "physical",
+    "image": "delapouite/fencer"
+  }
+}

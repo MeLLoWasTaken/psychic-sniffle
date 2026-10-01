@@ -135,3 +135,26 @@ func test_a_pickup_restores_health_and_mana_over_time_through_the_runner() -> vo
 	assert_int(healer.health).is_greater(30000 + 9000)  # 10 heals of 1,500, dampened in 1v1
 	assert_float(float(healer.resources["mana"])).is_greater(15000.0)
 	assert_int(runner.match_state()["pickups"]).is_equal(0b10)
+
+
+func test_bracket_auras_apply_only_in_their_bracket_and_never_twice() -> void:
+	# M2-07: duel balance as standing auras from tuning (arena.bracket_auras), by role or spec
+	var duel: MatchRunner = MatchRunner.new(Data.maps["gallows_courtyard"], "arena", "1v1", 5.0, 2)
+	var healer: Unit = duel.add_unit("oracle_grace", 0)
+	var blade: Unit = duel.add_unit("warblade_carnage", 1)
+	var rules: Array = Data.tuning["arena"].get("bracket_auras", {}).get("1v1", [])
+	assert_array(rules).is_not_empty()
+	var ids: Array = healer.auras.map(func(a: Dictionary) -> String: return a["id"])
+	for r: Dictionary in rules:
+		var applies: bool = str(r.get("role", "")) == "healer" or str(r.get("spec", "")) == "oracle_grace"
+		assert_bool(r["aura"] in ids).override_failure_message("%s on the Oracle" % r["aura"]).is_equal(applies)
+	assert_bool(blade.auras.any(func(a: Dictionary) -> bool: return a.get("bracket", false))).is_equal(
+		rules.any(func(r: Dictionary) -> bool: return str(r.get("spec", "")) == "warblade_carnage"))
+	# a talent change during preparation re-initialises the unit: still one copy
+	var n: int = healer.auras.filter(func(a: Dictionary) -> bool: return a.get("bracket", false)).size()
+	duel.set_talents(healer, str(BotBrain.build_talents("oracle_grace")["talents"]))
+	assert_int(healer.auras.filter(func(a: Dictionary) -> bool: return a.get("bracket", false)).size()).is_equal(n)
+	# not in 2v2
+	var team: MatchRunner = MatchRunner.new(Data.maps["gallows_courtyard"], "arena", "2v2", 5.0, 2)
+	var h2: Unit = team.add_unit("oracle_grace", 0)
+	assert_bool(h2.auras.any(func(a: Dictionary) -> bool: return a.get("bracket", false))).is_false()

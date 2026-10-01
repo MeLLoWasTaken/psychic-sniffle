@@ -93,6 +93,26 @@ func init_unit(u: Unit) -> void:
 		if not a in u.known_abilities:
 			u.known_abilities.append(a)
 	_apply_talents(u)
+	_apply_bracket_auras(u)
+
+
+## The bracket's standing auras for this unit (M2-07, tuning arena.bracket_auras): balance
+## adjustments for a bracket, by role or spec, as visible auras that cannot be dispelled.
+##   "bracket_auras": {"1v1": [{"role": "healer", "aura": "duelists_resolve"}]}
+func _apply_bracket_auras(u: Unit) -> void:
+	for i: int in range(u.auras.size() - 1, -1, -1):
+		if u.auras[i].get("bracket", false):
+			u.auras.remove_at(i)  # init again (talents changed): no second copy
+	if arena == null:
+		return
+	var spec: Dictionary = specs.get(u.spec_id, {})
+	for rule: Dictionary in tuning.get("arena", {}).get("bracket_auras", {}).get(arena.bracket, []):
+		if (rule.has("role") and str(rule["role"]) != str(spec.get("role", ""))) or (rule.has("spec") and str(rule["spec"]) != u.spec_id):
+			continue
+		apply_aura(u, u, str(rule["aura"]))
+		for inst: Dictionary in u.auras:
+			if inst["id"] == rule["aura"] and inst["source"] == u.id:
+				inst["bracket"] = true
 
 
 ## Apply the unit's talent loadout: talented copies of abilities and auras, changes to the unit's

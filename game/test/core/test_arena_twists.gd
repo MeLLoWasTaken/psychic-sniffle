@@ -198,3 +198,22 @@ func test_a_match_picks_one_of_the_preset_arenas_for_its_bracket() -> void:
 	assert_dict(seen).contains_keys(["gallows_courtyard", "flooded_crypt"])
 	assert_str(NetMatch.pick_map(p, "flooded_crypt")).is_equal("flooded_crypt")
 	assert_str(NetMatch.pick_map({"map": "gallows_courtyard", "bracket": "2v2"})).is_equal("gallows_courtyard")
+
+
+func test_bot_paths_follow_the_twists() -> void:
+	# after the collapse the centre is open ground; after the flood paths keep to the aisles
+	var geo: ArenaGeometry = ArenaGeometry.from_map(Data.maps["gallows_courtyard"])
+	var nav: NavGrid = NavGrid.new(geo)
+	var key: String = nav.state_key()
+	assert_bool(nav.walkable(Vector3(-4, 0, 0), Vector3(4, 0, 0))).is_false()  # the gallows
+	geo.apply_twists(Data.maps["gallows_courtyard"]["twists"], 301.0)
+	assert_str(nav.state_key()).is_not_equal(key)
+	nav.rebuild()
+	assert_bool(nav.walkable(Vector3(-4, 0, 0), Vector3(4, 0, 0))).is_true()
+	var cg: ArenaGeometry = ArenaGeometry.from_map(Data.maps["flooded_crypt"])
+	var cnav: NavGrid = NavGrid.new(cg)
+	cg.apply_twists(Data.maps["flooded_crypt"]["twists"], 181.0)
+	cnav.rebuild()
+	var dry: Vector2i = cnav.cell_of(Vector3(0, 0, 15))
+	var wet: Vector2i = cnav.cell_of(Vector3(0, 0, 9))
+	assert_float(cnav._astar.get_point_weight_scale(wet)).is_greater(cnav._astar.get_point_weight_scale(dry))

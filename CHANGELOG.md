@@ -2,6 +2,13 @@
 
 One entry per build-loop iteration, newest first. Format: date, backlog ID, what changed, how it was checked.
 
+## 2026-10-01 — M2-07 duel balance tools (tuning in progress); bots follow twists
+- Bracket auras: tuning can give units standing auras in one bracket, by role or spec. Duels now use three (Duelist's Resolve for healers, Measured Blade for the Carnage Warblade, Steady Footing for the Rime Arcanist); the values are a first guess for the 1,000-duel CI runs to refine.
+- A `duels` workflow runs 1,000 duels in 8 parallel shards on demand; balance reports also post their tables as notices, which can be read back from a run.
+- Bots: the navigation grid now follows twists (it ignored the collapsed gallows) and charges more for flooded cells.
+- The first sharded nightly run's 20-player profile shows bot clients receiving 5 snapshots a second on a 4-core runner (X-19).
+- Checked: a bracket aura test and a navigation test; all Godot and Python tests pass (pre-commit run).
+
 ## 2026-10-01 — M2-09 Flooded Crypt (in progress); nightly shards
 - A second arena, Flooded Crypt: a roofless crypt under a cold moon, two columns and two great tombs between raised side aisles, the same starting rooms as Gallows Courtyard.
   - Twist: at 3:00 the nave floods. The water rises during a 15 s warning, then wading is slow (70%) everywhere but the aisles and gate landings. The slow is part of movement, so the server and the client's prediction agree.

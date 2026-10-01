@@ -332,6 +332,76 @@
         "pickup_effect": {
           "type": "string",
           "description": "Ambient effect (data/ambient_effects) drawn on an active pickup."
+        },
+        "bracket_auras": {
+          "type": "object",
+          "description": "Per bracket, standing auras given to units by role or spec (balance for that bracket only, M2-07). Each rule names role or spec, and an aura.",
+          "additionalProperties": false,
+          "properties": {
+            "1v1": {
+              "type": "array",
+              "items": {
+                "type": "object",
+                "additionalProperties": false,
+                "required": [
+                  "aura"
+                ],
+                "properties": {
+                  "aura": {
+                    "type": "string"
+                  },
+                  "role": {
+                    "type": "string"
+                  },
+                  "spec": {
+                    "type": "string"
+                  }
+                }
+              }
+            },
+            "2v2": {
+              "type": "array",
+              "items": {
+                "type": "object",
+                "additionalProperties": false,
+                "required": [
+                  "aura"
+                ],
+                "properties": {
+                  "aura": {
+                    "type": "string"
+                  },
+                  "role": {
+                    "type": "string"
+                  },
+                  "spec": {
+                    "type": "string"
+                  }
+                }
+              }
+            },
+            "3v3": {
+              "type": "array",
+              "items": {
+                "type": "object",
+                "additionalProperties": false,
+                "required": [
+                  "aura"
+                ],
+                "properties": {
+                  "aura": {
+                    "type": "string"
+                  },
+                  "role": {
+                    "type": "string"
+                  },
+                  "spec": {
+                    "type": "string"
+                  }
+                }
+              }
+            }
+          }
         }
       }
     },

@@ -499,6 +499,21 @@ def validate(data_dir: Path) -> list[str]:
             if t.get("warn_s", 0) > 0 and not t.get("warn_text"):
                 report.error(rel, f"twist '{t['id']}' warns {t['warn_s']} s ahead but has no warn_text")
 
+    # ---- bracket auras (M2-07): each names a real aura and a real role or spec -------------
+    for b, rules in (tuning or {}).get("arena", {}).get("bracket_auras", {}).items():
+        for i, r in enumerate(rules):
+            where = f"tuning.arena.bracket_auras.{b}/{i}"
+            if r["aura"] not in db["auras"]:
+                report.error("tuning.json", f"{where}: aura '{r['aura']}' not found")
+            elif db["auras"][r["aura"]].get("dispel_type", "none") != "none" or db["auras"][r["aura"]].get("duration_s", 0) != 0:
+                report.error("tuning.json", f"{where}: aura '{r['aura']}' must be permanent and undispellable")
+            if "spec" in r and r["spec"] not in specs:
+                report.error("tuning.json", f"{where}: unknown spec '{r['spec']}'")
+            if "role" in r and r["role"] not in {s.get("role") for s in specs.values()}:
+                report.error("tuning.json", f"{where}: no spec has role '{r['role']}'")
+            if "role" not in r and "spec" not in r:
+                report.error("tuning.json", f"{where}: name a role or a spec")
+
     # ---- assets ------------------------------------------------------------------
     for asid, a in db["assets"].items():
         rel = f"assets/{asid}.json"

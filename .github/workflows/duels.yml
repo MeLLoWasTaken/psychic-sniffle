@@ -1,0 +1,63 @@
+# On-demand 1v1 balance run for tuning duels (M2-07): the duel bracket alone, in 8 parallel
+# shards, merged by a report job (same tools as the nightly run).
+name: duels
+
+on:
+  workflow_dispatch:
+    inputs:
+      matches:
+        description: Duels
+        default: "1000"
+      random_builds:
+        description: Random legal talent builds per spec besides the named ones (0 = named builds only)
+        default: "0"
+
+jobs:
+  balance:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 120
+    strategy:
+      fail-fast: false
+      matrix:
+        shard: [0, 1, 2, 3, 4, 5, 6, 7]
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+          cache: pip
+          cache-dependency-path: tools/env/requirements.txt
+      - uses: ./.github/actions/setup
+      - name: Import the project
+        run: godot --headless --path game --import > /dev/null 2>&1 || true
+      - name: Duels, shard ${{ matrix.shard }}
+        run: |
+          python3 tools/sim/nightly.py --bracket 1v1 --matches ${{ inputs.matches }} \
+            --random-builds ${{ inputs.random_builds }} --shards 8 --shard ${{ matrix.shard }} --out duels
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: duels-${{ matrix.shard }}
+          path: duels/
+
+  report:
+    needs: balance
+    if: always()
+    runs-on: ubuntu-24.04
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+      - uses: actions/download-artifact@v4
+        with:
+          pattern: duels-*
+          path: shards
+      - name: Report
+        run: python3 tools/sim/nightly.py --bracket 1v1 --merge shards --out duels
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: duels-report
+          path: duels/

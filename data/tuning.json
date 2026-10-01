@@ -120,7 +120,23 @@
         "affects": "self"
       }
     ],
-    "pickup_effect": "arena_pickup"
+    "pickup_effect": "arena_pickup",
+    "bracket_auras": {
+      "1v1": [
+        {
+          "role": "healer",
+          "aura": "duelists_resolve"
+        },
+        {
+          "spec": "warblade_carnage",
+          "aura": "measured_blade"
+        },
+        {
+          "spec": "arcanist_rime",
+          "aura": "steady_footing"
+        }
+      ]
+    }
   },
   "battleground": {
     "respawn_wave_s": 30,

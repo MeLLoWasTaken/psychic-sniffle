@@ -137,6 +137,11 @@ def report_bracket(size: int, report: dict, out: Path) -> int:
     print(json.dumps({k: s[k] for k in ("matches", "kill_rate", "draws", "median_seconds", "errors", "flags")}, indent=1))
     for f in s["flags"]:
         print(f"::warning title={size}v{size} balance::{f}")
+    # the whole table as notices too: annotations are what can be read back from a run
+    print(f"::notice title={size}v{size} summary::{s['matches']} matches, kills {s['kill_rate']}, draws {s['draws']}, "
+          f"median {s['median_seconds']} s; specs " + ", ".join(f"{k} {v['win_rate']} ({v['games']})" for k, v in s["specs"].items()))
+    if s["matchups"]:
+        print(f"::notice title={size}v{size} matchups::" + "; ".join(f"{k}: {v['first_wins']} ({v['decided']})" for k, v in s["matchups"].items()))
     step = os.environ.get("GITHUB_STEP_SUMMARY")
     if step:
         with open(step, "a") as fh:

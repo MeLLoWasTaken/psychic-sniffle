@@ -19,7 +19,7 @@ var rng: RandomNumberGenerator = RandomNumberGenerator.new()
 var _path: Array[Vector3] = []
 var _path_goal: Vector3 = Vector3(INF, 0, INF)
 var _path_tick: int = -999
-var _gates_open_seen: bool = false
+var _nav_key_seen: String = ""  ## NavGrid.state_key() when the grid was last rebuilt
 
 var target_id: int = -1
 var _retarget_tick: int = -1
@@ -544,8 +544,9 @@ func _clearance(p: Vector3) -> float:
 func _steer_point(pos: Vector3, goal: Vector3, tick: int) -> Vector3:
 	if nav == null:
 		return goal
-	if geometry.gates_open != _gates_open_seen:
-		_gates_open_seen = geometry.gates_open
+	var key: String = nav.state_key()
+	if key != _nav_key_seen:  # gates opened, or a twist changed the arena (collapse, flood)
+		_nav_key_seen = key
 		nav.rebuild()
 		_path.clear()
 	# stuck: wanted to move for half a second and barely did; plan again from here
