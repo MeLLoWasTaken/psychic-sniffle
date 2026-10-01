@@ -167,6 +167,7 @@
     "talents_title": "Talents",
     "talents_locked": "Talents are locked during the match.",
     "talents_sending": "Sending the new talents to the server...",
+    "spectating": "You died. Watching {name} (Tab: next teammate)",
     "talents_changed": "Talents changed.",
     "talents_refused": "Talents not changed: {why}",
     "talents_class_tree": "{name} class tree",

@@ -284,8 +284,9 @@ The slice specs are Warblade Carnage (melee, rage), Arcanist Rime (casting, inte
 - Done 2026-10-01: 2:52 (preparation, a 2:30 fight, end screen, scoreboard), sent at 1080p (27 MB, two-pass to fit the 30 MB file limit; the tool now makes that copy) and 720p. The software renderer took 6 h 12 min (4.3 s a frame at half-resolution 3D). The recording predates the deeper starting rooms, nameplates and the gallows collapse.
 - Found in it: (1) the player's Warblade died at about 1:15 and the camera stayed on the body for the last 1:20 of the match (F-16); (2) the mix touches 0 dBFS on 534 samples (F-17).
 
-### F-16 Spectating after death `[todo]`
-- [ ] When the player dies in an arena, the camera can follow a living teammate (cycle with a key; the HUD's frames stay), as in the reference video's last 80 s where it showed a corpse; tests for the camera target and the cycle order.
+### F-16 Spectating after death `[done]`
+- [x] When the player dies in an arena, the camera can follow a living teammate (cycle with a key; the HUD's frames stay), as in the reference video's last 80 s where it showed a corpse; tests for the camera target and the cycle order.
+- Done 2026-10-01: the camera follows the first living teammate by id, Tab (the target key, useless while dead) moves to the next, a line says who is watched; reviewed on the reference recording at 1:40 (`previews/f_16/spectating_1280.png`). Recordings drawn later follow the partner by themselves.
 
 ### F-17 Master bus headroom `[todo]`
 - [ ] The reference video's mix reached 0 dBFS on 534 samples (mean -17.8 dB): add a limiter or lower the master so a busy fight never clips; measure on a recorded match.

@@ -55,6 +55,7 @@ var _presses: Array[Dictionary] = []  ## {ability, action} pressed and not sent 
 var mouse_pos: Vector2 = Vector2(-1, -1)  ## the pointer on screen (mouseover target mode)
 var frame_mouseover: int = -1  ## the unit whose HUD frame is under the pointer (Hud sets it), or -1
 var plate_picker: Callable  ## screen point -> the unit whose nameplate is there, or -1 (Hud sets it)
+var spectate_step: int = 0  ## Tab presses while dead: which living teammate the camera watches (F-16)
 
 var _requests: Array = []  ## ["tab"], ["clear"], ["click", screen position], in arrival order
 var _press_pos: Dictionary = {}  ## "steer"/"orbit" -> screen position of the press
@@ -238,7 +239,10 @@ func next_input(dt: float, view: Dictionary = {}, camera: Camera3D = null, units
 					var on_plate: int = plate_at(r[1])
 					target_id = on_plate if on_plate >= 0 else targeting.click(camera, r[1], units, geometry, target_id)
 				"tab":
-					target_id = targeting.tab(camera, view["me"], view.get("units", []), geometry, target_id)
+					if int(view["me"].get("health", 1)) <= 0:
+						spectate_step += 1  # dead: Tab watches the next living teammate (F-16)
+					else:
+						target_id = targeting.tab(camera, view["me"], view.get("units", []), geometry, target_id)
 				"focus":
 					focus_id = target_id
 		_requests.clear()
@@ -300,6 +304,23 @@ func ability_target_for(action: String, view: Dictionary, camera: Camera3D = nul
 		group.sort()
 		return group[n] if n >= 0 and n < group.size() else -1
 	return -1
+
+
+## The unit the camera follows (F-16): the player while alive; once dead, a living teammate,
+## the `step`-th by id (Tab cycles); the player's body when none is left.
+static func watched_unit(view: Dictionary, step: int) -> int:
+	var me: Dictionary = view.get("me", {})
+	var my_id: int = int(me.get("id", -1))
+	if int(me.get("health", 1)) > 0:
+		return my_id
+	var mates: Array = []
+	for u: Dictionary in view.get("units", []):
+		if int(u["team"]) == int(me.get("team", -1)) and int(u["id"]) != my_id and int(u.get("health", 0)) > 0:
+			mates.append(int(u["id"]))
+	if mates.is_empty():
+		return my_id
+	mates.sort()
+	return mates[posmod(step, mates.size())]
 
 
 ## The unit whose nameplate is at a screen point, or -1 (no plates, or none there).

@@ -2,6 +2,10 @@
 
 One entry per build-loop iteration, newest first. Format: date, backlog ID, what changed, how it was checked.
 
+## 2026-10-01 — F-16 spectating after death
+- When the player dies in an arena, the camera follows a living teammate; Tab moves to the next one, and a line under the arena says who is being watched. Before, the camera stayed on the body, as the reference video showed for its last 80 s.
+- Checked: a controller test (who is watched alive and dead, the cycle, no enemies or dead teammates, Tab not targeting while dead); the reference recording drawn again at 1:40 (`previews/f_16/spectating_1280.png`); all Godot and Python tests pass (pre-commit run).
+
 ## 2026-10-01 — M2-04 build simulations; parallel nightly jobs
 - `Talents.random_build` makes random legal builds (all points spent, PvP slots filled, the same build for the same seed); bots and the batch simulator accept them as `spec@randomN`.
 - The batch report lists the talent nodes of each build; `analyze_batch.py` adds per-build win rates over non-mirror compositions, viable builds (40-60% over 30+ games) and the node shares among each spec's top half of builds (flagged above 90%).

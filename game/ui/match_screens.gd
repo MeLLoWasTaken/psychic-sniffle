@@ -36,6 +36,7 @@ var unit_names: Dictionary = {}  ## unit id -> "You", "Partner", "Enemy 1"...
 var gates_banner_s: float = 2.5
 var result: Dictionary = {}  ## MatchFlow.result() once the scoreboard shows
 var _time: float = 0.0
+var watching: String = ""  ## the teammate the camera follows after the player died ("" while alive)
 var announcement: String = ""  ## a map event's line (a twist), shown as a banner for ANNOUNCE_S
 var _announced_at: float = -100.0
 
@@ -130,6 +131,8 @@ func _draw_screen() -> void:
 				var a: float = clampf((ANNOUNCE_S - (_time - _announced_at)) / 0.6, 0.0, 1.0)
 				_draw_band(104.0, 96.0, a)
 				_centered(164.0, announcement, 40, Color(style.color("title"), a), &"display")
+			if watching != "":  # the player died: the camera follows a teammate (F-16)
+				_centered(root.size.y - 260.0, style.text("spectating", {"name": watching}), 24, style.color("subtitle"))
 		MatchFlow.State.ENDED:
 			_draw_outcome_banner()
 		MatchFlow.State.SCOREBOARD:

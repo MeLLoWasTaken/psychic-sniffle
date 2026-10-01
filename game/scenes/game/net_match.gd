@@ -324,10 +324,14 @@ func _process(delta: float) -> void:
 			cam.zoom_steps(controller.pending_zoom)
 			controller.pending_zoom = 0
 		var me: int = int(renderer.view["me"]["id"])
-		if renderer.units.has(me):
+		var watched: int = PlayerController.watched_unit(renderer.view, controller.spectate_step)
+		if not renderer.units.has(watched):
+			watched = me
+		screens.watching = HudStyle.spec_label(str(_unit_spec(watched))) if watched != me else ""
+		if renderer.units.has(watched):
 			var yaw: float = controller.camera_yaw() if _cam_override.is_empty() else float(_cam_override[0])
 			var pitch: float = controller.pitch if _cam_override.is_empty() else float(_cam_override[1])
-			cam.update(renderer.drawn_position(me), yaw, pitch, delta)
+			cam.update(renderer.drawn_position(watched), yaw, pitch, delta)
 	if hud != null and not fast:
 		hud.update(delta)
 	screens.update(delta)
@@ -376,6 +380,13 @@ func _on_talents_answered(text: String, error: String) -> void:
 	if hud != null:
 		hud.set_loadout(spec_id, text)
 	screens.pause_menu.set_status(style.text("talents_changed"))
+
+
+func _unit_spec(id: int) -> String:
+	for u: Dictionary in renderer.view.get("units", []):
+		if int(u["id"]) == id:
+			return str(u["spec"])
+	return ""
 
 
 ## Names for the end screen: You, Partner, Enemy 1, Enemy 2 (by unit id within a team).

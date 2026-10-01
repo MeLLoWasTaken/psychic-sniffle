@@ -179,3 +179,31 @@ func test_scripted_actions_use_the_same_path() -> void:
 	for ev: InputEvent in s.events_until(2.0):
 		ctl.handle_event(ev)
 	assert_vector(ctl.next_input(DT)["move"]).is_equal(Vector2.ZERO)
+
+
+func test_after_death_the_camera_watches_a_living_teammate_and_tab_cycles() -> void:
+	# F-16: in the reference video the camera stayed on the player's body for the last 80 s
+	var view: Dictionary = {"me": {"id": 1, "team": 0, "health": 50000},
+		"units": [{"id": 1, "team": 0, "health": 50000}, {"id": 2, "team": 0, "health": 30000},
+			{"id": 4, "team": 0, "health": 20000}, {"id": 3, "team": 1, "health": 40000}]}
+	assert_int(PlayerController.watched_unit(view, 0)).is_equal(1)  # alive: the player
+	view["me"]["health"] = 0
+	view["units"][0]["health"] = 0
+	assert_int(PlayerController.watched_unit(view, 0)).is_equal(2)
+	assert_int(PlayerController.watched_unit(view, 1)).is_equal(4)
+	assert_int(PlayerController.watched_unit(view, 2)).is_equal(2)  # around again
+	view["units"][1]["health"] = 0
+	assert_int(PlayerController.watched_unit(view, 0)).is_equal(4)  # never a dead teammate or an enemy
+	view["units"][2]["health"] = 0
+	assert_int(PlayerController.watched_unit(view, 0)).is_equal(1)  # nobody left: the body
+	# Tab while dead moves the camera on instead of targeting
+	view["units"][1]["health"] = 30000
+	view["units"][2]["health"] = 20000
+	var cam: Camera3D = auto_free(Camera3D.new())
+	add_child(cam)
+	var before: int = ctl.target_id
+	ctl._requests.append(["tab"])
+	ctl.next_input(DT, view, cam)
+	assert_int(ctl.spectate_step).is_equal(1)
+	assert_int(ctl.target_id).is_equal(before)
+	assert_int(PlayerController.watched_unit(view, ctl.spectate_step)).is_equal(4)
