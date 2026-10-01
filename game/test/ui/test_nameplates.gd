@@ -126,6 +126,12 @@ func test_plates_show_casts_and_important_auras() -> void:
 	Settings.use_data()
 
 
+func test_combat_text_draws_over_the_plates_and_both_under_the_frames() -> void:
+	var order: Array = hud.root.get_children().map(func(c: Node) -> String: return str(c.name))
+	assert_int(order.find("nameplates")).is_less(order.find("combat_text"))
+	assert_int(order.find("combat_text")).is_less(order.find("player_frame_1"))
+
+
 func test_overlapping_plates_step_apart() -> void:
 	var rects: Array = Nameplates.unstack([Rect2(100, 300, 130, 30), Rect2(120, 310, 130, 30), Rect2(90, 305, 130, 30)])
 	assert_object(rects[0]).is_equal(Rect2(100, 300, 130, 30))  # the nearest keeps its place

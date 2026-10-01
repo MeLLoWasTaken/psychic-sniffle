@@ -31,4 +31,12 @@ xvfb-run -a -s "-screen 0 1920x1080x24" godot --path "$REPO/game" --rendering-dr
 echo "encoding ..."
 ffmpeg -v error -y -i "$AVI" -c:v libx264 -preset slow -crf 20 -pix_fmt yuv420p -vf scale=1920:1080 \
   -c:a aac -b:a 160k -movflags +faststart "$OUT"
-echo "video: $OUT"
+# a copy under the 30 MB file limit for sending in the conversation: two-pass at a bitrate that
+# fits the length (the half-resolution 3D picture loses almost nothing at it)
+SMALL="${OUT%.mp4}_small.mp4"
+DUR=$(ffprobe -v error -show_entries format=duration -of csv=p=0 "$AVI")
+KBPS=$(python3 -c "print(max(400, int(28 * 8192 / float('$DUR')) - 140))")
+(cd "$OUT_DIR" && ffmpeg -v error -y -i "$AVI" -c:v libx264 -preset slow -b:v "${KBPS}k" -pass 1 -an -f mp4 \
+  -vf scale=1920:1080 /dev/null && ffmpeg -v error -y -i "$AVI" -c:v libx264 -preset slow -b:v "${KBPS}k" -pass 2 \
+  -pix_fmt yuv420p -vf scale=1920:1080 -c:a aac -b:a 128k -movflags +faststart "$SMALL"; rm -f ffmpeg2pass*)
+echo "video: $OUT (and $SMALL, under 30 MB)"

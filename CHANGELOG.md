@@ -2,6 +2,16 @@
 
 One entry per build-loop iteration, newest first. Format: date, backlog ID, what changed, how it was checked.
 
+## 2026-10-01 — M2-14c and M2-16 screenshot reviews
+- A recorded 3v3 played back through the client shows nameplates in a real fight. Floating combat text was drawn under the plates; it now draws over them (test added).
+- The gallows wreck, seen in a new map screenshot mode (`tools/ui_shot.gd --screen map --match-time <s>`), was sparse and its dust a bright white puff. It now has beams, planks and broken plinth stones across the footprint, and the dust is dim grit.
+- Checked: nameplate and twist tests; all Godot and Python tests pass (pre-commit run); screenshots in `previews/m2_14/` and `previews/m2_16/`.
+
+## 2026-10-01 — M1-34 reference video delivered
+- The reference video of a full 2v2 bot match (2:52, game sound) was rendered through the client at 30 fps (6 h 12 min on the software renderer) and sent at 1080p and 720p.
+- `tools/match_video.sh` now also makes a copy under 30 MB (two-pass, bitrate from the length) for sending in the conversation.
+- Found in the video, now backlog items: the camera stays on the player's corpse after death (F-16, spectating), and the mix touches 0 dBFS (F-17).
+
 ## 2026-10-01 — M2-16 arena twists: the gallows collapse
 - Maps can now have twists, timed events on match time. Gallows Courtyard's gallows block, described in its data since M1 but never implemented, now collapses at 5:00:
   - at 4:50 a banner and a sound warn ("The gallows groan...");

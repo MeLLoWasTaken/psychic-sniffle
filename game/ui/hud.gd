@@ -136,8 +136,9 @@ func _build() -> void:
 			if not bool(e.get("visible", true)):
 				c.visible = false
 			root.add_child(c)
-	# nameplates and combat text sit behind the frames, combat text over the plates
-	for c: Control in _all_of_type("nameplates") + _all_of_type("combat_text"):
+	# nameplates and combat text sit behind the frames, combat text over the plates (each move to
+	# the front of the list pushes the earlier ones up, so the plates go last)
+	for c: Control in _all_of_type("combat_text") + _all_of_type("nameplates"):
 		root.move_child(c, 0)
 	event_text = EventText.new()
 	event_text.name = "EventText"

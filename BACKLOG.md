@@ -279,8 +279,16 @@ The slice specs are Warblade Carnage (melee, rage), Arcanist Rime (casting, inte
 ### M1-33 Slash sound, chosen by the human `[done]`
 - [x] Build the human's pick (D) of the four slash readings (`previews/audio/slash_candidates/`, KNOWN_ISSUES 2026-10-01) into impact_slash, hit_greatsword_plate and hit_greatsword_cloth as data, keeping the weapon and armor identity tests; adjust build rules only by an explicit DECISIONS entry (B and D carry a metallic ring the tonal rule may flag).
 
-### M1-34 Reference video of a bot match `[doing]`
-- [ ] `tools/match_video.sh`: a recorded networked 2v2 drawn through the client with Godot's Movie Maker at 30 fps with game audio, encoded to MP4; shared with the human.
+### M1-34 Reference video of a bot match `[done]`
+- [x] `tools/match_video.sh`: a recorded networked 2v2 drawn through the client with Godot's Movie Maker at 30 fps with game audio, encoded to MP4; shared with the human.
+- Done 2026-10-01: 2:52 (preparation, a 2:30 fight, end screen, scoreboard), sent at 1080p (27 MB, two-pass to fit the 30 MB file limit; the tool now makes that copy) and 720p. The software renderer took 6 h 12 min (4.3 s a frame at half-resolution 3D). The recording predates the deeper starting rooms, nameplates and the gallows collapse.
+- Found in it: (1) the player's Warblade died at about 1:15 and the camera stayed on the body for the last 1:20 of the match (F-16); (2) the mix touches 0 dBFS on 534 samples (F-17).
+
+### F-16 Spectating after death `[todo]`
+- [ ] When the player dies in an arena, the camera can follow a living teammate (cycle with a key; the HUD's frames stay), as in the reference video's last 80 s where it showed a corpse; tests for the camera target and the cycle order.
+
+### F-17 Master bus headroom `[todo]`
+- [ ] The reference video's mix reached 0 dBFS on 534 samples (mean -17.8 dB): add a limiter or lower the master so a busy fight never clips; measure on a recorded match.
 
 ### M1-32 Match flow follow-ups `[todo]`
 - [x] The preparation camera sat very close: the starting rooms were 4.5 m deep with spawns 2.2 m from the back wall. Rooms deepened to 8 m (bounds 25 to 28.5 m), spawns 3 m behind the gate; bots unaffected (42 of 42 matches to a kill, median 93 s); `previews/m1_32/prep_room_1280x720.png`.
@@ -503,9 +511,9 @@ Exit gate (DESIGN.md): every combat rule has passing tests; every action is rebi
 - [ ] Three-player teams through the whole flow (menu, prep, scoreboard), arena enemy frames 1 to 3; balance per F-08 (two-healer teams no longer dominate).
 - Done 2026-10-01: three-player teams through the whole flow (menu, preparation, scoreboard), three arena frames. Left: the balance run per F-08 (two-healer teams), after the reference video frees the CPU.
 
-### M2-16 Arena twists `[doing]`
+### M2-16 Arena twists `[done]`
 - [x] A data-driven twist system on match time (docs/DESIGN.md: each map has one twist), server-authoritative and replayable, with the client's prediction, the camera and the map visuals following the same clock; Gallows Courtyard's gallows collapse at 5:00 after a warning at 4:50 (a banner, event text and sounds), opening the centre for movement and line of sight and leaving a low wreck and a dust burst. Tests for the stages, the collapse on the server with a replay, the client, the map and the announcements; validator rules for twist data.
-- [ ] Screenshot of the wreck reviewed (after the reference video render frees the CPU).
+- [x] Screenshot of the wreck reviewed (`previews/m2_16/gallows_before_1280.png`, `gallows_wreck_1280.png`, from `tools/ui_shot.gd --screen map --match-time <s>`): the first version was a few sparse planks and a bright white puff; now beams, planks and broken plinth stones cover the footprint and the dust is dim grit.
 - Found while planning M2-09: the gallows collapse was described in the map data but never implemented. Next twist types: flood (M2-09) and a rotating obstacle (M2-10).
 
 ### M2-09 Second arena `[todo]`
@@ -531,8 +539,9 @@ Exit gate (DESIGN.md): every combat rule has passing tests; every action is rebi
 - Done (2026-10-01): spec icons in frame portraits (spec data `icon`); nameplates as a HUD layout element following the three nameplate settings; a unit frame under the pointer counts as mouseover; the arena Break Free box uses the cooldown the server started (talents included; cast_success events carry `cooldown_ticks`).
 - Follow-ups: clicking or hovering a nameplate does not target or count as mouseover yet (M2-14b, done); nameplates do not fade with distance or line of sight.
 
-### M2-14c Nameplates in a real 3v3 fight `[todo]`
-- [ ] A screenshot of a networked 3v3 fight with nameplates, reviewed (plates over real character models, at real distances and with movement).
+### M2-14c Nameplates in a real 3v3 fight `[done]`
+- [x] A screenshot of a networked 3v3 fight with nameplates, reviewed (plates over real character models, at real distances and with movement).
+- Done 2026-10-01 (`previews/m2_14/fight_3v3_nameplates_1280.png`, a recorded 3v3 played back through the client): plates read over the models, the target plate is marked, the rooted partners show big ROOT portraits. Fixed from it: floating combat text was drawn under the plates (the draw order was reversed); a test now checks it. A live 3v3 with the software renderer stalls long enough at the first fight for the server to drop the client (six bots, a server and a software-rendered client on two cores), so screenshots of 3v3 fights use recordings.
 
 ### M2-14b Nameplate clicks and mouseover `[done]`
 - [x] A click on a nameplate targets its unit and the pointer over a plate counts as mouseover, like unit frames; tests with the plate rectangles. Done 2026-10-01 (the nearest plate wins where plates overlap; hidden plates catch nothing).

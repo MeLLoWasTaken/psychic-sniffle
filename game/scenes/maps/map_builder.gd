@@ -161,19 +161,24 @@ func _add_wreck(tag: String) -> void:
 	add_child(wreck)
 	wrecks.append(wreck)
 	var mat: Material = _wreck_material(tag)
+	var stone: Material = _wreck_material("pillar")  # the plinth breaks into the arena's stone
 	var rng: RandomNumberGenerator = RandomNumberGenerator.new()
 	rng.seed = hash(map_id + tag)
 	var span: float = maxf(foot.size.x, foot.size.y)
-	for i: int in 16:
-		var beam: bool = i < 5
+	for i: int in 30:
+		var kind: int = 0 if i < 6 else (1 if i < 20 else 2)  # beams, planks, stones
 		var box: BoxMesh = BoxMesh.new()
-		box.size = Vector3(rng.randf_range(0.5, 0.8) * span if beam else rng.randf_range(0.8, 1.8),
-			0.28 if beam else 0.06, 0.28 if beam else rng.randf_range(0.22, 0.3))
-		var piece: MeshInstance3D = _mesh("Debris_%d" % i, box, mat)
-		var x: float = rng.randf_range(-0.55, 0.55) * foot.size.x
-		var z: float = rng.randf_range(-0.55, 0.55) * foot.size.y
-		piece.position = Vector3(x, box.size.y * 0.5 + rng.randf_range(0.0, 0.25), z)
-		piece.rotation = Vector3(rng.randf_range(-0.25, 0.25), rng.randf() * TAU, rng.randf_range(-0.12, 0.12))
+		match kind:
+			0: box.size = Vector3(rng.randf_range(0.45, 0.8) * span, 0.3, 0.3)
+			1: box.size = Vector3(rng.randf_range(0.9, 2.0), 0.07, rng.randf_range(0.22, 0.32))
+			2:
+				var st: float = rng.randf_range(0.25, 0.55)
+				box.size = Vector3(st * rng.randf_range(1.0, 1.6), st * 0.7, st)
+		var piece: MeshInstance3D = _mesh("Debris_%d" % i, box, stone if kind == 2 else mat)
+		var x: float = rng.randf_range(-0.6, 0.6) * foot.size.x
+		var z: float = rng.randf_range(-0.6, 0.6) * foot.size.y
+		piece.position = Vector3(x, box.size.y * 0.5 + (rng.randf_range(0.0, 0.3) if kind == 1 else 0.0), z)
+		piece.rotation = Vector3(rng.randf_range(-0.3, 0.3), rng.randf() * TAU, rng.randf_range(-0.15, 0.15))
 		piece.remove_meta("greybox")  # the wreck shows with the art kit too
 		wreck.add_child(piece)
 	wreck.add_child(_dust_burst(span, rng.randi()))
@@ -214,11 +219,11 @@ func _dust_burst(span: float, seed_value: int) -> GPUParticles3D:
 	pm.gravity = Vector3(0, -0.6, 0)
 	pm.damping_min = 1.5
 	pm.damping_max = 2.5
-	pm.scale_min = 1.4
-	pm.scale_max = 2.8
+	pm.scale_min = 2.0
+	pm.scale_max = 3.6
 	var fade: Gradient = Gradient.new()
-	fade.set_color(0, Color(0.55, 0.48, 0.4, 0.55))
-	fade.set_color(1, Color(0.5, 0.45, 0.4, 0.0))
+	fade.set_color(0, Color(0.36, 0.31, 0.26, 0.4))  # dusk-lit grit, not bright smoke
+	fade.set_color(1, Color(0.3, 0.27, 0.24, 0.0))
 	var ramp: GradientTexture1D = GradientTexture1D.new()
 	ramp.gradient = fade
 	pm.color_ramp = ramp

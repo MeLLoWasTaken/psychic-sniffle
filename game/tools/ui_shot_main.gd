@@ -59,6 +59,8 @@ func _ready() -> void:
 			screen.mouse_filter = Control.MOUSE_FILTER_IGNORE
 		"nameplates":
 			screen = _nameplate_scene()
+		"map":
+			screen = _map_scene(_arg(args, "--map", "gallows_courtyard"), float(_arg(args, "--match-time", "0")))
 		"keybinds":
 			var ks: KeybindScreen = KeybindScreen.new("default", "user://ui_shot_keybinds.json")
 			Keybinds.rebind(ks.profile, "bar1_slot2", "KEY_1", [])  # show a conflict
@@ -139,6 +141,26 @@ func _nameplate_scene() -> Control:
 	(hud.elements["nameplates"] as Nameplates).position_of = func(id: int) -> Vector3: return spots.get(id, Vector3(INF, INF, INF))
 	hud.push(v)
 	hud.update(0.0)
+	var c: Control = Control.new()
+	c.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	return c
+
+
+## An arena with its art kit and lighting from a camera above one end, at `match_time` seconds of
+## match time (twists, M2-16): `--screen map --match-time 305` shows the gallows' wreck.
+func _map_scene(map_id: String, match_time: float) -> Control:
+	var b: MapBuilder = (load(Data.maps[map_id].get("scene", "res://scenes/maps/gallows_courtyard.tscn")) as PackedScene).instantiate()
+	b.map_id = map_id
+	b.bake_gi = false
+	get_tree().root.add_child(b)
+	b.set_gates_open(true, 0.0)
+	b.set_match_time(match_time, false)
+	var cam: Camera3D = Camera3D.new()
+	cam.fov = 60.0
+	cam.position = Vector3(-13, 6.5, 7)
+	get_tree().root.add_child(cam)
+	cam.look_at(Vector3(0, 0.5, 0))
+	cam.current = true
 	var c: Control = Control.new()
 	c.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	return c
