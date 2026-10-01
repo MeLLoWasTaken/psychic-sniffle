@@ -39,7 +39,7 @@ Column "Test" holds `file::test_name` (Godot tests under `game/test/`, Python te
 | Dispels | Dispels remove effects by type | core/test_combat.gd::test_dispel_removes_a_magic_debuff_from_an_ally; core/test_kits.gd::test_absolve_removes_a_magic_slow_from_an_ally | |
 | Dispels | An offensive dispel strips one magic buff | core/test_combat.gd::test_offensive_dispel_strips_one_magic_buff | |
 | Targeting | Tab picks the nearest enemy in front | core/test_movement_combat.gd::test_tab_picks_nearest_enemy_in_front | |
-| Targeting | Focus, mouseover, self, arena 1 to 3 and party targets per keybind | | M2-11 |
+| Targeting | Focus, mouseover, self, arena 1 to 3 and party targets per keybind | client/test_keybind_screen.gd::test_the_controller_aims_each_mode_at_its_unit; client/test_keybind_screen.gd::test_a_focus_cast_hits_the_focus_and_keeps_the_target | |
 | Line of sight | A pillar blocks line of sight | core/test_movement_combat.gd::test_line_of_sight_blocked_by_pillar | |
 | Line of sight | Line of sight is checked when a cast starts and when it finishes | core/test_combat.gd::test_cast_fails_if_target_steps_behind_a_pillar_before_it_finishes | |
 | Ranges | Melee 5 m (auto attack only in range), most ranged abilities and healing 40 m | core/test_movement_combat.gd::test_auto_attack_swings_every_2_seconds_in_range_only; test_combat_rule_data.py::test_healing_reaches_40_m_and_most_ranged_abilities_do | |

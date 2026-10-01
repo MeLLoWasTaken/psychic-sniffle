@@ -26,6 +26,12 @@ func _ready() -> void:
 			screen = ts
 		"menu":
 			screen = MainMenu.new()
+		"keybinds":
+			var ks: KeybindScreen = KeybindScreen.new("default", "user://ui_shot_keybinds.json")
+			Keybinds.rebind(ks.profile, "bar1_slot2", "KEY_1", [])  # show a conflict
+			Keybinds.set_target_mode(ks.profile, "bar1_slot4", "focus")
+			ks.refresh()
+			screen = ks
 	get_tree().root.add_child(screen)
 	screen.size = Vector2(1920, 1080)
 	for i: int in 4:

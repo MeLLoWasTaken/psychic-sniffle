@@ -61,7 +61,7 @@ func _ready() -> void:
 		get_viewport().scaling_3d_scale = clampf(render_scale, 0.25, 1.0)
 	set_anchors_preset(Control.PRESET_FULL_RECT)
 	mouse_filter = Control.MOUSE_FILTER_IGNORE  # clicks on the arena reach the player controls
-	Keybinds.load_profile("default")  # the settings panel lists the keys
+	Keybinds.load_user()  # the player's own binds, or the default; the settings panel lists the keys
 	menu = MainMenu.new()
 	menu.action_chosen.connect(_on_action)
 	add_child(menu)

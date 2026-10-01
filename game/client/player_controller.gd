@@ -51,7 +51,8 @@ var max_pending_presses: int = 3  ## presses waiting for a tick beyond this drop
 ## An ability was pressed by key or click (the HUD flashes the button).
 signal ability_pressed(ability_id: String, action: String)
 
-var _presses: Array[String] = []  ## abilities pressed and not sent yet, oldest first
+var _presses: Array[Dictionary] = []  ## {ability, action} pressed and not sent yet, oldest first
+var mouse_pos: Vector2 = Vector2(-1, -1)  ## the pointer on screen (mouseover target mode)
 
 var _requests: Array = []  ## ["tab"], ["clear"], ["click", screen position], in arrival order
 var _press_pos: Dictionary = {}  ## "steer"/"orbit" -> screen position of the press
@@ -143,7 +144,7 @@ func handle_event(ev: InputEvent) -> bool:
 func press_ability(ability_id: String, action: String = "") -> void:
 	if ability_id == "":
 		return
-	_presses.append(ability_id)
+	_presses.append({"ability": ability_id, "action": action})
 	while _presses.size() > max_pending_presses:
 		_presses.pop_front()
 	ability_pressed.emit(ability_id, action)
@@ -186,6 +187,7 @@ func _button(ev: InputEvent, which: String) -> void:
 
 
 func _mouse_motion(ev: InputEventMouseMotion) -> bool:
+	mouse_pos = ev.position
 	if not (steering or orbiting):
 		return false
 	var rel: Vector2 = ev.relative
@@ -241,10 +243,41 @@ func next_input(dt: float, view: Dictionary = {}, camera: Camera3D = null, units
 		if orbiting:
 			orbit = wrapf(orbit - turn, -PI, PI)  # the held camera stays put while the body turns
 	var forward: float = float(held["move_forward"] or (steering and orbiting)) - float(held["move_back"])
+	var press: Dictionary = _presses.pop_front() if not _presses.is_empty() else {}
 	return {"move": Vector2(clampf(strafe, -1.0, 1.0), clampf(forward, -1.0, 1.0)), "yaw": yaw,
-		"jump": bool(held["jump"]), "tab": false, "ability": _presses.pop_front() if not _presses.is_empty() else "",
+		"jump": bool(held["jump"]), "tab": false, "ability": str(press.get("ability", "")),
 		"target": target_id,
+		"ability_target": ability_target_for(str(press.get("action", "")), view, camera, units, geometry) if not press.is_empty() else -1,
 		"clear_target": not _is_hostile(view, target_id)}
+
+
+## The unit a key's target mode (Keybinds.target_mode) aims its ability at: the focus, the unit
+## under the pointer, the player, arena enemy 1 to 3 or party member 1 to 4 (the HUD frames'
+## order, by unit id); -1 for the default (the target) or when that unit is missing.
+func ability_target_for(action: String, view: Dictionary, camera: Camera3D = null, units: Array = [],
+		geometry: ArenaGeometry = null) -> int:
+	var mode: String = Keybinds.target_mode(action) if action != "" else "default"
+	match mode:
+		"focus":
+			return focus_id
+		"self":
+			return int(view.get("me", {}).get("id", -1))
+		"mouseover":
+			if camera == null or mouse_pos.x < 0.0:
+				return -1
+			return targeting.pick_at(camera, mouse_pos, units if not units.is_empty() else view.get("units", []), geometry)
+	if mode.begins_with("arena") or mode.begins_with("party"):
+		var arena: bool = mode.begins_with("arena")
+		var n: int = int(mode.substr(5)) - 1
+		var group: Array = []
+		var me: Dictionary = view.get("me", {})
+		for u: Dictionary in view.get("units", []):
+			var ally: bool = int(u["team"]) == int(me.get("team", -1))
+			if (arena and not ally) or (not arena and ally and int(u["id"]) != int(me.get("id", -1))):
+				group.append(int(u["id"]))
+		group.sort()
+		return group[n] if n >= 0 and n < group.size() else -1
+	return -1
 
 
 ## True when `id` is a unit on another team than the player's in this view.

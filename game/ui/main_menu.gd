@@ -25,6 +25,7 @@ var spec: String = ""  ## the chosen spec
 var buttons: Dictionary = {}  ## button id -> Button
 var cards: Dictionary = {}  ## spec id -> SpecCard
 var settings_panel: SettingsPanel
+var keybind_screen: KeybindScreen  ## open over the menu, or null
 var hint: String = ""
 var _group: ButtonGroup = ButtonGroup.new()
 
@@ -68,6 +69,7 @@ class SettingsPanel:
 	const PANEL: Vector2 = Vector2(1120, 680)
 	var style: MenuStyle
 	var close_button: Button
+	var keys_button: Button
 
 	func _init(p_style: MenuStyle) -> void:
 		style = p_style
@@ -78,11 +80,15 @@ class SettingsPanel:
 		close_button.name = "Close"
 		close_button.pressed.connect(func() -> void: visible = false)
 		add_child(close_button)
+		keys_button = style.button(style.text("settings_keybinds"), Vector2(240, 54), 22)
+		keys_button.name = "KeyBindings"
+		add_child(keys_button)
 		resized.connect(_layout)
 
 	func _layout() -> void:
 		var r: Rect2 = panel_rect()
-		close_button.position = Vector2(r.get_center().x - 120.0, r.end.y - 84.0)
+		close_button.position = Vector2(r.get_center().x + 10.0, r.end.y - 84.0)
+		keys_button.position = Vector2(r.get_center().x - 250.0, r.end.y - 84.0)
 
 	func panel_rect() -> Rect2:
 		return Rect2((size - PANEL) * 0.5 + Vector2(0, 40), PANEL)
@@ -162,6 +168,7 @@ func _init(menu_id: String = "main") -> void:
 	settings_panel.visibility_changed.connect(func() -> void:
 		if not settings_panel.visible and buttons.has("settings"):
 			(buttons["settings"] as Button).grab_focus())
+	settings_panel.keys_button.pressed.connect(show_keybinds)
 	add_child(settings_panel)
 	resized.connect(_layout)
 
@@ -197,6 +204,20 @@ func choose(action: String) -> void:
 func show_settings() -> void:
 	settings_panel.visible = true
 	settings_panel.close_button.grab_focus.call_deferred()
+
+
+## The keybinding screen over the menu (from the Settings panel).
+func show_keybinds() -> KeybindScreen:
+	if keybind_screen != null:
+		return keybind_screen
+	keybind_screen = KeybindScreen.new()
+	keybind_screen.closed.connect(func() -> void:
+		keybind_screen.queue_free()
+		keybind_screen = null
+		settings_panel.queue_redraw())
+	add_child(keybind_screen)
+	keybind_screen.size = size
+	return keybind_screen
 
 
 func _unhandled_input(event: InputEvent) -> void:

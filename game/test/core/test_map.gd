@@ -216,7 +216,8 @@ func test_gatehouses_hide_the_raised_portcullis() -> void:
 
 func test_braziers_burn_with_a_flickering_light() -> void:
 	var builder: MapBuilder = _dressed_builder()
-	var fires: Array[Node] = builder.find_children("Fx_*", "Node3D", true, false).filter(func(n: Node) -> bool: return n is AmbientFx)
+	var fires: Array[Node] = builder.find_children("Fx_*", "Node3D", true, false).filter(func(n: Node) -> bool:
+		return n is AmbientFx and (n as AmbientFx).effect_id == "brazier_fire")  # the pickups' wisps are ambient effects too
 	var braziers: int = map["decor"].filter(func(d: Dictionary) -> bool: return d.get("effect", "") == "brazier_fire").size()
 	assert_int(braziers).is_greater(0)
 	assert_int(fires.size()).is_equal(braziers)
@@ -245,3 +246,17 @@ func test_floor_tiles_stop_at_the_bounds() -> void:
 			checked += 1
 	assert_int(checked).is_greater(50)
 	assert_bool(builder._placements.has("floor_tile_worn")).override_failure_message("no worn tile variants placed").is_true()
+
+
+
+func test_pickup_spots_carry_their_wisp_hidden_until_lit() -> void:
+	var builder: MapBuilder = _dressed_builder()
+	assert_int(builder.pickups.size()).is_equal(map["pickups"].size())
+	for i: int in builder.pickups.size():
+		var p: Node3D = builder.pickups[i]
+		assert_bool(p.visible).is_false()
+		assert_vector(p.position).is_equal(Vector3(map["pickups"][i][0], map["pickups"][i][1], map["pickups"][i][2]))
+		assert_int(p.find_children("*", "AmbientFx", true, false).size()).is_equal(1)
+	builder.set_pickups(0b10)
+	assert_bool(builder.pickups[0].visible).is_false()
+	assert_bool(builder.pickups[1].visible).is_true()

@@ -83,7 +83,10 @@ func _ready() -> void:
 	preset = style.menu.get(str(options["preset"]), {})
 	spec_id = str(options["spec"]) if str(options["spec"]) != "" else str(style.menu["spec_picker"]["default"])
 	var comp: Dictionary = preset["comps"][spec_id]
-	Keybinds.load_profile(str(options["keybinds"]))
+	if str(options["keybinds"]) == "default":
+		Keybinds.load_user()  # the player's own binds (the keybinding screen), else the default
+	else:
+		Keybinds.load_profile(str(options["keybinds"]))
 	_settings = Data.settings.get(str(options["settings"]), {})
 	var enemies: Array = comp["enemies"]
 	var allies: Array = comp["allies"]

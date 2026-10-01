@@ -52,7 +52,10 @@ func _ready() -> void:
 	var opts: Dictionary = DEFAULTS.duplicate()
 	opts.merge(options if not options.is_empty() else _options_from_args(), true)
 	options = opts
-	Keybinds.load_profile(str(options["keybinds"]))
+	if str(options["keybinds"]) == "default":
+		Keybinds.load_user()  # the player's own binds (the keybinding screen), else the default
+	else:
+		Keybinds.load_profile(str(options["keybinds"]))
 	var settings: Dictionary = Data.settings.get(str(options["settings"]), {})
 	if settings.is_empty():
 		Log.error("practice: no settings profile '%s'" % options["settings"])

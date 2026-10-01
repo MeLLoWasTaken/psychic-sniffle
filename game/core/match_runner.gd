@@ -118,7 +118,10 @@ func apply_input(unit: Unit, inp: Dictionary) -> void:
 	if t and t.team != unit.team and t.is_alive():
 		unit.target_id = tid  # pressing an ability on an enemy (or clicking one) targets it
 	if str(inp.get("ability", "")) != "":
-		combat.press(unit, inp["ability"], tid)
+		# a keybind's target mode (focus, mouseover, self, arena 1 to 3) casts on that unit without
+		# changing the target; otherwise the ability goes to the target
+		var atid: int = int(inp.get("ability_target", -1))
+		combat.press(unit, inp["ability"], atid if atid >= 0 else tid)
 
 
 ## Hold the arena in preparation (the countdown restarts) while players are still joining.

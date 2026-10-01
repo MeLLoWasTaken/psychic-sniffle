@@ -2,6 +2,18 @@
 
 One entry per build-loop iteration, newest first. Format: date, backlog ID, what changed, how it was checked.
 
+## 2026-10-01 — M2-11 keybinding screen and target modes
+- Settings → Key bindings lists every action (movement, targeting, camera, both action bars, interface toggles).
+  - Click a key, then press the new key or mouse button. Shift, Ctrl and Alt make chords; mouse buttons 1 to 5 and the wheel work; Esc cancels.
+  - Keys bound to two actions turn red and the message names the other action.
+  - Save, Reset to default, Export (a code) and Import.
+- Each action bar key has a target mode: on target, focus, mouseover, self, arena 1 to 3 or party 1 to 4. The ability goes to that unit without changing your target; the input carries it as `ability_target` (protocol version 7).
+- Fix: the brazier test counted the pickup wisps from M2-07 as braziers; it now counts braziers, and a new test checks the wisps.
+- Checked:
+  - 7 keybinding tests: capture, chords, mouse and wheel, Esc, conflicts, modes saved and applied, export and import, each mode's unit, a focus cast through the server, the protocol;
+  - all 322 Godot tests pass;
+  - the screenshot was reviewed (label alignment fixed).
+
 ## 2026-10-01 — M2-08 3v3 bracket (flow and HUD; balance runs next)
 - "Play 3v3 vs bots" in the main menu: you and two bot partners against three bots. The three Play buttons now share one row.
 - Checked: a real 3v3 ran end to end with no errors or warnings (six players joined, then preparation, fight, end screen, scoreboard, menu); a HUD test shows three arena frames and two party frames; the menu tests pass.

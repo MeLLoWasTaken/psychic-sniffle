@@ -6,7 +6,7 @@ extends RefCounted
 ## Abilities, auras and specs travel as small indexes into their sorted id lists (both sides
 ## load the same data, and the protocol version changes whenever that could differ).
 
-const VERSION: int = 6
+const VERSION: int = 7
 const CH_RELIABLE: int = 0
 const CH_UNRELIABLE: int = 1
 const CHANNELS: int = 2
@@ -96,6 +96,7 @@ static func quantize_input(input: Dictionary) -> Dictionary:
 		"clear_target": bool(input.get("clear_target", false)),
 		"ability": str(input.get("ability", "")),
 		"target": int(input.get("target", -1)),
+		"ability_target": int(input.get("ability_target", -1)),
 	}
 
 
@@ -115,6 +116,7 @@ static func input_packet(inputs: Array) -> PackedByteArray:
 		var ai: int = index_of("abilities", inp.get("ability", "")) if inp.get("ability", "") != "" else -1
 		b.put_u16(ai if ai >= 0 else NO_ID)
 		b.put_u16(int(inp.get("target", -1)) if int(inp.get("target", -1)) >= 0 else NO_ID)
+		b.put_u16(int(inp.get("ability_target", -1)) if int(inp.get("ability_target", -1)) >= 0 else NO_ID)
 	return b.data_array
 
 
@@ -253,11 +255,12 @@ static func decode(data: PackedByteArray) -> Dictionary:
 				var flags: int = b.get_u8()
 				var ai: int = b.get_u16()
 				var ti: int = b.get_u16()
+				var ati: int = b.get_u16()
 				inputs.append({"seq": seq, "move": Vector2(mx / 127.0, my / 127.0),
 					"yaw": qyaw / 65535.0 * TAU, "jump": flags & FLAG_JUMP != 0,
 					"tab": flags & FLAG_TAB != 0, "clear_target": flags & FLAG_CLEAR_TARGET != 0,
 					"ability": id_at("abilities", ai) if ai != NO_ID else "",
-					"target": ti if ti != NO_ID else -1})
+					"target": ti if ti != NO_ID else -1, "ability_target": ati if ati != NO_ID else -1})
 			return {"type": t, "inputs": inputs}
 		Msg.SNAPSHOT:
 			var snap: Dictionary = {"type": t, "tick": b.get_u32(), "ack_seq": b.get_u32(),
