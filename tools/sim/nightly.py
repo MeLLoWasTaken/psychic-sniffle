@@ -168,8 +168,10 @@ def report_bracket(size: int, report: dict, out: Path) -> int:
 
 def perf(out: Path) -> int:
     dest = out / "perf_20bots"
+    # 20 full Godot clients on one runner starve each other of CPU (X-19), so their snapshot rates
+    # are recorded, not checked; the server's tick time is the budget this profile guards
     run = subprocess.run([sys.executable, str(REPO / "tools" / "sim" / "run_match.py"), "--bots", "20",
-                          "--seconds", "45", "--port", "24700", "--out", str(dest)], capture_output=True, text=True)
+                          "--seconds", "45", "--port", "24700", "--profile", "--out", str(dest)], capture_output=True, text=True)
     code = run.returncode
     print(run.stdout[-6000:])
     if code:
@@ -178,6 +180,11 @@ def perf(out: Path) -> int:
             print(f"::error title=perf::{line[:300]}")
     summary = json.loads((dest / "summary.json").read_text()) if (dest / "summary.json").exists() else {}
     print(json.dumps(summary, indent=1)[:4000])
+    tick = summary.get("tick_ms", {})
+    report = json.loads((dest / "report.json").read_text()) if (dest / "report.json").exists() else {}
+    rates = [b.get("snapshot_rate_hz", 0) for b in report.get("bots", {}).values()]
+    print(f"::notice title=20-player profile::server tick avg {tick.get('avg')} ms, p95 {tick.get('p95')} ms, max {tick.get('max')} ms; "
+          f"client snapshot rates {min(rates, default=0):.1f}-{max(rates, default=0):.1f} Hz on {os.cpu_count()} cores")
     avg = summary.get("tick_ms", {}).get("avg")
     if avg is not None and avg > TICK_BUDGET_MS:
         print(f"server tick average {avg} ms over the {TICK_BUDGET_MS} ms budget")

@@ -373,6 +373,10 @@ The human asked to incorporate any readily available offering that improves the 
 
 ### X-19 20-player profile on CI `[todo]`
 - [ ] The nightly 20-player profile fails: on a 4-core runner the 20 bot clients receive 5 to 6 snapshots a second (expected 60). Review 3 measured 57.6 per second on the 2-core workspace, so either the clients got much heavier since (talents, settings, twists) or the runner is starved; profile one bot client and compare with review 3.
+- 2026-10-01: measured on the workspace, 20 bots for 30 s: the review 3 commit gives clients 17-25 snapshots a second, today's 7-14 (server tick 2.9 ms against 3.7 ms on average). So bot clients are about twice as heavy as at review 3, and even then 21 Godot processes starve each other. Capping client frames at 60 changed nothing (the cost is per physics tick). The profile now records client rates without failing on them (`run_match.py --profile`) and guards the server's tick budget. Left: find what doubled the bot client's cost (F-14).
+
+### X-20 GitHub Actions allowance used up `[blocked]`
+- [ ] 2026-10-01 ~15:50 UTC: every Actions job fails to start ("recent account payments have failed or your spending limit needs to be increased"). The repository is private, so minutes count against the account; the two hand-started balance runs (about 10 runner-hours, then 16 parallel shards) plus a check per push used it up. The nightly schedule is removed (the workflows stay, started by hand only); balance runs move back to the workspace. Waiting on the human: raise the limit, wait for the monthly reset, or make the repository public.
 
 ### X-06 Continuous integration on GitHub Actions `[doing]`
 - [ ] Run tools/check_all on every push, and a nightly job on a multi-core runner for the balance simulations and the 20-player performance profile (the workspace has 2 cores, which skews those numbers).
@@ -515,7 +519,7 @@ Exit gate (DESIGN.md): every combat rule has passing tests; every action is rebi
 ### M2-07 1v1 bracket `[doing]`
 - [ ] Rules: dampening from 1:00, 12-minute limit, health and mana pickups at 1:30; menu entry "Play 1v1 vs a bot"; balance per F-08 (each spec 40-60% in 1,000 simulated duels).
 - Done 2026-10-01: the rules (dampening from 1:00, the 12-minute limit, pickups at 1:30 in 1v1 and 2v2), the menu entry, bots that take pickups. Left: the 1,000-duel balance run per F-08, after the reference video frees the CPU.
-- 2026-10-01, tuning: duel balance is data, as standing auras per bracket by role or spec (`tuning.arena.bracket_auras`; visible, undispellable): Duelist's Resolve (healers), Measured Blade (Carnage), Steady Footing (Rime, physical damage only). Untuned, 60 named-build duels gave Warblade 100%, Arcanist 30%, Oracle 20%. Three local rounds of 60 duels swung widely (Oracle 0-65%) because single duels are chaotic and 10 per match-up is too few; the rest of the tuning runs 1,000 duels on CI (`.github/workflows/duels.yml`, 8 shards). Oracle mirrors always reach the 12-minute limit (dampening reaches only 66% by then).
+- 2026-10-01, tuning: duel balance is data, as standing auras per bracket by role or spec (`tuning.arena.bracket_auras`; visible, undispellable): Duelist's Resolve (healers), Measured Blade (Carnage), Steady Footing (Rime, physical damage only). Untuned, 60 named-build duels gave Warblade 100%, Arcanist 30%, Oracle 20%. Three local rounds of 60 duels swung widely (Oracle 0-65%) because single duels are chaotic and 10 per match-up is too few; the rest of the tuning was to run 1,000 duels on CI (`.github/workflows/duels.yml`, 8 shards), which stopped when the Actions allowance ran out (X-20), so it continues locally with larger rounds. Oracle mirrors always reach the 12-minute limit (dampening reaches only 66% by then).
 
 ### M2-08 3v3 bracket `[doing]`
 - [ ] Three-player teams through the whole flow (menu, prep, scoreboard), arena enemy frames 1 to 3; balance per F-08 (two-healer teams no longer dominate).

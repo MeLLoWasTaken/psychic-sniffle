@@ -6,8 +6,8 @@
 name: nightly
 
 on:
-  schedule:
-    - cron: "17 3 * * *"
+  # No schedule: on this private repository a full run costs many runner-hours of the account's
+  # Actions allowance (it was used up on 2026-10-01). Start it by hand when wanted.
   workflow_dispatch:
     inputs:
       matches:

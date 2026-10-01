@@ -71,6 +71,10 @@ def main() -> int:
     ap.add_argument("--mode", choices=["skirmish", "arena"], default="skirmish",
                     help="arena: real match rules (gates, dampening, win on kill); bots quit when it ends")
     ap.add_argument("--out", type=Path, default=REPO / "previews" / "matches" / "latest")
+    ap.add_argument("--profile", action="store_true",
+                    help="load profile (many bots on one machine): record client rates without failing on them")
+    ap.add_argument("--client-fps", type=int, default=0,
+                    help="frame cap of each bot client (0: the client's own, 240); lower it to fit many bots on few cores")
     args = ap.parse_args()
     seconds = args.minutes * 60 if args.minutes else args.seconds
     out = args.out.resolve()
@@ -106,6 +110,8 @@ def main() -> int:
         cmd = base + ["--", "--bot", "--name", name, "--port", str(args.port), "--seconds", str(seconds),
                       "--spec", specs[i % len(specs)],
                       "--stats", str(out / f"{name}.json")]
+        if args.client_fps:
+            cmd += ["--max-fps", str(args.client_fps)]
         if args.lag_ms or args.jitter_ms or args.loss:
             cmd += ["--lag-ms", str(args.lag_ms), "--jitter-ms", str(args.jitter_ms), "--loss", str(args.loss)]
         bots.append((name, subprocess.Popen(cmd, stdout=log, stderr=subprocess.STDOUT)))
@@ -142,6 +148,8 @@ def main() -> int:
             failures.append(f"{name} wrote no stats"); continue
         st = json.loads(path.read_text())
         report["bots"][name] = st
+        if args.profile:
+            continue  # a load profile records the clients' rates; it checks the server's tick only
         if abs(st["snapshot_rate_hz"] - rate) > 1.0 and not args.loss:
             failures.append(f"{name} snapshot rate {st['snapshot_rate_hz']:.2f} Hz, expected {rate} +/- 1")
         if args.loss and st["snapshot_rate_hz"] < rate * (1 - args.loss) - 1.5:

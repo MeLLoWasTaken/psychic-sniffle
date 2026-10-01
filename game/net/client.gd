@@ -95,7 +95,8 @@ func _ready() -> void:
 		hash(player_name))
 	Engine.physics_ticks_per_second = Data.tick_rate()
 	if DisplayServer.get_name() == "headless":
-		Engine.max_fps = 240  # poll often without spinning the CPU
+		# poll often without spinning the CPU; many bots on few cores use a lower cap (--max-fps)
+		Engine.max_fps = int(NetServer._arg(args, "--max-fps", "240"))
 
 
 func connect_to_server(host: String = "", port: int = 0) -> void:
