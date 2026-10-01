@@ -288,8 +288,9 @@ The slice specs are Warblade Carnage (melee, rage), Arcanist Rime (casting, inte
 - [x] When the player dies in an arena, the camera can follow a living teammate (cycle with a key; the HUD's frames stay), as in the reference video's last 80 s where it showed a corpse; tests for the camera target and the cycle order.
 - Done 2026-10-01: the camera follows the first living teammate by id, Tab (the target key, useless while dead) moves to the next, a line says who is watched; reviewed on the reference recording at 1:40 (`previews/f_16/spectating_1280.png`). Recordings drawn later follow the partner by themselves.
 
-### F-17 Master bus headroom `[todo]`
-- [ ] The reference video's mix reached 0 dBFS on 534 samples (mean -17.8 dB): add a limiter or lower the master so a busy fight never clips; measure on a recorded match.
+### F-17 Master bus headroom `[done]`
+- [x] The reference video's mix reached 0 dBFS on 534 samples (mean -17.8 dB): add a limiter or lower the master so a busy fight never clips; measure on a recorded match.
+- 2026-10-01: the game does not clip. The raw recording peaks at -0.5 dBFS, exactly the master bus limiter's ceiling; the AAC encoder pushed peaks over it. `tools/match_video.sh` now lowers the audio by 1 dB before encoding. The limiter is reached often (586 samples within 1 dB of the ceiling in 2:52), so the mix is loud; worth a listen by the human.
 
 ### M1-32 Match flow follow-ups `[todo]`
 - [x] The preparation camera sat very close: the starting rooms were 4.5 m deep with spawns 2.2 m from the back wall. Rooms deepened to 8 m (bounds 25 to 28.5 m), spawns 3 m behind the gate; bots unaffected (42 of 42 matches to a kill, median 93 s); `previews/m1_32/prep_room_1280x720.png`.

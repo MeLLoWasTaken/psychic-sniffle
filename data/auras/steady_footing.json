@@ -1,7 +1,7 @@
 {
   "id": "steady_footing",
   "name": "Steady Footing",
-  "description": "Duels only: the Rime Arcanist's wards turn aside more weapon blows when caught alone.",
+  "description": "Duels only: the Rime Arcanist's wards turn aside more weapon blows, but its spells strike a little softer.",
   "kind": "buff",
   "duration_s": 0,
   "refresh": "refresh",
@@ -12,6 +12,11 @@
       "stat": "armor",
       "op": "add",
       "value": 0.3
+    },
+    {
+      "stat": "damage_done",
+      "op": "multiply",
+      "value": 0.92
     }
   ],
   "hud_priority": "normal",

@@ -1,7 +1,7 @@
 {
   "id": "duelists_resolve",
   "name": "Duelist's Resolve",
-  "description": "Duels only: a healer alone fights harder, dealing more damage and taking less.",
+  "description": "Duels only: a healer alone fights harder, dealing more damage and taking less, especially from weapons.",
   "kind": "buff",
   "duration_s": 0,
   "refresh": "refresh",
@@ -11,12 +11,17 @@
     {
       "stat": "damage_done",
       "op": "multiply",
-      "value": 1.3
+      "value": 1.25
     },
     {
       "stat": "damage_taken",
       "op": "multiply",
-      "value": 0.95
+      "value": 0.925
+    },
+    {
+      "stat": "armor",
+      "op": "add",
+      "value": 0.015
     }
   ],
   "hud_priority": "normal",
