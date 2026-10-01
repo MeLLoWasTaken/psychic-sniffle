@@ -369,7 +369,7 @@ func _apply_twists(tick: int) -> void:
 		return
 	var twists: Array = Data.maps.get(map_id, {}).get("twists", [])
 	if not twists.is_empty():
-		geometry.removed_tags = ArenaTwists.removed_tags(twists, float(tick - _match_start_tick) / Data.tick_rate())
+		geometry.apply_twists(twists, float(tick - _match_start_tick) / Data.tick_rate())
 
 
 ## Predict our own movement with the same rules the server uses, including roots, stuns, slows

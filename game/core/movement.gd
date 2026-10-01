@@ -34,7 +34,7 @@ func apply(unit: Unit, input: Dictionary, dt: float, speed_mult: float = 1.0) ->
 	var move: Vector2 = input.get("move", Vector2.ZERO)
 	if move.length() > 1.0:
 		move = move.normalized()
-	var speed: float = run_speed * speed_mult
+	var speed: float = run_speed * speed_mult * (geometry.ground_speed(unit.position) if geometry else 1.0)
 	if move.y < 0.0:
 		speed *= backpedal_mult
 	var on_ground: bool = unit.position.y <= 0.0001

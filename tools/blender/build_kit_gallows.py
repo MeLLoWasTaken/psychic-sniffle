@@ -394,36 +394,12 @@ PIECES = {"floor_tile": floor_tile, "wall": wall, "corner": corner, "pillar": pi
 BACK_ON_Y0 = {"wall", "gate_lintel", "banner"} | dressing.BACK_ON_Y0
 
 
+def all_mats(pal: dict) -> dict:
+    return {**mats(pal), **dressing.extra_mats(pal)}
+
+
 def build(spec: dict, previews: Path | None) -> None:
-    common.reset_scene()
-    rng = common.seeded_random(spec["seed"])
-    params = spec.get("params", {})
-    piece = params["piece"]
-    m = mats(spec.get("palette", {}))
-    m.update(dressing.extra_mats(spec.get("palette", {})))
-    result = PIECES[piece](params, m, rng)
-    parts, glow = result if isinstance(result, tuple) else (result, [])
-    kit.apply_transforms(parts + glow)
-    if piece in BACK_ON_Y0:
-        # keep y as built (back on y = 0); centre x; lowest point to z = 0
-        allv = [o.matrix_world @ v.co for o in parts for v in o.data.vertices]
-        minz = min(v.z for v in allv)
-        cx = (min(v.x for v in allv) + max(v.x for v in allv)) / 2
-        for o in parts + glow:
-            for v in o.data.vertices:
-                v.co.z -= minz
-                v.co.x -= cx
-        kit.finish_piece(parts, spec["id"], spec, previews, glow, center=False)
-    else:
-        allv = [o.matrix_world @ v.co for o in parts for v in o.data.vertices]
-        off = ((min(v.x for v in allv) + max(v.x for v in allv)) / 2,
-               (min(v.y for v in allv) + max(v.y for v in allv)) / 2, min(v.z for v in allv))
-        for o in parts + glow:
-            for v in o.data.vertices:
-                v.co.x -= off[0]
-                v.co.y -= off[1]
-                v.co.z -= off[2]
-        kit.finish_piece(parts, spec["id"], spec, previews, glow, center=False)
+    kit.build_spec(spec, previews, PIECES, BACK_ON_Y0, all_mats)
 
 
 def main() -> int:

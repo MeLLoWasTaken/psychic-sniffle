@@ -154,7 +154,7 @@ func _update_twists(tick: int) -> void:
 			events.append({"tick": tick, "type": "twist_warning" if warned else "twist", "twist": str(t.get("id", i)),
 				"text": str(t.get("warn_text" if warned else "text", "")), "sound": str(t.get("warn_sound" if warned else "sound", ""))})
 	if geometry:
-		geometry.removed_tags = ArenaTwists.removed_tags(twists, s)
+		geometry.apply_twists(twists, s)
 
 
 ## Pickups taken since the last call, [{"unit", "pickup"}]; the caller applies pickup_effects.

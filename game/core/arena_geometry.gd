@@ -11,6 +11,26 @@ var circles: Array[Dictionary] = []  ## {center: Vector2, radius: float, height:
 var boxes: Array[Dictionary] = []  ## {min: Vector2, max: Vector2, height: float, los: bool, gate: bool}
 var gates_open: bool = true  ## gate boxes block only while closed (arena preparation phase)
 var removed_tags: Dictionary = {}  ## collider tags a twist has taken away (ArenaTwists); they block nothing
+var flood: Dictionary = {}  ## a flood twist in effect: {"slow", "dry": Array[Rect2]} (ArenaTwists), or {}
+
+const WADE_HEIGHT: float = 0.3  ## a unit higher than this (mid-jump) is above the water
+
+
+## The map's twists as of `seconds` of match time: what collapses took away, and any flood.
+func apply_twists(twists: Array, seconds: float) -> void:
+	removed_tags = ArenaTwists.removed_tags(twists, seconds)
+	flood = ArenaTwists.active_flood(twists, seconds)
+
+
+## Movement speed multiplier of the ground at `pos`: a flood's slow in the water, else 1.
+func ground_speed(pos: Vector3) -> float:
+	if flood.is_empty() or pos.y > WADE_HEIGHT:
+		return 1.0
+	var p: Vector2 = Vector2(pos.x, pos.z)
+	for r: Rect2 in flood["dry"]:
+		if r.has_point(p):
+			return 1.0
+	return float(flood["slow"])
 
 
 static func from_map(map: Dictionary) -> ArenaGeometry:

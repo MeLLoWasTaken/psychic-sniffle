@@ -1,0 +1,31 @@
+{
+  "id": "crypt_skyline_arches",
+  "kind": "environment_kit",
+  "builder": "build_kit_crypt.py",
+  "seed": 123,
+  "tri_budget": {
+    "min": 300,
+    "max": 5000
+  },
+  "texture_size": 512,
+  "palette": {
+    "stone": "#686a62",
+    "flag": "#5f625b",
+    "ledger": "#7a7a71",
+    "mortar": "#1c221d",
+    "moss": "#64782e",
+    "moss_dark": "#2c3a22",
+    "rust": "#5b3b26",
+    "iron": "#373b3b",
+    "bone": "#b0a68c",
+    "void": "#0b0d0c",
+    "dirt": "#38372d",
+    "wood": "#5f4a33",
+    "far_stone": "#4b4f4a"
+  },
+  "params": {
+    "piece": "skyline_arches"
+  },
+  "out": "game/assets/kits/crypt/crypt_skyline_arches.glb",
+  "status": "draft"
+}

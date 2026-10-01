@@ -54,6 +54,12 @@ var _placements: Dictionary = {}  ## kit piece -> Array[Transform3D], drawn as o
 var _tag_nodes: Dictionary = {}  ## collider tag -> the nodes showing it (greybox and kit), for twists
 var removed_tags: Dictionary = {}  ## tags a twist has taken away: their nodes are hidden, a wreck shown
 var wrecks: Array[Node3D] = []  ## the wrecks left by collapses (tests, screenshots)
+var water: MeshInstance3D = null  ## a flood's water surface, built when the water starts to rise
+var water_level: float = 0.0  ## 0 (dry) to 1 (full): how high the flood stands (ArenaTwists.flood_level)
+
+const WATER_LOW_Y: float = -0.08  ## the water surface just under the floor before it rises
+const WATER_FULL_Y: float = 0.24  ## and at full flood: over the ankles
+const WATER_SHADER: Shader = preload("res://scenes/maps/water.gdshader")
 var skyline_placements: Dictionary = {}  ## skyline piece -> Array[Transform3D] (kept for tests)
 var _grime_runs: Array = []  ## [a, b, outward normal] of every facade run: wall bases for grime decals
 var _aabbs: Dictionary = {}  ## kit piece -> AABB
@@ -77,6 +83,8 @@ func build() -> void:
 	_tag_nodes.clear()
 	removed_tags.clear()
 	wrecks.clear()
+	water = null
+	water_level = 0.0
 	_kit = str(map.get("kit", "")) if use_kit else ""
 	if _kit != "" and _kit_piece("floor_tile") == null:
 		Log.warn("map: kit %s is not built; using greybox" % _kit)
@@ -128,6 +136,9 @@ func _tag_node(tag: String, node: Node3D) -> void:
 func set_match_time(seconds: float, preparing: bool) -> void:
 	if preparing:
 		return
+	for t: Dictionary in map.get("twists", []):
+		if str(t.get("type", "")) == "flood":
+			_set_flood(t, ArenaTwists.flood_level(t, seconds))
 	var gone: Dictionary = ArenaTwists.removed_tags(map.get("twists", []), seconds)
 	for tag: String in gone:
 		if removed_tags.has(tag):
@@ -138,6 +149,76 @@ func set_match_time(seconds: float, preparing: bool) -> void:
 			for body: Node in n.find_children("*", "StaticBody3D", true, false):
 				(body as StaticBody3D).collision_layer = 0  # the camera and spells pass through now
 		_add_wreck(tag)
+
+
+## A flood's water at `level` (0 to 1): a surface over the arena floor outside the dry rectangles,
+## rising from just under the floor to over the ankles.
+func _set_flood(twist: Dictionary, level: float) -> void:
+	water_level = level
+	if level <= 0.0:
+		if water != null:
+			water.visible = false
+		return
+	if water == null:
+		water = _build_water(twist)
+		add_child(water)
+	water.visible = true
+	water.position.y = lerpf(WATER_LOW_Y, WATER_FULL_Y, level)
+
+
+## The water surface: half-metre cells over the arena interior (inside the walls) that are not dry.
+func _build_water(twist: Dictionary) -> MeshInstance3D:
+	var dry: Array[Rect2] = []
+	for r: Array in twist.get("dry", []):
+		dry.append(Rect2(Vector2(r[0][0], r[0][1]), Vector2(r[1][0] - r[0][0], r[1][1] - r[0][1])))
+	var inner: Rect2 = _interior_rect()
+	var st: SurfaceTool = SurfaceTool.new()
+	st.begin(Mesh.PRIMITIVE_TRIANGLES)
+	st.set_normal(Vector3.UP)
+	var cell: float = 0.5  # half-metre cells, so dry edges on the half metre fall between cells
+	for ix: int in range(floori(inner.position.x / cell), ceili(inner.end.x / cell)):
+		for iz: int in range(floori(inner.position.y / cell), ceili(inner.end.y / cell)):
+			var c: Vector2 = Vector2(ix + 0.5, iz + 0.5) * cell
+			if not inner.has_point(c) or dry.any(func(r: Rect2) -> bool: return r.has_point(c)):
+				continue
+			var a: Vector3 = Vector3(ix, 0, iz) * cell
+			var b: Vector3 = Vector3(ix + 1, 0, iz) * cell
+			var d: Vector3 = Vector3(ix, 0, iz + 1) * cell
+			var e: Vector3 = Vector3(ix + 1, 0, iz + 1) * cell
+			for v: Vector3 in [a, d, b, b, d, e]:
+				st.add_vertex(v)
+	var mi: MeshInstance3D = MeshInstance3D.new()
+	mi.name = "FloodWater"
+	mi.mesh = st.commit()
+	var mat: ShaderMaterial = ShaderMaterial.new()
+	mat.shader = WATER_SHADER
+	mi.material_override = mat
+	mi.cast_shadow = GeometryInstance3D.SHADOW_CASTING_SETTING_OFF
+	return mi
+
+
+## The open floor inside the outer walls (the colliders tagged "wall"), as a ground rectangle.
+func _interior_rect() -> Rect2:
+	var half: float = float(map.get("bounds_half_m", 20.0))
+	var lo: Vector2 = Vector2(-half, -half)
+	var hi: Vector2 = Vector2(half, half)
+	for c: Dictionary in map.get("colliders", []):
+		if c["type"] != "box" or str(c.get("tag", "")) != "wall":
+			continue
+		var bmin: Vector2 = Vector2(c["min"][0], c["min"][1])
+		var bmax: Vector2 = Vector2(c["max"][0], c["max"][1])
+		# a wall spanning most of the width bounds the floor on that side
+		if bmax.x - bmin.x > half:
+			if bmin.y > 0.0:
+				hi.y = minf(hi.y, bmin.y)
+			else:
+				lo.y = maxf(lo.y, bmax.y)
+		elif bmax.y - bmin.y > half * 0.5:
+			if bmin.x > 0.0:
+				hi.x = minf(hi.x, bmin.x)
+			else:
+				lo.x = maxf(lo.x, bmax.x)
+	return Rect2(lo, hi - lo)
 
 
 ## What a collapse leaves where `tag` stood: broken beams and planks lying low across its
@@ -489,10 +570,18 @@ func _dress_with_kit() -> void:
 		elif c["type"] == "box" and tag == "gallows":
 			_tag_node(tag, _kit_place(kit_root, "gallows", _box_centre(c), 0.0, Vector3(_box_size(c).x / KIT_GALLOWS_SIZE_M, 1.0,
 				_box_size(c).y / KIT_GALLOWS_SIZE_M)))
+		elif c["type"] == "box" and tag == "tomb":
+			# built with its long side along x (length_m x width_m, height_m tall); turned to the box
+			var sz: Vector2 = _box_size(c)
+			var th: float = _kit_param("tomb", "height_m", 3.2)
+			_tag_node(tag, _kit_place(kit_root, "tomb", _box_centre(c), 0.0 if sz.x >= sz.y else PI / 2, Vector3(
+				maxf(sz.x, sz.y) / _kit_param("tomb", "length_m", 6.4), float(c.get("height", th)) / th,
+				minf(sz.x, sz.y) / _kit_param("tomb", "width_m", 2.8))))
 		elif c["type"] == "circle":
-			var r: float = float(c["radius"]) / KIT_PILLAR_RADIUS_M
+			# each kit's pillar is built for its spec's radius_m and height_m (gallows 1.2 m, crypt 1.0 m)
+			var r: float = float(c["radius"]) / _kit_param("pillar", "radius_m", KIT_PILLAR_RADIUS_M)
 			_kit_place(kit_root, "pillar", Vector3(c["center"][0], 0, c["center"][1]), _rng.randf() * TAU,
-				Vector3(r, float(c.get("height", 6.0)) / KIT_PILLAR_HEIGHT_M, r))
+				Vector3(r, float(c.get("height", 6.0)) / _kit_param("pillar", "height_m", KIT_PILLAR_HEIGHT_M), r))
 	_kit_bounds_walls()
 	if bool(_wall_top().get("outer_facades", false)):
 		_kit_outer_walls()
@@ -791,7 +880,7 @@ func _kit_floor_dressing(kit_root: Node3D) -> void:
 				var r: float = float(c["radius"]) + float(reach[1])
 				_decal(root, "Grime", _blob_texture(7), Vector2(c["center"][0], c["center"][1]), Vector2(0, 1),
 					Vector2(r * 2.0, r * 2.0), col, alpha * 0.8, _rng.randf() * TAU)
-			elif c.get("tag", "") == "gallows":
+			elif c.get("tag", "") in ["gallows", "tomb"]:
 				var sz: Vector2 = _box_size(c) + Vector2.ONE * float(reach[1]) * 1.4
 				var ctr: Vector3 = _box_centre(c)
 				_decal(root, "Grime", _blob_texture(3), Vector2(ctr.x, ctr.z), Vector2(0, 1), sz, col, alpha * 0.8)
@@ -909,6 +998,13 @@ func _kit_place(parent: Node3D, piece: String, pos: Vector3, yaw: float, scl: Ve
 	node.scale = scl
 	parent.add_child(node)
 	return node
+
+
+## A number from a kit piece's asset spec params (data/assets/<kit>_<piece>.json), e.g. the pillar's
+## radius_m, or `fallback` when the spec does not give it.
+func _kit_param(piece: String, key: String, fallback: float) -> float:
+	var spec: Dictionary = Data.assets.get("%s_%s" % [_kit, piece], {})
+	return float(spec.get("params", {}).get(key, fallback))
 
 
 func _kit_piece(piece: String) -> PackedScene:

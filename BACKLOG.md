@@ -368,6 +368,9 @@ The human asked to incorporate any readily available offering that improves the 
 - [ ] The CI run of 26e3202 failed the match-flow check with 418 of 8543 ticks not drawn (4.9%, limit 2%) and 14.6% of ticks without a new snapshot; earlier runs passed. Find out whether it is runner speed or a change in M2-13 (settings applied at match start), once the workspace CPU is free to run the check locally.
 - 2026-10-01: the CI run of 7576b97 failed the same check differently: the client timed out in the match step after 870 s with no tick drawn while the bots stayed connected. The same check passed locally on aa36784 (227 s, 1.2% of ticks not drawn, with the video render using the CPU). The check now prints the run's last client and server log lines on failure, so the next CI annotation shows where it stopped.
 
+### X-18 Nightly balance results (first run, 2026-10-01) `[todo]`
+- [ ] 1v1 (1,000 duels, random builds): Warblade 62%, Oracle 8%, Arcanist 78%; the Arcanist has 1 viable build; two Arcanist nodes are in every top build (turning_hours, gliding_ice). 2v2 and 3v3 hit the 4-hour job limit (now split into 6 and 8 parallel shards); the 20-player profile failed without saying why (it now reports the end of its output as errors). Feed into M2-07 (1v1 tuning) and M2-04 (trees).
+
 ### X-06 Continuous integration on GitHub Actions `[doing]`
 - [ ] Run tools/check_all on every push, and a nightly job on a multi-core runner for the balance simulations and the 20-player performance profile (the workspace has 2 cores, which skews those numbers).
 - 2026-10-01: the nightly schedule (03:17 UTC) has not fired on two nights (no scheduled runs in the history); the workflow was started by hand with workflow_dispatch. The balance jobs now run one simulation process per core and simulate random talent builds (M2-04).
@@ -519,8 +522,9 @@ Exit gate (DESIGN.md): every combat rule has passing tests; every action is rebi
 - [x] Screenshot of the wreck reviewed (`previews/m2_16/gallows_before_1280.png`, `gallows_wreck_1280.png`, from `tools/ui_shot.gd --screen map --match-time <s>`): the first version was a few sparse planks and a bright white puff; now beams, planks and broken plinth stones cover the footprint and the dust is dim grit.
 - Found while planning M2-09: the gallows collapse was described in the map data but never implemented. Next twist types: flood (M2-09) and a rotating obstacle (M2-10).
 
-### M2-09 Second arena `[todo]`
+### M2-09 Second arena `[doing]`
 - [ ] About 40 m across, 3 to 5 line-of-sight blockers, two starting rooms, one twist (for example a collapsing bridge); kit pieces by Blender script; navigation and bots work; screenshots against the art bible.
+- 2026-10-01, Flooded Crypt: a sunken, roofless crypt at night (`data/maps/flooded_crypt.json`, lighting `moonlit_crypt`), 39 x 36 m, two columns and two great tombs (4 blockers), the same starting rooms and gates as Gallows Courtyard. Twist: at 3:00 the nave floods (water rises during the 15 s warning) and wading slows everyone to 70% outside the side aisles and gate landings; the slow is part of movement on server and client alike (`ArenaGeometry.ground_speed`), so prediction needs nothing new. Kit `crypt`: 15 Blender-built pieces (`tools/blender/build_kit_crypt.py`; walls with burial niches and pilasters, broken-ribbed columns, carved tombs, grille gates, gatehouse, braziers, bone piles, grave slabs, ruined skyline), moss, rising damp and wet streaks added to the shared kit materials. Two flood sounds. Matches now pick an arena at random from the preset's list (`maps`), and recordings carry their arena. Bots: 6 test matches all ended by a kill. Left: the review screenshots with players, bots avoiding the water once it rises, and a splash when wading.
 
 ### M2-10 Third arena `[todo]`
 - [ ] As M2-09 with a different twist (rotating obstacle, flood or shrinking safe zone) and a distinct look and lighting preset.

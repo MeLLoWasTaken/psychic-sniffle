@@ -1,6 +1,8 @@
-# Nightly balance simulations (1,000 bot matches per bracket) and the 20-player performance
-# profile, each on its own runner (backlog X-06). Results are uploaded as artifacts and the
-# balance table is shown in the run summary.
+# Nightly balance simulations (1,000 bot matches per bracket, every unit on a random talent build,
+# every arena hosting the bracket in turn) and the 20-player performance profile (backlog X-06,
+# M2-04). One runner cannot finish 1,000 2v2 or 3v3 matches in its 4 hours, so each bracket is
+# split into shards that run as parallel jobs; the report job merges them, shows the balance and
+# build tables in the run summary and warns about anything outside the targets.
 name: nightly
 
 on:
@@ -22,7 +24,23 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        bracket: ["1v1", "2v2", "3v3"]
+        include:
+          - {bracket: "1v1", shards: 2, shard: 0}
+          - {bracket: "1v1", shards: 2, shard: 1}
+          - {bracket: "2v2", shards: 6, shard: 0}
+          - {bracket: "2v2", shards: 6, shard: 1}
+          - {bracket: "2v2", shards: 6, shard: 2}
+          - {bracket: "2v2", shards: 6, shard: 3}
+          - {bracket: "2v2", shards: 6, shard: 4}
+          - {bracket: "2v2", shards: 6, shard: 5}
+          - {bracket: "3v3", shards: 8, shard: 0}
+          - {bracket: "3v3", shards: 8, shard: 1}
+          - {bracket: "3v3", shards: 8, shard: 2}
+          - {bracket: "3v3", shards: 8, shard: 3}
+          - {bracket: "3v3", shards: 8, shard: 4}
+          - {bracket: "3v3", shards: 8, shard: 5}
+          - {bracket: "3v3", shards: 8, shard: 6}
+          - {bracket: "3v3", shards: 8, shard: 7}
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-python@v5
@@ -33,15 +51,42 @@ jobs:
       - uses: ./.github/actions/setup
       - name: Import the project
         run: godot --headless --path game --import > /dev/null 2>&1 || true
-      - name: Simulate ${{ matrix.bracket }}
+      - name: Simulate ${{ matrix.bracket }} shard ${{ matrix.shard }}
         run: |
           nproc
           python3 tools/sim/nightly.py --bracket ${{ matrix.bracket }} --matches ${{ inputs.matches || '1000' }} \
-            --random-builds ${{ inputs.random_builds || '9' }} --out nightly
+            --random-builds ${{ inputs.random_builds || '9' }} --shards ${{ matrix.shards }} --shard ${{ matrix.shard }} \
+            --out nightly
       - uses: actions/upload-artifact@v4
         if: always()
         with:
-          name: balance-${{ matrix.bracket }}
+          name: balance-${{ matrix.bracket }}-${{ matrix.shard }}
+          path: nightly/
+
+  report:
+    needs: balance
+    if: always()
+    runs-on: ubuntu-24.04
+    timeout-minutes: 20
+    strategy:
+      fail-fast: false
+      matrix:
+        bracket: ["1v1", "2v2", "3v3"]
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+      - uses: actions/download-artifact@v4
+        with:
+          pattern: balance-${{ matrix.bracket }}-*
+          path: shards
+      - name: Report ${{ matrix.bracket }}
+        run: python3 tools/sim/nightly.py --bracket ${{ matrix.bracket }} --merge shards --out nightly
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: balance-${{ matrix.bracket }}-report
           path: nightly/
 
   perf:

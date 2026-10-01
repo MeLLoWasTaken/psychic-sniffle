@@ -71,6 +71,7 @@
   },
   "play_bots": {
     "map": "gallows_courtyard",
+    "maps": ["gallows_courtyard", "flooded_crypt"],
     "bracket": "2v2",
     "host_name": "player",
     "port_range": [
@@ -344,6 +345,7 @@
   },
   "play_1v1": {
     "map": "gallows_courtyard",
+    "maps": ["gallows_courtyard", "flooded_crypt"],
     "bracket": "1v1",
     "host_name": "player",
     "port_range": [
@@ -383,6 +385,7 @@
   },
   "play_3v3": {
     "map": "gallows_courtyard",
+    "maps": ["gallows_courtyard", "flooded_crypt"],
     "bracket": "3v3",
     "host_name": "player",
     "port_range": [

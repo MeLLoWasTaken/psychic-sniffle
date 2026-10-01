@@ -7,6 +7,7 @@ extends Node
 ## A spec may name a talent build from its bot profile: warblade_carnage@bleed ("@none" for no
 ## talents; a bare spec plays its first build). The summary reports each spec@build too.
 ## --comp may be given several times (matches are spread across comps; team sides alternate).
+## --map <arena id> (default gallows_courtyard), or --map all: every arena hosting the bracket in turn.
 ## Prints one line per match and a summary; exits 1 if any match raised an error.
 
 var _results: Array = []
@@ -24,6 +25,7 @@ func _ready() -> void:
 	_team1_first = "--team1-first" in args  # create team 1's units first (lower ids), to test ordering bias
 	_trace_path = _arg(args, "--trace", "")  # write the first match's full event log here
 	var max_minutes: float = float(_arg(args, "--max-minutes", "20"))
+	var map_arg: String = _arg(args, "--map", "gallows_courtyard")  # an arena id, or "all" (each in turn)
 	var comps: Array = []
 	for i: int in args.size():
 		if args[i] == "--comp" and i + 1 < args.size():
@@ -36,8 +38,14 @@ func _ready() -> void:
 		var sides: PackedStringArray = comp.split(":")
 		var swap: bool = (m / comps.size()) % 2 == 1  # alternate sides so spawn position is not a factor
 		var team_specs: Array = [sides[1].split("+"), sides[0].split("+")] if swap else [sides[0].split("+"), sides[1].split("+")]
-		var r: Dictionary = _run_match(team_specs, seed_base + m, max_minutes)
+		var bracket: String = "%dv%d" % [team_specs[0].size(), team_specs[1].size()]
+		var pool: Array = Data.maps.keys().filter(func(id: String) -> bool: return bracket in Data.maps[id].get("brackets", [])) \
+			if map_arg == "all" else [map_arg]
+		pool.sort()
+		var map_id: String = pool[m % pool.size()]
+		var r: Dictionary = _run_match(team_specs, seed_base + m, max_minutes, map_id)
 		r["comp"] = comp
+		r["map"] = map_id
 		r["swapped"] = swap
 		_results.append(r)
 		print("match %3d  %-60s winner %2d  %6.1f s  %s" % [m + 1, comp, r["winner"], r["seconds"], r["end_reason"]])
@@ -51,8 +59,8 @@ func _ready() -> void:
 	get_tree().quit(1 if summary["headline"]["errors"] > 0 else 0)
 
 
-func _run_match(team_specs: Array, seed_value: int, max_minutes: float) -> Dictionary:
-	var map: Dictionary = Data.maps["gallows_courtyard"]
+func _run_match(team_specs: Array, seed_value: int, max_minutes: float, map_id: String = "gallows_courtyard") -> Dictionary:
+	var map: Dictionary = Data.maps[map_id]
 	var bracket: String = "%dv%d" % [team_specs[0].size(), team_specs[1].size()]
 	var runner: MatchRunner = MatchRunner.new(map, "arena", bracket, 0.0, seed_value)
 	var brains: Dictionary = {}

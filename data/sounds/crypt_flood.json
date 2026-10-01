@@ -1,0 +1,65 @@
+{
+  "id": "crypt_flood",
+  "description": "The crypt floods: a rushing surge of water across stone, splashing and a deep hollow boom under it (flood twist, M2-09).",
+  "category": "impact",
+  "peak_dbfs": -2.0,
+  "duration_s": 3.0,
+  "processing": "impact_low",
+  "layers": [
+    {
+      "type": "noise",
+      "band": [
+        200,
+        5000
+      ],
+      "env": {
+        "attack_s": 0.0008,
+        "decay_s": 0.06
+      },
+      "gain": 2.4
+    },
+    {
+      "type": "sub",
+      "from_hz": 90,
+      "to_hz": 35,
+      "curve": 4,
+      "env": {
+        "attack_s": 0.01,
+        "decay_s": 0.4
+      },
+      "gain": 0.8
+    },
+    {
+      "type": "noise",
+      "band": [
+        150,
+        2500
+      ],
+      "start_s": 0.05,
+      "env": {
+        "attack_s": 0.15,
+        "decay_s": 0.55
+      },
+      "am": [
+        7,
+        0.4
+      ],
+      "gain": 0.6
+    },
+    {
+      "type": "crackle",
+      "band": [
+        1500,
+        7000
+      ],
+      "per_second": 160,
+      "grain_s": 0.008,
+      "start_s": 0.1,
+      "env": {
+        "attack_s": 0.1,
+        "decay_s": 0.5
+      },
+      "gain": 0.45
+    }
+  ]
+}

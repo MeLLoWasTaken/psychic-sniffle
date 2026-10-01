@@ -163,6 +163,7 @@ func _match_options(spec: String) -> Dictionary:
 		o["seed"] = int(_arg("--seed", ""))
 	o["talents"] = _arg("--talents", TalentLoadouts.new().active_text(spec))
 	o["record"] = _arg("--record", "")
+	o["map"] = _arg("--map", "")  # this arena instead of a random one of the preset's
 	o["playback"] = _arg("--playback", "")
 	o.merge(extra_options, true)
 	return o

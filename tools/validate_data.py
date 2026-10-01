@@ -585,6 +585,11 @@ def _check_menus(report: Report, db: dict) -> None:
                 report.error(rel, f"{key}.map '{pb['map']}' not found in maps")
             elif pb["bracket"] not in db["maps"][pb["map"]]["brackets"]:
                 report.error(rel, f"{key}: map '{pb['map']}' does not host {pb['bracket']}")
+            for mid in pb.get("maps", []):
+                if mid not in db["maps"]:
+                    report.error(rel, f"{key}.maps: '{mid}' not found in maps")
+                elif pb["bracket"] not in db["maps"][mid]["brackets"]:
+                    report.error(rel, f"{key}.maps: '{mid}' does not host {pb['bracket']}")
             lo, hi = pb["port_range"]
             if lo > hi:
                 report.error(rel, f"{key}.port_range must be [low, high]")

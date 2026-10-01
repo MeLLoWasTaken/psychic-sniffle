@@ -75,6 +75,13 @@ def summarise(report: dict) -> dict:
 TOP_SHARE = 0.9  # M2-04: no talent node in more than 90% of the top builds
 
 
+def node_id(entry: str) -> str:
+    """A node from Talents.picked_nodes without its rank: "keen_fan:2" -> "keen_fan"; PvP talents
+    keep their "pvp:" prefix ("pvp:quick_sever")."""
+    head, _, tail = entry.rpartition(":")
+    return head if head and tail.isdigit() else entry
+
+
 def builds(report: dict) -> dict:
     """Talent builds (M2-04): each spec@build's win rate over non-mirror compositions (counted like
     specs), which builds are viable (40-60% with at least MIN_GAMES games), and, among each
@@ -101,7 +108,7 @@ def builds(report: dict) -> dict:
         top = ranked[:max(3, len(ranked) // 2)]
         share = defaultdict(int)
         for k in top:
-            for n in {x.split(":")[0] for x in nodes.get(k, [])}:  # a node counts once whatever its rank
+            for n in {node_id(x) for x in nodes.get(k, [])}:  # a node counts once whatever its rank
                 share[n] += 1
         shares = {n: round(c / len(top), 3) for n, c in sorted(share.items(), key=lambda kv: -kv[1])} if top else {}
         out[sp] = {"builds": dict(sorted(bs.items(), key=lambda kv: -kv[1]["win_rate"])),

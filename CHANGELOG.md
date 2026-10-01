@@ -2,6 +2,15 @@
 
 One entry per build-loop iteration, newest first. Format: date, backlog ID, what changed, how it was checked.
 
+## 2026-10-01 — M2-09 Flooded Crypt (in progress); nightly shards
+- A second arena, Flooded Crypt: a roofless crypt under a cold moon, two columns and two great tombs between raised side aisles, the same starting rooms as Gallows Courtyard.
+  - Twist: at 3:00 the nave floods. The water rises during a 15 s warning, then wading is slow (70%) everywhere but the aisles and gate landings. The slow is part of movement, so the server and the client's prediction agree.
+  - Art kit `crypt`: 15 Blender-built pieces with moss, rising damp and wet streaks (new options of the shared kit materials); the map builder places tombs and reads a piece's size from its asset spec.
+  - Two flood sounds; the water is a new surface shader.
+- Matches pick an arena at random from the menu preset's list; recordings now start with a header naming their arena, so playback draws the right one. The batch simulator takes `--map` (or `all`).
+- The nightly balance run: the first run finished 1v1 only (see X-18 in the backlog); 2v2 and 3v3 now run as 6 and 8 parallel shards merged by a report job; the analysis counted PvP talents as one node (fixed); the performance job now reports why it fails.
+- Checked: 4 new twist tests (the flood's rules and movement, the server with a replay and the client, the rising water, the arena choice), the analysis test; 6 bot matches on the crypt all ended by a kill; all Godot and Python tests pass (pre-commit run).
+
 ## 2026-10-01 — F-16 spectating after death
 - When the player dies in an arena, the camera follows a living teammate; Tab moves to the next one, and a line under the arena says who is being watched. Before, the camera stayed on the body, as the reference video showed for its last 80 s.
 - Checked: a controller test (who is watched alive and dead, the cycle, no enemies or dead teammates, Tab not targeting while dead); the reference recording drawn again at 1:40 (`previews/f_16/spectating_1280.png`); all Godot and Python tests pass (pre-commit run).

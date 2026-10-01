@@ -11,6 +11,7 @@ for a milestone gate.
 from __future__ import annotations
 
 import argparse
+import re
 import os
 import shutil
 import subprocess
@@ -30,6 +31,15 @@ def run(name: str, cmd: list[str], cwd: Path = REPO) -> tuple[str, str, float]:
         return "PASS", "", took
     lines = out.splitlines()
     tail = "\n".join(lines[-25:])
+    # GdUnit: the failed test cases and what they expected, wherever they are in the output (the
+    # tail is often engine shutdown noise); ANSI colors removed
+    plain = [re.sub(r"\x1b\[[0-9;]*m", "", ln) for ln in lines]
+    failed = [i for i, ln in enumerate(plain) if " FAILED" in ln and "res://" in ln]
+    if failed:
+        picked = []
+        for i in failed[:6]:
+            picked += [ln.strip() for ln in plain[i:i + 4] if ln.strip()]
+        tail = "failed tests:\n" + "\n".join(picked) + "\n...\n" + tail
     if os.environ.get("GITHUB_ACTIONS"):
         # CI: also the lines that say what broke (a crash's header and the test it was in)
         # the crash header first (Fatal Python error, the signal, the current thread), then the

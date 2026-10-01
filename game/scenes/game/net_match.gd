@@ -33,7 +33,7 @@ const DEFAULTS: Dictionary = {
 	"spec": "", "menu": "main", "prep": -1.0, "settings": "default", "keybinds": "default",
 	"kit": true, "gi": true, "lighting": true, "hud": true, "pilot": false, "auto": "", "seed": 0,
 	"port_min": 0, "port_max": 0, "lag_ms": 0.0, "jitter_ms": 0.0, "loss": 0.0,
-	"record": "", "playback": "", "talents": "", "preset": "play_bots",
+	"record": "", "playback": "", "talents": "", "preset": "play_bots", "map": "",
 }
 
 var options: Dictionary = {}
@@ -73,6 +73,7 @@ var _playback: FileAccess
 var _playback_ready: bool = false
 var _playback_done: bool = false
 var _cam_override: Array = []  ## [yaw, pitch] recorded with the tick being drawn (playback)
+var _pending_record: Variant = null  ## an older recording's first tick, read while looking for a header
 
 
 func _ready() -> void:
@@ -80,7 +81,8 @@ func _ready() -> void:
 	opts.merge(options, true)
 	options = opts
 	style = MenuStyle.new(str(options["menu"]))
-	preset = style.menu.get(str(options["preset"]), {})
+	preset = style.menu.get(str(options["preset"]), {}).duplicate(true)
+	preset["map"] = pick_map(preset, str(options["map"]))
 	spec_id = str(options["spec"]) if str(options["spec"]) != "" else str(style.menu["spec_picker"]["default"])
 	var comp: Dictionary = preset["comps"][spec_id]
 	if str(options["keybinds"]) == "default":
@@ -131,11 +133,20 @@ func _ready() -> void:
 		if _playback == null:
 			Log.error("match: cannot read the recording %s" % options["playback"])
 			flow.fail("start")
+		else:
+			# a recording starts with its header ({"map"}); older ones start with the first tick
+			var first: Variant = _playback.get_var()
+			if first is Dictionary:
+				preset["map"] = str((first as Dictionary).get("map", preset["map"]))
+			else:
+				_pending_record = first
 		Log.info("match: playing back %s" % options["playback"])
 		_build_arena.call_deferred()
 		return
 	if str(options["record"]) != "":
 		_record = FileAccess.open_compressed(str(options["record"]), FileAccess.WRITE, FileAccess.COMPRESSION_ZSTD)
+		if _record != null:
+			_record.store_var({"map": str(preset["map"]), "bracket": str(preset["bracket"])})
 	local_server = LocalServer.new()
 	local_server.name = "LocalServer"
 	local_server.start_timeout_s = float(preset["server_start_timeout_s"])
@@ -156,6 +167,20 @@ func _ready() -> void:
 		int(options["seed"]))
 	Log.info("match: %s %s as %s with %s vs %s" % [preset["map"], preset["bracket"], spec_id, ", ".join(allies), ", ".join(enemies)])
 	_build_arena.call_deferred()  # after the loading screen has drawn once
+
+
+## The arena for this match: `forced` when given, else one of the preset's "maps" that hosts its
+## bracket, at random (each match a different arena, M2-09), else the preset's "map".
+static func pick_map(p_preset: Dictionary, forced: String = "") -> String:
+	if forced != "" and Data.maps.has(forced):
+		return forced
+	var pool: Array = []
+	for id: String in p_preset.get("maps", []):
+		if Data.maps.has(id) and str(p_preset.get("bracket", "2v2")) in Data.maps[id].get("brackets", []):
+			pool.append(id)
+	if pool.is_empty():
+		return str(p_preset.get("map", "gallows_courtyard"))
+	return str(pool[randi() % pool.size()])
 
 
 func _build_arena() -> void:
@@ -286,8 +311,9 @@ func _physics_process(_delta: float) -> void:
 		if flow.state != state_before:
 			playback_rate = 1  # a new step of the flow: let the owner decide how fast to go on
 			break
-		if not _playback_done and _playback.get_position() < _playback.get_length():
-			var rec: Array = _playback.get_var()
+		if not _playback_done and (_pending_record != null or _playback.get_position() < _playback.get_length()):
+			var rec: Array = _pending_record if _pending_record != null else _playback.get_var()
+			_pending_record = null
 			controller.target_id = int(rec[4])
 			_cam_override = [float(rec[2]), float(rec[3])]
 			_apply_tick(rec[0], rec[1])

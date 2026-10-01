@@ -1,0 +1,44 @@
+{
+  "id": "crypt_wall",
+  "kind": "environment_kit",
+  "builder": "build_kit_crypt.py",
+  "seed": 112,
+  "tri_budget": {
+    "min": 1500,
+    "max": 7000
+  },
+  "texture_size": 1024,
+  "palette": {
+    "stone": "#686a62",
+    "flag": "#5f625b",
+    "ledger": "#7a7a71",
+    "mortar": "#1c221d",
+    "moss": "#64782e",
+    "moss_dark": "#2c3a22",
+    "rust": "#5b3b26",
+    "iron": "#373b3b",
+    "bone": "#b0a68c",
+    "void": "#0b0d0c",
+    "dirt": "#38372d",
+    "wood": "#5f4a33",
+    "far_stone": "#4b4f4a"
+  },
+  "params": {
+    "width_m": 4.0,
+    "height_m": 6.0,
+    "niche_rows": [
+      [
+        1.25,
+        2.45
+      ]
+    ],
+    "niche_contents": [
+      "sealed",
+      "bones"
+    ],
+    "piece": "wall"
+  },
+  "out": "game/assets/kits/crypt/crypt_wall.glb",
+  "status": "draft",
+  "pivot": "face"
+}

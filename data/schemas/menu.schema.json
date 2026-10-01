@@ -41,6 +41,11 @@
         "map": {
           "$ref": "common.schema.json#/$defs/id"
         },
+        "maps": {
+          "type": "array",
+          "items": {"$ref": "common.schema.json#/$defs/id"},
+          "description": "Arenas a match picks from at random (those hosting the bracket); `map` is the fallback."
+        },
         "bracket": {
           "enum": [
             "1v1",

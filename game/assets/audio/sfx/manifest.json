@@ -70,6 +70,20 @@
   ],
   "category": "release"
  },
+ "crypt_flood": {
+  "hash": "80d1305b20353428",
+  "files": [
+   "crypt_flood"
+  ],
+  "category": "impact"
+ },
+ "crypt_seep": {
+  "hash": "0eed2243148b1389",
+  "files": [
+   "crypt_seep"
+  ],
+  "category": "impact"
+ },
  "deep_winter": {
   "hash": "9dcd0609b78da0cc",
   "files": [

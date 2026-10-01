@@ -1,0 +1,765 @@
+{
+  "id": "flooded_crypt",
+  "name": "Flooded Crypt",
+  "description": "A sunken crypt open to the night sky: a 39 by 36 m nave between two raised side aisles, two squat columns and two great tombs, with a gated starting room 8 m deep beyond each end.",
+  "mode": "arena",
+  "brackets": [
+    "1v1",
+    "2v2",
+    "3v3"
+  ],
+  "size_m": 40,
+  "bounds_half_m": 28.5,
+  "scene": "res://scenes/maps/flooded_crypt.tscn",
+  "lighting_preset": "moonlit_crypt",
+  "twist": "At 3:00 water floods the nave; only the side aisles and the gate landings stay dry, and wading is slow.",
+  "twists": [
+    {
+      "id": "crypt_flood",
+      "type": "flood",
+      "at_s": 180,
+      "warn_s": 15,
+      "rise_s": 15,
+      "slow": 0.7,
+      "dry": [
+        [
+          [
+            -19.5,
+            12.5
+          ],
+          [
+            19.5,
+            18
+          ]
+        ],
+        [
+          [
+            -19.5,
+            -18
+          ],
+          [
+            19.5,
+            -12.5
+          ]
+        ],
+        [
+          [
+            -19.5,
+            -4
+          ],
+          [
+            -15.5,
+            4
+          ]
+        ],
+        [
+          [
+            15.5,
+            -4
+          ],
+          [
+            19.5,
+            4
+          ]
+        ],
+        [
+          [
+            -28.5,
+            -4
+          ],
+          [
+            -19.5,
+            4
+          ]
+        ],
+        [
+          [
+            19.5,
+            -4
+          ],
+          [
+            28.5,
+            4
+          ]
+        ]
+      ],
+      "warn_text": "Water seeps up through the crypt floor...",
+      "text": "The crypt floods! Wading is slow; keep to the aisles.",
+      "warn_sound": "crypt_seep",
+      "sound": "crypt_flood"
+    }
+  ],
+  "spawns": {
+    "team_a": [
+      [
+        -23.5,
+        0,
+        -2
+      ],
+      [
+        -23.5,
+        0,
+        2
+      ],
+      [
+        -23.5,
+        0,
+        0
+      ]
+    ],
+    "team_b": [
+      [
+        23.5,
+        0,
+        -2
+      ],
+      [
+        23.5,
+        0,
+        2
+      ],
+      [
+        23.5,
+        0,
+        0
+      ]
+    ]
+  },
+  "colliders": [
+    {
+      "type": "circle",
+      "center": [
+        -8,
+        0
+      ],
+      "radius": 1.0,
+      "height": 6,
+      "blocks_los": true,
+      "tag": "pillar"
+    },
+    {
+      "type": "circle",
+      "center": [
+        8,
+        0
+      ],
+      "radius": 1.0,
+      "height": 6,
+      "blocks_los": true,
+      "tag": "pillar"
+    },
+    {
+      "type": "box",
+      "min": [
+        -3.2,
+        -6.4
+      ],
+      "max": [
+        3.2,
+        -3.6
+      ],
+      "height": 3.2,
+      "blocks_los": true,
+      "tag": "tomb"
+    },
+    {
+      "type": "box",
+      "min": [
+        -3.2,
+        3.6
+      ],
+      "max": [
+        3.2,
+        6.4
+      ],
+      "height": 3.2,
+      "blocks_los": true,
+      "tag": "tomb"
+    },
+    {
+      "type": "box",
+      "min": [
+        -19.5,
+        18
+      ],
+      "max": [
+        19.5,
+        28.5
+      ],
+      "height": 6,
+      "blocks_los": true,
+      "tag": "wall"
+    },
+    {
+      "type": "box",
+      "min": [
+        -19.5,
+        -28.5
+      ],
+      "max": [
+        19.5,
+        -18
+      ],
+      "height": 6,
+      "blocks_los": true,
+      "tag": "wall"
+    },
+    {
+      "type": "box",
+      "min": [
+        -28.5,
+        -28.5
+      ],
+      "max": [
+        -19.5,
+        -4
+      ],
+      "height": 6,
+      "blocks_los": true,
+      "tag": "wall"
+    },
+    {
+      "type": "box",
+      "min": [
+        -28.5,
+        4
+      ],
+      "max": [
+        -19.5,
+        28.5
+      ],
+      "height": 6,
+      "blocks_los": true,
+      "tag": "wall"
+    },
+    {
+      "type": "box",
+      "min": [
+        -20.5,
+        -4
+      ],
+      "max": [
+        -19.5,
+        4
+      ],
+      "height": 5,
+      "blocks_los": true,
+      "gate": true,
+      "tag": "gate"
+    },
+    {
+      "type": "box",
+      "min": [
+        19.5,
+        -28.5
+      ],
+      "max": [
+        28.5,
+        -4
+      ],
+      "height": 6,
+      "blocks_los": true,
+      "tag": "wall"
+    },
+    {
+      "type": "box",
+      "min": [
+        19.5,
+        4
+      ],
+      "max": [
+        28.5,
+        28.5
+      ],
+      "height": 6,
+      "blocks_los": true,
+      "tag": "wall"
+    },
+    {
+      "type": "box",
+      "min": [
+        19.5,
+        -4
+      ],
+      "max": [
+        20.5,
+        4
+      ],
+      "height": 5,
+      "blocks_los": true,
+      "gate": true,
+      "tag": "gate"
+    }
+  ],
+  "status": "draft",
+  "kit": "crypt",
+  "decor": [
+    {
+      "piece": "brazier",
+      "pos": [
+        -18.8,
+        -17.3
+      ],
+      "effect": "brazier_fire"
+    },
+    {
+      "piece": "brazier",
+      "pos": [
+        18.8,
+        -17.3
+      ],
+      "effect": "brazier_fire"
+    },
+    {
+      "piece": "brazier",
+      "pos": [
+        -18.8,
+        17.3
+      ],
+      "effect": "brazier_fire"
+    },
+    {
+      "piece": "brazier",
+      "pos": [
+        18.8,
+        17.3
+      ],
+      "effect": "brazier_fire"
+    },
+    {
+      "piece": "brazier",
+      "pos": [
+        0.0,
+        17.3
+      ],
+      "effect": "brazier_fire"
+    },
+    {
+      "piece": "brazier",
+      "pos": [
+        0.0,
+        -17.3
+      ],
+      "effect": "brazier_fire"
+    },
+    {
+      "piece": "brazier",
+      "pos": [
+        -27.8,
+        -3.3
+      ],
+      "effect": "brazier_fire"
+    },
+    {
+      "piece": "brazier",
+      "pos": [
+        27.8,
+        -3.3
+      ],
+      "effect": "brazier_fire"
+    },
+    {
+      "piece": "bone_pile",
+      "pos": [
+        -11.0,
+        17.2
+      ]
+    },
+    {
+      "piece": "bone_pile",
+      "pos": [
+        9.5,
+        -17.2
+      ],
+      "yaw_deg": 140
+    },
+    {
+      "piece": "bone_pile",
+      "pos": [
+        -18.75,
+        8.5
+      ],
+      "yaw_deg": 60
+    },
+    {
+      "piece": "bone_pile",
+      "pos": [
+        18.75,
+        -8.0
+      ],
+      "yaw_deg": 200
+    },
+    {
+      "piece": "bone_pile",
+      "pos": [
+        -27.7,
+        3.2
+      ],
+      "yaw_deg": 30
+    },
+    {
+      "piece": "grave_slabs",
+      "pos": [
+        5.5,
+        18.0
+      ],
+      "yaw_deg": 180
+    },
+    {
+      "piece": "grave_slabs",
+      "pos": [
+        -6.0,
+        -18.0
+      ]
+    },
+    {
+      "piece": "grave_slabs",
+      "pos": [
+        -19.5,
+        -12.0
+      ],
+      "yaw_deg": 90
+    },
+    {
+      "piece": "grave_slabs",
+      "pos": [
+        19.5,
+        12.5
+      ],
+      "yaw_deg": -90
+    },
+    {
+      "piece": "grave_slabs",
+      "pos": [
+        25.0,
+        4.0
+      ],
+      "yaw_deg": 180
+    }
+  ],
+  "dressing": {
+    "wall_top": {
+      "outer_facades": true
+    },
+    "gatehouse": {
+      "piece": "gatehouse",
+      "front_m": 1.7,
+      "gate_width_m": 8.0
+    },
+    "variants": {
+      "wall": {
+        "wall": 3,
+        "wall_niches": 2
+      },
+      "floor_tile": {
+        "floor_tile": 3,
+        "floor_tile_worn": 2
+      }
+    },
+    "floor": {
+      "grime": {
+        "color": [
+          0.022,
+          0.03,
+          0.026
+        ],
+        "alpha": 0.75,
+        "width_m": [
+          2.0,
+          3.2
+        ]
+      },
+      "stains": [
+        {
+          "pos": [
+            -11.0,
+            -2.5
+          ],
+          "size_m": [
+            6.0,
+            4.0
+          ],
+          "yaw_deg": 25,
+          "seed": 1
+        },
+        {
+          "pos": [
+            11.5,
+            3.0
+          ],
+          "size_m": [
+            5.5,
+            4.0
+          ],
+          "yaw_deg": -30,
+          "seed": 2
+        },
+        {
+          "pos": [
+            0.0,
+            0.0
+          ],
+          "size_m": [
+            8.0,
+            5.0
+          ],
+          "seed": 3,
+          "alpha": 0.4
+        },
+        {
+          "pos": [
+            -13.0,
+            11.0
+          ],
+          "size_m": [
+            5.0,
+            3.5
+          ],
+          "yaw_deg": 60,
+          "seed": 4
+        },
+        {
+          "pos": [
+            13.5,
+            -11.5
+          ],
+          "size_m": [
+            5.0,
+            3.5
+          ],
+          "yaw_deg": -50,
+          "seed": 5
+        }
+      ],
+      "stain_color": [
+        0.025,
+        0.035,
+        0.03
+      ],
+      "puddles": [
+        {
+          "pos": [
+            -4.5,
+            -8.5
+          ],
+          "size_m": [
+            3.0,
+            1.8
+          ],
+          "yaw_deg": 15,
+          "seed": 1
+        },
+        {
+          "pos": [
+            4.8,
+            8.6
+          ],
+          "size_m": [
+            2.6,
+            1.6
+          ],
+          "yaw_deg": -25,
+          "seed": 2
+        },
+        {
+          "pos": [
+            -10.5,
+            4.5
+          ],
+          "size_m": [
+            2.4,
+            1.5
+          ],
+          "yaw_deg": 70,
+          "seed": 3
+        },
+        {
+          "pos": [
+            10.0,
+            -4.0
+          ],
+          "size_m": [
+            2.8,
+            1.7
+          ],
+          "yaw_deg": 40,
+          "seed": 4
+        },
+        {
+          "pos": [
+            0.5,
+            -0.2
+          ],
+          "size_m": [
+            2.0,
+            1.3
+          ],
+          "seed": 5
+        },
+        {
+          "pos": [
+            -14.5,
+            -6.5
+          ],
+          "size_m": [
+            2.2,
+            1.4
+          ],
+          "yaw_deg": -10,
+          "seed": 6
+        },
+        {
+          "pos": [
+            14.8,
+            6.8
+          ],
+          "size_m": [
+            2.2,
+            1.4
+          ],
+          "yaw_deg": 20,
+          "seed": 7
+        },
+        {
+          "pos": [
+            -2.0,
+            10.8
+          ],
+          "size_m": [
+            1.8,
+            1.2
+          ],
+          "yaw_deg": 50,
+          "seed": 8
+        },
+        {
+          "pos": [
+            2.5,
+            -11.0
+          ],
+          "size_m": [
+            1.8,
+            1.2
+          ],
+          "yaw_deg": -40,
+          "seed": 9
+        }
+      ],
+      "puddle_color": [
+        0.02,
+        0.03,
+        0.035
+      ],
+      "puddle_alpha": 0.65
+    },
+    "skyline": {
+      "ground": {
+        "color": [
+          0.035,
+          0.04,
+          0.04
+        ],
+        "size_m": 260,
+        "y": -0.3
+      },
+      "pieces": [
+        {
+          "piece": "skyline_arches",
+          "pos": [
+            0.0,
+            47.0
+          ],
+          "yaw_deg": 180
+        },
+        {
+          "piece": "skyline_arches",
+          "pos": [
+            -3.0,
+            -49.0
+          ],
+          "scale": 1.1
+        },
+        {
+          "piece": "skyline_arches",
+          "pos": [
+            -47.0,
+            26.0
+          ],
+          "yaw_deg": 90
+        },
+        {
+          "piece": "skyline_arches",
+          "pos": [
+            48.0,
+            -24.0
+          ],
+          "yaw_deg": -90,
+          "scale": 0.95
+        },
+        {
+          "piece": "skyline_ruin",
+          "pos": [
+            38.0,
+            40.0
+          ],
+          "yaw_deg": 20
+        },
+        {
+          "piece": "skyline_ruin",
+          "pos": [
+            -40.0,
+            -42.0
+          ],
+          "yaw_deg": -15,
+          "scale": 1.1
+        },
+        {
+          "piece": "skyline_ruin",
+          "pos": [
+            56.0,
+            14.0
+          ],
+          "yaw_deg": 5,
+          "scale": 1.25
+        },
+        {
+          "piece": "skyline_ruin",
+          "pos": [
+            -58.0,
+            -4.0
+          ],
+          "scale": 0.9
+        },
+        {
+          "piece": "skyline_ruin",
+          "pos": [
+            22.0,
+            -60.0
+          ],
+          "yaw_deg": 40
+        },
+        {
+          "piece": "skyline_ruin",
+          "pos": [
+            -24.0,
+            58.0
+          ],
+          "yaw_deg": -30,
+          "scale": 1.15
+        }
+      ]
+    }
+  },
+  "pickups": [
+    [
+      0,
+      0,
+      15
+    ],
+    [
+      0,
+      0,
+      -15
+    ]
+  ]
+}

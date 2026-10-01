@@ -20,14 +20,14 @@ def test_build_win_rates_viability_and_the_shared_node_check():
     # four warblade builds against one oracle build; w1 wins 50%, w2 45%, w3 55%, w4 never
     for build, wins in (("w1", 15), ("w2", 14), ("w3", 17), ("w4", 0)):
         ms += [_match(build, "o1", 0) for _ in range(wins)] + [_match(build, "o1", 1) for _ in range(31 - wins)]
-    nodes = {"warblade_carnage@w1": ["core", "a"], "warblade_carnage@w2": ["core:2", "b"],
-             "warblade_carnage@w3": ["core", "c"], "warblade_carnage@w4": ["d"], "oracle_grace@o1": ["x"]}
+    nodes = {"warblade_carnage@w1": ["core", "a", "pvp:p1"], "warblade_carnage@w2": ["core:2", "b", "pvp:p2"],
+             "warblade_carnage@w3": ["core", "c", "pvp:p3"], "warblade_carnage@w4": ["d"], "oracle_grace@o1": ["x"]}
     report = {"matches": ms, "summary": {"builds": {k: {"nodes": v} for k, v in nodes.items()}}}
     b = analyze_batch.summarise(report)["builds"]["warblade_carnage"]
     assert b["viable"] == 3
     assert b["builds"]["warblade_carnage@w4"]["win_rate"] == 0.0
     assert set(b["top"]) == {"warblade_carnage@w1", "warblade_carnage@w2", "warblade_carnage@w3"}
-    assert b["over_share"] == {"core": 1.0}  # every top build takes it, whatever the rank
+    assert b["over_share"] == {"core": 1.0}  # every top build takes it, whatever the rank; PvP talents count apart
     assert b["top_node_share"] == 1.0
 
 

@@ -1,0 +1,82 @@
+{
+  "id": "moonlit_crypt",
+  "description": "A cold moon over a roofless crypt: pale blue key light from high up, a dim green-grey fill and denser low fog, so torches carry the warmth (art bible: darker ambient, deeper shadows).",
+  "sun": {
+    "color": [
+      0.62,
+      0.72,
+      1.0
+    ],
+    "energy": 0.95,
+    "pitch_deg": -56,
+    "yaw_deg": -30,
+    "shadows": true
+  },
+  "fill": {
+    "color": [
+      0.45,
+      0.6,
+      0.55
+    ],
+    "energy": 0.25,
+    "pitch_deg": -50,
+    "yaw_deg": 218
+  },
+  "sky": {
+    "top": [
+      0.02,
+      0.03,
+      0.06
+    ],
+    "horizon": [
+      0.12,
+      0.15,
+      0.2
+    ],
+    "ground": [
+      0.02,
+      0.025,
+      0.03
+    ]
+  },
+  "ambient": {
+    "color": [
+      0.38,
+      0.46,
+      0.5
+    ],
+    "energy": 0.4
+  },
+  "fog": {
+    "density": 0.018,
+    "albedo": [
+      0.45,
+      0.55,
+      0.55
+    ],
+    "emission": [
+      0.01,
+      0.016,
+      0.018
+    ]
+  },
+  "post": {
+    "exposure": 1.0,
+    "saturation": 0.92,
+    "contrast": 1.05,
+    "glow_intensity": 0.5,
+    "ssao": true
+  },
+  "grade": {
+    "shadows": [
+      0.0,
+      0.012,
+      0.035
+    ],
+    "highlights": [
+      1.0,
+      0.975,
+      0.93
+    ]
+  }
+}

@@ -1,0 +1,80 @@
+{
+  "id": "crypt_seep",
+  "description": "Water starts to come up through the crypt floor: a low gurgle, trickles and drips spreading, a cold hollow rumble (flood warning, M2-09).",
+  "category": "impact",
+  "peak_dbfs": -7.0,
+  "duration_s": 3.0,
+  "processing": "impact_light",
+  "layers": [
+    {
+      "type": "noise",
+      "band": [
+        80,
+        500
+      ],
+      "env": {
+        "attack_s": 0.4,
+        "decay_s": 0.7
+      },
+      "am": [
+        5,
+        0.6
+      ],
+      "gain": 0.5
+    },
+    {
+      "type": "resonant",
+      "base": 420,
+      "jitter": 0.35,
+      "partials": [
+        [
+          1,
+          14,
+          1.0,
+          0.03
+        ],
+        [
+          1.6,
+          16,
+          0.5,
+          0.025
+        ]
+      ],
+      "highpass": 250,
+      "repeat": {
+        "count": 16,
+        "every_s": 0.13,
+        "jitter_s": 0.09,
+        "gain_jitter": 0.6
+      },
+      "gain": 0.6,
+      "lowpass": 2600
+    },
+    {
+      "type": "noise",
+      "band": [
+        1500,
+        6000
+      ],
+      "start_s": 0.2,
+      "env": {
+        "attack_s": 0.5,
+        "decay_s": 0.6
+      },
+      "am": [
+        11,
+        0.7
+      ],
+      "gain": 0.3
+    },
+    {
+      "type": "noise",
+      "highpass": 1200,
+      "env": {
+        "attack_s": 0.0005,
+        "decay_s": 0.01
+      },
+      "gain": 1.6
+    }
+  ]
+}

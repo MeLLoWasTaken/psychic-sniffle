@@ -26,7 +26,9 @@ TINT_ATTR = "tint"  # per-part color variation, stored as a face-corner color at
 def kit_material(name: str, hex_color: str, roughness: float = 0.85, metallic: float = 0.0,
                  edge: float = 0.3, cavity: float = 0.55, top_light: float = 0.18, mottle: float = 0.12,
                  mottle_scale: float = 0.45, emission: float = 0.0, height_grad: float = 0.0,
-                 height_m: float = 2.0) -> bpy.types.Material:
+                 height_m: float = 2.0, moss: float = 0.0, moss_color: str = "#4b5a33",
+                 moss_scale: float = 1.4, damp: float = 0.0, damp_m: float = 1.5,
+                 streaks: float = 0.0) -> bpy.types.Material:
     """Painted-look material. Every channel is broad and soft (no fine noise):
     - base color times the per-part tint attribute
     - mottle: very low-frequency brightness variation (mottle_scale is in 1/m)
@@ -35,6 +37,10 @@ def kit_material(name: str, hex_color: str, roughness: float = 0.85, metallic: f
     - cavity: darker crevices (ambient occlusion)
     - height_grad: characters darken and cool toward the feet and brighten toward the head
       (object-space height over height_m), which draws the eye to the face and upper body
+    Weathering for damp places (all 0 by default):
+    - moss: broad patches of moss_color on upward-facing surfaces and in crevices
+    - damp: darker, greener stone below a wavy line about damp_m above the piece's floor
+    - streaks: long vertical wet stains running down the faces
     """
     mat = bpy.data.materials.new(name)
     mat.use_nodes = True
@@ -89,6 +95,11 @@ def kit_material(name: str, hex_color: str, roughness: float = 0.85, metallic: f
         ramp.color_ramp.elements[1].color = (1.0 + height_grad * 0.25, 1.0 + height_grad * 0.22, 1.0 + height_grad * 0.15, 1.0)
         l.new(hr.outputs["Result"], ramp.inputs["Fac"])
         lit = _mix(nt, "MULTIPLY", lit, ramp.outputs["Color"], 1.0)
+    low = None
+    if damp > 0 or streaks > 0:
+        lit, low = _weathering(nt, lit, tex, damp, damp_m, streaks)
+    if moss > 0:
+        lit = _moss(nt, lit, tex, sep, moss, moss_color, moss_scale, low)
 
     # worn edges
     bevel = n.new("ShaderNodeBevel")
@@ -167,6 +178,74 @@ def _mix(nt, blend: str, a, b, fac):
         else:
             nt.links.new(sock, m.inputs[idx])
     return m.outputs[2]
+
+
+def _map(nt, value_socket, from_min: float, from_max: float, to_min: float, to_max: float, clamp: bool = True):
+    r = nt.nodes.new("ShaderNodeMapRange")
+    r.clamp = clamp
+    r.inputs["From Min"].default_value = from_min
+    r.inputs["From Max"].default_value = from_max
+    r.inputs["To Min"].default_value = to_min
+    r.inputs["To Max"].default_value = to_max
+    nt.links.new(value_socket, r.inputs["Value"])
+    return r.outputs["Result"]
+
+
+def _math(nt, op: str, a, b):
+    m = nt.nodes.new("ShaderNodeMath")
+    m.operation = op
+    for i, s in enumerate((a, b)):
+        if isinstance(s, (int, float)):
+            m.inputs[i].default_value = s
+        else:
+            nt.links.new(s, m.inputs[i])
+    return m.outputs["Value"]
+
+
+def _noise(nt, vector_socket, scale: float, detail: float = 1.0):
+    nz = nt.nodes.new("ShaderNodeTexNoise")
+    nz.inputs["Scale"].default_value = scale
+    nz.inputs["Detail"].default_value = detail
+    nz.inputs["Roughness"].default_value = 0.4
+    nt.links.new(vector_socket, nz.inputs["Vector"])
+    return nz.outputs["Fac"]
+
+
+def _weathering(nt, color, tex, damp: float, damp_m: float, streaks: float):
+    """Rising damp below a wavy line about damp_m up, and long vertical wet streaks. Returns the
+    color and the damp mask (None without damp), which also lets moss creep up the damp faces."""
+    mask_out = None
+    if damp > 0:
+        pos = nt.nodes.new("ShaderNodeSeparateXYZ")
+        nt.links.new(tex.outputs["Object"], pos.inputs["Vector"])
+        wobble = _map(nt, _noise(nt, tex.outputs["Object"], 0.6), 0.3, 0.7, -0.35 * damp_m, 0.35 * damp_m)
+        line = _math(nt, "ADD", pos.outputs["Z"], wobble)
+        mask = _map(nt, line, damp_m * 0.5, damp_m, damp, 0.0)
+        color = _mix(nt, "MULTIPLY", color, (0.36, 0.48, 0.38, 1.0), mask)
+        mask_out = mask
+    if streaks > 0:
+        stretch = nt.nodes.new("ShaderNodeVectorMath")
+        stretch.operation = "MULTIPLY"
+        stretch.inputs[1].default_value = (2.2, 2.2, 0.15)
+        nt.links.new(tex.outputs["Object"], stretch.inputs[0])
+        mask = _map(nt, _noise(nt, stretch.outputs["Vector"], 1.0), 0.47, 0.6, 0.0, streaks)
+        color = _mix(nt, "MULTIPLY", color, (0.45, 0.52, 0.48, 1.0), mask)
+    return color, mask_out
+
+
+def _moss(nt, color, tex, normal_xyz, amount: float, moss_hex: str, scale: float, low=None):
+    """Broad moss patches on upward faces, in crevices and (with a damp mask `low`) low on damp faces."""
+    up = _map(nt, normal_xyz.outputs["Z"], 0.3, 0.85, 0.0, 1.0)
+    ao = nt.nodes.new("ShaderNodeAmbientOcclusion")
+    ao.samples = 8
+    ao.inputs["Distance"].default_value = 0.2
+    crevice = _map(nt, ao.outputs["AO"], 0.35, 0.85, 0.8, 0.0)
+    where = _math(nt, "MAXIMUM", up, crevice)
+    if low is not None:
+        where = _math(nt, "MAXIMUM", where, _math(nt, "MULTIPLY", low, 0.8))
+    patches = _map(nt, _noise(nt, tex.outputs["Object"], scale, 2.0), 0.4, 0.56, 0.0, 1.0)
+    mask = _math(nt, "MULTIPLY", _math(nt, "MULTIPLY", where, patches), amount)
+    return _mix(nt, "MIX", color, common.hex_to_linear(moss_hex), mask)
 
 
 # ----------------------------------------------------------------------------- geometry
@@ -533,8 +612,10 @@ def _find_socket(nt, mat):
 
 
 def finish_piece(parts: list[bpy.types.Object], name: str, spec: dict, previews: Path | None,
-                 emissive_parts: list[bpy.types.Object] | None = None, center: bool = True) -> list[bpy.types.Object]:
-    """Join, put the origin at the feet, bake, export and render the contact sheet."""
+                 emissive_parts: list[bpy.types.Object] | None = None, center: bool = True,
+                 preset: str = "dusk_grim") -> list[bpy.types.Object]:
+    """Join, put the origin at the feet, bake, export and render the contact sheet (lit by the
+    lighting preset `preset`, the one the kit's arena uses)."""
     obj = common.join_objects(parts, name)
     if center:
         common.origin_to_feet(obj)
@@ -555,5 +636,29 @@ def finish_piece(parts: list[bpy.types.Object], name: str, spec: dict, previews:
     common.export_glb(Path(spec["out"]), objs)
     print(f"  {name}: {tris} triangles -> {spec['out']}")
     if previews:
-        common.render_contact_sheet(objs, previews / f"{name}_sheet.png", title=name, cell=384)
+        common.render_contact_sheet(objs, previews / f"{name}_sheet.png", title=name, cell=384, preset=preset)
     return objs
+
+
+def build_spec(spec: dict, previews: Path | None, pieces: dict, back_on_y0: set, materials,
+               preset: str = "dusk_grim") -> None:
+    """Build one kit piece from its asset spec: `pieces[params.piece](params, mats, rng)` returns
+    the parts (or (parts, emissive parts)); `materials(palette)` makes the kit's materials. Pieces
+    in `back_on_y0` keep y as built (mounting face on y = 0) and are centred on x; all others are
+    centred on x and y. Either way the lowest point goes to z = 0."""
+    common.reset_scene()
+    rng = common.seeded_random(spec["seed"])
+    params = spec.get("params", {})
+    piece = params["piece"]
+    m = materials(spec.get("palette", {}))
+    result = pieces[piece](params, m, rng)
+    parts, glow = result if isinstance(result, tuple) else (result, [])
+    apply_transforms(parts + glow)
+    allv = [o.matrix_world @ v.co for o in parts for v in o.data.vertices]
+    off = Vector(((min(v.x for v in allv) + max(v.x for v in allv)) / 2,
+                  0.0 if piece in back_on_y0 else (min(v.y for v in allv) + max(v.y for v in allv)) / 2,
+                  min(v.z for v in allv)))
+    for o in parts + glow:
+        for v in o.data.vertices:
+            v.co -= off
+    finish_piece(parts, spec["id"], spec, previews, glow, center=False, preset=preset)

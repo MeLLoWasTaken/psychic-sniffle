@@ -64,7 +64,7 @@ def build_comps(size: int, matches: int, randoms: int, seed: int) -> list[str]:
     return out
 
 
-def run_batch(comp_list: list[str], matches: int, seed: int, report: Path, jobs: int) -> int:
+def run_batch(comp_list: list[str], matches: int, seed: int, report: Path, jobs: int, map_id: str = "all") -> int:
     """Run the matches in `jobs` headless processes at once (CI runners have several cores) and
     merge their reports into `report`. Each process takes a share of the compositions in order."""
     godot = shutil.which("godot") or "godot"
@@ -75,7 +75,7 @@ def run_batch(comp_list: list[str], matches: int, seed: int, report: Path, jobs:
         part = report.with_name(f"{report.stem}_part{j}.json")
         cs = comp_list[j::jobs] or comp_list
         cmd = [godot, "--headless", "--path", str(REPO / "game"), "-s", "res://tools/batch_sim.gd", "--",
-               "--matches", str(n), "--seed", str(seed + 100000 * j), "--out", str(part)]
+               "--matches", str(n), "--seed", str(seed + 100000 * j), "--out", str(part), "--map", map_id]
         for c in cs:
             cmd += ["--comp", c]
         procs.append((subprocess.Popen(cmd, stdout=subprocess.DEVNULL), part))
@@ -92,13 +92,47 @@ def run_batch(comp_list: list[str], matches: int, seed: int, report: Path, jobs:
     return code
 
 
-def bracket(size: int, matches: int, out: Path, seed: int, randoms: int = 0, jobs: int = 1) -> int:
-    report = out / f"sim_{size}v{size}.json"
+def bracket(size: int, matches: int, out: Path, seed: int, randoms: int = 0, jobs: int = 1,
+            shard: int = 0, shards: int = 1, map_id: str = "all") -> int:
+    """Simulate this shard's part of `matches` (all of them with one shard) and, with one shard,
+    report it. With several, each writes sim_<b>_shard<i>.json and `--merge` reports them together
+    (the CI runs shards as parallel jobs: one runner cannot finish 1,000 2v2 matches in its 4 hours)."""
     comp_list = build_comps(size, matches, randoms, seed) if randoms > 0 else comps(size)
-    print(f"{size}v{size}: {matches} matches over {len(comps(size))} pairings"
-          + (f", {randoms} random builds per spec besides the named ones" if randoms else "") + f", {jobs} processes", flush=True)
-    code = run_batch(comp_list, matches, seed, report, jobs)
-    s = analyze_batch.summarise(json.loads(report.read_text()))
+    if shards > 1:
+        comp_list = comp_list[shard::shards] if randoms > 0 else comp_list
+        n = matches // shards + (1 if shard < matches % shards else 0)
+        report = out / f"sim_{size}v{size}_shard{shard}.json"
+    else:
+        n = matches
+        report = out / f"sim_{size}v{size}.json"
+    print(f"{size}v{size}: {n} of {matches} matches over {len(comps(size))} pairings, arenas: {map_id}"
+          + (f", {randoms} random builds per spec besides the named ones" if randoms else "")
+          + (f", shard {shard + 1} of {shards}" if shards > 1 else "") + f", {jobs} processes", flush=True)
+    code = run_batch(comp_list, n, seed + 1000003 * shard, report, jobs, map_id)
+    if shards > 1:
+        return code
+    return report_bracket(size, json.loads(report.read_text()), out) | code
+
+
+def merge(size: int, src: Path, out: Path) -> int:
+    """Report a bracket from the shard reports found anywhere under `src`."""
+    merged = {"matches": [], "summary": {"builds": {}}}
+    parts = sorted(p for p in src.rglob(f"sim_{size}v{size}_shard*.json") if "_part" not in p.name)  # not the per-process parts
+    for part in parts:
+        r = json.loads(part.read_text())
+        merged["matches"] += r["matches"]
+        for k, v in r.get("summary", {}).get("builds", {}).items():
+            merged["summary"]["builds"].setdefault(k, v)
+    if not parts:
+        print(f"::warning title={size}v{size}::no shard reports found under {src}")
+        return 1
+    (out / f"sim_{size}v{size}.json").write_text(json.dumps(merged) + "\n")
+    print(f"{size}v{size}: merged {len(parts)} shards, {len(merged['matches'])} matches")
+    return report_bracket(size, merged, out)
+
+
+def report_bracket(size: int, report: dict, out: Path) -> int:
+    s = analyze_batch.summarise(report)
     (out / f"summary_{size}v{size}.json").write_text(json.dumps(s, indent=1) + "\n")
     print(json.dumps({k: s[k] for k in ("matches", "kill_rate", "draws", "median_seconds", "errors", "flags")}, indent=1))
     for f in s["flags"]:
@@ -124,13 +158,19 @@ def bracket(size: int, matches: int, out: Path, seed: int, randoms: int = 0, job
             print(f"::warning title={size}v{size} builds::{sp} has {b['viable']} viable builds (M2-04 wants 3)")
         for n, v in b["over_share"].items():
             print(f"::warning title={size}v{size} builds::{sp}: {n} is in {v:.0%} of the top builds")
-    return 1 if code or s["errors"] else 0
+    return 1 if s["errors"] else 0
 
 
 def perf(out: Path) -> int:
     dest = out / "perf_20bots"
-    code = subprocess.run([sys.executable, str(REPO / "tools" / "sim" / "run_match.py"), "--bots", "20",
-                           "--seconds", "45", "--port", "24700", "--out", str(dest)]).returncode
+    run = subprocess.run([sys.executable, str(REPO / "tools" / "sim" / "run_match.py"), "--bots", "20",
+                          "--seconds", "45", "--port", "24700", "--out", str(dest)], capture_output=True, text=True)
+    code = run.returncode
+    print(run.stdout[-6000:])
+    if code:
+        # CI shows annotations, not logs: the end of the run's output says what failed
+        for line in (run.stdout + run.stderr).strip().splitlines()[-12:]:
+            print(f"::error title=perf::{line[:300]}")
     summary = json.loads((dest / "summary.json").read_text()) if (dest / "summary.json").exists() else {}
     print(json.dumps(summary, indent=1)[:4000])
     avg = summary.get("tick_ms", {}).get("avg")
@@ -149,12 +189,19 @@ def main() -> int:
     ap.add_argument("--random-builds", type=int, default=0,
                     help="each unit plays a random build: its named builds or one of N random legal builds (M2-04)")
     ap.add_argument("--jobs", type=int, default=os.cpu_count() or 1, help="headless processes at once")
+    ap.add_argument("--shard", type=int, default=0, help="this job's part (0-based) when --shards > 1")
+    ap.add_argument("--shards", type=int, default=1, help="parts the bracket's matches are split into (parallel CI jobs)")
+    ap.add_argument("--merge", type=Path, help="report --bracket from the shard reports under this folder")
+    ap.add_argument("--map", default="all", help="an arena id, or all: every arena hosting the bracket in turn")
     ap.add_argument("--out", type=Path, default=REPO / "previews" / "nightly")
     args = ap.parse_args()
     args.out.mkdir(parents=True, exist_ok=True)
     code = 0
-    if args.bracket:
-        code |= bracket(int(args.bracket[0]), args.matches, args.out.resolve(), args.seed, args.random_builds, args.jobs)
+    if args.bracket and args.merge:
+        code |= merge(int(args.bracket[0]), args.merge.resolve(), args.out.resolve())
+    elif args.bracket:
+        code |= bracket(int(args.bracket[0]), args.matches, args.out.resolve(), args.seed, args.random_builds, args.jobs,
+                        args.shard, args.shards, args.map)
     if args.perf:
         code |= perf(args.out.resolve())
     if not args.bracket and not args.perf:

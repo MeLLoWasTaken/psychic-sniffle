@@ -80,9 +80,10 @@
           },
           "type": {
             "enum": [
-              "collapse"
+              "collapse",
+              "flood"
             ],
-            "description": "collapse: the colliders with `tags` are gone from at_s on (movement, line of sight, camera), and a wreck lies where they stood."
+            "description": "collapse: the colliders with `tags` are gone from at_s on (movement, line of sight, camera), and a wreck lies where they stood. flood: water rises over rise_s before at_s, then slows everyone on the ground outside the dry rectangles to `slow` of their speed."
           },
           "at_s": {
             "type": "number",
@@ -116,6 +117,34 @@
           "sound": {
             "type": "string",
             "description": "Sound id (data/sounds) when it happens."
+          },
+          "rise_s": {
+            "type": "number",
+            "minimum": 0,
+            "description": "flood: seconds the water takes to rise, ending at at_s (keep it within warn_s)."
+          },
+          "slow": {
+            "type": "number",
+            "exclusiveMinimum": 0,
+            "maximum": 1,
+            "description": "flood: speed multiplier while wading."
+          },
+          "dry": {
+            "type": "array",
+            "items": {
+              "type": "array",
+              "items": {
+                "type": "array",
+                "items": {
+                  "type": "number"
+                },
+                "minItems": 2,
+                "maxItems": 2
+              },
+              "minItems": 2,
+              "maxItems": 2
+            },
+            "description": "flood: dry rectangles [[min_x, min_z], [max_x, max_z]]."
           }
         }
       }
@@ -214,6 +243,7 @@
               "wall",
               "gate",
               "gallows",
+                "tomb",
               "prop"
             ],
             "description": "What the blocker is, so the map builder picks the right greybox or art-kit piece."
