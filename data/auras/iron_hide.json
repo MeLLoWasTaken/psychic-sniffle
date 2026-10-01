@@ -1,0 +1,13 @@
+{
+  "id": "iron_hide",
+  "name": "Iron Hide",
+  "description": "Talent: armor turns aside more physical damage.",
+  "kind": "buff",
+  "duration_s": 0,
+  "refresh": "refresh",
+  "dispel_type": "none",
+  "cc_category": "none",
+  "modifiers": [{"stat": "armor", "op": "add", "value": 0}],
+  "hud_priority": "hidden",
+  "icon": {"symbol": "shield", "school": "physical", "image": "lorc/bell-shield"}
+}

@@ -16,6 +16,7 @@ var sim: Sim
 var tuning: Dictionary
 var abilities: Dictionary
 var auras_db: Dictionary
+var talent_trees: Dictionary = {}  ## tree id -> tree (Data.talents); set by MatchRunner
 var specs: Dictionary
 var classes: Dictionary
 var geometry: ArenaGeometry
@@ -91,6 +92,57 @@ func init_unit(u: Unit) -> void:
 	for a: String in spec["abilities"] + cls.get("shared_abilities", []):
 		if not a in u.known_abilities:
 			u.known_abilities.append(a)
+	_apply_talents(u)
+
+
+## Apply the unit's talent loadout: talented copies of abilities and auras, changes to the unit's
+## own numbers, granted abilities. An illegal loadout is ignored (the server checks it on join).
+func _apply_talents(u: Unit) -> void:
+	for i: int in range(u.auras.size() - 1, -1, -1):
+		if u.auras[i].get("talent", false):
+			u.auras.remove_at(i)  # loadout changed during preparation: drop the old passives
+	u.talent_abilities = {}
+	u.talent_auras = {}
+	if Talents.is_empty(u.loadout):
+		return
+	var trees: Dictionary = Talents.trees_for(u.spec_id, specs, classes, talent_trees)
+	if Talents.check(u.loadout, trees) != "":
+		return
+	var t: Dictionary = Talents.resolve(u.loadout, trees, abilities, auras_db)
+	u.talent_abilities = t["abilities"]
+	u.talent_auras = t["auras"]
+	for g: String in t["grants"]:
+		if not g in u.known_abilities:
+			u.known_abilities.append(g)
+	var full: Array = u.resources.keys().filter(func(r: String) -> bool: return u.resources[r] >= u.resource_max[r])
+	for aura_id: String in t["grant_auras"]:
+		apply_aura(u, u, aura_id)
+		for inst: Dictionary in u.auras:
+			if inst["id"] == aura_id and inst["source"] == u.id:
+				inst["talent"] = true
+	Talents.apply_self(u, t["self"])
+	u.health = u.max_health
+	for r: String in full:
+		u.resources[r] = float(u.resource_max[r])
+
+
+## The unit's version of an ability: its talented copy when its talents change it.
+func ability_of(u: Unit, ability_id: String) -> Dictionary:
+	return u.talent_abilities.get(ability_id, abilities.get(ability_id, {}))
+
+
+## The unit's version of an aura it is about to apply.
+func aura_of(u: Unit, aura_id: String) -> Dictionary:
+	return u.talent_auras.get(aura_id, auras_db[aura_id])
+
+
+## An aura instance's data: the talented copy of the unit that applied it, if it had one.
+func aura_data(inst: Dictionary) -> Dictionary:
+	if inst.has("v"):
+		var src: Unit = sim.units.get(int(inst["v"]))
+		if src and src.talent_auras.has(inst["id"]):
+			return src.talent_auras[inst["id"]]
+	return auras_db[inst["id"]]
 
 
 # ================================================================== pressing abilities
@@ -105,7 +157,7 @@ func press(u: Unit, ability_id: String, target_id: int) -> void:
 
 ## Returns "ok", "queued" or a failure reason.
 func try_use(u: Unit, ability_id: String, target_id: int, from_queue: bool = false) -> String:
-	var ab: Dictionary = abilities.get(ability_id, {})
+	var ab: Dictionary = ability_of(u, ability_id)
 	if ab.is_empty() or not ability_id in u.known_abilities:
 		return "unknown_ability"
 	if not u.is_alive():
@@ -201,7 +253,7 @@ func _pay_and_cooldown(u: Unit, ab: Dictionary) -> void:
 func _cc_blocks(u: Unit, ab: Dictionary) -> String:
 	var allowed: Array = ab.get("usable_while_cc", [])
 	for a: Dictionary in u.auras:
-		var cat: String = auras_db[a["id"]]["cc_category"]
+		var cat: String = aura_data(a)["cc_category"]
 		if cat in HARD_CC and not cat in allowed:
 			return cat
 		if cat == "silence" and ab["school"] != "physical" and not "silence" in allowed:
@@ -283,7 +335,7 @@ func _sorted_units() -> Array:
 func _update_cast(u: Unit) -> void:
 	if not u.is_casting():
 		return
-	var ab: Dictionary = abilities[u.cast["ability"]]
+	var ab: Dictionary = ability_of(u, u.cast["ability"])
 	if not u.is_alive():
 		u.cast = {}
 		return
@@ -390,7 +442,7 @@ func apply_effect(u: Unit, t: Unit, eff: Dictionary, ab: Dictionary, scale: floa
 			_add_resource(t, eff["resource"], float(eff["amount"]))
 		"remove_cc":
 			for i: int in range(t.auras.size() - 1, -1, -1):
-				if auras_db[t.auras[i]["id"]]["cc_category"] != "none":
+				if aura_data(t.auras[i])["cc_category"] != "none":
 					_remove_aura_at(t, i, "broken_free")
 		"knockback":
 			if _immune(t, "cc"):
@@ -497,7 +549,7 @@ func _after_damage(u: Unit, t: Unit, amount: int, ability_id: String = "") -> vo
 	# crowd control that breaks on damage
 	for i: int in range(t.auras.size() - 1, -1, -1):
 		var inst: Dictionary = t.auras[i]
-		var data: Dictionary = auras_db[inst["id"]]
+		var data: Dictionary = aura_data(inst)
 		var brk: String = data.get("breaks_on_damage", "never")
 		if brk == "any" and amount > 0:
 			_remove_aura_at(t, i, "broken_by_damage")
@@ -538,7 +590,7 @@ func _dispel(u: Unit, t: Unit, eff: Dictionary, ab: Dictionary) -> void:
 	for i: int in range(t.auras.size() - 1, -1, -1):
 		if removed >= count:
 			break
-		var data: Dictionary = auras_db[t.auras[i]["id"]]
+		var data: Dictionary = aura_data(t.auras[i])
 		var wanted_kind: String = "buff" if offensive else "debuff"
 		if data["kind"] == wanted_kind and data["dispel_type"] in types:
 			_log({"type": "dispel", "source": u.id, "target": t.id, "ability": ab["id"], "aura": t.auras[i]["id"]})
@@ -549,7 +601,7 @@ func _dispel(u: Unit, t: Unit, eff: Dictionary, ab: Dictionary) -> void:
 func _interrupt(u: Unit, t: Unit, lock_s: float, ab: Dictionary) -> void:
 	if not t.is_casting():
 		return
-	var casting: Dictionary = abilities[t.cast["ability"]]
+	var casting: Dictionary = ability_of(t, t.cast["ability"])
 	if not casting.get("interruptible", true):
 		_log({"type": "interrupt_failed", "source": u.id, "target": t.id, "ability": ab["id"], "reason": "uninterruptible"})
 		return
@@ -591,7 +643,7 @@ func _on_hostile_action(u: Unit, target: Unit, ab: Dictionary) -> void:
 
 ## Apply an aura, with crowd-control diminishing returns and the 8 s cap.
 func apply_aura(u: Unit, t: Unit, aura_id: String) -> void:
-	var data: Dictionary = auras_db[aura_id]
+	var data: Dictionary = aura_of(u, aura_id)
 	var now: int = sim.tick
 	var duration: int = _ticks(float(data["duration_s"]))
 	var cat: String = data["cc_category"]
@@ -629,6 +681,8 @@ func apply_aura(u: Unit, t: Unit, aura_id: String) -> void:
 			return
 	var inst_new: Dictionary = {"id": aura_id, "source": u.id, "applied_tick": now,
 		"expires_tick": now + duration if duration > 0 else 0, "stacks": 1}
+	if u.talent_auras.has(aura_id):
+		inst_new["v"] = u.id  # numbers come from the source's talented copy (see aura_data)
 	if data.has("periodic"):
 		inst_new["next_tick"] = now + _ticks(float(data["periodic"]["interval_s"]))
 	if data.has("absorb"):
@@ -645,7 +699,7 @@ func _update_auras(u: Unit) -> void:
 	var i: int = 0
 	while i < u.auras.size():
 		var inst: Dictionary = u.auras[i]
-		var data: Dictionary = auras_db[inst["id"]]
+		var data: Dictionary = aura_data(inst)
 		if data.has("periodic") and now >= int(inst["next_tick"]):
 			inst["next_tick"] = int(inst["next_tick"]) + _ticks(float(data["periodic"]["interval_s"]))
 			var src: Unit = sim.units.get(inst["source"])
@@ -664,7 +718,7 @@ func _update_auras(u: Unit) -> void:
 
 func _remove_aura_at(u: Unit, i: int, reason: String) -> void:
 	var inst: Dictionary = u.auras[i]
-	var cat: String = auras_db[inst["id"]]["cc_category"]
+	var cat: String = aura_data(inst)["cc_category"]
 	u.auras.remove_at(i)
 	if cat != "none" and cat != "knockback" and u.dr.has(cat):
 		u.dr[cat]["reset_tick"] = sim.tick + _dr_reset_ticks  # DR resets 18 s after the CC ends
@@ -687,28 +741,28 @@ func has_aura(u: Unit, aura_id: String) -> bool:
 
 func has_cc_in(u: Unit, categories: Array) -> bool:
 	for a: Dictionary in u.auras:
-		if auras_db[a["id"]]["cc_category"] in categories:
+		if aura_data(a)["cc_category"] in categories:
 			return true
 	return false
 
 
 func _has_cc_category(u: Unit, cat: String) -> bool:
 	for a: Dictionary in u.auras:
-		if auras_db[a["id"]]["cc_category"] == cat:
+		if aura_data(a)["cc_category"] == cat:
 			return true
 	return false
 
 
 func _has_flag(u: Unit, flag: String) -> bool:
 	for a: Dictionary in u.auras:
-		if auras_db[a["id"]].get(flag, false):
+		if aura_data(a).get(flag, false):
 			return true
 	return false
 
 
 func _immune(u: Unit, kind: String) -> bool:
 	for a: Dictionary in u.auras:
-		if kind in auras_db[a["id"]].get("immune", []):
+		if kind in aura_data(a).get("immune", []):
 			return true
 	return false
 
@@ -717,7 +771,7 @@ func _immune(u: Unit, kind: String) -> bool:
 func _mod(u: Unit, stat: String, base: float) -> float:
 	var v: float = base
 	for a: Dictionary in u.auras:
-		for m: Dictionary in auras_db[a["id"]].get("modifiers", []):
+		for m: Dictionary in aura_data(a).get("modifiers", []):
 			if m["stat"] == stat and m["op"] == "multiply":
 				v *= pow(float(m["value"]), float(a["stacks"]))
 	return v
@@ -726,7 +780,7 @@ func _mod(u: Unit, stat: String, base: float) -> float:
 func _mod_add(u: Unit, stat: String) -> float:
 	var v: float = 0.0
 	for a: Dictionary in u.auras:
-		for m: Dictionary in auras_db[a["id"]].get("modifiers", []):
+		for m: Dictionary in aura_data(a).get("modifiers", []):
 			if m["stat"] == stat and m["op"] == "add":
 				v += float(m["value"]) * float(a["stacks"])
 	return v
@@ -737,15 +791,17 @@ func _mod_add(u: Unit, stat: String) -> float:
 ## Speed multiplier from auras: roots and hard CC stop movement; only the strongest slow
 ## applies; speed boosts multiply.
 func speed_multiplier(u: Unit) -> float:
-	return speed_multiplier_from(u.auras, auras_db)
+	return speed_multiplier_from(u.auras, auras_db, sim.units)
 
 
 ## The same rule for an aura list (the client predicts with auras from snapshots).
-static func speed_multiplier_from(aura_list: Array, db: Dictionary) -> float:
+static func speed_multiplier_from(aura_list: Array, db: Dictionary, units: Dictionary = {}) -> float:
 	var slow: float = 1.0
 	var boost: float = 1.0
 	for a: Dictionary in aura_list:
 		var data: Dictionary = db.get(a["id"], {})
+		if a.has("v") and units.has(int(a["v"])):
+			data = (units[int(a["v"])] as Unit).talent_auras.get(a["id"], data)
 		if data.is_empty():
 			continue
 		var cat: String = data["cc_category"]
@@ -773,7 +829,7 @@ static func is_forced_from(aura_list: Array, db: Dictionary) -> bool:
 ## applying the player's input. Returns an input dictionary, or empty when not feared.
 func forced_input(u: Unit) -> Dictionary:
 	for a: Dictionary in u.auras:
-		var data: Dictionary = auras_db[a["id"]]
+		var data: Dictionary = aura_data(a)
 		if data["cc_category"] == "disorient":
 			var src: Unit = sim.units.get(a["source"])
 			var away: Vector3 = _flat3(u.position - src.position) if src else Movement.forward_of(u.facing)
@@ -802,7 +858,7 @@ func _update_auto_attack(u: Unit) -> void:
 	u.swing_timer += dt
 	if u.swing_timer + 1e-9 >= swing:
 		u.swing_timer = 0.0
-		deal_damage(u, target, float(_aa["base_damage"]), "physical", abilities.get("auto_attack", {"id": "auto_attack"}), 0.0)
+		deal_damage(u, target, float(_aa["base_damage"]), "physical", ability_of(u, "auto_attack") if abilities.has("auto_attack") else {"id": "auto_attack"}, 0.0)
 
 
 ## Nearest living enemy in front (within 90 degrees of facing, 40 m, in sight); falls back to

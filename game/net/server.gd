@@ -207,13 +207,18 @@ func _on_packet(peer: ENetPacketPeer, key: int, msg: Dictionary) -> void:
 				transport.send(peer, Protocol.CH_RELIABLE, Protocol.reject("unknown spec"), true)
 				Log.warn("server: rejected client with unknown spec %s" % msg["spec"])
 				return
+			var talent_err: String = runner.talent_error(msg["spec"], msg["talents"])
+			if talent_err != "":
+				transport.send(peer, Protocol.CH_RELIABLE, Protocol.reject("talents: " + talent_err), true)
+				Log.warn("server: rejected %s: talents: %s" % [msg["name"], talent_err])
+				return
 			if not roster.is_empty():
 				var taken: bool = clients.values().any(func(c: Dictionary) -> bool: return c["name"] == msg["name"])
 				if not roster.has(msg["name"]) or taken:
 					transport.send(peer, Protocol.CH_RELIABLE, Protocol.reject("not in the roster"), true)
 					Log.warn("server: rejected %s (not in the roster, or already joined)" % msg["name"])
 					return
-			_add_client(peer, key, msg["name"], msg["spec"])
+			_add_client(peer, key, msg["name"], msg["spec"], msg["talents"])
 		Protocol.Msg.INPUT:
 			var c: Dictionary = clients.get(key, {})
 			if c.is_empty():
@@ -248,9 +253,9 @@ func _client_stats(c: Dictionary) -> Dictionary:
 		"lost_inputs": c["lost_inputs"]}
 
 
-func _add_client(peer: ENetPacketPeer, key: int, player_name: String, spec_id: String) -> void:
+func _add_client(peer: ENetPacketPeer, key: int, player_name: String, spec_id: String, talents: String = "") -> void:
 	var team: int = int(roster.get(player_name, clients.size() % 2))
-	var unit: Unit = runner.add_unit(spec_id, team)
+	var unit: Unit = runner.add_unit(spec_id, team, talents)
 	_unit_names[player_name] = unit.id
 	clients[key] = {"peer": peer, "name": player_name, "spec": spec_id, "unit_id": unit.id, "inputs": [],
 		"last_received_seq": 0, "ack_seq": 0, "snapshots": 0, "starved_ticks": 0, "lost_inputs": 0,

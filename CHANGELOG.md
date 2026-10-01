@@ -2,6 +2,17 @@
 
 One entry per build-loop iteration, newest first. Format: date, backlog ID, what changed, how it was checked.
 
+## 2026-10-01 — M2-03 talent system
+- `game/core/talents.gd`:
+  - checks a loadout against its trees (ranks, choice options, points, gates at 8 and 20, connections, 3 PvP slots);
+  - turns a loadout into one player's numbers: patched copies of the abilities and auras it changes, the player's own health, stats and resource maximums, granted abilities and permanent passive auras;
+  - encodes and decodes the shared text form.
+- Combat looks abilities and auras up through the player's talented copies. An aura applied by a talented player keeps that player's numbers on its target. No class-specific code.
+- Loadouts arrive with the player's hello message (protocol version 5). The server rejects illegal ones. `MatchRunner.set_talents` works during preparation and is refused once the gates open; the replay log records loadouts.
+- Validator: talent effect paths must name a real field (a number when the effect adds), unit fields must be ones talents can change, granted auras must exist, and no two nodes may share a screen position.
+- The draft Iron Hide talent now grants a passive armor aura; the codex shows granted abilities, passives and choice options.
+- Checked: 14 talent tests (fixture trees plus the real pipeline: lock at the gates, a talented match replays to the same hash, the hello message), all 135 core and net tests, the validator fixtures and data validation.
+
 ## 2026-10-01 — M2-02 crowd control by category
 - `game/test/core/test_crowd_control.gd` (12 tests) covers each category from DESIGN.md:
   - stun, incapacitate and disorient take control; silence blocks spells only; root stops movement only; disarm blocks weapon attacks and auto attack only;

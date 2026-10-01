@@ -31,7 +31,11 @@ static func run(log: InputLog) -> Dictionary:
 				return
 			match str(e[2]):
 				"add":
-					runner.add_unit(str(e[3][0]), int(e[3][1]))
+					runner.add_unit(str(e[3][0]), int(e[3][1]), str(e[3][2]) if e[3].size() > 2 else "")
+				"talents":
+					var tu: Unit = units_by_id.call(int(e[3][0]))
+					if tu:
+						runner.set_talents(tu, str(e[3][1]))
 				"leave":
 					runner.remove_unit(int(e[3]))
 				"hold":

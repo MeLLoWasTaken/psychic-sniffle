@@ -1,0 +1,13 @@
+{
+  "description": "two talent nodes in one spot on the talent screen",
+  "file": "talents/warblade_carnage.json",
+  "expect": "share position [3, 1]",
+  "set": {
+    "/nodes": [
+      {"id": "lingering_gash", "name": "Lingering Gash", "type": "passive", "ranks": 2, "pos": [3, 1],
+       "requires_any": ["ruin_strike"], "effects": [{"modify": "ruin_bleed.periodic.effect.base", "per_rank": 90}]},
+      {"id": "deep_gash", "name": "Deep Gash", "type": "passive", "pos": [3, 1],
+       "requires_any": ["lingering_gash"], "effects": [{"modify": "ruin_strike.cooldown_s", "per_rank": -1}]}
+    ]
+  }
+}

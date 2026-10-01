@@ -238,8 +238,17 @@ class Codex:
             return ""
         nodes = []
         for n in sorted(t["nodes"], key=lambda n: (n.get("pos", [0, 0])[1], n.get("pos", [0, 0])[0])):
-            fx = "; ".join(f"{e['modify']} {e['per_rank']:+g} per rank" if "per_rank" in e
-                           else f"{e['modify']} set to {json.dumps(e.get('set'))}" for e in n.get("effects", []))
+            def effect_text(src: dict) -> str:
+                parts = [f"{e['modify']} {e['per_rank']:+g} per rank" if "per_rank" in e
+                         else f"{e['modify']} set to {json.dumps(e.get('set'))}" for e in src.get("effects", [])]
+                if src.get("grants_ability"):
+                    parts.insert(0, f"grants {self.abilities.get(src['grants_ability'], {}).get('name', src['grants_ability'])}")
+                if src.get("grants_aura"):
+                    parts.insert(0, f"passive {self.auras.get(src['grants_aura'], {}).get('name', src['grants_aura'])}")
+                return "; ".join(parts)
+            fx = effect_text(n)
+            if n.get("choices"):
+                fx = " or ".join(f"{c['name']} ({effect_text(c)})" for c in n["choices"])
             req = f' <span class="dim">requires {", ".join(n["requires_any"])}</span>' if n.get("requires_any") else ""
             nodes.append(f'<li><b>{html.escape(n["name"])}</b> <span class="dim">{n.get("type", "")}, '
                          f'{n.get("ranks", 1)} rank{"s" if n.get("ranks", 1) > 1 else ""}, row {n.get("pos", [0, 0])[1] + 1}</span>{req}'

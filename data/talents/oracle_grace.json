@@ -11,7 +11,7 @@
       "type": "passive",
       "effects": [
         {
-          "modify": "self.placeholder",
+          "modify": "self.max_health",
           "per_rank": 0
         }
       ],

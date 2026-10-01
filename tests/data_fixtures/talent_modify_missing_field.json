@@ -1,0 +1,8 @@
+{
+  "description": "talent effect names a field the aura does not have",
+  "file": "talents/warblade_carnage.json",
+  "expect": "'ruin_bleed' has no field 'periodic.effect.bse'",
+  "set": {
+    "/nodes/0/effects/0/modify": "ruin_bleed.periodic.effect.bse"
+  }
+}

@@ -6,7 +6,7 @@ extends RefCounted
 ## Abilities, auras and specs travel as small indexes into their sorted id lists (both sides
 ## load the same data, and the protocol version changes whenever that could differ).
 
-const VERSION: int = 4
+const VERSION: int = 5
 const CH_RELIABLE: int = 0
 const CH_UNRELIABLE: int = 1
 const CHANNELS: int = 2
@@ -49,12 +49,13 @@ static func _buf() -> StreamPeerBuffer:
 
 # ------------------------------------------------------------------ handshake
 
-static func hello(player_name: String, spec_id: String) -> PackedByteArray:
+static func hello(player_name: String, spec_id: String, talents: String = "") -> PackedByteArray:
 	var b: StreamPeerBuffer = _buf()
 	b.put_u8(Msg.HELLO)
 	b.put_u16(VERSION)
 	b.put_utf8_string(player_name)
 	b.put_utf8_string(spec_id)
+	b.put_utf8_string(talents)
 	return b.data_array
 
 
@@ -230,8 +231,11 @@ static func decode(data: PackedByteArray) -> Dictionary:
 	var t: int = b.get_u8()
 	match t:
 		Msg.HELLO:
-			return {"type": t, "version": b.get_u16(), "name": b.get_utf8_string(),
-				"spec": b.get_utf8_string()}
+			var hello_msg: Dictionary = {"type": t, "version": b.get_u16()}
+			if hello_msg["version"] != VERSION:
+				return hello_msg  # the server answers with a version mismatch; the rest may differ
+			hello_msg.merge({"name": b.get_utf8_string(), "spec": b.get_utf8_string(), "talents": b.get_utf8_string()})
+			return hello_msg
 		Msg.WELCOME:
 			return {"type": t, "unit_id": b.get_u16(), "tick": b.get_u32(), "tick_rate": b.get_u8(),
 				"map": b.get_utf8_string()}

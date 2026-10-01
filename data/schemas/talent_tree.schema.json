@@ -4,37 +4,105 @@
   "title": "Talent tree",
   "type": "object",
   "additionalProperties": false,
-  "required": ["tree_id", "kind", "owner", "points", "status", "nodes"],
+  "required": [
+    "tree_id",
+    "kind",
+    "owner",
+    "points",
+    "status",
+    "nodes"
+  ],
   "properties": {
-    "tree_id": {"$ref": "common.schema.json#/$defs/id"},
-    "kind": {"enum": ["class", "spec", "pvp"]},
-    "owner": {"type": "string", "description": "Class id for class trees; spec id for spec and pvp trees."},
-    "points": {"type": "integer", "minimum": 1, "description": "Points to spend (class and spec trees) or slots (pvp)."},
-    "gates": {"type": "array", "items": {"type": "integer", "minimum": 1}},
-    "status": {"$ref": "common.schema.json#/$defs/status"},
+    "tree_id": {
+      "$ref": "common.schema.json#/$defs/id"
+    },
+    "kind": {
+      "enum": [
+        "class",
+        "spec",
+        "pvp"
+      ]
+    },
+    "owner": {
+      "type": "string",
+      "description": "Class id for class trees; spec id for spec and pvp trees."
+    },
+    "points": {
+      "type": "integer",
+      "minimum": 1,
+      "description": "Points to spend (class and spec trees) or slots (pvp)."
+    },
+    "gates": {
+      "type": "array",
+      "items": {
+        "type": "integer",
+        "minimum": 1
+      }
+    },
+    "status": {
+      "$ref": "common.schema.json#/$defs/status"
+    },
     "nodes": {
       "type": "array",
       "minItems": 1,
       "items": {
         "type": "object",
         "additionalProperties": false,
-        "required": ["id", "name", "type"],
+        "required": [
+          "id",
+          "name",
+          "type"
+        ],
         "properties": {
-          "id": {"$ref": "common.schema.json#/$defs/id"},
-          "name": {"type": "string"},
-          "description": {"type": "string"},
-          "type": {"enum": ["passive", "active", "choice", "capstone"]},
-          "ranks": {"type": "integer", "minimum": 1, "maximum": 3, "default": 1},
+          "id": {
+            "$ref": "common.schema.json#/$defs/id"
+          },
+          "name": {
+            "type": "string"
+          },
+          "description": {
+            "type": "string"
+          },
+          "type": {
+            "enum": [
+              "passive",
+              "active",
+              "choice",
+              "capstone"
+            ]
+          },
+          "ranks": {
+            "type": "integer",
+            "minimum": 1,
+            "maximum": 3,
+            "default": 1
+          },
           "pos": {
             "type": "array",
-            "items": {"type": "integer", "minimum": 0},
+            "items": {
+              "type": "integer",
+              "minimum": 0
+            },
             "minItems": 2,
             "maxItems": 2,
             "description": "[column, row] on the talent screen. Not used for pvp talents."
           },
-          "gate": {"type": "integer", "minimum": 0, "default": 0, "description": "Points that must be spent in this tree first. 0 or one of the tree's gates."},
-          "requires_any": {"type": "array", "items": {"type": "string"}, "description": "Node ids; at least one must be fully ranked. Empty means a root node. May also name an ability id granted elsewhere."},
-          "grants_ability": {"type": "string"},
+          "gate": {
+            "type": "integer",
+            "minimum": 0,
+            "default": 0,
+            "description": "Points that must be spent in this tree first. 0 or one of the tree's gates."
+          },
+          "requires_any": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "description": "Node ids; at least one must be fully ranked. Empty means a root node. May also name an ability id granted elsewhere."
+          },
+          "grants_ability": {
+            "type": "string"
+          },
           "choices": {
             "type": "array",
             "minItems": 2,
@@ -42,20 +110,66 @@
             "items": {
               "type": "object",
               "additionalProperties": false,
-              "required": ["id", "name"],
+              "required": [
+                "id",
+                "name"
+              ],
               "properties": {
-                "id": {"$ref": "common.schema.json#/$defs/id"},
-                "name": {"type": "string"},
-                "grants_ability": {"type": "string"},
-                "effects": {"$ref": "#/$defs/effects"}
+                "id": {
+                  "$ref": "common.schema.json#/$defs/id"
+                },
+                "name": {
+                  "type": "string"
+                },
+                "grants_ability": {
+                  "type": "string"
+                },
+                "effects": {
+                  "$ref": "#/$defs/effects"
+                },
+                "grants_aura": {
+                  "type": "string"
+                }
               }
             }
           },
-          "effects": {"$ref": "#/$defs/effects"}
+          "effects": {
+            "$ref": "#/$defs/effects"
+          },
+          "grants_aura": {
+            "type": "string",
+            "description": "Aura id applied to the player for the whole match (a permanent passive; usually hidden from the HUD). Effects may then change its numbers."
+          }
         },
         "allOf": [
-          {"if": {"properties": {"type": {"const": "choice"}}}, "then": {"required": ["choices"]}},
-          {"if": {"properties": {"type": {"const": "active"}}}, "then": {"required": ["grants_ability"]}}
+          {
+            "if": {
+              "properties": {
+                "type": {
+                  "const": "choice"
+                }
+              }
+            },
+            "then": {
+              "required": [
+                "choices"
+              ]
+            }
+          },
+          {
+            "if": {
+              "properties": {
+                "type": {
+                  "const": "active"
+                }
+              }
+            },
+            "then": {
+              "required": [
+                "grants_ability"
+              ]
+            }
+          }
         ]
       }
     }
@@ -66,10 +180,17 @@
       "items": {
         "type": "object",
         "additionalProperties": false,
-        "required": ["modify"],
+        "required": [
+          "modify"
+        ],
         "properties": {
-          "modify": {"type": "string", "description": "<ability or aura id>.<field path>, e.g. ruin_strike.cooldown_s"},
-          "per_rank": {"type": "number"},
+          "modify": {
+            "type": "string",
+            "description": "<ability or aura id>.<field path>, e.g. ruin_strike.cooldown_s"
+          },
+          "per_rank": {
+            "type": "number"
+          },
           "set": {}
         }
       }

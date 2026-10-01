@@ -1,0 +1,8 @@
+{
+  "description": "talent effect changes a unit stat that does not exist",
+  "file": "talents/warblade_carnage.json",
+  "expect": "units have no stat 'luck'",
+  "set": {
+    "/nodes/0/effects/0/modify": "self.stats.luck"
+  }
+}

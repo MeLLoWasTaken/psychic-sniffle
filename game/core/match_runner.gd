@@ -27,6 +27,7 @@ func _init(p_map: Dictionary, p_mode: String = "skirmish", bracket: String = "2v
 	geometry = ArenaGeometry.from_map(map)
 	movement = Movement.new(Data.tuning, geometry)
 	combat = Combat.new(sim, Data.tuning, Data.abilities, Data.auras, Data.specs, Data.classes, geometry)
+	combat.talent_trees = Data.talents
 	if mode == "arena":
 		var tuning: Dictionary = Data.tuning.duplicate(true)
 		if prep_s >= 0.0:
@@ -49,11 +50,13 @@ func _log(kind: String, payload: Variant) -> void:
 		input_log.add(sim.tick, sim.stepping, kind, payload)
 
 
-## Create a unit for a spec on a team at the team's next spawn point.
-func add_unit(spec_id: String, team: int) -> Unit:
-	_log("add", [spec_id, team])
+## Create a unit for a spec on a team at the team's next spawn point, with a talent loadout in
+## its shared text form (Talents.encode; "" for none). Check the text first with talent_error().
+func add_unit(spec_id: String, team: int, talents: String = "") -> Unit:
+	_log("add", [spec_id, team, talents])
 	var unit: Unit = Unit.new(_next_unit_id, team, spec_id)
 	_next_unit_id += 1
+	unit.loadout = loadout_from(spec_id, talents)
 	combat.init_unit(unit)
 	var spawns: Array = map["spawns"]["team_a" if team == 0 else "team_b"]
 	var sp: Array = spawns[int(_spawn_count[team]) % spawns.size()]
@@ -62,6 +65,33 @@ func add_unit(spec_id: String, team: int) -> Unit:
 	unit.facing = -PI / 2 if team == 0 else PI / 2  # face the other team across the arena
 	sim.add_unit(unit)
 	return unit
+
+
+## Why a talent string cannot be used for a spec, or "" when it can.
+func talent_error(spec_id: String, talents: String) -> String:
+	var trees: Dictionary = Talents.trees_for(spec_id, Data.specs, Data.classes, Data.talents)
+	var d: Dictionary = Talents.decode(talents, trees)
+	return d["error"] if d["error"] != "" else Talents.check(d["loadout"], trees)
+
+
+func loadout_from(spec_id: String, talents: String) -> Dictionary:
+	if talent_error(spec_id, talents) != "":
+		return Talents.empty()
+	return Talents.decode(talents, Talents.trees_for(spec_id, Data.specs, Data.classes, Data.talents))["loadout"]
+
+
+## Change a unit's talents. Allowed until the arena gates open (docs/DESIGN.md: talents lock when
+## the gates open); returns "" or why not.
+func set_talents(unit: Unit, talents: String) -> String:
+	if arena and arena.phase != ArenaMatch.Phase.PREP:
+		return "talents_locked"
+	var err: String = talent_error(unit.spec_id, talents)
+	if err != "":
+		return err
+	_log("talents", [unit.id, talents])
+	unit.loadout = loadout_from(unit.spec_id, talents)
+	combat.init_unit(unit)
+	return ""
 
 
 func ended() -> bool:

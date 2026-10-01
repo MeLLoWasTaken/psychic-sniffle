@@ -793,6 +793,48 @@ def _check_tree_ref(report: Report, rel: str, trees: dict, tree_id: str, kind: s
         report.error(rel, f"talent tree '{tree_id}' is owned by '{t['owner']}'")
 
 
+# What a talent effect may change on the unit itself (Talents.apply_self in game/core/talents.gd)
+# and the ability or aura fields it may add to when the data leaves them out (Talents.PATH_DEFAULTS).
+TALENT_SELF_STATS = ("power_bonus", "haste", "crit_chance")
+TALENT_PATH_DEFAULTS = ("pvp_modifier",)
+
+
+def _talent_path_problem(e: dict, abilities: dict, auras: dict, tuning: dict | None) -> str:
+    """Why a talent effect's path does not name a field it can change, or ''."""
+    target, _, path = e["modify"].partition(".")
+    parts = path.split(".") if path else []
+    adds = "set" not in e
+    if target == "self":
+        if parts == ["max_health"]:
+            return ""
+        if len(parts) == 2 and parts[0] == "stats":
+            return "" if parts[1] in TALENT_SELF_STATS else f"units have no stat '{parts[1]}' (stats: {', '.join(TALENT_SELF_STATS)})"
+        if len(parts) == 2 and parts[0] == "resource_max":
+            known = (tuning or {}).get("resources", {})
+            return "" if not known or parts[1] in known else f"no resource '{parts[1]}'"
+        return "a talent can change self.max_health, self.stats.<stat> or self.resource_max.<resource>"
+    if not parts:
+        return "names no field"
+    node = abilities.get(target, auras.get(target))
+    for i, key in enumerate(parts):
+        last = i == len(parts) - 1
+        if isinstance(node, list):
+            if not key.isdigit() or int(key) >= len(node):
+                return f"'{key}' is not an index of the list at '{'.'.join(parts[:i]) or target}'"
+            node = node[int(key)]
+        elif isinstance(node, dict):
+            if key not in node:
+                if last and (key in TALENT_PATH_DEFAULTS or not adds):
+                    return ""  # a default the game fills in, or a new field the talent sets
+                return f"'{target}' has no field '{'.'.join(parts[:i + 1])}'"
+            node = node[key]
+        else:
+            return f"'{'.'.join(parts[:i])}' is a value, not a group of fields"
+    if adds and (isinstance(node, bool) or not isinstance(node, (int, float))):
+        return "per_rank adds to a number, but this field is not one (use 'set')"
+    return ""
+
+
 def _check_tree(report: Report, rel: str, t: dict, abilities: dict, auras: dict, tuning: dict | None) -> None:
     nodes = t["nodes"]
     ids = [n["id"] for n in nodes]
@@ -823,6 +865,9 @@ def _check_tree(report: Report, rel: str, t: dict, abilities: dict, auras: dict,
         for g in grants:
             if g and g not in abilities:
                 report.error(where, f"grants ability '{g}', which does not exist")
+        for g in [n.get("grants_aura")] + [c.get("grants_aura") for c in n.get("choices", [])]:
+            if g and g not in auras:
+                report.error(where, f"grants aura '{g}', which does not exist")
         effects = list(n.get("effects", []))
         for c in n.get("choices", []):
             effects += c.get("effects", [])
@@ -830,6 +875,20 @@ def _check_tree(report: Report, rel: str, t: dict, abilities: dict, auras: dict,
             target = e["modify"].split(".", 1)[0]
             if target != "self" and target not in abilities and target not in auras:
                 report.error(where, f"modifies '{e['modify']}', but '{target}' is not an ability, aura or 'self'")
+                continue
+            problem = _talent_path_problem(e, abilities, auras, tuning)
+            if problem:
+                report.error(where, f"modifies '{e['modify']}': {problem}")
+
+    if t["kind"] != "pvp":
+        spots: dict[tuple, str] = {}
+        for n in nodes:
+            if "pos" not in n:
+                continue
+            spot = tuple(n["pos"])
+            if spot in spots:
+                report.error(rel, f"nodes '{spots[spot]}' and '{n['id']}' share position {list(spot)}")
+            spots.setdefault(spot, n["id"])
 
     # reachability: a node is reachable when it is a root (no node requirements) or any
     # required node is reachable. Requirements that name abilities count as satisfied.

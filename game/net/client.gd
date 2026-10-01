@@ -28,6 +28,7 @@ var server_peer: ENetPacketPeer
 var input_source: Callable  ## returns {move, yaw, jump, tab} for this tick
 var player_name: String = "player"
 var spec_id: String = "warblade_carnage"
+var talents: String = ""  ## talent loadout in its shared text form (Talents.encode)
 var unit_id: int = -1
 var map_id: String = ""
 var geometry: ArenaGeometry
@@ -79,6 +80,7 @@ func _ready() -> void:
 	var args: PackedStringArray = OS.get_cmdline_user_args()
 	player_name = NetServer._arg(args, "--name", player_name)
 	spec_id = NetServer._arg(args, "--spec", spec_id)
+	talents = NetServer._arg(args, "--talents", talents)
 	quit_after_s = float(NetServer._arg(args, "--seconds", "0"))
 	stats_path = NetServer._arg(args, "--stats", "")
 	server_silence_s = float(NetServer._arg(args, "--server-silence", str(server_silence_s)))
@@ -115,7 +117,7 @@ func _poll_network() -> void:
 		match ev["type"]:
 			"connect":
 				connected = true
-				transport.send(server_peer, Protocol.CH_RELIABLE, Protocol.hello(player_name, spec_id), true)
+				transport.send(server_peer, Protocol.CH_RELIABLE, Protocol.hello(player_name, spec_id, talents), true)
 			"disconnect":
 				connected = false
 				if _match_ended_usec > 0:

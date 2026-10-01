@@ -1,0 +1,8 @@
+{
+  "description": "talent per_rank effect adds to a text field",
+  "file": "talents/warblade_carnage.json",
+  "expect": "per_rank adds to a number, but this field is not one",
+  "set": {
+    "/nodes/0/effects/0/modify": "ruin_strike.school"
+  }
+}

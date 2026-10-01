@@ -342,6 +342,10 @@ The human asked to incorporate any readily available offering that improves the 
 ### X-11 Body smoothing shrink `[todo]`
 - [ ] The body's Corrective Smooth shrinks it by 4-7 mm RMS and blurs the face, knuckles and knees. Widen the Oracle's mask and coif offsets (skin pokes through at the chin and ear without the smooth), drop the smooth, rerun the clipping gate and compare close-ups.
 
+
+### X-12 Client prediction with talented auras `[todo]`
+- [ ] Snapshots carry which player's version an aura is (or its speed effect), so the client predicts a talented slow or speed boost exactly; a test where a talented slow is predicted without a correction.
+
 ### X-06 Continuous integration on GitHub Actions `[doing]`
 - [ ] Run tools/check_all on every push, and a nightly job on a multi-core runner for the balance simulations and the 20-player performance profile (the workspace has 2 cores, which skews those numbers).
 
@@ -455,10 +459,11 @@ Exit gate (DESIGN.md): every combat rule has passing tests; every action is rebi
 - [x] Every category's break rule from DESIGN.md (incapacitate on any damage, disorient over 10% of max health, roots by data), the 8 s cap, DR 100/50/25/immune resetting 18 s after the last effect ends; tests per category.
 - Done with test-only disarm and knockback abilities; the slice kits get one of each when a class wave needs it. The code already handled both; M2-02 added the tests (`game/test/core/test_crowd_control.gd`; breaking the disarm and incapacitate rules in the code makes them fail) and a data rule tying every crowd-control aura to its category's break rule.
 
-### M2-03 Talent system `[todo]`
-- [ ] Node types passive, active (grants an ability), choice and capstone; gates at 8 and 20 points; a node unlocks when a connected node above is fully ranked; 30 + 30 points and 3 PvP slots.
-- [ ] Talent effects apply to units at match start from data paths (ability numbers, aura numbers, unit stats, cooldowns), with no per-class code; talents lock when the gates open.
-- [ ] Validator: unreachable nodes, broken references, wrong point totals, duplicate positions.
+### M2-03 Talent system `[done]`
+- [x] Node types passive, active (grants an ability), choice and capstone; gates at 8 and 20 points; a node unlocks when a connected node above is fully ranked; 30 + 30 points and 3 PvP slots.
+- [x] Talent effects apply to units at match start from data paths (ability numbers, aura numbers, unit stats, cooldowns), with no per-class code; talents lock when the gates open.
+- [x] Validator: unreachable nodes, broken references, wrong point totals, duplicate positions.
+- Follow-ups: the client predicts movement with untalented aura data (a talented slow mispredicts until the next snapshot corrects it; X-12); the arena frame's enemy Break Free timer uses the untalented 90 s (M2-14); talent-granted abilities need action bar slots (M2-05); bots and the batch simulator need loadouts for build simulations (M2-04).
 
 ### M2-04 Talent trees for the three slice specs `[todo]`
 - [ ] Warblade, Arcanist and Oracle class trees (about 40 nodes), Carnage, Rime and Grace spec trees (about 40), 12 PvP talents each; original names; icons from game-icons.net in the HUD style.
