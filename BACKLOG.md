@@ -503,8 +503,8 @@ Exit gate (DESIGN.md): every combat rule has passing tests; every action is rebi
 - [x] Every action, bar button and interface toggle rebindable; Shift, Ctrl and Alt; mouse buttons 1 to 5 and wheel; a target mode per bind (target, focus, mouseover, self, arena 1 to 3); conflict warning; reset to default; import and export.
 - Follow-up: mouseover reads units in the world; hovering a unit frame does not count as mouseover yet (M2-14).
 
-### M2-12 HUD edit mode `[todo]`
-- [ ] Toggle with labeled outlines; drag to move with grid snap; scale 50-200%; opacity; per-element options; layouts saved as named profiles (optionally per spec), exported and imported as text; checked at the five DESIGN.md resolutions.
+### M2-12 HUD edit mode `[done]`
+- [x] Toggle with labeled outlines; drag to move with grid snap; scale 50-200%; opacity; per-element options; layouts saved as named profiles (optionally per spec), exported and imported as text; checked at the five DESIGN.md resolutions.
 
 ### M2-13 Settings suite `[todo]`
 - [ ] Interface, Gameplay, Graphics, Audio and Accessibility pages with every setting in DESIGN.md; each applies instantly except resolution; saved per profile.

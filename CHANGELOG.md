@@ -2,6 +2,19 @@
 
 One entry per build-loop iteration, newest first. Format: date, backlog ID, what changed, how it was checked.
 
+## 2026-10-01 — M2-12 HUD edit mode and layout profiles
+- F10 in a match or practice opens HUD edit mode.
+  - Every element gets a labeled outline (hidden ones dashed).
+  - Drag to move: it snaps to an 8-pixel grid and anchors to the screen third it sits in.
+  - The mouse wheel scales an element (50 to 200%).
+  - The panel sets the selected element's scale, opacity, visibility and own option (action bar columns, aura side), and resets it.
+- Layouts are named profiles of changes over the base layout, saved in the user's folder: save, save as new, next, delete, only this spec, export, import, reset all.
+- The HUD now edits its own copy of the layout data. Before, editing would have changed the shared data for every HUD.
+- Checked:
+  - 5 edit mode tests: data untouched, snapping and anchors, on-screen clamping, scale limits, opacity, columns, hide and show, aura side, profiles, per-spec, export and import;
+  - an edited layout stays on screen and on its side at all five DESIGN.md resolutions (1280x720 to 3840x2160 and ultrawide 3440x1440), and the default layout test now covers all five;
+  - all 328 Godot tests pass; screenshots reviewed (labels moved inside the outlines).
+
 ## 2026-10-01 — M2-11 keybinding screen and target modes
 - Settings → Key bindings lists every action (movement, targeting, camera, both action bars, interface toggles).
   - Click a key, then press the new key or mouse button. Shift, Ctrl and Alt make chords; mouse buttons 1 to 5 and the wheel work; Esc cancels.

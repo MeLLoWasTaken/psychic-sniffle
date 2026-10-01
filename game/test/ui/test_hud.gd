@@ -7,6 +7,8 @@ extends GdUnitTestSuite
 const DT: float = 1.0 / 60.0
 
 var ctl: PlayerController
+## docs/DESIGN.md "Interface": the interface must render correctly at these.
+const RESOLUTIONS: Array[Vector2] = [Vector2(1280, 720), Vector2(1920, 1080), Vector2(2560, 1440), Vector2(3840, 2160), Vector2(3440, 1440)]
 var hud: Hud
 var match_: LocalMatch
 
@@ -542,13 +544,13 @@ func test_a_pressed_key_reaches_the_simulation() -> void:
 
 # ------------------------------------------------------------------ scaling
 
-func test_layout_scales_for_three_resolutions_without_overlaps() -> void:
+func test_layout_scales_for_the_five_design_resolutions_without_overlaps() -> void:
 	hud.push(_view())
 	hud.update(0.0)
 	var base: Vector2 = Vector2(1920, 1080)
-	for res: Vector2 in [Vector2(1280, 720), Vector2(1920, 1080), Vector2(2560, 1440)]:
+	for res: Vector2 in RESOLUTIONS:
 		hud.stretch_override = res.y / base.y
-		hud.root.size = base  # canvas_items stretch: the logical screen stays 1920x1080 at 16:9
+		hud.root.size = Vector2(base.y * res.x / res.y, base.y)  # canvas_items stretch, expand: wider screens are wider
 		hud.relayout()
 		var s: float = hud.scale_used
 		# the smallest text is at least min_text_px screen pixels
@@ -556,7 +558,7 @@ func test_layout_scales_for_three_resolutions_without_overlaps() -> void:
 		assert_float(smallest_px).override_failure_message("%s: smallest text %.1f px" % [res, smallest_px]) \
 			.is_greater_equal(float(Data.settings["default"]["interface"]["min_text_px"]) - 0.01)
 		var rects: Dictionary = hud.element_rects()
-		var screen: Rect2 = Rect2(Vector2.ZERO, base)
+		var screen: Rect2 = Rect2(Vector2.ZERO, hud.root.size)
 		for id: String in rects:
 			var r: Rect2 = rects[id]
 			assert_bool(screen.encloses(r)).override_failure_message("%s: %s %s is off screen" % [res, id, r]).is_true()

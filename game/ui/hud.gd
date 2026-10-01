@@ -33,6 +33,11 @@ var talent_view: Dictionary = {"abilities": {}, "auras": {}, "stats": {}}  ## th
 var tooltip_layer: Control  ## draws the tooltip of the button or aura under the mouse
 var tooltip: Dictionary = {}  ## what tooltip_layer shows: {lines, near, above}
 var layout: Dictionary = {}
+var base_layout: Dictionary = {}  ## the layout data, read only; `layout` is it with `changes` applied
+var changes: Dictionary = {}  ## element id -> edited fields (HudLayouts profile)
+var editor: HudEditor = null  ## the edit mode overlay while editing
+var layouts: HudLayouts = null  ## the player's saved layouts (set_profiles)
+var profile_spec: String = ""  ## the spec whose layout profile applies
 var interface: Dictionary = {}
 var style: HudStyle
 var root: Control
@@ -57,7 +62,8 @@ func _init(settings: Dictionary = {}, layout_id: String = "") -> void:
 	layer = 10
 	interface = settings.get("interface", {"hud_layout": "default", "ui_scale": 1.0, "min_text_px": 11, "combat_text": true})
 	var lid: String = layout_id if layout_id != "" else str(interface.get("hud_layout", "default"))
-	layout = Data.hud_layouts.get(lid, {})
+	base_layout = Data.hud_layouts.get(lid, {})
+	layout = base_layout.duplicate(true)  # edit mode changes this copy, never the data
 	if layout.is_empty():
 		Log.error("hud: no layout '%s'" % lid)
 		return
@@ -257,6 +263,115 @@ func _update_frames(id: String, e: Dictionary) -> void:
 
 
 # ------------------------------------------------------------------ action bars and presses
+
+# ------------------------------------------------------------------ edit mode (M2-12)
+
+const EDIT_GRID: float = 8.0  ## logical pixels; dragged elements snap to it
+const SCALE_RANGE: Vector2 = Vector2(0.5, 2.0)
+
+
+## Use the player's saved layouts: the spec's profile (or the active one) is applied now.
+func set_profiles(store: HudLayouts, p_spec: String) -> void:
+	layouts = store
+	profile_spec = p_spec  # not spec_id: the first view assigns the bars when it sees the spec
+	apply_changes(store.changes(store.profile_for(p_spec)))
+
+
+## Apply edited fields over the base layout, in place (frames and bars keep their element dicts).
+func apply_changes(ch: Dictionary) -> void:
+	changes = ch.duplicate(true)
+	var target: Dictionary = HudLayouts.merged(base_layout, changes)
+	var columns_changed: bool = false
+	for id: String in layout["elements"]:
+		var e: Dictionary = layout["elements"][id]
+		for field: String in HudLayouts.EDITABLE:
+			var want: Variant = target["elements"][id].get(field)
+			if want == null:
+				if e.has(field):
+					e.erase(field)
+					columns_changed = columns_changed or field == "columns"
+			elif e.get(field) != want:
+				e[field] = want
+				columns_changed = columns_changed or field == "columns"
+		var ctrls: Array = elements.get(id, []) if elements.get(id) is Array else ([elements[id]] if elements.has(id) else [])
+		for c: Control in ctrls:
+			c.modulate.a = float(e.get("opacity", 1.0))
+			if not bool(e.get("visible", true)):
+				c.visible = false
+			elif not c is UnitFrame:
+				c.visible = true  # unit frames show themselves when they have a unit
+	if columns_changed and spec_id != "":
+		_assign_bars(spec_id)
+	relayout()
+
+
+## Change one field of one element (edit mode).
+func edit_element(id: String, field: String, value: Variant) -> void:
+	var ch: Dictionary = changes.duplicate(true)
+	if not ch.has(id):
+		ch[id] = {}
+	if value == null:
+		(ch[id] as Dictionary).erase(field)
+	else:
+		ch[id][field] = value
+	apply_changes(ch)
+
+
+## Put an element's first control's top left at `top_left` (logical screen pixels): it anchors
+## to the screen third its middle falls in, so it keeps its place at any resolution, and its
+## offset snaps to EDIT_GRID.
+func move_element(id: String, top_left: Vector2) -> void:
+	var e: Dictionary = layout["elements"][id]
+	var ctrls: Array = elements[id] if elements[id] is Array else [elements[id]]
+	var first: Control = ctrls[0]
+	var s: float = scale_used
+	var k: float = s * float(e.get("scale", 1.0))
+	var group: Rect2 = group_rect(id)
+	var screen: Vector2 = root.size
+	var lead: Vector2 = group.position - first.position  # auras drawn above the first frame, and so on
+	top_left = (top_left + lead).clamp(Vector2.ZERO, (screen - group.size).max(Vector2.ZERO)) - lead
+	var middle: Vector2 = top_left + lead + group.size * 0.5
+	var a: Vector2 = Vector2(0.0 if middle.x < screen.x / 3.0 else (1.0 if middle.x > screen.x * 2.0 / 3.0 else 0.5),
+		0.0 if middle.y < screen.y / 3.0 else (1.0 if middle.y > screen.y * 2.0 / 3.0 else 0.5))
+	var anchor: String = ANCHORS.find_key(a)
+	var off: Vector2 = (top_left - screen * a + first.size * k * a) / s
+	off = (off / EDIT_GRID).round() * EDIT_GRID
+	var ch: Dictionary = changes.duplicate(true)
+	if not ch.has(id):
+		ch[id] = {}
+	ch[id]["anchor"] = anchor
+	ch[id]["offset"] = [off.x, off.y]
+	apply_changes(ch)
+
+
+## The screen rectangle of an element's controls together (a frame group spans all its frames).
+func group_rect(id: String) -> Rect2:
+	var rects: Dictionary = element_rects()
+	var out: Rect2 = Rect2()
+	var first: bool = true
+	for key: String in rects:
+		if key == id or (key.begins_with(id + "_") and key.trim_prefix(id + "_").is_valid_int()):
+			out = rects[key] if first else out.merge(rects[key])
+			first = false
+	return out
+
+
+func toggle_edit_mode() -> void:
+	if editor != null:
+		editor.finish()
+		return
+	editor = HudEditor.new(self)
+	editor.finished.connect(func() -> void:
+		editor.queue_free()
+		editor = null)
+	root.add_child(editor)
+
+
+func _unhandled_input(event: InputEvent) -> void:
+	if style != null and InputMap.has_action("toggle_edit_mode") and event.is_action_pressed("toggle_edit_mode"):
+		toggle_edit_mode()
+		get_viewport().set_input_as_handled()
+
 
 ## The player's loadout (its shared text): talent abilities for the bars, talented numbers for the
 ## tooltips. Call before the first push.

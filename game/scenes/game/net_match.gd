@@ -104,6 +104,7 @@ func _ready() -> void:
 	if bool(options["hud"]):
 		hud = Hud.new(_settings)
 		hud.set_loadout(spec_id, str(options["talents"]))
+		hud.set_profiles(HudLayouts.new(), spec_id)
 		hud.visible = false
 		add_child(hud)
 		hud.bind(controller, cam.camera, renderer)

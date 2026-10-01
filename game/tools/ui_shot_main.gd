@@ -26,6 +26,20 @@ func _ready() -> void:
 			screen = ts
 		"menu":
 			screen = MainMenu.new()
+		"hudedit":
+			var bg: ColorRect = ColorRect.new()
+			bg.color = Color(0.16, 0.15, 0.14)
+			bg.size = Vector2(1920, 1080)
+			get_tree().root.add_child(bg)
+			var hud: Hud = Hud.new(Data.settings["default"])
+			get_tree().root.add_child(hud)
+			var m: LocalMatch = LocalMatch.new("gallows_courtyard", "warblade_carnage", ["oracle_grace"], ["arcanist_rime", "oracle_grace"])
+			hud.push(m.view())
+			hud.update(0.0)
+			hud.toggle_edit_mode()
+			hud.editor.selected = "player_frame"
+			hud.editor._refresh()
+			screen = Control.new()
 		"keybinds":
 			var ks: KeybindScreen = KeybindScreen.new("default", "user://ui_shot_keybinds.json")
 			Keybinds.rebind(ks.profile, "bar1_slot2", "KEY_1", [])  # show a conflict
