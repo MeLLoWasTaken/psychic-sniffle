@@ -43,6 +43,23 @@ var explain: bool = false  ## record why each priority rule was skipped (for tra
 var explanation: Array = []
 
 
+## A bot's talent build as {"name", "talents"} (the shared text form, Talents.encode). The bot
+## profile's builds are named; "" picks the first (the bot's default), "none" plays without talents.
+static func build_talents(p_spec_id: String, build_name: String = "") -> Dictionary:
+	var builds: Array = Data.bots.get(p_spec_id, {}).get("builds", [])
+	if build_name == "none" or builds.is_empty():
+		return {"name": "none", "talents": ""}
+	var pick: Dictionary = builds[0]
+	for b: Dictionary in builds:
+		if b["name"] == build_name:
+			pick = b
+	if build_name != "" and pick["name"] != build_name:
+		push_error("bot build '%s' not found for %s" % [build_name, p_spec_id])
+	var trees: Dictionary = Talents.trees_for(p_spec_id, Data.specs, Data.classes, Data.talents)
+	var lo: Dictionary = {"class": pick.get("class", {}), "spec": pick.get("spec", {}), "pvp": pick.get("pvp", [])}
+	return {"name": pick["name"], "talents": Talents.encode(lo, trees)}
+
+
 func _init(p_spec_id: String, seed_value: int, p_geometry: ArenaGeometry, p_nav: NavGrid = null) -> void:
 	nav = p_nav if p_nav else (NavGrid.new(p_geometry) if p_geometry else null)
 	spec_id = p_spec_id
@@ -157,6 +174,9 @@ func _choose_ability(view: Dictionary, me: Dictionary, target: Dictionary, enemi
 	for rule: Dictionary in profile["priorities"]:
 		var ab_id: String = rule["ability"]
 		var ab: Dictionary = Data.abilities.get(ab_id, {})
+		if view.has("known") and not ab_id in view["known"]:
+			_why(ab_id, "not_known")  # a talent ability this build does not take
+			continue
 		if ab.is_empty() or tick < int(_press_lock.get(ab_id, -1)):
 			_why(ab_id, "pressed_recently")
 			continue

@@ -474,6 +474,17 @@ def validate(data_dir: Path) -> list[str]:
             report.error(rel, f"no spec '{bid}'")
             continue
         known = set(specs[bid]["abilities"]) | set(classes.get(specs[bid]["class"], {}).get("shared_abilities", []))
+        spec_trees = _trees_for(specs[bid], classes, db["talents"])
+        for tree in spec_trees.values():
+            for n in (tree or {}).get("nodes", []):
+                known |= {g for g in [n.get("grants_ability")] + [c.get("grants_ability") for c in n.get("choices", [])] if g}
+        names = [bd["name"] for bd in b.get("builds", [])]
+        for dup in sorted({x for x in names if names.count(x) > 1}):
+            report.error(rel, f"two builds are named '{dup}'")
+        for bd in b.get("builds", []):
+            problem = loadout_problem(bd, spec_trees)
+            if problem:
+                report.error(rel, f"build '{bd['name']}': {problem}")
         for i, r in enumerate(b["priorities"]):
             if r["ability"] not in known:
                 report.error(rel, f"priorities/{i}: '{r['ability']}' is not in the {bid} kit")
@@ -676,12 +687,15 @@ def _check_icons_and_fonts(report: Report, db: dict, data_dir: Path) -> None:
             cells = [c.strip() for c in line.strip().strip("|").split("|")]
             if len(cells) >= 3 and cells[0] not in ("Icon", "---"):
                 credited.add(f"{cells[1].lower().replace(' ', '-')}/{cells[0]}")
-    for folder in ("abilities", "auras"):
-        for oid, obj in db[folder].items():
+    owners = [(f"{folder}/{oid}.json", obj) for folder in ("abilities", "auras") for oid, obj in db[folder].items()]
+    for tid, t in db["talents"].items():
+        for n in t["nodes"]:
+            owners.append((f"talents/{tid}.json node '{n['id']}'", n))
+            owners += [(f"talents/{tid}.json node '{n['id']}' option '{c['id']}'", c) for c in n.get("choices", [])]
+    for rel, obj in owners:
             img = obj.get("icon", {}).get("image")
             if not img:
                 continue
-            rel = f"{folder}/{oid}.json"
             if not (icons / "game-icons" / f"{img}.svg").exists():
                 report.error(rel, f"icon image '{img}' not found (game/assets/icons/game-icons/{img}.svg)")
             elif not (icons / "glyphs" / f"{img}.png").exists():
@@ -791,6 +805,59 @@ def _check_tree_ref(report: Report, rel: str, trees: dict, tree_id: str, kind: s
         report.error(rel, f"talent tree '{tree_id}' is kind '{t['kind']}', expected '{kind}'")
     elif t["owner"] != owner:
         report.error(rel, f"talent tree '{tree_id}' is owned by '{t['owner']}'")
+
+
+def _trees_for(spec: dict, classes: dict, trees: dict) -> dict:
+    cls = classes.get(spec["class"], {})
+    return {"class": trees.get(cls.get("class_tree", "")), "spec": trees.get(spec.get("spec_tree", "")),
+            "pvp": trees.get(spec.get("pvp_talents", ""))}
+
+
+def loadout_problem(loadout: dict, trees: dict) -> str:
+    """Why a loadout breaks its trees' rules, or ''. Mirrors Talents.check in game/core/talents.gd
+    (game/test/core/test_talents.gd checks every bot build with that one too)."""
+    def cost(n, v):
+        return 1 if n["type"] == "choice" else v
+
+    for layer in ("class", "spec"):
+        picks = loadout.get(layer, {})
+        if not picks:
+            continue
+        tree = trees.get(layer)
+        if not tree:
+            return f"{layer}: no {layer} tree"
+        by_id = {n["id"]: n for n in tree["nodes"]}
+        for nid, val in picks.items():
+            n = by_id.get(nid)
+            if n is None:
+                return f"{layer}: no node '{nid}'"
+            top = len(n["choices"]) if n["type"] == "choice" else n.get("ranks", 1)
+            if not 1 <= val <= top:
+                return f"{layer}: '{nid}' takes 1 to {top}, not {val}"
+        spent = sum(cost(by_id[k], v) for k, v in picks.items())
+        if spent > tree["points"]:
+            return f"{layer}: {spent} points spent, {tree['points']} available"
+        for nid in picks:
+            n = by_id[nid]
+            gate = n.get("gate", 0)
+            before = sum(cost(by_id[k], v) for k, v in picks.items() if by_id[k].get("gate", 0) < gate)
+            if gate and before < gate:
+                return f"{layer}: '{nid}' needs {gate} points before its gate, has {before}"
+            reqs = n.get("requires_any", [])
+            ok = not reqs or any(r not in by_id or picks.get(r, 0) >= (1 if by_id[r]["type"] == "choice" else by_id[r].get("ranks", 1)) for r in reqs)
+            if not ok:
+                return f"{layer}: '{nid}' needs one of {', '.join(reqs)} fully ranked"
+    pvp = loadout.get("pvp", [])
+    tree = trees.get("pvp") or {"nodes": [], "points": 0}
+    ids = {n["id"] for n in tree["nodes"]}
+    if len(pvp) > tree["points"]:
+        return f"pvp: {len(pvp)} talents, {tree['points']} slots"
+    for x in pvp:
+        if x not in ids:
+            return f"pvp: no talent '{x}'"
+    if len(set(pvp)) != len(pvp):
+        return "pvp: a talent is picked twice"
+    return ""
 
 
 # What a talent effect may change on the unit itself (Talents.apply_self in game/core/talents.gd)
@@ -910,6 +977,13 @@ def _check_tree(report: Report, rel: str, t: dict, abilities: dict, auras: dict,
 
     if t["status"] != "complete" or tuning is None:
         return
+    for n in nodes:
+        for item, label in [(n, f"node '{n['id']}'")] + [(c, f"node '{n['id']}' option '{c['id']}'") for c in n.get("choices", [])]:
+            if not item.get("description"):
+                report.error(rel, f"{label} needs a description (the talent screen's tooltip)")
+            if n["type"] != "choice" or item is not n:
+                if not item.get("icon", {}).get("image"):
+                    report.error(rel, f"{label} needs an icon image")
     tt = tuning["talents"]
     if t["kind"] == "pvp":
         if t["points"] != tt["pvp_slots"]:

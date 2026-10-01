@@ -271,3 +271,13 @@ func test_the_hello_message_carries_the_talent_string() -> void:
 	var runner: MatchRunner = MatchRunner.new(Data.maps["gallows_courtyard"], "arena", "2v2", 1.0, 5)
 	assert_str(runner.talent_error("warblade_carnage", text)).is_equal("")
 	assert_str(runner.talent_error("arcanist_rime", text)).contains("different version")
+
+
+func test_every_bot_build_is_legal_and_round_trips() -> void:
+	for spec_id: String in Data.bots:
+		var trees: Dictionary = Talents.trees_for(spec_id, Data.specs, Data.classes, Data.talents)
+		for b: Dictionary in Data.bots[spec_id].get("builds", []):
+			var lo: Dictionary = {"class": b["class"], "spec": b["spec"], "pvp": b["pvp"]}
+			assert_str(Talents.check(lo, trees)).override_failure_message("%s@%s" % [spec_id, b["name"]]).is_equal("")
+			var text: String = BotBrain.build_talents(spec_id, b["name"])["talents"]
+			assert_str(Talents.decode(text, trees)["error"]).is_equal("")

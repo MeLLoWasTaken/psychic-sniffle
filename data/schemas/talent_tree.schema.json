@@ -129,6 +129,26 @@
                 },
                 "grants_aura": {
                   "type": "string"
+                },
+                "icon": {
+                  "type": "object",
+                  "additionalProperties": false,
+                  "required": [
+                    "image"
+                  ],
+                  "properties": {
+                    "image": {
+                      "type": "string",
+                      "pattern": "^[a-z0-9-]+/[a-z0-9-]+$",
+                      "description": "game-icons.net glyph '<author>/<name>' (see ability icons)."
+                    },
+                    "school": {
+                      "$ref": "common.schema.json#/$defs/school"
+                    }
+                  }
+                },
+                "description": {
+                  "type": "string"
                 }
               }
             }
@@ -139,6 +159,23 @@
           "grants_aura": {
             "type": "string",
             "description": "Aura id applied to the player for the whole match (a permanent passive; usually hidden from the HUD). Effects may then change its numbers."
+          },
+          "icon": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": [
+              "image"
+            ],
+            "properties": {
+              "image": {
+                "type": "string",
+                "pattern": "^[a-z0-9-]+/[a-z0-9-]+$",
+                "description": "game-icons.net glyph '<author>/<name>' (see ability icons)."
+              },
+              "school": {
+                "$ref": "common.schema.json#/$defs/school"
+              }
+            }
           }
         },
         "allOf": [

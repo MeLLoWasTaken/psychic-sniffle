@@ -189,7 +189,7 @@ func view_for(unit: Unit) -> Dictionary:
 		units.append(unit_view(u))
 	return {"tick": sim.tick, "tick_rate": sim.tick_rate, "me": unit_view(unit), "units": units,
 		"gcd_ready_tick": unit.gcd_ready_tick, "cooldowns": unit.cooldowns.duplicate(),
-		"school_locks": unit.school_locks.duplicate(),
+		"school_locks": unit.school_locks.duplicate(), "known": unit.known_abilities.duplicate(),
 		"match": match_state(), "map": map["id"]}
 
 

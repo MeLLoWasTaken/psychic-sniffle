@@ -4,12 +4,15 @@ extends Node
 ##
 ##   godot --headless --path game -s res://tools/batch_sim.gd -- --matches 100 \
 ##     --comp warblade_carnage+oracle_grace:arcanist_rime+oracle_grace --out /abs/report.json
+## A spec may name a talent build from its bot profile: warblade_carnage@bleed ("@none" for no
+## talents; a bare spec plays its first build). The summary reports each spec@build too.
 ## --comp may be given several times (matches are spread across comps; team sides alternate).
 ## Prints one line per match and a summary; exits 1 if any match raised an error.
 
 var _results: Array = []
 var _team1_first: bool = false
 var _trace_path: String = ""
+var _builds: Dictionary = {}  ## unit id -> talent build name (per match)
 
 
 func _ready() -> void:
@@ -54,14 +57,17 @@ func _run_match(team_specs: Array, seed_value: int, max_minutes: float) -> Dicti
 	var brains: Dictionary = {}
 	var nav: NavGrid = NavGrid.new(runner.geometry)
 	for team: int in ([1, 0] if _team1_first else [0, 1]):
-		for spec: String in team_specs[team]:
-			var u: Unit = runner.add_unit(spec, team)
+		for entry: String in team_specs[team]:
+			var spec: String = entry.get_slice("@", 0)
+			var build: Dictionary = BotBrain.build_talents(spec, entry.get_slice("@", 1) if "@" in entry else "")
+			var u: Unit = runner.add_unit(spec, team, build["talents"])
+			_builds[u.id] = build["name"]
 			brains[u.id] = BotBrain.new(spec, seed_value * 100 + u.id, runner.geometry, nav)
 			brains[u.id].explain = _trace_path != "" and _results.is_empty()
 	var errors_before: int = Log.error_count
 	var stats: Dictionary = {}
 	for uid: int in brains:
-		stats[uid] = {"spec": runner.sim.units[uid].spec_id, "team": runner.sim.units[uid].team, "damage": 0,
+		stats[uid] = {"spec": runner.sim.units[uid].spec_id, "build": _builds.get(uid, "none"), "team": runner.sim.units[uid].team, "damage": 0,
 			"healing": 0, "casts": 0, "interrupts": 0, "cc": 0, "failed": {}, "died": false}
 	runner.sim.add_system(runner.bot_system(brains))
 	runner.sim.add_system(runner.system_combat_and_rules)
@@ -134,6 +140,7 @@ func _summarise() -> Dictionary:
 	var errors: int = 0
 	var secs: float = 0.0
 	var spec: Dictionary = {}
+	var builds: Dictionary = {}
 	for r: Dictionary in _results:
 		if r["end_reason"] == "team_eliminated":
 			kills += 1
@@ -151,13 +158,20 @@ func _summarise() -> Dictionary:
 			s["deaths"] += 1 if u["died"] else 0
 			s["stuck"] += int(u.get("stuck", 0))
 			spec[u["spec"]] = s
+			var bk: String = "%s@%s" % [u["spec"], u.get("build", "none")]
+			var bs: Dictionary = builds.get(bk, {"games": 0, "wins": 0})
+			bs["games"] += 1
+			bs["wins"] += 1 if r["winner"] == u["team"] else 0
+			builds[bk] = bs
+	for k: String in builds:
+		builds[k]["win_rate"] = float(builds[k]["wins"]) / builds[k]["games"]
 	for k: String in spec:
 		var s: Dictionary = spec[k]
 		s["win_rate"] = float(s["wins"]) / s["games"]
 		for f: String in ["damage", "healing", "interrupts", "cc", "deaths", "stuck"]:
 			s[f + "_per_game"] = float(s[f]) / s["games"]
 	return {"headline": {"matches": n, "ended_by_kill": kills, "kill_rate": float(kills) / maxi(n, 1),
-		"avg_seconds": secs / maxi(n, 1), "errors": errors}, "specs": spec}
+		"avg_seconds": secs / maxi(n, 1), "errors": errors}, "specs": spec, "builds": builds}
 
 
 static func _arg(args: PackedStringArray, name: String, default: String) -> String:

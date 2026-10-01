@@ -159,7 +159,11 @@
                 "type": "number"
               },
               "has_dispellable": {
-                "enum": [true, false, "major"],
+                "enum": [
+                  true,
+                  false,
+                  "major"
+                ],
                 "description": "The chosen unit has an effect this ability can remove. \"major\": only count enemy buffs whose HUD priority is major_offensive or major_defensive (cheap buffs are not worth a global cooldown)."
               },
               "ally_hard_cc": {
@@ -179,6 +183,51 @@
                 "description": "The chosen unit is not the bot's own kill target (crowd control belongs on the other enemy)."
               }
             }
+          }
+        }
+      }
+    },
+    "builds": {
+      "type": "array",
+      "description": "Talent builds the bot can play, by name; the first is its default. Loadout format of game/core/talents.gd.",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "name",
+          "class",
+          "spec",
+          "pvp"
+        ],
+        "properties": {
+          "name": {
+            "$ref": "common.schema.json#/$defs/id"
+          },
+          "description": {
+            "type": "string"
+          },
+          "class": {
+            "type": "object",
+            "additionalProperties": {
+              "type": "integer",
+              "minimum": 1,
+              "maximum": 3
+            }
+          },
+          "spec": {
+            "type": "object",
+            "additionalProperties": {
+              "type": "integer",
+              "minimum": 1,
+              "maximum": 3
+            }
+          },
+          "pvp": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "maxItems": 3
           }
         }
       }
