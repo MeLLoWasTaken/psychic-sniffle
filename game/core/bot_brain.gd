@@ -524,9 +524,10 @@ func _clearance(p: Vector3) -> float:
 	var c: float = geometry.bounds_half - maxf(absf(p.x), absf(p.z))
 	var q: Vector2 = Vector2(p.x, p.z)
 	for circ: Dictionary in geometry.circles:
-		c = minf(c, q.distance_to(circ["center"]) - float(circ["radius"]))
+		if geometry.stands(circ):
+			c = minf(c, q.distance_to(circ["center"]) - float(circ["radius"]))
 	for b: Dictionary in geometry.boxes:
-		if b["gate"] and geometry.gates_open:
+		if not geometry.stands(b):
 			continue
 		var dx: float = maxf(maxf(b["min"].x - q.x, q.x - b["max"].x), 0.0)
 		var dz: float = maxf(maxf(b["min"].y - q.y, q.y - b["max"].y), 0.0)
@@ -572,7 +573,7 @@ func _hide_spot(pos: Vector3, threats: Array) -> Variant:
 	var best: Variant = null
 	var best_score: float = INF
 	for c: Dictionary in geometry.circles:
-		if not c["los"]:
+		if not c["los"] or not geometry.stands(c):
 			continue
 		var centre: Vector3 = Vector3(c["center"].x, 0, c["center"].y)
 		for t: Dictionary in threats:

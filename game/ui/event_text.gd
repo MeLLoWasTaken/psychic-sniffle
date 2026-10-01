@@ -69,6 +69,8 @@ static func line_for(ev: Dictionary, view: Dictionary) -> String:
 			return "The gates are open"
 		"pickup_spawned":
 			return "Healing and mana pickups have appeared"
+		"twist_warning", "twist":
+			return str(ev.get("text", ""))
 	return ""
 
 

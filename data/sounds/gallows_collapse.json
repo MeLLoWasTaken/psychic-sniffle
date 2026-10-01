@@ -1,0 +1,108 @@
+{
+  "id": "gallows_collapse",
+  "description": "The gallows collapse: a huge timber crack, splintering, beams crashing down and tumbling, a deep thud and dust settling (twist, M2-16).",
+  "category": "impact",
+  "peak_dbfs": -2.0,
+  "processing": "impact_low",
+  "duration_s": 3.2,
+  "layers": [
+    {
+      "type": "noise",
+      "band": [
+        300,
+        6000
+      ],
+      "env": {
+        "attack_s": 0.0005,
+        "decay_s": 0.05
+      },
+      "gain": 2.6
+    },
+    {
+      "type": "crackle",
+      "band": [
+        700,
+        5000
+      ],
+      "per_second": 350,
+      "grain_s": 0.004,
+      "env": {
+        "attack_s": 0.002,
+        "decay_s": 0.45
+      },
+      "gain": 0.5
+    },
+    {
+      "type": "sub",
+      "from_hz": 110,
+      "to_hz": 32,
+      "curve": 6,
+      "start_s": 0.18,
+      "env": {
+        "attack_s": 0.003,
+        "decay_s": 0.5
+      },
+      "gain": 0.8
+    },
+    {
+      "type": "noise",
+      "band": [
+        50,
+        420
+      ],
+      "start_s": 0.15,
+      "env": {
+        "attack_s": 0.02,
+        "decay_s": 0.75
+      },
+      "gain": 0.45
+    },
+    {
+      "type": "resonant",
+      "base": 260,
+      "jitter": 0.25,
+      "partials": [
+        [
+          1,
+          6,
+          1.0,
+          0.06
+        ],
+        [
+          2.6,
+          7,
+          0.5,
+          0.04
+        ],
+        [
+          4.9,
+          8,
+          0.3,
+          0.03
+        ]
+      ],
+      "highpass": 150,
+      "start_s": 0.25,
+      "repeat": {
+        "count": 9,
+        "every_s": 0.17,
+        "jitter_s": 0.07,
+        "gain_jitter": 0.5
+      },
+      "gain": 0.7
+    },
+    {
+      "type": "noise",
+      "band": [
+        1500,
+        7000
+      ],
+      "start_s": 0.4,
+      "env": {
+        "attack_s": 0.3,
+        "decay_s": 0.6
+      },
+      "gain": 0.12
+    }
+  ]
+}

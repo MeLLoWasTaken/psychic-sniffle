@@ -36,6 +36,10 @@ var unit_names: Dictionary = {}  ## unit id -> "You", "Partner", "Enemy 1"...
 var gates_banner_s: float = 2.5
 var result: Dictionary = {}  ## MatchFlow.result() once the scoreboard shows
 var _time: float = 0.0
+var announcement: String = ""  ## a map event's line (a twist), shown as a banner for ANNOUNCE_S
+var _announced_at: float = -100.0
+
+const ANNOUNCE_S: float = 3.5
 
 
 func _init(p_style: MenuStyle, p_flow: MatchFlow) -> void:
@@ -85,6 +89,12 @@ func update(delta: float) -> void:
 	root.queue_redraw()
 
 
+## Show a line about the arena (a twist's warning or moment) as a banner under the timer.
+func announce(text: String) -> void:
+	announcement = text
+	_announced_at = _time
+
+
 func show_pause(on: bool) -> void:
 	pause_menu.visible = on
 	if on:
@@ -116,6 +126,10 @@ func _draw_screen() -> void:
 				var a: float = clampf((gates_banner_s - flow.time_in_state()) / 0.6, 0.0, 1.0)
 				_draw_band(96.0, 116.0, a)
 				_centered(168.0, style.text("gates_open"), 52, Color(style.color("title"), a), &"display")
+			elif announcement != "" and _time - _announced_at < ANNOUNCE_S:
+				var a: float = clampf((ANNOUNCE_S - (_time - _announced_at)) / 0.6, 0.0, 1.0)
+				_draw_band(104.0, 96.0, a)
+				_centered(164.0, announcement, 40, Color(style.color("title"), a), &"display")
 		MatchFlow.State.ENDED:
 			_draw_outcome_banner()
 		MatchFlow.State.SCOREBOARD:

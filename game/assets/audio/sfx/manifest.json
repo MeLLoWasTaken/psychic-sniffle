@@ -169,6 +169,20 @@
   ],
   "category": "release"
  },
+ "gallows_collapse": {
+  "hash": "3d59abd55f7ab701",
+  "files": [
+   "gallows_collapse"
+  ],
+  "category": "impact"
+ },
+ "gallows_groan": {
+  "hash": "81ca771afc4a3ef6",
+  "files": [
+   "gallows_groan"
+  ],
+  "category": "impact"
+ },
  "gash_wet": {
   "hash": "490396e41a11b9c5",
   "files": [

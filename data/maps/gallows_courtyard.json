@@ -13,6 +13,21 @@
   "scene": "res://scenes/maps/gallows_courtyard.tscn",
   "lighting_preset": "dusk_grim",
   "twist": "The gallows platform collapses at 5:00, opening the center.",
+  "twists": [
+    {
+      "id": "gallows_collapse",
+      "type": "collapse",
+      "at_s": 300,
+      "warn_s": 10,
+      "tags": [
+        "gallows"
+      ],
+      "warn_text": "The gallows groan...",
+      "text": "The gallows collapse!",
+      "warn_sound": "gallows_groan",
+      "sound": "gallows_collapse"
+    }
+  ],
   "spawns": {
     "team_a": [
       [

@@ -32,7 +32,8 @@ func _init(p_map: Dictionary, p_mode: String = "skirmish", bracket: String = "2v
 		var tuning: Dictionary = Data.tuning.duplicate(true)
 		if prep_s >= 0.0:
 			tuning["arena"]["prep_phase_s"] = prep_s
-		arena = ArenaMatch.new(tuning, bracket, sim.tick_rate, geometry, sim.tick, map.get("pickups", []))
+		arena = ArenaMatch.new(tuning, bracket, sim.tick_rate, geometry, sim.tick, map.get("pickups", []),
+			map.get("twists", []))
 		combat.arena = arena
 	_header = {"map": map["id"], "mode": mode, "bracket": bracket, "prep_s": prep_s, "seed": seed_value,
 		"tick_rate": sim.tick_rate}

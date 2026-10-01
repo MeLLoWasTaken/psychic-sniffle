@@ -212,7 +212,7 @@ func _on_event(ev: Dictionary) -> void:
 	var src: int = int(ev.get("source", -1))
 	var tgt: int = int(ev.get("target", -1))
 	var ab: String = str(ev.get("ability", ""))
-	var world: String = str(bank.map.get("world", {}).get(type, ""))
+	var world: String = str(ev.get("sound", "")) if str(ev.get("sound", "")) != "" else str(bank.map.get("world", {}).get(type, ""))
 	if world != "":
 		if tgt >= 0:
 			play(world, tgt)

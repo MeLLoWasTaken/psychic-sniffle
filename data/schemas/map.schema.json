@@ -58,7 +58,67 @@
       "description": "Shared with Blender preview renders."
     },
     "twist": {
-      "type": "string"
+      "type": "string",
+      "description": "One line describing the map's twist (loading screen, codex); the rules are in twists."
+    },
+    "twists": {
+      "type": "array",
+      "maxItems": 3,
+      "description": "Timed map events on match time (game/core/arena_twists.gd, M2-16). docs/DESIGN.md: each map has one twist.",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "id",
+          "type",
+          "at_s",
+          "text"
+        ],
+        "properties": {
+          "id": {
+            "$ref": "common.schema.json#/$defs/id"
+          },
+          "type": {
+            "enum": [
+              "collapse"
+            ],
+            "description": "collapse: the colliders with `tags` are gone from at_s on (movement, line of sight, camera), and a wreck lies where they stood."
+          },
+          "at_s": {
+            "type": "number",
+            "exclusiveMinimum": 0,
+            "description": "Seconds of match time (after the gates open)."
+          },
+          "warn_s": {
+            "type": "number",
+            "minimum": 0,
+            "description": "A warning this many seconds before (0: none)."
+          },
+          "tags": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "minItems": 1,
+            "description": "collapse: collider tags taken away."
+          },
+          "warn_text": {
+            "type": "string"
+          },
+          "text": {
+            "type": "string",
+            "description": "The banner and event-text line when it happens."
+          },
+          "warn_sound": {
+            "type": "string",
+            "description": "Sound id (data/sounds) for the warning."
+          },
+          "sound": {
+            "type": "string",
+            "description": "Sound id (data/sounds) when it happens."
+          }
+        }
+      }
     },
     "spawns": {
       "type": "object",

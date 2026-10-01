@@ -10,6 +10,7 @@ var bounds_half: float = 20.0
 var circles: Array[Dictionary] = []  ## {center: Vector2, radius: float, height: float, los: bool}
 var boxes: Array[Dictionary] = []  ## {min: Vector2, max: Vector2, height: float, los: bool, gate: bool}
 var gates_open: bool = true  ## gate boxes block only while closed (arena preparation phase)
+var removed_tags: Dictionary = {}  ## collider tags a twist has taken away (ArenaTwists); they block nothing
 
 
 static func from_map(map: Dictionary) -> ArenaGeometry:
@@ -20,26 +21,31 @@ static func from_map(map: Dictionary) -> ArenaGeometry:
 		var los: bool = bool(c.get("blocks_los", true))
 		if c["type"] == "circle":
 			g.circles.append({"center": Vector2(c["center"][0], c["center"][1]),
-				"radius": float(c["radius"]), "height": h, "los": los})
+				"radius": float(c["radius"]), "height": h, "los": los, "tag": str(c.get("tag", ""))})
 		else:
 			g.boxes.append({"min": Vector2(c["min"][0], c["min"][1]),
 				"max": Vector2(c["max"][0], c["max"][1]), "height": h, "los": los,
-				"gate": bool(c.get("gate", false))})
+				"gate": bool(c.get("gate", false)), "tag": str(c.get("tag", ""))})
 	return g
+
+
+## True while a circle or box blocks anything: not taken away by a twist, and not an open gate.
+func stands(c: Dictionary) -> bool:
+	return not removed_tags.has(c.get("tag", "")) and not (bool(c.get("gate", false)) and gates_open)
 
 
 ## Push a unit position out of every blocker and back inside the bounds.
 func resolve(pos: Vector3) -> Vector3:
 	var p: Vector2 = Vector2(pos.x, pos.z)
 	for c: Dictionary in circles:
-		if pos.y >= c["height"]:
+		if pos.y >= c["height"] or removed_tags.has(c["tag"]):
 			continue
 		var d: Vector2 = p - c["center"]
 		var min_dist: float = c["radius"] + UNIT_RADIUS
 		if d.length_squared() < min_dist * min_dist:
 			p = c["center"] + (d.normalized() if d.length_squared() > 1e-12 else Vector2.RIGHT) * min_dist
 	for b: Dictionary in boxes:
-		if pos.y >= b["height"] or (b["gate"] and gates_open):
+		if pos.y >= b["height"] or (b["gate"] and gates_open) or removed_tags.has(b["tag"]):
 			continue
 		var lo: Vector2 = b["min"] - Vector2.ONE * UNIT_RADIUS
 		var hi: Vector2 = b["max"] + Vector2.ONE * UNIT_RADIUS
@@ -65,10 +71,10 @@ func has_line_of_sight(from: Vector3, to: Vector3) -> bool:
 	var b: Vector2 = Vector2(to.x, to.z)
 	var low: float = minf(from.y, to.y)
 	for c: Dictionary in circles:
-		if c["los"] and c["height"] > low and _segment_hits_circle(a, b, c["center"], c["radius"]):
+		if c["los"] and c["height"] > low and not removed_tags.has(c["tag"]) and _segment_hits_circle(a, b, c["center"], c["radius"]):
 			return false
 	for bx: Dictionary in boxes:
-		if bx["gate"] and gates_open:
+		if (bx["gate"] and gates_open) or removed_tags.has(bx["tag"]):
 			continue
 		if bx["los"] and bx["height"] > low and _segment_hits_box(a, b, bx["min"], bx["max"]):
 			return false

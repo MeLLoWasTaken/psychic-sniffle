@@ -485,6 +485,19 @@ def validate(data_dir: Path) -> list[str]:
             blocker = _spawn_blocked(m, sp[0], sp[2])
             if blocker:
                 report.error(rel, f"pickup {sp} is inside or touching {blocker}")
+        # twists (M2-16): what a collapse takes away exists, never a wall or gate, and its sounds exist
+        tags = {c.get("tag", "") for c in m["colliders"]}
+        for t in m.get("twists", []):
+            for tag in t.get("tags", []):
+                if tag not in tags:
+                    report.error(rel, f"twist '{t['id']}' takes away '{tag}', which no collider has")
+                elif tag in ("wall", "gate"):
+                    report.error(rel, f"twist '{t['id']}' takes away '{tag}' colliders; the arena would open to its outside")
+            for k in ("warn_sound", "sound"):
+                if t.get(k) and t[k] not in db.get("sounds", {}):
+                    report.error(rel, f"twist '{t['id']}' {k} '{t[k]}' is not in data/sounds")
+            if t.get("warn_s", 0) > 0 and not t.get("warn_text"):
+                report.error(rel, f"twist '{t['id']}' warns {t['warn_s']} s ahead but has no warn_text")
 
     # ---- assets ------------------------------------------------------------------
     for asid, a in db["assets"].items():

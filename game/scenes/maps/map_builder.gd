@@ -51,6 +51,9 @@ var _kit_scenes: Dictionary = {}
 var _rng: RandomNumberGenerator = RandomNumberGenerator.new()
 var _dressing: Dictionary = {}  ## map data "dressing" (backlog F-05)
 var _placements: Dictionary = {}  ## kit piece -> Array[Transform3D], drawn as one multimesh each
+var _tag_nodes: Dictionary = {}  ## collider tag -> the nodes showing it (greybox and kit), for twists
+var removed_tags: Dictionary = {}  ## tags a twist has taken away: their nodes are hidden, a wreck shown
+var wrecks: Array[Node3D] = []  ## the wrecks left by collapses (tests, screenshots)
 var skyline_placements: Dictionary = {}  ## skyline piece -> Array[Transform3D] (kept for tests)
 var _grime_runs: Array = []  ## [a, b, outward normal] of every facade run: wall bases for grime decals
 var _aabbs: Dictionary = {}  ## kit piece -> AABB
@@ -71,6 +74,9 @@ func build() -> void:
 		child.queue_free()
 	gates.clear()
 	pickups.clear()
+	_tag_nodes.clear()
+	removed_tags.clear()
+	wrecks.clear()
 	_kit = str(map.get("kit", "")) if use_kit else ""
 	if _kit != "" and _kit_piece("floor_tile") == null:
 		Log.warn("map: kit %s is not built; using greybox" % _kit)
@@ -107,6 +113,137 @@ func _build_pickups() -> void:
 			holder.add_child(fx)
 		add_child(holder)
 		pickups.append(holder)
+
+
+func _tag_node(tag: String, node: Node3D) -> void:
+	if tag != "" and node != null:
+		if not _tag_nodes.has(tag):
+			_tag_nodes[tag] = []
+		(_tag_nodes[tag] as Array).append(node)
+
+
+## The map's twists at this point of the match (M2-16): a collapse hides what it took away and
+## leaves a wreck. `seconds` is match time; nothing happens during preparation. Idempotent, so
+## the match scenes call it every frame and a late joiner sees the same arena.
+func set_match_time(seconds: float, preparing: bool) -> void:
+	if preparing:
+		return
+	var gone: Dictionary = ArenaTwists.removed_tags(map.get("twists", []), seconds)
+	for tag: String in gone:
+		if removed_tags.has(tag):
+			continue
+		removed_tags[tag] = true
+		for n: Node3D in _tag_nodes.get(tag, []):
+			n.visible = false
+			for body: Node in n.find_children("*", "StaticBody3D", true, false):
+				(body as StaticBody3D).collision_layer = 0  # the camera and spells pass through now
+		_add_wreck(tag)
+
+
+## What a collapse leaves where `tag` stood: broken beams and planks lying low across its
+## footprint (they block nothing, like the server's open ground) and a burst of dust.
+func _add_wreck(tag: String) -> void:
+	var foot: Rect2 = Rect2()
+	var first: bool = true
+	for c: Dictionary in map.get("colliders", []):
+		if str(c.get("tag", "")) != tag:
+			continue
+		var r: Rect2 = Rect2(Vector2(c["center"][0], c["center"][1]) - Vector2.ONE * float(c["radius"]),
+			Vector2.ONE * float(c["radius"]) * 2.0) if c["type"] == "circle" \
+			else Rect2(Vector2(c["min"][0], c["min"][1]), Vector2(c["max"][0] - c["min"][0], c["max"][1] - c["min"][1]))
+		foot = r if first else foot.merge(r)
+		first = false
+	if first:
+		return
+	var wreck: Node3D = Node3D.new()
+	wreck.name = "Wreck_%s" % tag
+	wreck.position = Vector3(foot.get_center().x, 0.0, foot.get_center().y)
+	add_child(wreck)
+	wrecks.append(wreck)
+	var mat: Material = _wreck_material(tag)
+	var rng: RandomNumberGenerator = RandomNumberGenerator.new()
+	rng.seed = hash(map_id + tag)
+	var span: float = maxf(foot.size.x, foot.size.y)
+	for i: int in 16:
+		var beam: bool = i < 5
+		var box: BoxMesh = BoxMesh.new()
+		box.size = Vector3(rng.randf_range(0.5, 0.8) * span if beam else rng.randf_range(0.8, 1.8),
+			0.28 if beam else 0.06, 0.28 if beam else rng.randf_range(0.22, 0.3))
+		var piece: MeshInstance3D = _mesh("Debris_%d" % i, box, mat)
+		var x: float = rng.randf_range(-0.55, 0.55) * foot.size.x
+		var z: float = rng.randf_range(-0.55, 0.55) * foot.size.y
+		piece.position = Vector3(x, box.size.y * 0.5 + rng.randf_range(0.0, 0.25), z)
+		piece.rotation = Vector3(rng.randf_range(-0.25, 0.25), rng.randf() * TAU, rng.randf_range(-0.12, 0.12))
+		piece.remove_meta("greybox")  # the wreck shows with the art kit too
+		wreck.add_child(piece)
+	wreck.add_child(_dust_burst(span, rng.randi()))
+
+
+## The collapsed piece's own surface when the art kit has one (its first mesh's material), so the
+## beams match what fell; the greybox color otherwise.
+func _wreck_material(tag: String) -> Material:
+	for n: Node3D in _tag_nodes.get(tag, []):
+		for mi: Node in n.find_children("*", "MeshInstance3D", true, false):
+			var m: MeshInstance3D = mi
+			if m.has_meta("greybox") or m.mesh == null or m.mesh.get_surface_count() == 0:
+				continue
+			var mat: Material = m.get_active_material(0)
+			if mat != null:
+				return mat
+	return _material(tag)
+
+
+## A one-shot cloud of dust rising from a collapse and settling.
+func _dust_burst(span: float, seed_value: int) -> GPUParticles3D:
+	var p: GPUParticles3D = GPUParticles3D.new()
+	p.name = "Dust"
+	p.amount = 48
+	p.lifetime = 2.6
+	p.one_shot = true
+	p.explosiveness = 0.85
+	p.randomness = 0.4
+	p.seed = seed_value
+	p.use_fixed_seed = true
+	var pm: ParticleProcessMaterial = ParticleProcessMaterial.new()
+	pm.emission_shape = ParticleProcessMaterial.EMISSION_SHAPE_BOX
+	pm.emission_box_extents = Vector3(span * 0.5, 0.3, span * 0.5)
+	pm.direction = Vector3(0, 1, 0)
+	pm.spread = 70.0
+	pm.initial_velocity_min = 1.0
+	pm.initial_velocity_max = 3.2
+	pm.gravity = Vector3(0, -0.6, 0)
+	pm.damping_min = 1.5
+	pm.damping_max = 2.5
+	pm.scale_min = 1.4
+	pm.scale_max = 2.8
+	var fade: Gradient = Gradient.new()
+	fade.set_color(0, Color(0.55, 0.48, 0.4, 0.55))
+	fade.set_color(1, Color(0.5, 0.45, 0.4, 0.0))
+	var ramp: GradientTexture1D = GradientTexture1D.new()
+	ramp.gradient = fade
+	pm.color_ramp = ramp
+	p.process_material = pm
+	var quad: QuadMesh = QuadMesh.new()
+	quad.size = Vector2(1.0, 1.0)
+	var mat: StandardMaterial3D = StandardMaterial3D.new()
+	mat.transparency = BaseMaterial3D.TRANSPARENCY_ALPHA
+	mat.shading_mode = BaseMaterial3D.SHADING_MODE_UNSHADED
+	mat.billboard_mode = BaseMaterial3D.BILLBOARD_PARTICLES
+	mat.vertex_color_use_as_albedo = true
+	var tex: GradientTexture2D = GradientTexture2D.new()
+	var g: Gradient = Gradient.new()
+	g.set_color(0, Color(1, 1, 1, 1))
+	g.set_color(1, Color(1, 1, 1, 0))
+	tex.gradient = g
+	tex.fill = GradientTexture2D.FILL_RADIAL
+	tex.fill_from = Vector2(0.5, 0.5)
+	tex.fill_to = Vector2(1.0, 0.5)
+	mat.albedo_texture = tex
+	quad.material = mat
+	p.draw_pass_1 = quad
+	p.position.y = 0.6
+	p.emitting = true
+	return p
 
 
 ## Show the pickups whose bit is set in `mask` (the match state's "pickups").
@@ -193,6 +330,7 @@ func _build_collider(c: Dictionary) -> void:
 	var node: Node3D = Node3D.new()
 	node.name = "%s_%d" % [tag.capitalize(), get_child_count()]
 	add_child(node)
+	_tag_node(str(c.get("tag", "")), node)
 	var mesh: Mesh
 	var shape: Shape3D
 	var size: Vector3
@@ -344,8 +482,8 @@ func _dress_with_kit() -> void:
 		if c["type"] == "box" and tag == "wall":
 			_kit_wall_box(c)
 		elif c["type"] == "box" and tag == "gallows":
-			_kit_place(kit_root, "gallows", _box_centre(c), 0.0, Vector3(_box_size(c).x / KIT_GALLOWS_SIZE_M, 1.0,
-				_box_size(c).y / KIT_GALLOWS_SIZE_M))
+			_tag_node(tag, _kit_place(kit_root, "gallows", _box_centre(c), 0.0, Vector3(_box_size(c).x / KIT_GALLOWS_SIZE_M, 1.0,
+				_box_size(c).y / KIT_GALLOWS_SIZE_M)))
 		elif c["type"] == "circle":
 			var r: float = float(c["radius"]) / KIT_PILLAR_RADIUS_M
 			_kit_place(kit_root, "pillar", Vector3(c["center"][0], 0, c["center"][1]), _rng.randf() * TAU,

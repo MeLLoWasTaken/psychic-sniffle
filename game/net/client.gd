@@ -33,6 +33,8 @@ var spec_id: String = "warblade_carnage"
 var talents: String = ""  ## talent loadout in its shared text form (Talents.encode)
 var prefs: Dictionary = {}  ## gameplay settings the server's rules use (spell queue window, auto self-cast)
 var unit_id: int = -1
+var _match_phase: int = ArenaMatch.Phase.PREP  ## from the newest snapshot
+var _match_start_tick: int = 0  ## the tick the gates opened, from the newest snapshot (twists)
 var map_id: String = ""
 var geometry: ArenaGeometry
 var connected: bool = false
@@ -218,9 +220,12 @@ func _on_snapshot(snap: Dictionary) -> void:
 		_stats["stale_snapshots"] += 1  # arrived out of order; a newer one was already applied
 		return
 	latest_tick = snap["tick"]
+	_match_phase = int(snap["match"]["phase"])
+	_match_start_tick = int(snap["match"].get("start_tick", 0))
 	if geometry:
 		# the gates block movement only during preparation, as on the server (prediction must agree)
-		geometry.gates_open = int(snap["match"]["phase"]) != ArenaMatch.Phase.PREP
+		geometry.gates_open = _match_phase != ArenaMatch.Phase.PREP
+		_apply_twists(latest_tick)
 	if int(snap["match"]["phase"]) == ArenaMatch.Phase.ENDED and _match_ended_usec == 0:
 		_match_ended_usec = Time.get_ticks_usec()
 		Log.info("client: match over, winner team %d" % snap["match"]["winner"])
@@ -358,11 +363,21 @@ func _send_and_predict_input() -> void:
 		_predict_move(inp, latest_tick + _pending.size() - 1)
 
 
+## The map's twists as of server tick `tick` (ArenaTwists: a pure function of match time).
+func _apply_twists(tick: int) -> void:
+	if geometry == null or _match_phase == ArenaMatch.Phase.PREP:
+		return
+	var twists: Array = Data.maps.get(map_id, {}).get("twists", [])
+	if not twists.is_empty():
+		geometry.removed_tags = ArenaTwists.removed_tags(twists, float(tick - _match_start_tick) / Data.tick_rate())
+
+
 ## Predict our own movement with the same rules the server uses, including roots, stuns, slows
 ## and fear from our known auras. `tick` is the server tick this input will be applied on, so
 ## effects that expire partway through the replay stop affecting it on time (the server moves a
 ## unit on the tick an aura expires, then removes the aura).
 func _predict_move(inp: Dictionary, tick: int) -> void:
+	_apply_twists(tick)  # a collapse at this tick changes what blocks us, as on the server
 	var active: Array = own_auras.filter(func(a: Dictionary) -> bool:
 		return int(a["expires_tick"]) == 0 or tick <= int(a["expires_tick"]))
 	var mult: float = Combat.speed_multiplier_from(active, Data.auras)

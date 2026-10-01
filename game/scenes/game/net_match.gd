@@ -266,6 +266,9 @@ func _apply_tick(v: Dictionary, evs: Array) -> void:
 	_last_draw_tick = int(v.get("draw_tick", v["tick"]))
 	renderer.push_view(v)
 	renderer.push_events(evs)
+	for ev: Dictionary in evs:
+		if str(ev.get("type", "")) in ["twist_warning", "twist"] and str(ev.get("text", "")) != "":
+			screens.announce(str(ev["text"]))
 	if hud != null:
 		hud.push(renderer.view, evs)
 	flow.on_view(v)
@@ -309,6 +312,11 @@ func _process(delta: float) -> void:
 			renderer.draw(Engine.get_physics_interpolation_fraction(), delta)
 		if builder != null:
 			builder.set_pickups(int(renderer.view["match"].get("pickups", 0)))
+			var m: Dictionary = renderer.view["match"]
+			builder.set_match_time(float(int(renderer.view["tick"]) - int(m.get("start_tick", 0))) / Data.tick_rate(),
+				int(m["phase"]) == ArenaMatch.Phase.PREP)
+			if cam.geometry != null:
+				cam.geometry.removed_tags = builder.removed_tags  # the camera no longer bumps into the wreck
 		if not _gates_opened and int(renderer.view["match"]["phase"]) != ArenaMatch.Phase.PREP and builder != null:
 			_gates_opened = true
 			builder.set_gates_open(true, 0.0 if fast else 1.5)

@@ -1,0 +1,86 @@
+{
+  "id": "gallows_groan",
+  "description": "The gallows begin to give: a low timber creak that slides down, a few sharp splinter cracks and a rumble under it (twist warning, M2-16).",
+  "category": "impact",
+  "peak_dbfs": -7.0,
+  "processing": "impact_light",
+  "duration_s": 2.6,
+  "layers": [
+    {
+      "type": "resonant",
+      "base": 150,
+      "jitter": 0.05,
+      "partials": [
+        [
+          1,
+          5,
+          1.0,
+          0.5
+        ],
+        [
+          1.9,
+          6,
+          0.6,
+          0.4
+        ],
+        [
+          3.1,
+          7,
+          0.35,
+          0.3
+        ]
+      ],
+      "glide": [
+        0.82,
+        1.6
+      ],
+      "scrape": [
+        0.8,
+        0.6
+      ],
+      "highpass": 90,
+      "gain": 1.1
+    },
+    {
+      "type": "noise",
+      "band": [
+        120,
+        700
+      ],
+      "env": {
+        "attack_s": 0.25,
+        "decay_s": 0.55
+      },
+      "am": [
+        9,
+        0.5
+      ],
+      "gain": 0.35
+    },
+    {
+      "type": "crackle",
+      "band": [
+        900,
+        4500
+      ],
+      "per_second": 14,
+      "grain_s": 0.006,
+      "env": {
+        "attack_s": 0.3,
+        "decay_s": 0.55
+      },
+      "gain": 1.1
+    },
+    {
+      "type": "sub",
+      "from_hz": 70,
+      "to_hz": 45,
+      "curve": 2,
+      "env": {
+        "attack_s": 0.4,
+        "decay_s": 0.5
+      },
+      "gain": 0.35
+    }
+  ]
+}

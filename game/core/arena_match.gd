@@ -26,10 +26,12 @@ var pickup_radius: float = 1.5
 var pickup_effects: Array = []
 var _pickups_spawned: bool = false
 var _taken: Array[Dictionary] = []  ## {"unit", "pickup"} since the last take_pickups()
+var twists: Array = []  ## the map's twists (ArenaTwists), happening on match time
+var twist_stages: Array[int] = []  ## each twist's last announced stage (ArenaTwists.Stage)
 
 
 func _init(tuning: Dictionary, p_bracket: String, p_tick_rate: int, p_geometry: ArenaGeometry,
-		now_tick: int = 0, pickup_spots: Array = []) -> void:
+		now_tick: int = 0, pickup_spots: Array = [], p_twists: Array = []) -> void:
 	var a: Dictionary = tuning["arena"]
 	bracket = p_bracket
 	tick_rate = p_tick_rate
@@ -48,6 +50,9 @@ func _init(tuning: Dictionary, p_bracket: String, p_tick_rate: int, p_geometry: 
 		pickup_effects = a["pickup_effects"]
 		for sp: Array in pickup_spots:
 			pickups.append({"pos": Vector3(sp[0], sp[1], sp[2]), "active": false})
+	twists = p_twists
+	for t: Dictionary in twists:
+		twist_stages.append(ArenaTwists.Stage.WAITING)
 	if geometry:
 		geometry.gates_open = false
 
@@ -101,6 +106,7 @@ func update(tick: int, units: Dictionary) -> void:
 				_end(tick, "time_limit")
 			if phase == Phase.ACTIVE:
 				_update_pickups(tick, units)
+				_update_twists(tick)
 
 
 func _update_pickups(tick: int, units: Dictionary) -> void:
@@ -129,6 +135,26 @@ func _update_pickups(tick: int, units: Dictionary) -> void:
 			p["active"] = false
 			_taken.append({"unit": best.id, "pickup": i})
 			events.append({"tick": tick, "type": "pickup_taken", "target": best.id, "pickup": i})
+
+
+## Announce each twist's warning and its moment as match time reaches them, and take away the
+## colliders a collapse removes. The geometry follows match time, so it holds for any tick.
+func _update_twists(tick: int) -> void:
+	if twists.is_empty():
+		return
+	var s: float = match_seconds(tick)
+	for i: int in twists.size():
+		var st: int = ArenaTwists.stage(twists[i], s)
+		while twist_stages[i] < st:
+			twist_stages[i] += 1
+			var t: Dictionary = twists[i]
+			var warned: bool = twist_stages[i] == ArenaTwists.Stage.WARNED
+			if warned and float(t.get("warn_s", 0.0)) <= 0.0:
+				continue  # no warning time, no warning
+			events.append({"tick": tick, "type": "twist_warning" if warned else "twist", "twist": str(t.get("id", i)),
+				"text": str(t.get("warn_text" if warned else "text", "")), "sound": str(t.get("warn_sound" if warned else "sound", ""))})
+	if geometry:
+		geometry.removed_tags = ArenaTwists.removed_tags(twists, s)
 
 
 ## Pickups taken since the last call, [{"unit", "pickup"}]; the caller applies pickup_effects.

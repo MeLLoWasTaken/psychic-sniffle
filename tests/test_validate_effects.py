@@ -60,3 +60,19 @@ def test_auras_that_only_talents_apply_need_a_visual_and_may_have_one(tmp_path: 
     doc["auras"] = {"windpipe_crushed": {"style": "silence"}, "bound_dazed": {"style": "slow"}}
     path.write_text(json.dumps(doc))
     assert any("aura 'bound_dazed' is not applied by ability 'throat_punch'" in e for e in validate(data))
+
+
+def test_a_twist_must_take_away_colliders_that_exist_and_never_the_walls(tmp_path: Path):
+    """M2-16: a collapse names collider tags of its map; walls and gates may not go."""
+    data = _copy(tmp_path)
+    path = data / "maps" / "gallows_courtyard.json"
+    m = json.loads(path.read_text())
+    m["twists"][0]["tags"] = ["scaffold"]
+    path.write_text(json.dumps(m))
+    assert any("takes away 'scaffold', which no collider has" in e for e in validate(data))
+    m["twists"][0]["tags"] = ["wall"]
+    m["twists"][0]["sound"] = "no_such_sound"
+    path.write_text(json.dumps(m))
+    errors = validate(data)
+    assert any("the arena would open to its outside" in e for e in errors), errors
+    assert any("sound 'no_such_sound' is not in data/sounds" in e for e in errors), errors

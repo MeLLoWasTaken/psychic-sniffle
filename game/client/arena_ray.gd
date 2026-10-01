@@ -23,10 +23,12 @@ static func cast(geometry: ArenaGeometry, origin: Vector3, dir: Vector3, max_dis
 	if geometry == null:
 		return best
 	for c: Dictionary in geometry.circles:
+		if not geometry.stands(c):
+			continue
 		var center: Vector2 = c["center"]
 		best = minf(best, _cylinder(origin, dir, center, float(c["radius"]) + radius, float(c["height"]) + radius))
 	for b: Dictionary in geometry.boxes:
-		if b["gate"] and geometry.gates_open:
+		if not geometry.stands(b):
 			continue
 		var lo: Vector2 = b["min"]
 		var hi: Vector2 = b["max"]

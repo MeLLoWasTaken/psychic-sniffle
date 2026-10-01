@@ -2,6 +2,15 @@
 
 One entry per build-loop iteration, newest first. Format: date, backlog ID, what changed, how it was checked.
 
+## 2026-10-01 — M2-16 arena twists: the gallows collapse
+- Maps can now have twists, timed events on match time. Gallows Courtyard's gallows block, described in its data since M1 but never implemented, now collapses at 5:00:
+  - at 4:50 a banner and a sound warn ("The gallows groan...");
+  - at 5:00 it falls ("The gallows collapse!"): the centre opens for movement and line of sight, the camera and spells pass through, and a low wreck of beams and a burst of dust remain.
+- The server, the client's movement prediction, the camera, replays and the map all follow match time, so they agree without new network data.
+- Two new sounds (gallows_groan, gallows_collapse), built from data; spectrograms reviewed (a broadband crack, tumbling debris, a sub thud; a low creak with splinter cracks).
+- The data validator checks twists: the tags they take away exist and are never walls or gates; their sounds exist; a warning has a line.
+- Checked: 5 new Godot tests (stages, the collapse on the server with a replay, the client, the map's wreck, the announcements) and a validator test; all Godot and Python tests pass (pre-commit run). The wreck screenshot review waits for the video render.
+
 ## 2026-10-01 — X-13 visuals for auras that only talents apply
 - Seven auras that only talents apply now show on units: Windpipe Crushed (silence halo), Bound Dazed (slow mist), Stiff Neck (body glow), the two Break Free speed boosts (speed streaks), Seared by Judgment (drips) and Peal Shelter (small shield).
 - The data validator now knows which auras talents make an ability apply, and checks talent-granted abilities like kit abilities, so a new talent aura without a visual fails the checks.

@@ -503,6 +503,11 @@ Exit gate (DESIGN.md): every combat rule has passing tests; every action is rebi
 - [ ] Three-player teams through the whole flow (menu, prep, scoreboard), arena enemy frames 1 to 3; balance per F-08 (two-healer teams no longer dominate).
 - Done 2026-10-01: three-player teams through the whole flow (menu, preparation, scoreboard), three arena frames. Left: the balance run per F-08 (two-healer teams), after the reference video frees the CPU.
 
+### M2-16 Arena twists `[doing]`
+- [x] A data-driven twist system on match time (docs/DESIGN.md: each map has one twist), server-authoritative and replayable, with the client's prediction, the camera and the map visuals following the same clock; Gallows Courtyard's gallows collapse at 5:00 after a warning at 4:50 (a banner, event text and sounds), opening the centre for movement and line of sight and leaving a low wreck and a dust burst. Tests for the stages, the collapse on the server with a replay, the client, the map and the announcements; validator rules for twist data.
+- [ ] Screenshot of the wreck reviewed (after the reference video render frees the CPU).
+- Found while planning M2-09: the gallows collapse was described in the map data but never implemented. Next twist types: flood (M2-09) and a rotating obstacle (M2-10).
+
 ### M2-09 Second arena `[todo]`
 - [ ] About 40 m across, 3 to 5 line-of-sight blockers, two starting rooms, one twist (for example a collapsing bridge); kit pieces by Blender script; navigation and bots work; screenshots against the art bible.
 
