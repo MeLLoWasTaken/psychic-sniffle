@@ -183,3 +183,33 @@ func test_the_screen_draws_without_errors() -> void:
 	assert_int(Log.error_count).is_equal(errors)
 	assert_bool(s.is_inside_tree()).is_true()
 	s.queue_free()
+
+
+func test_the_spellbook_lists_the_kit_and_the_loadout_s_abilities() -> void:
+	var s: TalentScreen = _screen()
+	s.show_tab("spellbook")
+	for i: int in store.list(SPEC).size():
+		s.select_slot(i)
+		var ids: Array[String] = s.spellbook_abilities()
+		for a: String in Data.specs[SPEC]["abilities"]:
+			assert_array(ids).contains([a])
+		for g: String in s.talented()["grants"]:
+			assert_array(ids).contains([g])
+		assert_array(ids).contains(["break_free"])
+		assert_bool("auto_attack" in ids).is_false()
+		for k: int in ids.size():
+			var r: Rect2 = s.card_rect(k, ids.size())
+			assert_bool(Rect2(0, 150, 1500, 800).encloses(r)).override_failure_message("card %d off its area: %s" % [k, r]).is_true()
+			assert_str(s.card_at(r.get_center())).is_equal(ids[k])
+
+
+func test_the_spellbook_draws_and_shows_a_tooltip() -> void:
+	var s: TalentScreen = _screen()
+	add_child(s)
+	s.show_tab("spellbook")
+	s.hovered = {"card": s.spellbook_abilities()[0]}
+	var errors: int = Log.error_count
+	await get_tree().process_frame
+	await get_tree().process_frame
+	assert_int(Log.error_count).is_equal(errors)
+	s.queue_free()

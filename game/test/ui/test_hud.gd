@@ -274,6 +274,38 @@ func test_auras_are_sorted_with_crowd_control_first_and_larger() -> void:
 	assert_str(str(cc["category"])).is_equal("stun")
 
 
+func test_tooltips_for_action_bar_buttons_and_auras() -> void:
+	var text: String = BotBrain.build_talents("warblade_carnage", "butcher")["talents"]
+	hud.set_loadout("warblade_carnage", text)
+	var v: Dictionary = _view().duplicate(true)
+	var tick: int = int(v["tick"])
+	v["me"]["auras"] = [_aura("ruin_bleed", tick, 6.0, int(v["me"]["id"])), _aura("chilled", tick, 4.0, 99)]
+	hud.push(v)
+	await await_idle_frame()
+	hud.update(0.0)
+	await await_idle_frame()
+	await await_idle_frame()
+	# a button: the ability's tooltip, with this build's numbers
+	var bar: ActionBar = _bar("action_bar_1")
+	var id: String = str(bar.slots[0]["ability"])
+	var at: Vector2 = bar.get_global_transform() * bar.slot_rect(0).get_center()
+	var tip: Dictionary = hud.tooltip_at(at)
+	assert_str(str(tip["lines"][0][0])).is_equal(str(Data.abilities[id]["name"]))
+	assert_bool(bool(tip["above"])).is_true()
+	var ab: Dictionary = hud.talent_view["abilities"].get(id, Data.abilities[id])
+	var meta: String = " · ".join(AbilityText.new(hud.talent_view["stats"], hud.talent_view["auras"]).meta(ab))
+	assert_str(str(tip["lines"][1][0])).is_equal(meta)
+	# an aura on the player frame: its name and time left
+	var frame: UnitFrame = (hud.elements["player_frame"] as Array)[0]
+	assert_array(frame.drawn_auras).is_not_empty()
+	var a: Dictionary = frame.drawn_auras[0]
+	var aura_tip: Dictionary = hud.tooltip_at(frame.get_global_transform() * (a["rect"] as Rect2).get_center())
+	assert_str(str(aura_tip["lines"][0][0])).is_equal(str(Data.auras[str(a["id"])]["name"]))
+	assert_str(str(aura_tip["lines"][-1][0])).contains("left")
+	# nothing under an empty spot
+	assert_dict(hud.tooltip_at(Vector2(960, 300))).is_empty()
+
+
 func test_arena_frames_track_break_free_and_casts() -> void:
 	var v: Dictionary = _view().duplicate(true)
 	var enemy: int = _enemy_ids(v)[0]

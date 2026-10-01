@@ -28,7 +28,10 @@ const ANCHORS: Dictionary = {
 }
 const PHYSICAL_TEXT: Color = Color(1.0, 0.95, 0.82)
 
-var talent_abilities: Array = []  ## abilities the player's talents grant (set before the first push)
+var talent_abilities: Array = []  ## abilities the player's talents grant (set_loadout)
+var talent_view: Dictionary = {"abilities": {}, "auras": {}, "stats": {}}  ## the player's talented numbers (tooltips)
+var tooltip_layer: Control  ## draws the tooltip of the button or aura under the mouse
+var tooltip: Dictionary = {}  ## what tooltip_layer shows: {lines, near, above}
 var layout: Dictionary = {}
 var interface: Dictionary = {}
 var style: HudStyle
@@ -119,6 +122,12 @@ func _build() -> void:
 	# combat text sits behind the frames
 	for c: Control in _all_of_type("combat_text"):
 		root.move_child(c, 0)
+	tooltip_layer = Control.new()
+	tooltip_layer.name = "Tooltip"
+	tooltip_layer.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	tooltip_layer.set_anchors_preset(Control.PRESET_FULL_RECT)
+	tooltip_layer.draw.connect(_draw_tooltip)
+	root.add_child(tooltip_layer)
 
 
 ## Connect the player's controller (target, focus, presses), the camera the player sees through
@@ -153,6 +162,7 @@ func update(delta: float) -> void:
 	if style == null:
 		return
 	clock += delta
+	_update_tooltip()
 	if root.size != _laid_out_size or _stretch() != _laid_out_stretch:
 		relayout()
 	for ct: CombatText in _all_of_type("combat_text"):
@@ -247,6 +257,72 @@ func _update_frames(id: String, e: Dictionary) -> void:
 
 
 # ------------------------------------------------------------------ action bars and presses
+
+## The player's loadout (its shared text): talent abilities for the bars, talented numbers for the
+## tooltips. Call before the first push.
+func set_loadout(p_spec: String, talents: String) -> void:
+	talent_abilities = TalentLoadouts.granted_abilities(p_spec, talents)
+	var stats: Dictionary = AbilityText.spec_stats(p_spec)
+	talent_view = {"abilities": {}, "auras": {}, "stats": stats}
+	if TalentLoadouts.error_of(p_spec, talents) != "" or talents == "":
+		return
+	var trees: Dictionary = TalentLoadouts.trees(p_spec)
+	var r: Dictionary = Talents.resolve(Talents.decode(talents, trees)["loadout"], trees, Data.abilities, Data.auras)
+	var u: Unit = Unit.new(0, 0, p_spec)
+	u.stats = stats
+	Talents.apply_self(u, r["self"])
+	talent_view = {"abilities": r["abilities"], "auras": r["auras"], "stats": u.stats}
+
+
+## The tooltip for whatever is at a point on screen (global canvas coordinates): an action bar
+## button or an aura on a unit frame; {} for nothing.
+func tooltip_at(global_p: Vector2) -> Dictionary:
+	var to_root: Transform2D = root.get_global_transform().affine_inverse()
+	for b: ActionBar in bars.values():
+		if not b.is_visible_in_tree():
+			continue
+		var i: int = b.slot_at(b.get_global_transform().affine_inverse() * global_p)
+		if i >= 0 and str(b.slots[i]["ability"]) != "":
+			var id: String = str(b.slots[i]["ability"])
+			var ab: Dictionary = talent_view["abilities"].get(id, Data.abilities.get(id, {}))
+			var text: AbilityText = AbilityText.new(talent_view["stats"] if not talent_view["stats"].is_empty() else AbilityText.spec_stats(spec_id),
+				talent_view["auras"])
+			return {"lines": Tooltip.ability_lines(text, ab, Data.abilities.get(id, {}), AbilityText.new(AbilityText.spec_stats(spec_id))), "near": to_root * (b.get_global_transform() * b.slot_rect(i)), "above": true}
+	var me_id: int = int(view.get("me", {}).get("id", -1))
+	var frames: Array = []
+	for group: Variant in _all_of_type("unit_frame"):
+		frames.append_array(group if group is Array else [group])  # each unit-frame element holds its frames
+	for f: UnitFrame in frames:
+		if not f.is_visible_in_tree():
+			continue
+		var a: Dictionary = f.aura_at(f.get_global_transform().affine_inverse() * global_p)
+		if not a.is_empty():
+			var mine: bool = int(a["source"]) == me_id
+			var text: AbilityText = AbilityText.new(talent_view["stats"] if not talent_view["stats"].is_empty() else AbilityText.spec_stats(spec_id),
+				talent_view["auras"] if mine else {})
+			return {"lines": Tooltip.aura_lines(text, str(a["id"]), float(a["remaining_s"]), int(a["stacks"])),
+				"near": to_root * (f.get_global_transform() * (a["rect"] as Rect2)), "above": false}
+	return {}
+
+
+func _update_tooltip() -> void:
+	if tooltip_layer == null:
+		return
+	var t: Dictionary = tooltip_at(root.get_global_mouse_position())
+	if t.is_empty() and tooltip.is_empty():
+		return
+	tooltip = t
+	tooltip_layer.queue_redraw()
+
+
+func _draw_tooltip() -> void:
+	if tooltip.is_empty():
+		return
+	var colors: Dictionary = {"title": style.color("tooltip_title"), "accent": style.color("tooltip_accent"),
+		"text": style.color("text"), "dim": style.color("text_dim"), "warn": style.color("tooltip_warn"),
+		"bg": style.color("tooltip_bg"), "border": style.color("frame_border")}
+	Tooltip.draw(tooltip_layer, style.font, colors, tooltip["near"], tooltip["lines"], root.size, Tooltip.WIDTH, bool(tooltip["above"]))
+
 
 func _assign_bars(p_spec: String) -> void:
 	spec_id = p_spec

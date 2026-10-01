@@ -4,7 +4,7 @@ extends SceneTree
 ##
 ##   xvfb-run -a -s "-screen 0 1920x1080x24" godot --path game --rendering-driver vulkan \
 ##     -s res://tools/ui_shot.gd -- --screen talents --spec warblade_carnage --out /abs/shot.png \
-##     [--slot 0] [--hover spec:<node id>] [--locked]
+##     [--slot 0] [--tab talents|spellbook] [--hover spec:<node id> | card:<ability id>] [--locked]
 ##
 ## A script started with -s is compiled before the project's autoloads (Data, Log) exist, so this
 ## waits one frame and then loads the work (ui_shot_main.gd) as an ordinary node.

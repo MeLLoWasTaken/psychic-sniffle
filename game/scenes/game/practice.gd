@@ -87,7 +87,7 @@ func _ready() -> void:
 	scripted = ScriptedInput.new(str(options["auto"]))
 	if bool(options["hud"]):
 		hud = Hud.new(settings)
-		hud.talent_abilities = TalentLoadouts.granted_abilities(str(options["spec"]), str(options["talents"]))
+		hud.set_loadout(str(options["spec"]), str(options["talents"]))
 		add_child(hud)
 		hud.bind(controller, cam.camera, renderer)
 

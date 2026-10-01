@@ -2,6 +2,25 @@
 
 One entry per build-loop iteration, newest first. Format: date, backlog ID, what changed, how it was checked.
 
+## 2026-10-01 — M2-06 spellbook and tooltips from data
+- `AbilityText` computes tooltip text from data, using the player's talented copies: cast type, cooldown, cost, range, and each effect with numbers by the combat formula, plus the auras an ability applies. It is the in-game twin of the codex generator.
+- Hand-written descriptions show this build's numbers: a number matching an untalented one is replaced by the talented one ("A steady heal for 13,000").
+- HUD tooltips:
+  - hovering an action bar button shows its ability;
+  - hovering an aura on a unit frame shows what it does and its time left;
+  - your own abilities and auras show your talented numbers; other players' auras show base data.
+- The talent screen has a Spellbook tab: every ability of the spec, including those the loadout grants. Abilities changed by talents are marked, and hovering one shows the full tooltip.
+- Small fixes:
+  - durations read "1 min 22 s" instead of "1.37 min" (codex too);
+  - long card lines end with an ellipsis;
+  - build names read "Choir of Dawn".
+- Checked:
+  - every ability's description agrees with its data (talent abilities included);
+  - talents change the shown numbers;
+  - HUD tooltips for a button and an aura;
+  - spellbook contents and layout;
+  - 43 tests in those suites; the spellbook screenshot was reviewed and its problems fixed.
+
 ## 2026-10-01 — M2-05 talent screen and loadouts
 - The main menu has a Talents button. The talent screen draws the class tree, spec tree and PvP row from the data: node positions, connecting lines, gate lines with their point badges, icons, ranks, point counters and tooltips (both options for choice nodes).
   - Left click adds a rank (on a choice node, the half clicked picks the option); right click removes one. A change that breaks the rules is refused with the reason ("Requires ...", "Spend 8 points in the rows above first", "Other talents depend on ...").

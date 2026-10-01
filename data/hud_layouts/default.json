@@ -2,15 +2,39 @@
   "id": "default",
   "name": "Default",
   "description": "Basic arena HUD (backlog M1-27). Positions are logical pixels on the 1920x1080 base, measured from each element's anchor; the whole HUD scales with the resolution, the ui_scale setting and the min_text_px floor. The M2 edit mode moves, scales and hides elements by editing a copy of this file.",
-  "hide_on_match_end": ["action_bar", "cast_bar", "loss_of_control"],
-  "base_resolution": [1920, 1080],
+  "hide_on_match_end": [
+    "action_bar",
+    "cast_bar",
+    "loss_of_control"
+  ],
+  "base_resolution": [
+    1920,
+    1080
+  ],
   "style": {
-    "font_px": {"small": 14, "normal": 16, "large": 19, "timer": 28, "alert": 32, "combat_text": 24, "combat_text_crit": 36},
-    "fonts": {
-      "display": {"file": "cinzel/Cinzel-Variable.ttf", "weight": 700},
-      "text": {"file": "firasans/FiraSans-SemiBold.ttf"}
+    "font_px": {
+      "small": 14,
+      "normal": 16,
+      "large": 19,
+      "timer": 28,
+      "alert": 32,
+      "combat_text": 24,
+      "combat_text_crit": 36
     },
-    "icon_art": {"glyphs": "glyphs", "frame": "frame.png", "shade": "shade.png"},
+    "fonts": {
+      "display": {
+        "file": "cinzel/Cinzel-Variable.ttf",
+        "weight": 700
+      },
+      "text": {
+        "file": "firasans/FiraSans-SemiBold.ttf"
+      }
+    },
+    "icon_art": {
+      "glyphs": "glyphs",
+      "frame": "frame.png",
+      "shade": "shade.png"
+    },
     "text": "#efe6d2",
     "text_dim": "#b3a68e",
     "frame_bg": "#120f0ce0",
@@ -42,19 +66,105 @@
       "essence": "#40c8a8",
       "combo_points": "#e8cc35",
       "runes": "#8ca0b8"
-    }
+    },
+    "tooltip_title": "#e3c68a",
+    "tooltip_accent": "#c9a462",
+    "tooltip_warn": "#d0463a",
+    "tooltip_bg": "#100d0af7"
   },
   "crowd_control": {
-    "stun": {"label": "Stunned", "short": "STUN", "glyph": "star", "color": "#ffd23a", "priority": 1},
-    "incapacitate": {"label": "Incapacitated", "short": "INCAP", "glyph": "diamond", "color": "#d77cff", "priority": 2},
-    "disorient": {"label": "Feared", "short": "FEAR", "glyph": "spiral", "color": "#b58cff", "priority": 3},
-    "silence": {"label": "Silenced", "short": "SIL", "glyph": "cross", "color": "#6ec8ff", "priority": 4},
-    "disarm": {"label": "Disarmed", "short": "DISARM", "glyph": "slash", "color": "#ff9a3c", "priority": 5},
-    "root": {"label": "Rooted", "short": "ROOT", "glyph": "bars", "color": "#7fe0a0", "priority": 6}
+    "stun": {
+      "label": "Stunned",
+      "short": "STUN",
+      "glyph": "star",
+      "color": "#ffd23a",
+      "priority": 1
+    },
+    "incapacitate": {
+      "label": "Incapacitated",
+      "short": "INCAP",
+      "glyph": "diamond",
+      "color": "#d77cff",
+      "priority": 2
+    },
+    "disorient": {
+      "label": "Feared",
+      "short": "FEAR",
+      "glyph": "spiral",
+      "color": "#b58cff",
+      "priority": 3
+    },
+    "silence": {
+      "label": "Silenced",
+      "short": "SIL",
+      "glyph": "cross",
+      "color": "#6ec8ff",
+      "priority": 4
+    },
+    "disarm": {
+      "label": "Disarmed",
+      "short": "DISARM",
+      "glyph": "slash",
+      "color": "#ff9a3c",
+      "priority": 5
+    },
+    "root": {
+      "label": "Rooted",
+      "short": "ROOT",
+      "glyph": "bars",
+      "color": "#7fe0a0",
+      "priority": 6
+    }
   },
-  "loss_of_control": ["stun", "incapacitate", "disorient", "silence", "disarm", "root"],
-  "dr_categories": ["stun", "incapacitate", "disorient", "silence", "root"],
-  "key_label_abbreviations": [["Shift+", "S"], ["Ctrl+", "C"], ["Alt+", "A"], ["Minus", "-"], ["Equal", "="], ["Mouse ", "M"], ["Wheel Up", "WU"], ["Wheel Down", "WD"]],
+  "loss_of_control": [
+    "stun",
+    "incapacitate",
+    "disorient",
+    "silence",
+    "disarm",
+    "root"
+  ],
+  "dr_categories": [
+    "stun",
+    "incapacitate",
+    "disorient",
+    "silence",
+    "root"
+  ],
+  "key_label_abbreviations": [
+    [
+      "Shift+",
+      "S"
+    ],
+    [
+      "Ctrl+",
+      "C"
+    ],
+    [
+      "Alt+",
+      "A"
+    ],
+    [
+      "Minus",
+      "-"
+    ],
+    [
+      "Equal",
+      "="
+    ],
+    [
+      "Mouse ",
+      "M"
+    ],
+    [
+      "Wheel Up",
+      "WU"
+    ],
+    [
+      "Wheel Down",
+      "WD"
+    ]
+  ],
   "error_messages": {
     "out_of_range": "Out of range",
     "too_close": "Too close",
@@ -76,44 +186,259 @@
     "caster_has_aura": "Can't use that yet"
   },
   "icon_glyphs": [
-    {"match": "heart", "glyph": "heart"},
-    {"match": "statue|effigy|planted", "glyph": "pillar"},
-    {"match": "ice_feet", "glyph": "bars"},
-    {"match": "chain", "glyph": "chain"},
-    {"match": "wing|feather", "glyph": "wing"},
-    {"match": "step|charge", "glyph": "arrow"},
-    {"match": "shield|ice_block|veil", "glyph": "shield"},
-    {"match": "whip|lash", "glyph": "spiral"},
-    {"match": "hail|snowflake|frostbite", "glyph": "star"},
-    {"match": "blizzard|eye", "glyph": "orb"},
-    {"match": "fan", "glyph": "diamond"},
-    {"match": "bolt|lance", "glyph": "crystal"},
-    {"match": "rune|unravel|fading|sever", "glyph": "rune"},
-    {"match": "sun|glow|brand|stars", "glyph": "rays"},
-    {"match": "hand|fist|pommel|finger|prayer", "glyph": "fist"},
-    {"match": "roar|scream|choir", "glyph": "wave"},
-    {"match": "blood|drop|bandage|gash", "glyph": "drop"},
-    {"match": "hatchet|axe|thrown", "glyph": "slash"},
-    {"match": "sword|blade|tendon|arc", "glyph": "blade"},
-    {"match": "ice|frost|rime", "glyph": "crystal"}
+    {
+      "match": "heart",
+      "glyph": "heart"
+    },
+    {
+      "match": "statue|effigy|planted",
+      "glyph": "pillar"
+    },
+    {
+      "match": "ice_feet",
+      "glyph": "bars"
+    },
+    {
+      "match": "chain",
+      "glyph": "chain"
+    },
+    {
+      "match": "wing|feather",
+      "glyph": "wing"
+    },
+    {
+      "match": "step|charge",
+      "glyph": "arrow"
+    },
+    {
+      "match": "shield|ice_block|veil",
+      "glyph": "shield"
+    },
+    {
+      "match": "whip|lash",
+      "glyph": "spiral"
+    },
+    {
+      "match": "hail|snowflake|frostbite",
+      "glyph": "star"
+    },
+    {
+      "match": "blizzard|eye",
+      "glyph": "orb"
+    },
+    {
+      "match": "fan",
+      "glyph": "diamond"
+    },
+    {
+      "match": "bolt|lance",
+      "glyph": "crystal"
+    },
+    {
+      "match": "rune|unravel|fading|sever",
+      "glyph": "rune"
+    },
+    {
+      "match": "sun|glow|brand|stars",
+      "glyph": "rays"
+    },
+    {
+      "match": "hand|fist|pommel|finger|prayer",
+      "glyph": "fist"
+    },
+    {
+      "match": "roar|scream|choir",
+      "glyph": "wave"
+    },
+    {
+      "match": "blood|drop|bandage|gash",
+      "glyph": "drop"
+    },
+    {
+      "match": "hatchet|axe|thrown",
+      "glyph": "slash"
+    },
+    {
+      "match": "sword|blade|tendon|arc",
+      "glyph": "blade"
+    },
+    {
+      "match": "ice|frost|rime",
+      "glyph": "crystal"
+    }
   ],
   "action_bars": {
-    "fill_order": ["action_bar_1", "action_bar_2"],
-    "exclude": ["auto_attack"],
+    "fill_order": [
+      "action_bar_1",
+      "action_bar_2"
+    ],
+    "exclude": [
+      "auto_attack"
+    ],
     "shared_at_end": true,
     "assignments": {}
   },
   "elements": {
-    "action_bar_1": {"type": "action_bar", "anchor": "bottom_center", "offset": [0, -12], "action_prefix": "bar1_slot", "buttons": 12, "columns": 12, "button_px": 50, "spacing_px": 5},
-    "action_bar_2": {"type": "action_bar", "anchor": "bottom_center", "offset": [0, -70], "action_prefix": "bar2_slot", "buttons": 12, "columns": 12, "button_px": 50, "spacing_px": 5},
-    "player_cast_bar": {"type": "cast_bar", "unit": "player", "anchor": "bottom_center", "offset": [0, -176], "size": [320, 24]},
-    "player_frame": {"type": "unit_frame", "unit": "player", "anchor": "bottom_center", "offset": [-400, -160], "size": [270, 70], "cast_bar": false, "aura_side": "above", "max_auras": 8},
-    "target_frame": {"type": "unit_frame", "unit": "target", "anchor": "bottom_center", "offset": [400, -160], "size": [270, 70], "cast_bar": true, "aura_side": "above", "max_auras": 8},
-    "focus_frame": {"type": "unit_frame", "unit": "focus", "anchor": "center", "offset": [-430, 60], "size": [220, 56], "cast_bar": true, "aura_side": "below", "max_auras": 5},
-    "party_frames": {"type": "unit_frame", "unit": "party", "count": 4, "spacing_px": 68, "anchor": "top_left", "offset": [24, 200], "size": [230, 60], "cast_bar": true, "aura_side": "below", "max_auras": 5},
-    "arena_frames": {"type": "unit_frame", "unit": "arena", "count": 3, "spacing_px": 70, "anchor": "top_right", "offset": [-24, 230], "size": [250, 62], "cast_bar": true, "aura_side": "below", "max_auras": 5, "break_free": true, "dr_tracker": true},
-    "match_timer": {"type": "match_timer", "anchor": "top_center", "offset": [0, 10], "size": [240, 62]},
-    "loss_of_control": {"type": "loss_of_control", "anchor": "center", "offset": [0, -250], "size": [380, 96]},
-    "combat_text": {"type": "combat_text", "anchor": "top_left", "offset": [0, 0], "max_live": 40, "lifetime_s": 1.3, "rise_px": 70, "height_m": 2.3}
+    "action_bar_1": {
+      "type": "action_bar",
+      "anchor": "bottom_center",
+      "offset": [
+        0,
+        -12
+      ],
+      "action_prefix": "bar1_slot",
+      "buttons": 12,
+      "columns": 12,
+      "button_px": 50,
+      "spacing_px": 5
+    },
+    "action_bar_2": {
+      "type": "action_bar",
+      "anchor": "bottom_center",
+      "offset": [
+        0,
+        -70
+      ],
+      "action_prefix": "bar2_slot",
+      "buttons": 12,
+      "columns": 12,
+      "button_px": 50,
+      "spacing_px": 5
+    },
+    "player_cast_bar": {
+      "type": "cast_bar",
+      "unit": "player",
+      "anchor": "bottom_center",
+      "offset": [
+        0,
+        -176
+      ],
+      "size": [
+        320,
+        24
+      ]
+    },
+    "player_frame": {
+      "type": "unit_frame",
+      "unit": "player",
+      "anchor": "bottom_center",
+      "offset": [
+        -400,
+        -160
+      ],
+      "size": [
+        270,
+        70
+      ],
+      "cast_bar": false,
+      "aura_side": "above",
+      "max_auras": 8
+    },
+    "target_frame": {
+      "type": "unit_frame",
+      "unit": "target",
+      "anchor": "bottom_center",
+      "offset": [
+        400,
+        -160
+      ],
+      "size": [
+        270,
+        70
+      ],
+      "cast_bar": true,
+      "aura_side": "above",
+      "max_auras": 8
+    },
+    "focus_frame": {
+      "type": "unit_frame",
+      "unit": "focus",
+      "anchor": "center",
+      "offset": [
+        -430,
+        60
+      ],
+      "size": [
+        220,
+        56
+      ],
+      "cast_bar": true,
+      "aura_side": "below",
+      "max_auras": 5
+    },
+    "party_frames": {
+      "type": "unit_frame",
+      "unit": "party",
+      "count": 4,
+      "spacing_px": 68,
+      "anchor": "top_left",
+      "offset": [
+        24,
+        200
+      ],
+      "size": [
+        230,
+        60
+      ],
+      "cast_bar": true,
+      "aura_side": "below",
+      "max_auras": 5
+    },
+    "arena_frames": {
+      "type": "unit_frame",
+      "unit": "arena",
+      "count": 3,
+      "spacing_px": 70,
+      "anchor": "top_right",
+      "offset": [
+        -24,
+        230
+      ],
+      "size": [
+        250,
+        62
+      ],
+      "cast_bar": true,
+      "aura_side": "below",
+      "max_auras": 5,
+      "break_free": true,
+      "dr_tracker": true
+    },
+    "match_timer": {
+      "type": "match_timer",
+      "anchor": "top_center",
+      "offset": [
+        0,
+        10
+      ],
+      "size": [
+        240,
+        62
+      ]
+    },
+    "loss_of_control": {
+      "type": "loss_of_control",
+      "anchor": "center",
+      "offset": [
+        0,
+        -250
+      ],
+      "size": [
+        380,
+        96
+      ]
+    },
+    "combat_text": {
+      "type": "combat_text",
+      "anchor": "top_left",
+      "offset": [
+        0,
+        0
+      ],
+      "max_live": 40,
+      "lifetime_s": 1.3,
+      "rise_px": 70,
+      "height_m": 2.3
+    }
   }
 }

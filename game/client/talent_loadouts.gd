@@ -56,8 +56,17 @@ func list(spec_id: String) -> Array:
 			if e["loadouts"].size() >= MAX_PER_SPEC:
 				break
 			var text: String = BotBrain.build_talents(spec_id, b["name"])["talents"]
-			e["loadouts"].append({"name": str(b["name"]).replace("_", " ").capitalize(), "talents": text})
+			e["loadouts"].append({"name": title_case(str(b["name"])), "talents": text})
 	return e["loadouts"]
+
+
+## "choir_of_dawn" -> "Choir of Dawn".
+static func title_case(id: String) -> String:
+	var words: PackedStringArray = id.split("_", false)
+	for i: int in words.size():
+		if i == 0 or not words[i] in ["of", "the", "and", "a", "an", "in", "on", "to"]:
+			words[i] = words[i].substr(0, 1).to_upper() + words[i].substr(1)
+	return " ".join(words)
 
 
 func active_index(spec_id: String) -> int:

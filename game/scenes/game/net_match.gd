@@ -99,7 +99,7 @@ func _ready() -> void:
 	cam.camera.current = true
 	if bool(options["hud"]):
 		hud = Hud.new(_settings)
-		hud.talent_abilities = TalentLoadouts.granted_abilities(spec_id, str(options["talents"]))
+		hud.set_loadout(spec_id, str(options["talents"]))
 		hud.visible = false
 		add_child(hud)
 		hud.bind(controller, cam.camera, renderer)

@@ -45,7 +45,10 @@ def fmt(n: float) -> str:
 
 
 def secs(s: float) -> str:
-    return f"{s:g} s" if s < 60 else f"{s / 60:g} min"
+    if s < 60:
+        return f"{s:g} s"
+    m, rest = int(s // 60), round(s - (s // 60) * 60, 1)
+    return f"{m} min" if rest == 0 else f"{m} min {rest:g} s"
 
 
 def rgb(c: list[float]) -> tuple[int, int, int]:

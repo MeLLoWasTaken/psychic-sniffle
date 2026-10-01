@@ -482,8 +482,8 @@ Exit gate (DESIGN.md): every combat rule has passing tests; every action is rebi
 ### M2-05b Talents during preparation `[todo]`
 - [ ] During a match's preparation the player can open the talent screen from the pause menu and switch loadouts; the change reaches the server (a reliable message calling MatchRunner.set_talents), the action bars update, and after the gates open the screen opens read-only. Tests for the message, the server's refusal after the gates, and the bars.
 
-### M2-06 Spellbook and tooltips from data `[todo]`
-- [ ] Ability and aura tooltips in the HUD and a spellbook screen, generated from data with the codex's computed numbers (no hand-written numbers that can drift).
+### M2-06 Spellbook and tooltips from data `[done]`
+- [x] Ability and aura tooltips in the HUD and a spellbook screen, generated from data with the codex's computed numbers (no hand-written numbers that can drift).
 
 ### M2-07 1v1 bracket `[todo]`
 - [ ] Rules: dampening from 1:00, 12-minute limit, health and mana pickups at 1:30; menu entry "Play 1v1 vs a bot"; balance per F-08 (each spec 40-60% in 1,000 simulated duels).

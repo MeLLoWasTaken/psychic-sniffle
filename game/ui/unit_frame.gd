@@ -80,6 +80,14 @@ func _gui_input(event: InputEvent) -> void:
 			accept_event()
 
 
+## The aura drawn at a point (frame coordinates), or {}.
+func aura_at(p: Vector2) -> Dictionary:
+	for a: Dictionary in drawn_auras:
+		if (a["rect"] as Rect2).has_point(p):
+			return a
+	return {}
+
+
 func _draw() -> void:
 	drawn_auras.clear()
 	if style == null or unit.is_empty():
@@ -208,7 +216,8 @@ func _draw_auras(below_y: float) -> void:
 		if int(e["stacks"]) > 1:
 			style.text(self, r.position + Vector2(px - 2.0, style.font.get_ascent(sfs)), str(e["stacks"]), sfs,
 				Color.WHITE, HORIZONTAL_ALIGNMENT_RIGHT, 0.0)
-		drawn_auras.append({"id": e["id"], "size_px": px, "cc": e["cc"]})
+		drawn_auras.append({"id": e["id"], "size_px": px, "cc": e["cc"], "rect": r, "remaining_s": float(e["remaining_s"]),
+			"stacks": int(e["stacks"]), "source": int(e["source"])})
 		x += px + gap
 
 

@@ -7,6 +7,8 @@ extends Control
 ## loadout's rules (Talents.check) is refused with the reason. Loadouts: up to 10 per spec,
 ## selected on the right; Save, New, Delete, Export (copies the text) and Import (pastes it).
 ## In a match the screen is read-only (`locked`).
+## The Spellbook tab (backlog M2-06) shows the spec's abilities, including those the loadout
+## grants, with this loadout's numbers (AbilityText over Talents.resolve); hover for the tooltip.
 ##
 ## Positions are logical pixels on the 1920x1080 canvas, like the main menu.
 
@@ -36,6 +38,8 @@ var name_edit: LineEdit
 var code_edit: LineEdit
 var buttons: Dictionary = {}
 var slot_buttons: Array[Button] = []
+var tab: String = "talents"  ## "talents" or "spellbook"
+var tab_buttons: Dictionary = {}
 
 
 func _init(p_spec_id: String, p_loadouts: TalentLoadouts = null, p_locked: bool = false, menu_id: String = "main") -> void:
@@ -50,6 +54,7 @@ func _init(p_spec_id: String, p_loadouts: TalentLoadouts = null, p_locked: bool 
 	mouse_filter = Control.MOUSE_FILTER_STOP
 	_build_controls()
 	select_slot(loadouts.active_index(spec_id))
+	show_tab("talents")
 
 
 # ------------------------------------------------------------------ the rules (also used by tests)
@@ -236,6 +241,79 @@ func delete_slot() -> void:
 	select_slot(mini(slot, loadouts.list(spec_id).size() - 1))
 
 
+func show_tab(k: String) -> void:
+	tab = k
+	hovered = {}
+	for key: String in tab_buttons:
+		(tab_buttons[key] as Button).set_pressed_no_signal(key == tab)
+	queue_redraw()
+
+
+# ------------------------------------------------------------------ spellbook
+
+## This loadout's effect on numbers: {"abilities", "auras", "grants", "stats"}.
+func talented() -> Dictionary:
+	var r: Dictionary = Talents.resolve(loadout, trees, Data.abilities, Data.auras)
+	var u: Unit = Unit.new(0, 0, spec_id)
+	u.stats = AbilityText.spec_stats(spec_id)
+	Talents.apply_self(u, r["self"])
+	r["stats"] = u.stats
+	return r
+
+
+## The abilities the spellbook lists: kit, then abilities this loadout grants, then shared ones.
+func spellbook_abilities() -> Array[String]:
+	var s: Dictionary = Data.specs.get(spec_id, {})
+	var out: Array[String] = []
+	var exclude: Array = Data.hud_layouts.get("default", {}).get("action_bars", {}).get("exclude", [])
+	for a: String in s.get("abilities", []) + talented()["grants"] + Data.classes.get(str(s.get("class", "")), {}).get("shared_abilities", []):
+		if not a in out and not a in exclude and Data.abilities.has(a):
+			out.append(a)
+	return out
+
+
+func card_rect(i: int, n: int) -> Rect2:
+	var rows: int = maxi(1, ceili(n / 3.0))
+	var pitch: float = minf(122.0, (930.0 - 180.0) / rows)
+	return Rect2(Vector2(CLASS_X + (i % 3) * 470.0, 180.0 + (i / 3) * pitch), Vector2(450.0, pitch - 12.0))
+
+
+func card_at(p: Vector2) -> String:
+	var ids: Array[String] = spellbook_abilities()
+	for i: int in ids.size():
+		if card_rect(i, ids.size()).has_point(p):
+			return ids[i]
+	return ""
+
+
+func _draw_spellbook() -> void:
+	var r: Dictionary = talented()
+	var text: AbilityText = AbilityText.new(r["stats"], r["auras"])
+	var ids: Array[String] = spellbook_abilities()
+	for i: int in ids.size():
+		var id: String = ids[i]
+		var ab: Dictionary = r["abilities"].get(id, Data.abilities[id])
+		var box: Rect2 = card_rect(i, ids.size())
+		var changed: bool = r["abilities"].has(id) or id in r["grants"]
+		style.draw_panel(self, box, Color(style.color("panel_bg"), 0.9), style.color("accent") if changed else Color())
+		var ip: float = minf(64.0, box.size.y - 20.0)
+		hud.icon(self, Rect2(box.position + Vector2(12, (box.size.y - ip) * 0.5), Vector2(ip, ip)), ab.get("icon", {}), str(ab["name"]), Color.WHITE, false)
+		var x: float = box.position.x + ip + 26.0
+		var w: float = box.end.x - x - 12.0
+		style.draw_text(self, Vector2(x, box.position.y + 30.0), str(ab["name"]), 22, style.color("title"))
+		if changed:
+			style.draw_text(self, Vector2(x, box.position.y + 30.0), style.text("spellbook_talent" if id in r["grants"] else "spellbook_changed"),
+				15, style.color("accent"), HORIZONTAL_ALIGNMENT_RIGHT, w)
+		style.draw_text(self, Vector2(x, box.position.y + 54.0), Tooltip.elide(style.font, " · ".join(text.meta(ab)), w, 16), 16,
+			style.color("subtitle"), HORIZONTAL_ALIGNMENT_LEFT, w)
+		var fx: PackedStringArray = text.effects(ab)["lines"]
+		if not fx.is_empty() and box.size.y > 80.0:
+			draw_string(style.font, Vector2(x, box.position.y + 80.0), Tooltip.elide(style.font, fx[0], w, 16), HORIZONTAL_ALIGNMENT_LEFT, w, 16, style.color("text_dim"),
+				TextServer.JUSTIFICATION_NONE, TextServer.DIRECTION_AUTO, TextServer.ORIENTATION_HORIZONTAL)
+		if hovered.get("card", "") == id:
+			draw_rect(box.grow(4.0), Color(1, 1, 1, 0.5), false, 1.0)
+
+
 func close() -> void:
 	loadouts.save_file()
 	closed.emit(spec_id, loadouts.active_text(spec_id))
@@ -252,6 +330,13 @@ func _build_controls() -> void:
 		b.pressed.connect(spec[2])
 		add_child(b)
 		buttons[spec[0]] = b
+	for k: String in ["talents", "spellbook"]:
+		var tb: Button = style.button(style.text("tab_" + k), Vector2(190, 46), 20)
+		tb.name = "Tab_%s" % k
+		tb.toggle_mode = true
+		tb.pressed.connect(show_tab.bind(k))
+		add_child(tb)
+		tab_buttons[k] = tb
 	name_edit = _line_edit("talents_name_hint")
 	name_edit.name = "LoadoutName"
 	name_edit.max_length = 32
@@ -339,6 +424,8 @@ func _layout() -> void:
 		b.position = Vector2(x, y)
 		x += b.size.x + 12.0
 	buttons["done"].position = Vector2(size.x - 60.0 - buttons["done"].size.x, 44.0)
+	tab_buttons["talents"].position = Vector2(560.0, 44.0)
+	tab_buttons["spellbook"].position = Vector2(762.0, 44.0)
 	for i: int in slot_buttons.size():
 		slot_buttons[i].position = Vector2(PVP_RECT.position.x, SLOTS_Y + i * 38.0)
 	queue_redraw()
@@ -375,6 +462,14 @@ func node_at(p: Vector2) -> Dictionary:
 
 
 func _gui_input(event: InputEvent) -> void:
+	if event is InputEventMouseMotion and tab == "spellbook":
+		var c: String = card_at(event.position)
+		if c != str(hovered.get("card", "")):
+			hovered = {"card": c} if c != "" else {}
+			queue_redraw()
+		return
+	if tab == "spellbook":
+		return
 	if event is InputEventMouseMotion:
 		var h: Dictionary = node_at(event.position)
 		if h != hovered:
@@ -414,14 +509,24 @@ func _draw() -> void:
 		HudStyle.class_color(spec_id).lerp(Color.WHITE, 0.3))
 	if locked:
 		style.draw_text(self, Vector2(0, 84), style.text("talents_locked"), 24, style.color("defeat"), HORIZONTAL_ALIGNMENT_RIGHT, w - 70.0)
-	for layer: String in ["class", "spec"]:
-		_draw_tree(layer)
+	if tab == "spellbook":
+		_draw_spellbook()
+	else:
+		for layer: String in ["class", "spec"]:
+			_draw_tree(layer)
 	_draw_pvp()
 	style.draw_text(self, Vector2(PVP_RECT.position.x, SLOTS_Y - 18.0), style.text("talents_loadouts").to_upper(), 20,
 		style.color("accent"), HORIZONTAL_ALIGNMENT_LEFT, -1, &"display")
 	if message != "":
 		style.draw_text(self, Vector2(CLASS_X, h - 112.0), message, 20, style.color("subtitle"))
-	if not hovered.is_empty():
+	if hovered.has("card"):
+		var r: Dictionary = talented()
+		var id: String = hovered["card"]
+		var ids: Array[String] = spellbook_abilities()
+		Tooltip.draw(self, style.font, Tooltip.menu_colors(style), card_rect(ids.find(id), ids.size()),
+			Tooltip.ability_lines(AbilityText.new(r["stats"], r["auras"]), r["abilities"].get(id, Data.abilities.get(id, {})),
+				Data.abilities.get(id, {}), AbilityText.new(AbilityText.spec_stats(spec_id))), size)
+	elif not hovered.is_empty():
 		_draw_tooltip(hovered)
 
 
@@ -503,7 +608,7 @@ func _draw_node(layer: String, n: Dictionary) -> void:
 		var box: Rect2 = Rect2(r.end - Vector2(30, 16), Vector2(34, 20))
 		draw_rect(box, Color(0, 0, 0, 0.85))
 		style.draw_text_in(self, box, txt, 15, style.color("title") if rank >= top else style.color("text"))
-	if not hovered.is_empty() and hovered["layer"] == layer and hovered["id"] == n["id"]:
+	if hovered.get("layer", "") == layer and hovered.get("id", "") == n["id"]:
 		draw_rect(r.grow(5.0), Color(1, 1, 1, 0.5), false, 1.0)
 
 
@@ -532,46 +637,25 @@ func _draw_tooltip(h: Dictionary) -> void:
 	var n: Dictionary = Talents.node_of(trees[layer], h["id"])
 	if n.is_empty():
 		return
-	var lines: Array = []  # [text, size, color]
+	var lines: Array = []  # [text, size, role] (Tooltip)
 	var rank: int = rank_of(layer, n["id"])
 	if n["type"] == "choice":
-		lines.append([style.text("talents_choice"), 16, style.color("accent")])
+		lines.append([style.text("talents_choice"), 16, "accent"])
 		for c: Dictionary in n["choices"]:
-			lines.append([str(c["name"]), 22, style.color("title")])
-			lines.append([str(c.get("description", "")), 18, style.color("text")])
+			lines.append([str(c["name"]), 22, "title"])
+			lines.append([str(c.get("description", "")), 18, "text"])
 	else:
-		lines.append([str(n["name"]), 24, style.color("title")])
+		lines.append([str(n["name"]), 24, "title"])
 		var kind: String = style.text("talents_type_" + str(n["type"]))
 		if layer != "pvp":
 			kind += "  ·  " + style.text("talents_rank", {"rank": rank, "max": Talents.max_rank(n)})
-		lines.append([kind, 16, style.color("accent")])
-		lines.append([str(n.get("description", "")), 18, style.color("text")])
+		lines.append([kind, 16, "accent"])
+		lines.append([str(n.get("description", "")), 18, "text"])
 	if layer != "pvp" and rank == 0 and not available(layer, n):
 		var gate: int = int(n.get("gate", 0))
 		var why: String = style.text("talents_gate", {"points": gate}) if gate > 0 and not _gate_open(layer, gate) \
 			else style.text("talents_requires", {"names": _req_names(layer, n)})
-		lines.append([why, 17, style.color("defeat")])
+		lines.append([why, 17, "warn"])
 	elif not locked:
-		lines.append([style.text("talents_hint_remove") if rank > 0 else style.text("talents_hint_add"), 16, style.color("text_dim")])
-	var tw: float = 400.0
-	var hgt: float = 24.0
-	for l: Array in lines:
-		hgt += _wrapped_height(str(l[0]), int(l[1]), tw - 32.0) + 6.0
-	var nr: Rect2 = node_rect(layer, n)
-	var pos: Vector2 = Vector2(nr.end.x + 16.0, nr.position.y)
-	if pos.x + tw > size.x - 20.0:
-		pos.x = nr.position.x - 16.0 - tw
-	pos.y = clampf(pos.y, 20.0, size.y - hgt - 20.0)
-	var box: Rect2 = Rect2(pos, Vector2(tw, hgt))
-	style.draw_panel(self, box, Color(style.color("panel_bg"), 0.98))
-	var y: float = box.position.y + 16.0
-	for l: Array in lines:
-		var fsz: int = int(l[1])
-		y += style.font.get_ascent(fsz)
-		draw_multiline_string(style.font, Vector2(box.position.x + 16.0, y), str(l[0]), HORIZONTAL_ALIGNMENT_LEFT,
-			tw - 32.0, fsz, -1, l[2])
-		y += _wrapped_height(str(l[0]), fsz, tw - 32.0) - style.font.get_ascent(fsz) + 6.0
-
-
-func _wrapped_height(s: String, fsz: int, width: float) -> float:
-	return style.font.get_multiline_string_size(s, HORIZONTAL_ALIGNMENT_LEFT, width, fsz).y
+		lines.append([style.text("talents_hint_remove") if rank > 0 else style.text("talents_hint_add"), 16, "dim"])
+	Tooltip.draw(self, style.font, Tooltip.menu_colors(style), node_rect(layer, n), lines, size, 400.0)

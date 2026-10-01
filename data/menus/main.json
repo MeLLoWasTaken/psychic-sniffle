@@ -229,7 +229,11 @@
     "talents_type_capstone": "Capstone",
     "talents_rank": "Rank {rank} / {max}",
     "talents_hint_add": "Left-click to add a rank.",
-    "talents_hint_remove": "Right-click to remove a rank."
+    "talents_hint_remove": "Right-click to remove a rank.",
+    "tab_talents": "Talents",
+    "tab_spellbook": "Spellbook",
+    "spellbook_changed": "Changed by talents",
+    "spellbook_talent": "From a talent"
   },
   "scoreboard_columns": [
     {

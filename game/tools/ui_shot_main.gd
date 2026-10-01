@@ -19,9 +19,10 @@ func _ready() -> void:
 			var ts: TalentScreen = TalentScreen.new(_arg(args, "--spec", "warblade_carnage"), store,
 				"--locked" in args)
 			ts.select_slot(int(_arg(args, "--slot", "0")))
+			ts.show_tab(_arg(args, "--tab", "talents"))
 			var hover: PackedStringArray = _arg(args, "--hover", "").split(":")
 			if hover.size() == 2:
-				ts.hovered = {"layer": hover[0], "id": hover[1], "side": 1}
+				ts.hovered = {"card": hover[1]} if hover[0] == "card" else {"layer": hover[0], "id": hover[1], "side": 1}
 			screen = ts
 		"menu":
 			screen = MainMenu.new()
