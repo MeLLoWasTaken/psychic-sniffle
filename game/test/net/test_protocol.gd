@@ -100,3 +100,13 @@ func test_a_hosted_server_gives_its_host_time_to_load_before_calling_it_silent()
 	# playing: silence ends the match sooner
 	assert_str(NetServer.host_problem(true, true, 90.0, 16.0)).is_equal("host_silent")
 	assert_str(NetServer.host_problem(true, true, 90.0, 2.0)).is_empty()
+
+
+func test_talent_change_messages_round_trip() -> void:
+	var ask: Dictionary = Protocol.decode(Protocol.talents("AQIDBA"))
+	assert_int(int(ask["type"])).is_equal(Protocol.Msg.TALENTS)
+	assert_str(str(ask["talents"])).is_equal("AQIDBA")
+	assert_str(str(ask["error"])).is_empty()
+	var no: Dictionary = Protocol.decode(Protocol.talents("", "talents_locked"))
+	assert_str(str(no["talents"])).is_empty()
+	assert_str(str(no["error"])).is_equal("talents_locked")

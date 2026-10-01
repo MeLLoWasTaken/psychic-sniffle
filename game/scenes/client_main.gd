@@ -81,6 +81,7 @@ func _ready() -> void:
 	practice_menu.visible = false
 	practice_menu.resume_pressed.connect(func() -> void: practice_menu.visible = false)
 	practice_menu.leave_pressed.connect(_leave_practice)
+	practice_menu.talents_chosen.connect(_on_practice_talents)
 	add_child(practice_menu)
 	if "--open-settings" in args:  # screenshots of the settings panel
 		menu.show_settings()
@@ -201,6 +202,16 @@ func start_practice(spec: String) -> void:
 	menu.visible = false
 	add_child(practice)
 	move_child(practice_menu, -1)
+	practice_menu.set_spec(spec, func() -> bool: return practice == null or practice.talents_locked())
+	practice_menu.set_status("")
+
+
+func _on_practice_talents(text: String) -> void:
+	if practice == null:
+		return
+	var err: String = practice.change_talents(text)
+	var why: String = menu.style.text("talents_locked") if err == "talents_locked" else err
+	practice_menu.set_status(menu.style.text("talents_changed") if err == "" else menu.style.text("talents_refused", {"why": why}))
 
 
 func _leave_practice() -> void:

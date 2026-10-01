@@ -2,6 +2,17 @@
 
 One entry per build-loop iteration, newest first. Format: date, backlog ID, what changed, how it was checked.
 
+## 2026-10-01 — M2-05b talents during preparation; M2-14 review
+- The in-match menu (Escape) and the practice menu have a Talents button. During preparation, picking another loadout there sends it to the server; the bars and tooltips change when the server accepts. Once the gates open, the screen opens read-only and the server refuses changes.
+- Protocol version 9: a TALENTS message, both ways.
+- The menu shows the server's answer ("Talents changed.", or why not).
+- M2-14 review: a stand-in 3v3 scene for screenshots (figures in a lit room with the real HUD) showed a plate's auras covering the plate above it; the aura row is now part of the plate when plates step apart.
+- Checked:
+  - the network match test now changes talents during preparation (accepted, bars updated) and after the gates (refused, read-only screen);
+  - a practice test for the same, and a protocol test for the message;
+  - all Godot and Python tests pass (pre-commit run);
+  - screenshots of the nameplates and the in-match menu reviewed.
+
 ## 2026-10-01 — M2-14 arena HUD (nameplates, spec portraits), X-14 sound effects without pedalboard
 - Nameplates over every other unit: name in team colors, class-colored health with absorbs, cast bar, and up to four important auras (crowd control, major defensives and offensives, the player's own debuffs).
   - The target's plate has a gold border and is larger; overlapping plates step apart.

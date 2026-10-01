@@ -6,14 +6,14 @@ extends RefCounted
 ## Abilities, auras and specs travel as small indexes into their sorted id lists (both sides
 ## load the same data, and the protocol version changes whenever that could differ).
 
-const VERSION: int = 8
+const VERSION: int = 9
 const CH_RELIABLE: int = 0
 const CH_UNRELIABLE: int = 1
 const CHANNELS: int = 2
 const INPUT_REDUNDANCY: int = 3  ## each input packet repeats the last N inputs to survive loss
 const NO_ID: int = 0xFFFF
 
-enum Msg { HELLO = 1, WELCOME = 2, INPUT = 3, SNAPSHOT = 4, PING = 5, PONG = 6, EVENTS = 7, REJECT = 8, PREFS = 9 }
+enum Msg { HELLO = 1, WELCOME = 2, INPUT = 3, SNAPSHOT = 4, PING = 5, PONG = 6, EVENTS = 7, REJECT = 8, PREFS = 9, TALENTS = 10 }
 
 const CC_CATEGORIES: Array[String] = ["stun", "incapacitate", "disorient", "silence", "root", "disarm"]
 const FLAG_JUMP: int = 1
@@ -225,6 +225,17 @@ static func _get_prefs(b: StreamPeerBuffer) -> Dictionary:
 	return out
 
 
+## A talent change (M2-05b): the client asks for a loadout (its text form) during preparation;
+## the server answers with the loadout it now uses and "" or why it refused ("talents_locked"
+## once the gates are open, or the loadout's rule problem).
+static func talents(text: String, error: String = "") -> PackedByteArray:
+	var b: StreamPeerBuffer = _buf()
+	b.put_u8(Msg.TALENTS)
+	b.put_utf8_string(text)
+	b.put_utf8_string(error)
+	return b.data_array
+
+
 static func ping(t_usec: int) -> PackedByteArray:
 	var b: StreamPeerBuffer = _buf()
 	b.put_u8(Msg.PING)
@@ -340,6 +351,8 @@ static func decode(data: PackedByteArray) -> Dictionary:
 			return {"type": t, "t_usec": b.get_u64()}
 		Msg.PREFS:
 			return {"type": t, "prefs": _get_prefs(b)}
+		Msg.TALENTS:
+			return {"type": t, "talents": b.get_utf8_string(), "error": b.get_utf8_string()}
 		Msg.EVENTS:
 			return {"type": t, "events": b.get_var()}
 	return {"type": t}

@@ -120,13 +120,17 @@ func _draw() -> void:
 		if a == null:
 			continue
 		var dist: float = camera.global_position.distance_to(position_of.call(id))
-		plates.append({"unit": u, "anchor": a, "dist": dist, "ally": ally, "k": ui_scale * (TARGET_GROW if id == target_id else 1.0)})
+		var k: float = ui_scale * (TARGET_GROW if id == target_id else 1.0)
+		var auras: Array = plate_auras(u, view, me_id, max_auras) if show_auras and max_auras > 0 else []
+		var sizes: Array = auras.map(func(e: Dictionary) -> float: return roundf(aura_px * k * (1.2 if e["cc"] else 1.0)))
+		var aura_h: float = (sizes.max() + GAP) if not sizes.is_empty() else 0.0
+		plates.append({"unit": u, "anchor": a, "dist": dist, "ally": ally, "k": k, "auras": auras, "sizes": sizes, "aura_h": aura_h})
 	plates.sort_custom(func(x: Dictionary, y: Dictionary) -> bool: return float(x["dist"]) < float(y["dist"]))
 	var rects: Array = []
 	for pl: Dictionary in plates:
 		var k: float = pl["k"]
 		var w: float = roundf(width_px * k)
-		var h: float = _plate_height(pl["unit"], k)
+		var h: float = _plate_height(pl["unit"], k) + float(pl["aura_h"])  # the aura row is part of the plate
 		var a: Vector2 = pl["anchor"]
 		rects.append(Rect2(Vector2(roundf(a.x - w * 0.5), roundf(a.y - h)), Vector2(w, h)))
 	rects = unstack(rects)
@@ -135,7 +139,7 @@ func _draw() -> void:
 		_draw_plate(plates[i], rects[i], me_id)
 
 
-## A plate's height without its auras: name, health and (when casting) the cast bar.
+## A plate's height without its aura row: name, health and (when casting) the cast bar.
 func _plate_height(u: Dictionary, k: float) -> float:
 	var h: float = style.fs("small") * k + 2.0 + health_px * k
 	if show_cast_bars and CastBar.has_content(u, failures.get(int(u["id"]), {}), clock):
@@ -149,12 +153,13 @@ func _draw_plate(pl: Dictionary, r: Rect2, me_id: int) -> void:
 	var k: float = pl["k"]
 	var fsz: int = roundi(style.fs("small") * k)
 	var is_target: bool = id == target_id
+	var top: float = r.position.y + float(pl["aura_h"])  # the aura row sits above the name
 	# name
 	var name_col: Color = style.color("friendly_name") if pl["ally"] else style.color("hostile_name")
 	var name: String = HudStyle.spec_label(str(u.get("spec", "")))
-	style.text(self, Vector2(r.position.x, r.position.y + fsz), name, fsz, name_col, HORIZONTAL_ALIGNMENT_CENTER, r.size.x, 3)
+	style.text(self, Vector2(r.position.x, top + fsz), name, fsz, name_col, HORIZONTAL_ALIGNMENT_CENTER, r.size.x, 3)
 	# health in class color, absorbs as a light overlay
-	var hr: Rect2 = Rect2(Vector2(r.position.x, r.position.y + fsz + 2.0), Vector2(r.size.x, roundf(health_px * k)))
+	var hr: Rect2 = Rect2(Vector2(r.position.x, top + fsz + 2.0), Vector2(r.size.x, roundf(health_px * k)))
 	var max_hp: float = maxf(1.0, float(u.get("max_health", 1)))
 	var frac: float = clampf(float(u.get("health", 0)) / max_hp, 0.0, 1.0)
 	draw_rect(hr.grow(1.0), Color(0, 0, 0, 0.85))
@@ -175,9 +180,9 @@ func _draw_plate(pl: Dictionary, r: Rect2, me_id: int) -> void:
 		cast = true
 	# auras in a row above the name, centered
 	var shown: Array = []
-	if show_auras and max_auras > 0:
-		var list: Array = plate_auras(u, view, me_id, max_auras)
-		var sizes: Array = list.map(func(e: Dictionary) -> float: return roundf(aura_px * k * (1.2 if e["cc"] else 1.0)))
+	var list: Array = pl["auras"]
+	var sizes: Array = pl["sizes"]
+	if not list.is_empty():
 		var total: float = 0.0
 		for s: float in sizes:
 			total += s + GAP
@@ -185,7 +190,7 @@ func _draw_plate(pl: Dictionary, r: Rect2, me_id: int) -> void:
 		for j: int in list.size():
 			var e: Dictionary = list[j]
 			var px: float = sizes[j]
-			var ar: Rect2 = Rect2(Vector2(x, r.position.y - px - GAP), Vector2(px, px))
+			var ar: Rect2 = Rect2(Vector2(x, top - GAP - px), Vector2(px, px))
 			var data: Dictionary = e["aura"]
 			if e["cc"] and style.cc.has(e["category"]):
 				style.cc_icon(self, ar, e["category"], false)

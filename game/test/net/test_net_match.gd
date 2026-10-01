@@ -17,6 +17,15 @@ func _start_match(port: int, prep: float) -> Node:
 	return scene
 
 
+## A bot build's talent text for a spec whose talents grant at least one ability.
+func _build_with_granted_ability(spec_id: String) -> String:
+	for b: Dictionary in Data.bots[spec_id].get("builds", []):
+		var text: String = str(BotBrain.build_talents(spec_id, str(b["name"]))["talents"])
+		if not TalentLoadouts.granted_abilities(spec_id, text).is_empty():
+			return text
+	return ""
+
+
 ## Wait (in real time) until `cond` holds or `timeout_s` passes; true when it held.
 func _wait_for(cond: Callable, timeout_s: float) -> bool:
 	var deadline: int = Time.get_ticks_msec() + int(timeout_s * 1000.0)
@@ -39,6 +48,24 @@ func test_server_lost_mid_match_goes_back_to_the_menu_cleanly() -> void:
 	assert_int(ls.running_pids().size()).is_equal(4)  # the server and three bots
 	assert_bool(scene.hud.visible).is_true()
 	assert_int(scene.renderer.units.size()).is_equal(4)
+	# M2-05b: a new loadout during preparation reaches the server and moves its ability onto the bars
+	var text: String = _build_with_granted_ability(str(scene.spec_id))
+	var granted: Array = TalentLoadouts.granted_abilities(str(scene.spec_id), text)
+	assert_array(granted).override_failure_message("no bot build grants an ability").is_not_empty()
+	var answers: Array = []
+	scene.net.talents_answered.connect(func(t: String, e: String) -> void: answers.append([t, e]))
+	assert_bool(scene.screens.pause_menu.talents_button.visible).is_true()
+	scene.screens.pause_menu.talents_chosen.emit(text)
+	var answered: bool = await _wait_for(func() -> bool: return not answers.is_empty(), 10.0)
+	assert_bool(answered).is_true()
+	assert_array(answers[0]).is_equal([text, ""])
+	assert_str(scene.net.talents).is_equal(text)
+	var on_bars: Array = []
+	for b: ActionBar in scene.hud.bars.values():
+		for sl: Dictionary in b.slots:
+			on_bars.append(str(sl["ability"]))
+	assert_array(on_bars).contains(granted)
+	assert_str(scene.screens.pause_menu.status).is_equal(scene.style.text("talents_changed"))
 	# the server dies (killed from outside, like a crash)
 	OS.execute("kill", ["-9", str(ls.server_pid)])
 	var failed: bool = await _wait_for(func() -> bool: return flow.state == MatchFlow.State.FAILED, 10.0)
@@ -68,6 +95,18 @@ func test_leaving_from_the_match_menu_ends_the_server() -> void:
 	scene.exited.connect(func(r: Dictionary) -> void: exited.append(r))
 	var active: bool = await _wait_for(func() -> bool: return flow.state == MatchFlow.State.ACTIVE, 45.0)
 	assert_bool(active).override_failure_message("gates never opened: %s" % [flow.history]).is_true()
+	# M2-05b: once the gates are open the server refuses a talent change, and the menu's screen is read-only
+	var answers: Array = []
+	scene.net.talents_answered.connect(func(t: String, e: String) -> void: answers.append([t, e]))
+	scene.net.send_talents(_build_with_granted_ability(str(scene.spec_id)))
+	var answered: bool = await _wait_for(func() -> bool: return not answers.is_empty(), 10.0)
+	assert_bool(answered).is_true()
+	assert_array(answers[0]).is_equal(["", "talents_locked"])
+	assert_str(scene.net.talents).is_equal("")
+	var ts: TalentScreen = scene.screens.pause_menu.open_talents()
+	assert_bool(ts.locked).is_true()
+	ts.close()
+	await get_tree().process_frame
 	# Escape with no target opens the in-match menu; Leave match ends it
 	var esc: InputEventAction = InputEventAction.new()
 	esc.action = "clear_target"

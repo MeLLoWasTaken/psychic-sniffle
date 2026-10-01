@@ -122,6 +122,9 @@ func _ready() -> void:
 	screens.resume_pressed.connect(func() -> void: screens.show_pause(false))
 	screens.leave_pressed.connect(leave)
 	add_child(screens)
+	if str(options["playback"]) == "":
+		screens.pause_menu.set_spec(spec_id, func() -> bool: return flow.state != MatchFlow.State.PREP)
+		screens.pause_menu.talents_chosen.connect(change_talents)
 
 	if str(options["playback"]) != "":
 		_playback = FileAccess.open_compressed(str(options["playback"]), FileAccess.READ, FileAccess.COMPRESSION_ZSTD)
@@ -208,6 +211,7 @@ func _connect() -> void:
 		net.transport.configure_conditions(float(options["lag_ms"]), float(options["jitter_ms"]), float(options["loss"]), 7)
 	net.welcomed.connect(_on_welcomed)
 	net.finished.connect(_on_net_finished)
+	net.talents_answered.connect(_on_talents_answered)
 	net.events_received_signal.connect(func(evs: Array) -> void:
 		_pending_events.append_array(evs)
 		stats["events"] += evs.size())
@@ -342,6 +346,28 @@ func _on_state_changed(_from: MatchFlow.State, to: MatchFlow.State) -> void:
 			_stop_network(0.5)  # nothing to wait for: stop the bots now
 		MatchFlow.State.MENU:
 			_finish.call_deferred()
+
+
+## Ask the server for another loadout (the pause menu's talent screen, during preparation).
+func change_talents(text: String) -> void:
+	if net == null or text == net.talents:
+		return
+	if flow.state != MatchFlow.State.PREP:
+		screens.pause_menu.set_status(style.text("talents_locked"))
+		return
+	screens.pause_menu.set_status(style.text("talents_sending"))
+	net.send_talents(text)
+
+
+func _on_talents_answered(text: String, error: String) -> void:
+	if error != "":
+		var why: String = style.text("talents_locked") if error == "talents_locked" else error
+		screens.pause_menu.set_status(style.text("talents_refused", {"why": why}))
+		return
+	options["talents"] = text
+	if hud != null:
+		hud.set_loadout(spec_id, text)
+	screens.pause_menu.set_status(style.text("talents_changed"))
 
 
 ## Names for the end screen: You, Partner, Enemy 1, Enemy 2 (by unit id within a team).

@@ -462,12 +462,14 @@ func _unhandled_input(event: InputEvent) -> void:
 
 
 ## The player's loadout (its shared text): talent abilities for the bars, talented numbers for the
-## tooltips. Call before the first push.
+## tooltips. Call before the first push; a later call (a change during preparation) rebuilds the bars.
 func set_loadout(p_spec: String, talents: String) -> void:
 	talent_abilities = TalentLoadouts.granted_abilities(p_spec, talents)
 	var stats: Dictionary = AbilityText.spec_stats(p_spec)
 	talent_view = {"abilities": {}, "auras": {}, "stats": stats}
 	if TalentLoadouts.error_of(p_spec, talents) != "" or talents == "":
+		if spec_id == p_spec and style != null:
+			_assign_bars(p_spec)
 		return
 	var trees: Dictionary = TalentLoadouts.trees(p_spec)
 	var r: Dictionary = Talents.resolve(Talents.decode(talents, trees)["loadout"], trees, Data.abilities, Data.auras)
@@ -475,6 +477,8 @@ func set_loadout(p_spec: String, talents: String) -> void:
 	u.stats = stats
 	Talents.apply_self(u, r["self"])
 	talent_view = {"abilities": r["abilities"], "auras": r["auras"], "stats": u.stats}
+	if spec_id == p_spec and style != null:
+		_assign_bars(p_spec)  # a change during preparation (M2-05b): granted abilities move onto the bars
 
 
 ## The tooltip for whatever is at a point on screen (global canvas coordinates): an action bar

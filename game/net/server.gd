@@ -240,6 +240,13 @@ func _on_packet(peer: ENetPacketPeer, key: int, msg: Dictionary) -> void:
 			var pu: Unit = sim.units.get(int(pc.get("unit_id", -1))) if not pc.is_empty() else null
 			if pu:
 				runner.set_prefs(pu, msg["prefs"])
+		Protocol.Msg.TALENTS:
+			var tc: Dictionary = clients.get(key, {})
+			var tu: Unit = sim.units.get(int(tc.get("unit_id", -1))) if not tc.is_empty() else null
+			if tu:
+				var err: String = runner.set_talents(tu, str(msg["talents"]))
+				Log.info("server: %s talents %s" % [tc["name"], "changed" if err == "" else "refused (%s)" % err])
+				transport.send(peer, Protocol.CH_RELIABLE, Protocol.talents(str(msg["talents"]) if err == "" else "", err), true)
 		Protocol.Msg.PING:
 			transport.send(peer, Protocol.CH_RELIABLE, Protocol.pong(msg["t_usec"]), true)
 

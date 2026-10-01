@@ -220,6 +220,23 @@ func _notification(what: int) -> void:
 
 
 ## Distance the player's unit has moved from its spawn (flat), for checks.
+## True once the player's talents are locked (the practice arena's gates are open).
+func talents_locked() -> bool:
+	var a: ArenaMatch = world.runner.arena
+	return a != null and a.phase != ArenaMatch.Phase.PREP
+
+
+## Switch the player's talents (the practice pause menu's talent screen, M2-05b): "" when
+## applied, else why not (talents_locked, or the loadout's rule problem).
+func change_talents(text: String) -> String:
+	var err: String = world.runner.set_talents(world.player, text)
+	if err == "":
+		options["talents"] = text
+		if hud != null:
+			hud.set_loadout(str(options["spec"]), text)
+	return err
+
+
 func player_travel() -> float:
 	var p: Vector3 = world.player.position
 	return Vector2(p.x - start_position.x, p.z - start_position.z).length()

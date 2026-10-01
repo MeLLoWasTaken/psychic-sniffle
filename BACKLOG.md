@@ -485,8 +485,9 @@ Exit gate (DESIGN.md): every combat rule has passing tests; every action is rebi
 - [x] The screen draws itself from the data (positions, connecting lines, icons, tooltips, point counters); up to 10 loadouts per spec; export and import as a short text string; locked in a match.
 - Follow-up: changing talents during a networked match's preparation needs a protocol message for MatchRunner.set_talents and a way to open the screen from the pause menu (M2-05b).
 
-### M2-05b Talents during preparation `[todo]`
-- [ ] During a match's preparation the player can open the talent screen from the pause menu and switch loadouts; the change reaches the server (a reliable message calling MatchRunner.set_talents), the action bars update, and after the gates open the screen opens read-only. Tests for the message, the server's refusal after the gates, and the bars.
+### M2-05b Talents during preparation `[done]`
+- [x] During a match's preparation the player can open the talent screen from the pause menu and switch loadouts; the change reaches the server (a reliable message calling MatchRunner.set_talents), the action bars update, and after the gates open the screen opens read-only. Tests for the message, the server's refusal after the gates, and the bars.
+- Done (2026-10-01): a Talents button in the in-match and practice menus; protocol 9 adds a TALENTS message both ways (request, and the server's answer with the loadout in use or why it refused); the HUD rebuilds its bars when the loadout changes.
 
 ### M2-06 Spellbook and tooltips from data `[done]`
 - [x] Ability and aura tooltips in the HUD and a spellbook screen, generated from data with the codex's computed numbers (no hand-written numbers that can drift).
@@ -516,11 +517,14 @@ Exit gate (DESIGN.md): every combat rule has passing tests; every action is rebi
 - [x] Interface, Gameplay, Graphics, Audio and Accessibility pages with every setting in DESIGN.md; each applies instantly except resolution; saved per profile.
 - Follow-ups: nameplate settings take effect when nameplates exist (M2-14, fixed); "reduce camera shake" has nothing to reduce until the camera shakes.
 
-### M2-14 Arena HUD for 2v2 and 3v3 `[doing]`
+### M2-14 Arena HUD for 2v2 and 3v3 `[done]`
 - [x] Arena enemy frames with spec icon, cast bar, Break Free cooldown and a DR tracker per CC category; focus target frame and cast bar; nameplates with class color, health, cast bar and important debuffs.
-- [ ] Screenshot of a 3v3 fight reviewed (waits for the reference video render to free the CPU: two Godot clients on two cores stall the match start).
+- [x] Screenshot reviewed on a stand-in 3v3 scene (`tools/ui_shot.gd --screen nameplates`: figures in a lit room with the real HUD, a cast, crowd control, a defensive and a marked target); it showed a plate's aura row overlapping the plate above, fixed by making the row part of the plate. The planned screenshot of a real networked fight could not run while the reference video renders (two Godot clients on two cores stall the match start); it moves to M2-14c.
 - Done (2026-10-01): spec icons in frame portraits (spec data `icon`); nameplates as a HUD layout element following the three nameplate settings; a unit frame under the pointer counts as mouseover; the arena Break Free box uses the cooldown the server started (talents included; cast_success events carry `cooldown_ticks`).
 - Follow-ups: clicking or hovering a nameplate does not target or count as mouseover yet (M2-14b); nameplates do not fade with distance or line of sight.
+
+### M2-14c Nameplates in a real 3v3 fight `[todo]`
+- [ ] A screenshot of a networked 3v3 fight with nameplates, reviewed (plates over real character models, at real distances and with movement).
 
 ### M2-14b Nameplate clicks and mouseover `[todo]`
 - [ ] A click on a nameplate targets its unit and the pointer over a plate counts as mouseover, like unit frames; tests with the plate rectangles.

@@ -622,3 +622,29 @@ func test_a_3v3_fills_three_arena_frames_and_two_party_frames() -> void:
 		return (hud.elements[id] as Array).filter(func(f: UnitFrame) -> bool: return f.visible).size()
 	assert_int(shown.call("arena_frames")).is_equal(3)
 	assert_int(shown.call("party_frames")).is_equal(2)
+
+
+func test_practice_talents_change_during_preparation_and_lock_after() -> void:
+	var scene: Node3D = auto_free((load("res://scenes/game/practice.tscn") as PackedScene).instantiate())
+	scene.options = {"manual": true, "kit": false, "gi": false, "lighting": false, "prep": 2.0}
+	add_child(scene)
+	var spec: String = str(scene.options["spec"])
+	var text: String = ""
+	for b: Dictionary in Data.bots[spec].get("builds", []):
+		var t: String = str(BotBrain.build_talents(spec, str(b["name"]))["talents"])
+		if not TalentLoadouts.granted_abilities(spec, t).is_empty():
+			text = t
+	assert_str(text).is_not_empty()
+	assert_bool(scene.talents_locked()).is_false()
+	assert_str(scene.change_talents(text)).is_empty()
+	assert_str(str(scene.options["talents"])).is_equal(text)
+	scene.run_ticks(1)  # the HUD's first view assigns the bars
+	var on_bars: Array = []
+	for b: ActionBar in scene.hud.bars.values():
+		for sl: Dictionary in b.slots:
+			on_bars.append(str(sl["ability"]))
+	assert_array(on_bars).contains(TalentLoadouts.granted_abilities(spec, text))
+	for i: int in 3 * scene.world.tick_rate():
+		scene.run_ticks(1)
+	assert_bool(scene.talents_locked()).is_true()
+	assert_str(scene.change_talents("")).is_equal("talents_locked")

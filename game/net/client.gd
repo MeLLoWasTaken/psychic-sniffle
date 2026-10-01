@@ -20,6 +20,8 @@ signal events_received_signal(evs: Array)
 signal finished(code: int, reason: String)
 ## Emitted at the end of every physics tick in which an input was sent (draw the new state).
 signal ticked()
+## The server's answer to send_talents (M2-05b): the loadout now in use and "" or why it refused.
+signal talents_answered(talents: String, error: String)
 
 const SNAPSHOT_BUFFER: int = 64
 
@@ -114,6 +116,13 @@ func _process(_delta: float) -> void:
 
 
 ## Send changed gameplay settings to the server (they apply at once, M2-13).
+## Ask the server for another talent loadout (allowed during preparation); the answer comes as
+## talents_answered, and `talents` changes only when the server accepts.
+func send_talents(text: String) -> void:
+	if connected and server_peer:
+		transport.send(server_peer, Protocol.CH_RELIABLE, Protocol.talents(text), true)
+
+
 func send_prefs(p: Dictionary) -> void:
 	prefs = p.duplicate()
 	if connected and server_peer:
@@ -189,6 +198,10 @@ func _on_packet(msg: Dictionary) -> void:
 			_finish(1)
 		Protocol.Msg.SNAPSHOT:
 			_on_snapshot(msg)
+		Protocol.Msg.TALENTS:
+			if str(msg["error"]) == "":
+				talents = str(msg["talents"])
+			talents_answered.emit(str(msg["talents"]), str(msg["error"]))
 		Protocol.Msg.PONG:
 			_stats["rtt_ms"].append((Time.get_ticks_usec() - int(msg["t_usec"])) / 1000.0)
 		Protocol.Msg.EVENTS:
