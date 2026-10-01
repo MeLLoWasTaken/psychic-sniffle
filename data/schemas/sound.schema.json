@@ -33,7 +33,7 @@
       "additionalProperties": false,
       "required": ["type"],
       "properties": {
-        "type": {"enum": ["noise", "tone", "saw", "resonant", "crackle", "sub"]},
+        "type": {"enum": ["noise", "tone", "saw", "resonant", "crackle", "sub", "whoosh"]},
         "gain": {"type": "number", "minimum": 0, "maximum": 4},
         "start_s": {"$ref": "#/$defs/seconds"},
         "env": {"$ref": "#/$defs/envelope"},
@@ -71,7 +71,16 @@
         "base": {"$ref": "#/$defs/hz"},
         "partials": {"type": "array", "items": {"type": "array", "items": {"type": "number"}, "minItems": 4, "maxItems": 4}, "minItems": 1},
         "per_second": {"type": "number", "exclusiveMinimum": 0},
-        "grain_s": {"type": "number", "exclusiveMinimum": 0, "maximum": 0.1}
+        "grain_s": {"type": "number", "exclusiveMinimum": 0, "maximum": 0.1},
+        "glide": {"type": "array", "items": {"type": "number", "exclusiveMinimum": 0}, "minItems": 2, "maxItems": 2, "description": "resonant: [frequency ratio, seconds] slide"},
+        "scrape": {"type": "array", "items": {"type": "number", "minimum": 0}, "minItems": 2, "maxItems": 2, "description": "resonant: [depth, decay_s] rough start"},
+        "contact_s": {"$ref": "#/$defs/seconds", "description": "whoosh: time of contact within the layer"},
+        "pre_s": {"$ref": "#/$defs/seconds"},
+        "lo_hz": {"$ref": "#/$defs/hz"},
+        "hi_hz": {"$ref": "#/$defs/hz"},
+        "fall_s": {"$ref": "#/$defs/seconds"},
+        "decay_s": {"$ref": "#/$defs/seconds"},
+        "q": {"type": "number", "exclusiveMinimum": 0, "maximum": 400}
       }
     }
   },
@@ -89,6 +98,7 @@
     "seed": {"type": "integer", "minimum": 0},
     "builtin": {"type": "string", "description": "Name of a Python recipe in tools/audio/synth.py"},
     "duration_s": {"type": "number", "exclusiveMinimum": 0, "maximum": 10},
+    "contact_s": {"type": "number", "minimum": 0, "maximum": 1, "description": "Seconds from the start of the file to the moment of contact (a lead-in such as a blade's whoosh); a melee impact starts this much before the swing strikes"},
     "layers": {"type": "array", "items": {"$ref": "#/$defs/layer"}, "minItems": 1},
     "post": {
       "type": "object",

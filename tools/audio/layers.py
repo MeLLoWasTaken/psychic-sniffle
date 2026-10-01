@@ -25,7 +25,13 @@ Layer types:
             (voices, roars, choirs) or "lowpass"
   resonant  noise through narrow inharmonic resonators: "base" Hz (± "jitter" ratio),
             "partials": [[ratio, q, amp, decay_s], ...], "highpass": Hz. Struck metal, ice, wood:
-            material without a held pitch
+            material without a held pitch. "glide": [ratio, seconds] slides every partial to
+            ratio x its frequency over that time (a blade's ring as the edge travels);
+            "scrape": [depth, decay_s] roughens the start with slow noise (an edge scraping)
+  whoosh    air pushed by a passing blade: noise through a resonance rising from "lo_hz" to
+            "hi_hz" over "pre_s" up to "contact_s", then falling back over "fall_s" (Doppler),
+            swelling in and dying with "decay_s" after contact; "q" (default 2.2). Carries its
+            own envelope
   crackle   band-limited noise gated by random short grains: "band", "per_second", "grain_s"
   sub       low sine drop: "from_hz" -> "to_hz" with "curve" (weight, thuds); keep it <= 200 Hz
 
@@ -175,18 +181,59 @@ def _saw(layer: dict, n: int, rng: np.random.Generator) -> np.ndarray:
     return _filt(x, layer, "band")
 
 
+def tv_resonator(x: np.ndarray, freq: np.ndarray, q: float) -> np.ndarray:
+    """Two-pole resonator whose centre frequency follows `freq` (Hz per sample): a ring or a
+    filtered whoosh that glides, which fixed filters cannot do."""
+    w = 2 * np.pi * np.asarray(freq, float) / SR
+    r = np.exp(-w / (2 * q))
+    a1, a2, g = -2 * r * np.cos(w), r * r, (1 - r * r) * 0.5
+    y = np.zeros(len(x))
+    y1 = y2 = 0.0
+    xs = x.tolist()
+    a1s, a2s, gs = a1.tolist(), a2.tolist(), g.tolist()
+    for i in range(len(xs)):
+        v = gs[i] * xs[i] - a1s[i] * y1 - a2s[i] * y2
+        y[i] = v
+        y2, y1 = y1, v
+    return y
+
+
 def _resonant(layer: dict, n: int, rng: np.random.Generator) -> np.ndarray:
     base = float(layer["base"]) * (1 + rng.uniform(-1, 1) * float(layer.get("jitter", 0.0)))
     x = np.zeros(n)
     atk = float(layer.get("env", {}).get("attack_s", 0.0005))
+    t = np.arange(n) / SR
+    glide = None
+    if "glide" in layer:
+        ratio, secs = layer["glide"]
+        glide = 1 + (float(ratio) - 1) * np.clip(t / float(secs), 0, 1)
     for ratio, q, amp, dec in layer["partials"]:
         f = base * ratio
         if f >= SR / 2 - 200:
             continue
-        x += S.resonator(S.noise(n, rng), f, q) * S.env_exp(n, dec, attack_s=atk) * amp
+        if glide is not None:
+            ring = tv_resonator(S.noise(n, rng), np.minimum(f * glide, SR / 2 - 500), q)
+        else:
+            ring = S.resonator(S.noise(n, rng), f, q)
+        x += ring * S.env_exp(n, dec, attack_s=atk) * amp
+    if "scrape" in layer:
+        depth, dec = layer["scrape"]
+        slow = S.lowpass(S.noise(n, rng), 120)
+        x = x * np.clip(1 + float(depth) * slow / 0.05 * np.exp(-t / float(dec)), 0, 2.5)
     if "highpass" in layer:
         x = S.highpass(x, layer["highpass"])
     return x
+
+
+def _whoosh(layer: dict, n: int, rng: np.random.Generator) -> np.ndarray:
+    t = np.arange(n) / SR
+    tc, pre = float(layer["contact_s"]), float(layer.get("pre_s", 0.13))
+    lo, hi = float(layer.get("lo_hz", 450)), float(layer.get("hi_hz", 2400))
+    u = np.clip((t - (tc - pre)) / pre, 0, 1)
+    f = lo + (hi - lo) * u ** 1.5
+    f = np.where(t > tc, hi - (hi - lo) * np.clip((t - tc) / float(layer.get("fall_s", 0.12)), 0, 1), f)
+    amp = np.where(t <= tc, u ** 3, np.exp(-(t - tc) / float(layer.get("decay_s", 0.05))))
+    return tv_resonator(S.noise(n, rng), f, float(layer.get("q", 2.2))) * amp
 
 
 def _crackle(layer: dict, n: int, rng: np.random.Generator) -> np.ndarray:
@@ -203,8 +250,9 @@ def _sub(layer: dict, n: int, rng: np.random.Generator) -> np.ndarray:
     return np.sin(_phase(track))
 
 
-LAYER_TYPES = {"noise": _noise, "tone": _tone, "saw": _saw, "resonant": _resonant, "crackle": _crackle, "sub": _sub}
-ENV_DEFAULT_TYPES = {"resonant"}  # resonant layers carry their own per-partial decay
+LAYER_TYPES = {"noise": _noise, "tone": _tone, "saw": _saw, "resonant": _resonant, "crackle": _crackle, "sub": _sub,
+               "whoosh": _whoosh}
+ENV_DEFAULT_TYPES = {"resonant", "whoosh"}  # resonant layers carry their own per-partial decay
 
 
 def render_layer(layer: dict, n: int, rng: np.random.Generator) -> np.ndarray:

@@ -2,6 +2,16 @@
 
 One entry per build-loop iteration, newest first. Format: date, backlog ID, what changed, how it was checked.
 
+## 2026-10-01 — M1 gate passed; codex; slash v4; melee hits land on the strike
+- The human passed the M1 gate.
+- New "Arena PvP Codex" page, generated from data (`tools/codex/build_codex.py`): every ability with icons and computed numbers, and the talent trees (placeholders until M2).
+  - Six descriptions behind the M1-13 balance pass were corrected, and the validator now rejects such drift.
+- Slash: four different readings were sent, and the human picked D. It is now impact_slash and both greatsword hits:
+  - a whoosh swelling into the contact, a crisp cut, a wet tear, and a bright steel ring sliding down in pitch;
+  - new layer types `whoosh` and gliding, scraping resonances.
+- Melee hits now sound and show when the blade lands. Before, they played when the swing started, almost half a second early. The animator reports the strike of the next swing, and sounds start before it by their own lead-in.
+- `tools/match_video.sh`: a reference video of a recorded match, drawn with Godot's Movie Maker at 30 fps with game audio.
+
 ## 2026-10-01 — Review pass 3 and the M1 gate
 - Balance, 2v2 (1,000 matches), after fixing the bot targeting bug the review found:
   - Arcanist 54%, Oracle 52%, Warblade 52%.

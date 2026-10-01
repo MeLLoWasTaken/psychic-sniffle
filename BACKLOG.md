@@ -276,8 +276,8 @@ The slice specs are Warblade Carnage (melee, rage), Arcanist Rime (casting, inte
 - [x] Menu → "Play 2v2 vs bots" → preparation room → gates open → fight → end screen with damage and healing scoreboard → back to menu (`game/ui/main_menu.gd`, `game/client/match_flow.gd`, `local_server.gd`, `match_scoreboard.gd`; menus in `data/menus`).
 - [x] A human player can play a full match with a bot partner against two bots: `tools/match_flow_e2e.py` clicks the real buttons and plays to a kill through keyboard and mouse events (259 s, in check_all full mode); the scoreboard equals the server's totals. Failure paths (server lost, cannot start, leaving) end at the menu.
 
-### M1-33 Slash sound, chosen by the human `[todo]`
-- [ ] Build the human's pick of the four slash readings (`previews/audio/slash_candidates/`, KNOWN_ISSUES 2026-10-01) into impact_slash, hit_greatsword_plate and hit_greatsword_cloth as data, keeping the weapon and armor identity tests; adjust build rules only by an explicit DECISIONS entry (B and D carry a metallic ring the tonal rule may flag).
+### M1-33 Slash sound, chosen by the human `[done]`
+- [x] Build the human's pick (D) of the four slash readings (`previews/audio/slash_candidates/`, KNOWN_ISSUES 2026-10-01) into impact_slash, hit_greatsword_plate and hit_greatsword_cloth as data, keeping the weapon and armor identity tests; adjust build rules only by an explicit DECISIONS entry (B and D carry a metallic ring the tonal rule may flag).
 
 ### M1-34 Reference video of a bot match `[doing]`
 - [ ] `tools/match_video.sh`: a recorded networked 2v2 drawn through the client with Godot's Movie Maker at 30 fps with game audio, encoded to MP4; shared with the human.
@@ -378,6 +378,7 @@ The human asked to incorporate any readily available offering that improves the 
 - [ ] A brazier crackle sound.
 
 ### F-06 Two-handed grip, melee clean-up and stronger releases `[todo]`
+- [ ] Melee windups are long for instant abilities (strikes at 0.41-0.49 s): shorten them so the blade lands sooner after the press; impact sounds and visuals follow the strike automatically (DECISIONS 2026-10-01).
 - [x] The left hand reaches for the hilt of a two-handed weapon in the three melee attacks (two-bone reach baked into `<clip>_two_handed` clips; the handle moves toward the midline and in front of the body).
 - [ ] Two-handed guard in combat idle: with both hands on the handle, the left upper arm and its pauldron sink up to 7 cm into the breastplate near the collarbone (heavy build, deep plate). Needs a stance redesign or pauldrons that partly follow the clavicle; until then combat idle keeps the one-handed guard, which passes the clipping gate.
 - [ ] Cast releases read small from the game camera: exaggerate the push and hold the follow-through a few frames longer.

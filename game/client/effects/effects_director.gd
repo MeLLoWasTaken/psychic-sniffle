@@ -40,6 +40,11 @@ var _auras: Dictionary = {}  ## "unit:aura" -> Vfx
 var _skeletons: Dictionary = {}  ## unit id -> {sk, bones: {hand_r: idx, hand_l: idx}} or {}
 var _swing_count: Dictionary = {}  ## unit id -> swings, to alternate arc sides
 var _impacts_this_batch: int = 0
+## (source unit, ability) -> seconds until that unit's swing strikes, 0 for none (WorldRenderer sets
+## it): a melee hit's impact at the target waits for the blade; the swing trail does not
+var strike_delay: Callable = Callable()
+var _defer_s: float = 0.0  ## while handling one event: how long its impacts at a target wait
+var _deferred: Array = []  ## [seconds left, impact, ability, school, source, target]
 var _recent: Array = []  ## [source, ability] of recent cast_success events, newest last
 
 static var _live_directors: int = 0
@@ -95,6 +100,9 @@ func push_events(evs: Array) -> void:
 		var type: String = str(ev.get("type", ""))
 		var src: int = int(ev.get("source", -1))
 		var ability: String = str(ev.get("ability", ""))
+		_defer_s = 0.0
+		if type in ["cast_success", "damage", "heal"] and strike_delay.is_valid():
+			_defer_s = float(strike_delay.call(src, ability))
 		match type:
 			"cast_start":
 				_start_cast(src, ability, float(int(ev.get("end_tick", 0)) - int(ev.get("tick", 0))) / tick_rate)
@@ -120,6 +128,16 @@ func push_events(evs: Array) -> void:
 
 ## Advance every effect by `delta` seconds and keep attached ones on their units.
 func update(delta: float) -> void:
+	_defer_s = 0.0
+	if not _deferred.is_empty():
+		var keep: Array = []
+		for d: Array in _deferred:
+			d[0] = float(d[0]) - delta
+			if float(d[0]) <= 0.0:
+				_impact(d[1], d[2], d[3], d[4], d[5])
+			else:
+				keep.append(d)
+		_deferred = keep
 	for vfx: Vfx in active.duplicate():  # arrivals may add impacts or evict effects meanwhile
 		if vfx.is_queued_for_deletion():
 			continue
@@ -249,6 +267,9 @@ func _hit(ability: String, src: int, tgt: int, crit: bool) -> void:
 
 
 func _impact(imp: Dictionary, ability: String, school: String, src: int, tgt: int) -> Vfx:
+	if _defer_s > 0.0 and tgt != src:
+		_deferred.append([_defer_s, imp, ability, school, src, tgt])
+		return null
 	if _impacts_this_batch >= int(budget.get("max_impacts_per_tick", 24)):
 		dropped += 1
 		return null

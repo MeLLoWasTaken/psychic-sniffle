@@ -323,3 +323,33 @@ func test_voice_cap_holds_in_a_20_player_brawl_and_enemy_cc_is_never_dropped() -
 	assert_int(a.dropped_critical()).is_equal(0)
 	# the players never outnumber the cap either (voices are pooled, not created per sound)
 	assert_int(a.get_child_count()).is_less_equal(64)
+
+
+func test_melee_impact_waits_for_the_swing_to_strike() -> void:
+	# a swing striking 0.45 s in; the greatsword hit's contact is contact_s into its file, so the
+	# hit starts that much earlier; the swing itself plays at once; a spell impact never waits
+	var a: AudioDirector = _director()
+	a.strike_delay = func(src: int, ab: String) -> float: return 0.45 if ab in ["auto_attack", "grim_hack"] else 0.0
+	var lead: float = float(a.bank.sounds["hit_greatsword_cloth"].get("contact_s", 0.0))
+	assert_float(lead).is_greater(0.0)
+	var start: int = _tick
+	a.push_events([_ev("cast_success", ME, FOE, {"ability": "grim_hack"}),
+		_ev("damage", ME, FOE, {"ability": "grim_hack", "amount": 4000})])
+	assert_int(_plays(a, "swing_greatsword").size()).is_equal(1)
+	assert_int(_plays(a, "hit_greatsword_cloth").size()).is_equal(0)
+	var due: int = start + roundi((0.45 - lead) * 60)
+	while _tick < due - 1:
+		a.push_view(_view(_units()))
+	assert_int(_plays(a, "hit_greatsword_cloth").size()).is_equal(0)
+	a.push_view(_view(_units()))
+	var hit: Array = _plays(a, "hit_greatsword_cloth")
+	assert_int(hit.size()).is_equal(1)
+	assert_int(int(hit[0]["tick"])).is_equal(due)
+	a.push_events([_ev("damage", FOE, ME, {"ability": "rime_bolt", "amount": 7800})])
+	assert_int(_plays(a, "rime_bolt_impact").size()).is_equal(1)
+
+
+func test_animator_reports_the_strike_of_its_next_swing() -> void:
+	for clip: String in ["attack_1", "attack_2", "attack_3"]:
+		assert_float(CharacterAnimator.strike_time_s(clip)).is_between(0.3, 0.6)
+	assert_float(CharacterAnimator.strike_time_s("idle")).is_equal(0.0)

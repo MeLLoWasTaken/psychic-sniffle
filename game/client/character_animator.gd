@@ -61,6 +61,7 @@ var _action_started: float = 0.0
 var _action_length: float = INF
 var _action_priority: int = 0
 var _action_min: float = 0.0
+var anim_set_id: String = "humanoid"  ## the animation set the clips come from (strike times)
 var _melee_index: int = 0
 var _last_melee: float = -INF
 var _last_hit: float = -INF
@@ -88,6 +89,7 @@ static func create(p_player: AnimationPlayer, p_unit_id: int, p_team: int, set_i
 	a.unit_id = p_unit_id
 	a.team = p_team
 	a.states = Data.anim_states[set_id]
+	a.anim_set_id = set_id
 	a.player = p_player
 	p_player.get_parent().add_child(a)
 	a._build()
@@ -252,12 +254,40 @@ func _play_kind(kind: String, ab: Dictionary) -> void:
 			_try_start("ranged", str(acts["ranged"]["clip"]), acts["ranged"])
 		"melee":
 			var melee: Dictionary = acts["melee"]
-			var cycle: Array = melee["cycle"]
 			if _clock - _last_melee > float(melee["reset_s"]):
 				_melee_index = 0
-			if _try_start("melee", str(cycle[_melee_index % cycle.size()]), melee):
+			if _try_start("melee", next_melee_clip(), melee):
 				_melee_index += 1
 				_last_melee = _clock
+
+
+## The melee clip the next swing will play (the cycle restarts after a pause of reset_s).
+func next_melee_clip() -> String:
+	var melee: Dictionary = states["actions"]["melee"]
+	var cycle: Array = melee["cycle"]
+	var i: int = 0 if _clock - _last_melee > float(melee["reset_s"]) else _melee_index
+	return str(cycle[i % cycle.size()])
+
+
+## Seconds from the start of an ability's action until its weapon strikes, or 0 when the ability
+## plays no melee swing: impact sounds of a swing wait for the blade (the server applies the damage
+## when the swing starts). The strike is the clip's key eased "in" (the hit landing) in the
+## animation set.
+func strike_delay_s(ability_id: String) -> float:
+	var ab: Dictionary = Data.abilities.get(ability_id, {})
+	var kind: String = str(states["auto_attack"]) if ability_id == "auto_attack" else ability_action(states, ab, _melee_m)
+	if kind != "melee" or override != "":
+		return 0.0
+	return strike_time_s(next_melee_clip(), anim_set_id)
+
+
+## The time of a clip's strike key (the first key eased "in"), 0 if it has none.
+static func strike_time_s(clip: String, p_set_id: String = "humanoid") -> float:
+	var c: Dictionary = Data.animations.get(p_set_id, {}).get("clips", {}).get(clip, {})
+	for k: Dictionary in c.get("keys", []):
+		if str(k.get("ease", "")) == "in":
+			return float(k["t"])
+	return 0.0
 
 
 func _update_cast(u: Dictionary) -> void:

@@ -1,132 +1,181 @@
 {
   "id": "hit_greatsword_plate",
-  "description": "Greatsword on plate: heavy slash, v2 (built like impact_slash v3). Contact tick, the long downward draw of the blade, the edge scraping plate (grainy, sweeping down), a short plate clang, a light thud.",
+  "description": "Greatsword on plate: slash D (whoosh into a cut and a sliding steel ring) with more ring and scrape and less tearing, plus a short low plate clang.",
   "category": "impact",
   "peak_dbfs": -3.0,
   "variants": 3,
-  "duration_s": 0.65,
+  "duration_s": 1.1,
+  "contact_s": 0.14,
+  "post": {
+    "saturate": 1.6
+  },
+  "processing": "slash",
   "layers": [
     {
+      "type": "whoosh",
+      "contact_s": 0.14,
+      "pre_s": 0.13,
+      "lo_hz": 450,
+      "hi_hz": 2400,
+      "fall_s": 0.12,
+      "decay_s": 0.05,
+      "q": 2.2,
+      "gain": 3.0
+    },
+    {
       "type": "noise",
-      "highpass": 3000,
+      "highpass": 2500,
+      "start_s": 0.14,
       "env": {
         "attack_s": 0.0003,
-        "decay_s": 0.003
+        "decay_s": 0.006
       },
-      "gain": 0.7
+      "gain": 1.2
     },
     {
       "type": "noise",
       "band": [
-        3800,
-        9500
+        1800,
+        7000
       ],
-      "sweep_to": [
-        1300,
-        3600
-      ],
-      "steps": 8,
+      "start_s": 0.14,
       "env": {
-        "attack_s": 0.002,
-        "decay_s": 0.09,
-        "length_s": 0.32
+        "attack_s": 0.001,
+        "decay_s": 0.035
       },
-      "gain": 1.3
+      "gain": 1.0
     },
     {
       "type": "noise",
       "band": [
-        5200,
-        6600
+        250,
+        1200
       ],
-      "sweep_to": [
-        2800,
-        3500
-      ],
-      "steps": 8,
-      "am": [
-        95,
-        0.7
-      ],
+      "start_s": 0.14,
       "env": {
-        "attack_s": 0.002,
-        "decay_s": 0.07,
-        "length_s": 0.24
+        "attack_s": 0.001,
+        "decay_s": 0.025
       },
-      "gain": 1.1
+      "gain": 0.8
+    },
+    {
+      "type": "crackle",
+      "band": [
+        900,
+        5000
+      ],
+      "per_second": 3200,
+      "grain_s": 0.0015,
+      "start_s": 0.14400000000000002,
+      "env": {
+        "attack_s": 0.004,
+        "decay_s": 0.09
+      },
+      "gain": 0.6
     },
     {
       "type": "resonant",
-      "base": 2300,
+      "base": 2950,
       "jitter": 0.08,
+      "start_s": 0.14,
+      "env": {
+        "attack_s": 0.002
+      },
+      "partials": [
+        [
+          1.0,
+          140,
+          1.0,
+          0.2
+        ],
+        [
+          1.47,
+          160,
+          0.7,
+          0.17
+        ],
+        [
+          2.09,
+          180,
+          0.5,
+          0.14
+        ],
+        [
+          2.76,
+          200,
+          0.35,
+          0.11
+        ],
+        [
+          3.52,
+          220,
+          0.25,
+          0.08
+        ]
+      ],
+      "glide": [
+        0.93,
+        0.3
+      ],
+      "scrape": [
+        1.1,
+        0.1
+      ],
+      "highpass": 1500,
+      "gain": 3.6
+    },
+    {
+      "type": "noise",
+      "band": [
+        3000,
+        9000
+      ],
+      "start_s": 0.11000000000000001,
+      "env": {
+        "attack_s": 0.02,
+        "decay_s": 0.05
+      },
+      "gain": 0.25
+    },
+    {
+      "type": "sub",
+      "from_hz": 120,
+      "to_hz": 58,
+      "curve": 10,
+      "start_s": 0.14,
+      "env": {
+        "attack_s": 0.001,
+        "decay_s": 0.03
+      },
+      "gain": 0.5
+    },
+    {
+      "type": "resonant",
+      "base": 950,
+      "jitter": 0.12,
+      "start_s": 0.14,
       "partials": [
         [
           1,
           18,
           0.9,
+          0.06
+        ],
+        [
+          1.73,
+          22,
+          0.7,
           0.05
         ],
         [
-          1.52,
-          20,
-          0.6,
+          2.61,
+          25,
+          0.5,
           0.04
-        ],
-        [
-          2.31,
-          22,
-          0.4,
-          0.03
         ]
       ],
-      "highpass": 1500,
-      "gain": 0.85
-    },
-    {
-      "type": "crackle",
-      "band": [
-        1400,
-        6500
-      ],
-      "per_second": 2600,
-      "grain_s": 0.0015,
-      "env": {
-        "attack_s": 0.004,
-        "decay_s": 0.08
-      },
-      "gain": 0.4
-    },
-    {
-      "type": "sub",
-      "from_hz": 120,
-      "to_hz": 60,
-      "curve": 10,
-      "env": {
-        "attack_s": 0.001,
-        "decay_s": 0.03
-      },
-      "gain": 0.6
-    },
-    {
-      "type": "noise",
-      "band": [
-        150,
-        500
-      ],
-      "env": {
-        "attack_s": 0.001,
-        "decay_s": 0.03
-      },
-      "gain": 0.6
+      "highpass": 650,
+      "gain": 0.5
     }
-  ],
-  "post": {
-    "saturate": 1.6,
-    "reverb": {
-      "length_s": 0.45,
-      "mix": 0.1,
-      "brightness": 6500
-    }
-  },
-  "processing": "slash"
+  ]
 }

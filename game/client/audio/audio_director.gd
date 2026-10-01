@@ -8,7 +8,10 @@ extends Node3D
 ##                       caster until the cast ends (success, interrupt, failure, channel end)
 ##   cast_success        release at the caster ("@weapon_swing": the caster's weapon swing)
 ##   damage, heal, interrupt, dispel, and aura_applied right after the caster's cast_success
-##                       impact at the unit hit, once per unit per tick ("@weapon_hit": the
+##                       impact at the unit hit, once per unit per tick; for a melee swing it waits
+##                       until the swing's clip strikes (strike_delay, from the renderer's animator),
+##                       less the sound's own lead-in before its contact (contact_s in its data),
+##                       counted in game ticks ("@weapon_hit": the
 ##                       caster's weapon on the target's armor); periodic ticks of mapped auras
 ##   aura_applied        crowd control of the warning categories on the local player: the CC
 ##                       warning (2D), once per application (several in one tick count as one)
@@ -37,6 +40,10 @@ const HISTORY_MAX: int = 5000
 const STOP_FADE_S: float = 0.08  ## loops fade out instead of stopping dead (a click)
 
 var bank: SoundBank
+## (source unit, ability) -> seconds until that unit's swing strikes, 0 for none (WorldRenderer sets
+## it from the unit's CharacterAnimator); impact sounds of melee swings wait for it
+var strike_delay: Callable = Callable()
+var _pending: Array = []  ## impacts waiting for their swing to strike: {tick, ability, source, target}
 var max_voices: int = 64
 var cc_warning_enabled: bool = true  ## DESIGN.md settings: CC warning sound on or off
 var listener_position: Variant = null  ## fixed listener (tests); else the camera, else the local unit
@@ -150,6 +157,7 @@ func push_view(v: Dictionary) -> void:
 	var me: Dictionary = v.get("me", {})
 	me_id = int(me.get("id", -1))
 	me_team = int(me.get("team", -1))
+	_play_due()
 	var seen: Dictionary = {}
 	for u: Dictionary in v["units"]:
 		seen[int(u["id"])] = true
@@ -242,7 +250,37 @@ func _impact(ab: String, src: int, tgt: int) -> void:
 	if _impacts.size() > 512:
 		_impacts.clear()
 		_impacts[key] = true
+	var wait: int = _strike_wait_ticks(ab, src, tgt)
+	if wait > 0:
+		_pending.append({"tick": tick + wait, "ability": ab, "source": src, "target": tgt})
+		return
 	_play_stage(ab, "impact", tgt, src, tgt)
+
+
+## Ticks to hold a melee impact so its contact lands on the swing's strike.
+func _strike_wait_ticks(ab: String, src: int, tgt: int) -> int:
+	if not strike_delay.is_valid():
+		return 0
+	var strike: float = float(strike_delay.call(src, ab))
+	if strike <= 0.0:
+		return 0
+	var lead: float = 0.0
+	for ref: Variant in bank.stage_refs(ab, "impact"):
+		var id: String = bank.resolve(str(ref), _spec(src), _spec(tgt))
+		lead = maxf(lead, float(bank.sounds.get(id, {}).get("contact_s", 0.0)))
+	return maxi(0, roundi((strike - lead) * tick_rate))
+
+
+func _play_due() -> void:
+	if _pending.is_empty():
+		return
+	var keep: Array = []
+	for p: Dictionary in _pending:
+		if int(p["tick"]) <= tick:
+			_play_stage(str(p["ability"]), "impact", int(p["target"]), int(p["source"]), int(p["target"]))
+		else:
+			keep.append(p)
+	_pending = keep
 
 
 func _play_stage(ab: String, stage: String, at_unit: int, src: int, tgt: int) -> void:

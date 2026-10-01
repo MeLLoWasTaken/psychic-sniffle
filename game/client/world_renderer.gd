@@ -33,8 +33,14 @@ func _init() -> void:
 	ring.visible = false
 	add_child(ring)
 	effects = EffectsDirector.new(self)
+	effects.strike_delay = func(src: int, ab: String) -> float:
+		var anim: CharacterAnimator = animator_of(src)
+		return anim.strike_delay_s(ab) if anim != null else 0.0
 	add_child(effects)
 	audio = AudioDirector.new()
+	audio.strike_delay = func(src: int, ab: String) -> float:
+		var anim: CharacterAnimator = animator_of(src)
+		return anim.strike_delay_s(ab) if anim != null else 0.0
 	add_child(audio)
 
 
