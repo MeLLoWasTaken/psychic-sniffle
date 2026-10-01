@@ -1,0 +1,206 @@
+{
+  "correction_avg_m": 0.00201331083628568,
+  "correction_log": [
+    {
+      "auras": [
+        "winged_stride@709",
+        "dread_roared@853"
+      ],
+      "m": 0.0118518974632025,
+      "pending": 6,
+      "tick": 495
+    },
+    {
+      "auras": [
+        "winged_stride@709",
+        "dread_roared@853"
+      ],
+      "m": 0.0141915827989578,
+      "pending": 6,
+      "tick": 496
+    },
+    {
+      "auras": [
+        "winged_stride@709",
+        "dread_roared@853"
+      ],
+      "m": 0.0105492053553462,
+      "pending": 5,
+      "tick": 497
+    },
+    {
+      "auras": [
+        "winged_stride@709",
+        "dread_roared@853"
+      ],
+      "m": 0.0119908163323998,
+      "pending": 5,
+      "tick": 498
+    },
+    {
+      "auras": [
+        "winged_stride@709",
+        "dread_roared@853"
+      ],
+      "m": 0.00184326723683625,
+      "pending": 5,
+      "tick": 499
+    },
+    {
+      "auras": [
+        "winged_stride@709",
+        "dread_roared@853"
+      ],
+      "m": 0.00057114684022963,
+      "pending": 4,
+      "tick": 500
+    },
+    {
+      "auras": [
+        "winged_stride@709",
+        "dread_roared@853"
+      ],
+      "m": 0.000849723815917969,
+      "pending": 4,
+      "tick": 503
+    },
+    {
+      "auras": [
+        "winged_stride@709",
+        "dread_roared@853"
+      ],
+      "m": 0.000780582427978516,
+      "pending": 4,
+      "tick": 505
+    },
+    {
+      "auras": [
+        "winged_stride@709",
+        "dread_roared@853"
+      ],
+      "m": 0.000569820404052734,
+      "pending": 4,
+      "tick": 508
+    },
+    {
+      "auras": [
+        "winged_stride@709",
+        "dread_roared@853"
+      ],
+      "m": 0.000551223754882812,
+      "pending": 4,
+      "tick": 517
+    },
+    {
+      "auras": [
+        "winged_stride@709",
+        "dread_roared@853"
+      ],
+      "m": 0.000911712646484375,
+      "pending": 4,
+      "tick": 518
+    },
+    {
+      "auras": [
+        "winged_stride@709",
+        "dread_roared@853"
+      ],
+      "m": 0.000554084777832031,
+      "pending": 4,
+      "tick": 520
+    },
+    {
+      "auras": [
+        "winged_stride@709",
+        "dread_roared@853"
+      ],
+      "m": 0.000531196594238281,
+      "pending": 4,
+      "tick": 521
+    },
+    {
+      "auras": [
+        "winged_stride@709",
+        "dread_roared@853"
+      ],
+      "m": 0.000744819641113281,
+      "pending": 4,
+      "tick": 522
+    },
+    {
+      "auras": [
+        "winged_stride@709",
+        "dread_roared@853"
+      ],
+      "m": 0.000593185424804688,
+      "pending": 4,
+      "tick": 526
+    },
+    {
+      "auras": [
+        "winged_stride@709",
+        "dread_roared@853"
+      ],
+      "m": 0.00115966796875,
+      "pending": 4,
+      "tick": 528
+    },
+    {
+      "auras": [
+        "winged_stride@709",
+        "dread_roared@853"
+      ],
+      "m": 0.000693321228027344,
+      "pending": 4,
+      "tick": 529
+    },
+    {
+      "auras": [
+        "winged_stride@709",
+        "dread_roared@853"
+      ],
+      "m": 0.00157546997070312,
+      "pending": 5,
+      "tick": 530
+    },
+    {
+      "auras": [
+        "winged_stride@709",
+        "dread_roared@853"
+      ],
+      "m": 0.000762939453125,
+      "pending": 4,
+      "tick": 531
+    },
+    {
+      "auras": [
+        "winged_stride@709",
+        "dread_roared@853"
+      ],
+      "m": 0.000849723815917969,
+      "pending": 4,
+      "tick": 532
+    }
+  ],
+  "correction_max_m": 0.0141915827989578,
+  "corrections": 68,
+  "effect_correction_max_m": 1.01873755455017,
+  "effect_corrections": 4,
+  "end_view": {},
+  "events_received": 1305,
+  "inputs_sent": 2696,
+  "log_errors": 0,
+  "log_warnings": 0,
+  "name": "bot19",
+  "rtt_avg_ms": 21.9136444444444,
+  "rtt_samples": 45,
+  "simulated_jitter_ms": 0.0,
+  "simulated_lag_ms": 0.0,
+  "simulated_loss": 0.0,
+  "snapshot_rate_hz": 57.5954929491237,
+  "snapshots": 2589,
+  "stale_snapshots": 0,
+  "stuck_casts": [],
+  "teleports": 0,
+  "unit_id": 20
+}

@@ -1,0 +1,228 @@
+{
+  "correction_avg_m": 0.00262452348895175,
+  "correction_log": [
+    {
+      "auras": [
+        "winged_stride@599",
+        "ruin_bleed@1142",
+        "charge_dazed@520",
+        "dread_roared@853"
+      ],
+      "m": 0.00183954113163054,
+      "pending": 2,
+      "tick": 520
+    },
+    {
+      "auras": [
+        "winged_stride@599",
+        "ruin_bleed@1142",
+        "dread_roared@853"
+      ],
+      "m": 0.00368748907931149,
+      "pending": 2,
+      "tick": 521
+    },
+    {
+      "auras": [
+        "winged_stride@599",
+        "ruin_bleed@1142",
+        "dread_roared@853"
+      ],
+      "m": 0.0033232478890568,
+      "pending": 2,
+      "tick": 522
+    },
+    {
+      "auras": [
+        "winged_stride@599",
+        "ruin_bleed@1142",
+        "dread_roared@853"
+      ],
+      "m": 0.00355206918902695,
+      "pending": 2,
+      "tick": 523
+    },
+    {
+      "auras": [
+        "winged_stride@599",
+        "ruin_bleed@1142",
+        "dread_roared@853"
+      ],
+      "m": 0.00697648013010621,
+      "pending": 3,
+      "tick": 524
+    },
+    {
+      "auras": [
+        "winged_stride@599",
+        "ruin_bleed@1142",
+        "dread_roared@853"
+      ],
+      "m": 0.00504552060738206,
+      "pending": 2,
+      "tick": 525
+    },
+    {
+      "auras": [
+        "winged_stride@599",
+        "ruin_bleed@1142",
+        "dread_roared@853"
+      ],
+      "m": 0.00464911805465817,
+      "pending": 2,
+      "tick": 526
+    },
+    {
+      "auras": [
+        "winged_stride@599",
+        "ruin_bleed@1142",
+        "dread_roared@853"
+      ],
+      "m": 0.00294533791020513,
+      "pending": 2,
+      "tick": 527
+    },
+    {
+      "auras": [
+        "winged_stride@599",
+        "ruin_bleed@1142",
+        "dread_roared@853"
+      ],
+      "m": 0.00305797765031457,
+      "pending": 2,
+      "tick": 528
+    },
+    {
+      "auras": [
+        "winged_stride@599",
+        "ruin_bleed@1142",
+        "dread_roared@853"
+      ],
+      "m": 0.00436770357191563,
+      "pending": 2,
+      "tick": 529
+    },
+    {
+      "auras": [
+        "winged_stride@599",
+        "ruin_bleed@1142",
+        "dread_roared@853"
+      ],
+      "m": 0.00291362777352333,
+      "pending": 2,
+      "tick": 530
+    },
+    {
+      "auras": [
+        "winged_stride@599",
+        "ruin_bleed@1142",
+        "dread_roared@853"
+      ],
+      "m": 0.00394777208566666,
+      "pending": 2,
+      "tick": 531
+    },
+    {
+      "auras": [
+        "winged_stride@599",
+        "ruin_bleed@1142",
+        "dread_roared@853"
+      ],
+      "m": 0.00311556877568364,
+      "pending": 2,
+      "tick": 532
+    },
+    {
+      "auras": [
+        "winged_stride@599",
+        "ruin_bleed@1142",
+        "dread_roared@853"
+      ],
+      "m": 0.00408908724784851,
+      "pending": 2,
+      "tick": 533
+    },
+    {
+      "auras": [
+        "winged_stride@599",
+        "ruin_bleed@1142",
+        "dread_roared@853"
+      ],
+      "m": 0.00387393566779792,
+      "pending": 2,
+      "tick": 534
+    },
+    {
+      "auras": [
+        "winged_stride@599",
+        "ruin_bleed@1142",
+        "dread_roared@853"
+      ],
+      "m": 0.00257045240141451,
+      "pending": 2,
+      "tick": 535
+    },
+    {
+      "auras": [
+        "winged_stride@599",
+        "ruin_bleed@1142",
+        "dread_roared@853"
+      ],
+      "m": 0.00371296238154173,
+      "pending": 2,
+      "tick": 536
+    },
+    {
+      "auras": [
+        "winged_stride@599",
+        "ruin_bleed@1142",
+        "dread_roared@853"
+      ],
+      "m": 0.00225282157771289,
+      "pending": 2,
+      "tick": 537
+    },
+    {
+      "auras": [
+        "winged_stride@599",
+        "ruin_bleed@1142",
+        "dread_roared@853"
+      ],
+      "m": 0.00332134403288364,
+      "pending": 2,
+      "tick": 538
+    },
+    {
+      "auras": [
+        "winged_stride@599",
+        "ruin_bleed@1142",
+        "dread_roared@853",
+        "lingering_grace@1438"
+      ],
+      "m": 0.00431223632767797,
+      "pending": 3,
+      "tick": 539
+    }
+  ],
+  "correction_max_m": 0.00697648013010621,
+  "corrections": 38,
+  "effect_correction_max_m": 0.81666886806488,
+  "effect_corrections": 3,
+  "end_view": {},
+  "events_received": 1344,
+  "inputs_sent": 2701,
+  "log_errors": 0,
+  "log_warnings": 0,
+  "name": "bot4",
+  "rtt_avg_ms": 24.5541111111111,
+  "rtt_samples": 45,
+  "simulated_jitter_ms": 0.0,
+  "simulated_lag_ms": 0.0,
+  "simulated_loss": 0.0,
+  "snapshot_rate_hz": 57.5620664648512,
+  "snapshots": 2590,
+  "stale_snapshots": 0,
+  "stuck_casts": [],
+  "teleports": 0,
+  "unit_id": 4
+}

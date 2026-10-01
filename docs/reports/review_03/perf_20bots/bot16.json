@@ -1,0 +1,206 @@
+{
+  "correction_avg_m": 0.0074427391107647,
+  "correction_log": [
+    {
+      "auras": [
+        "winged_stride@621",
+        "dread_roared@787"
+      ],
+      "m": 0.0112670287489891,
+      "pending": 4,
+      "tick": 429
+    },
+    {
+      "auras": [
+        "winged_stride@621",
+        "dread_roared@787"
+      ],
+      "m": 0.00985628366470337,
+      "pending": 4,
+      "tick": 430
+    },
+    {
+      "auras": [
+        "winged_stride@621",
+        "dread_roared@787"
+      ],
+      "m": 0.00725343404337764,
+      "pending": 4,
+      "tick": 431
+    },
+    {
+      "auras": [
+        "winged_stride@621",
+        "dread_roared@787"
+      ],
+      "m": 0.011745142750442,
+      "pending": 4,
+      "tick": 432
+    },
+    {
+      "auras": [
+        "winged_stride@621",
+        "dread_roared@787"
+      ],
+      "m": 0.0118776084855199,
+      "pending": 4,
+      "tick": 433
+    },
+    {
+      "auras": [
+        "winged_stride@621",
+        "dread_roared@787"
+      ],
+      "m": 0.0131566971540451,
+      "pending": 4,
+      "tick": 434
+    },
+    {
+      "auras": [
+        "winged_stride@621",
+        "dread_roared@787"
+      ],
+      "m": 0.0141966538503766,
+      "pending": 5,
+      "tick": 435
+    },
+    {
+      "auras": [
+        "winged_stride@621",
+        "dread_roared@787"
+      ],
+      "m": 0.01142942532897,
+      "pending": 5,
+      "tick": 436
+    },
+    {
+      "auras": [
+        "winged_stride@621",
+        "dread_roared@787"
+      ],
+      "m": 0.0129634710028768,
+      "pending": 5,
+      "tick": 437
+    },
+    {
+      "auras": [
+        "winged_stride@621",
+        "dread_roared@787"
+      ],
+      "m": 0.0113550005480647,
+      "pending": 5,
+      "tick": 438
+    },
+    {
+      "auras": [
+        "winged_stride@621",
+        "dread_roared@787"
+      ],
+      "m": 0.0114626260474324,
+      "pending": 5,
+      "tick": 439
+    },
+    {
+      "auras": [
+        "winged_stride@621",
+        "dread_roared@787"
+      ],
+      "m": 0.00924246665090322,
+      "pending": 4,
+      "tick": 440
+    },
+    {
+      "auras": [
+        "winged_stride@621",
+        "dread_roared@787"
+      ],
+      "m": 0.0130511950701475,
+      "pending": 5,
+      "tick": 441
+    },
+    {
+      "auras": [
+        "winged_stride@621",
+        "dread_roared@787"
+      ],
+      "m": 0.0119567215442657,
+      "pending": 4,
+      "tick": 442
+    },
+    {
+      "auras": [
+        "winged_stride@621",
+        "dread_roared@787"
+      ],
+      "m": 0.0192279368638992,
+      "pending": 6,
+      "tick": 443
+    },
+    {
+      "auras": [
+        "winged_stride@621",
+        "dread_roared@787"
+      ],
+      "m": 0.0143879158422351,
+      "pending": 7,
+      "tick": 444
+    },
+    {
+      "auras": [
+        "winged_stride@621",
+        "dread_roared@787"
+      ],
+      "m": 0.0126892132684588,
+      "pending": 5,
+      "tick": 445
+    },
+    {
+      "auras": [
+        "winged_stride@621",
+        "dread_roared@787"
+      ],
+      "m": 0.011009412817657,
+      "pending": 5,
+      "tick": 446
+    },
+    {
+      "auras": [
+        "winged_stride@621",
+        "dread_roared@787"
+      ],
+      "m": 0.0137597220018506,
+      "pending": 5,
+      "tick": 447
+    },
+    {
+      "auras": [
+        "winged_stride@621",
+        "dread_roared@787"
+      ],
+      "m": 0.0160962007939816,
+      "pending": 6,
+      "tick": 448
+    }
+  ],
+  "correction_max_m": 0.0583334006369114,
+  "corrections": 109,
+  "effect_correction_max_m": 1.72265827655792,
+  "effect_corrections": 11,
+  "end_view": {},
+  "events_received": 1348,
+  "inputs_sent": 2691,
+  "log_errors": 0,
+  "log_warnings": 0,
+  "name": "bot16",
+  "rtt_avg_ms": 24.6146,
+  "rtt_samples": 45,
+  "simulated_jitter_ms": 0.0,
+  "simulated_lag_ms": 0.0,
+  "simulated_loss": 0.0,
+  "snapshot_rate_hz": 57.5647444955798,
+  "snapshots": 2589,
+  "stale_snapshots": 0,
+  "stuck_casts": [],
+  "teleports": 1,
+  "unit_id": 16
+}

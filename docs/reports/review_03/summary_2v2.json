@@ -1,0 +1,148 @@
+{
+ "matches": 1000,
+ "kill_rate": 1.0,
+ "draws": 0,
+ "median_seconds": 90.2,
+ "team0_win_rate": 0.477,
+ "errors": 0,
+ "comps": {
+  "arcanist_rime+arcanist_rime": {
+   "win_rate": 0.479,
+   "games": 240
+  },
+  "arcanist_rime+oracle_grace": {
+   "win_rate": 0.787,
+   "games": 240
+  },
+  "arcanist_rime+warblade_carnage": {
+   "win_rate": 0.357,
+   "games": 238
+  },
+  "oracle_grace+oracle_grace": {
+   "win_rate": 0.185,
+   "games": 238
+  },
+  "oracle_grace+warblade_carnage": {
+   "win_rate": 0.586,
+   "games": 237
+  },
+  "warblade_carnage+warblade_carnage": {
+   "win_rate": 0.603,
+   "games": 237
+  }
+ },
+ "specs": {
+  "arcanist_rime": {
+   "win_rate": 0.542,
+   "games": 718
+  },
+  "oracle_grace": {
+   "win_rate": 0.52,
+   "games": 715
+  },
+  "warblade_carnage": {
+   "win_rate": 0.515,
+   "games": 712
+  }
+ },
+ "matchups": {
+  "arcanist_rime+arcanist_rime vs arcanist_rime+oracle_grace": {
+   "first_wins": 0.0,
+   "decided": 48
+  },
+  "arcanist_rime+arcanist_rime vs arcanist_rime+warblade_carnage": {
+   "first_wins": 0.479,
+   "decided": 48
+  },
+  "arcanist_rime+arcanist_rime vs oracle_grace+oracle_grace": {
+   "first_wins": 0.771,
+   "decided": 48
+  },
+  "arcanist_rime+arcanist_rime vs oracle_grace+warblade_carnage": {
+   "first_wins": 0.438,
+   "decided": 48
+  },
+  "arcanist_rime+arcanist_rime vs warblade_carnage+warblade_carnage": {
+   "first_wins": 0.708,
+   "decided": 48
+  },
+  "arcanist_rime+oracle_grace vs arcanist_rime+warblade_carnage": {
+   "first_wins": 1.0,
+   "decided": 48
+  },
+  "arcanist_rime+oracle_grace vs oracle_grace+oracle_grace": {
+   "first_wins": 0.875,
+   "decided": 48
+  },
+  "arcanist_rime+oracle_grace vs oracle_grace+warblade_carnage": {
+   "first_wins": 0.479,
+   "decided": 48
+  },
+  "arcanist_rime+oracle_grace vs warblade_carnage+warblade_carnage": {
+   "first_wins": 0.583,
+   "decided": 48
+  },
+  "arcanist_rime+warblade_carnage vs oracle_grace+oracle_grace": {
+   "first_wins": 0.729,
+   "decided": 48
+  },
+  "arcanist_rime+warblade_carnage vs oracle_grace+warblade_carnage": {
+   "first_wins": 0.17,
+   "decided": 47
+  },
+  "arcanist_rime+warblade_carnage vs warblade_carnage+warblade_carnage": {
+   "first_wins": 0.362,
+   "decided": 47
+  },
+  "oracle_grace+oracle_grace vs oracle_grace+warblade_carnage": {
+   "first_wins": 0.0,
+   "decided": 47
+  },
+  "oracle_grace+oracle_grace vs warblade_carnage+warblade_carnage": {
+   "first_wins": 0.298,
+   "decided": 47
+  },
+  "oracle_grace+warblade_carnage vs warblade_carnage+warblade_carnage": {
+   "first_wins": 0.021,
+   "decided": 47
+  }
+ },
+ "mirrors": {
+  "arcanist_rime+arcanist_rime": {
+   "games": 48,
+   "kills": 48,
+   "draws": 0
+  },
+  "arcanist_rime+oracle_grace": {
+   "games": 48,
+   "kills": 48,
+   "draws": 0
+  },
+  "arcanist_rime+warblade_carnage": {
+   "games": 48,
+   "kills": 48,
+   "draws": 0
+  },
+  "oracle_grace+oracle_grace": {
+   "games": 47,
+   "kills": 47,
+   "draws": 0
+  },
+  "oracle_grace+warblade_carnage": {
+   "games": 47,
+   "kills": 47,
+   "draws": 0
+  },
+  "warblade_carnage+warblade_carnage": {
+   "games": 47,
+   "kills": 47,
+   "draws": 0
+  }
+ },
+ "flags": [
+  "comp arcanist_rime+oracle_grace: 79% over 240",
+  "comp arcanist_rime+warblade_carnage: 36% over 238",
+  "comp oracle_grace+oracle_grace: 18% over 238",
+  "comp warblade_carnage+warblade_carnage: 60% over 237"
+ ]
+}

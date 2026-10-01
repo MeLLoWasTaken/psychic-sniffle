@@ -1,0 +1,206 @@
+{
+  "correction_avg_m": 0.00457630013473905,
+  "correction_log": [
+    {
+      "auras": [
+        "winged_stride@622",
+        "dread_roared@914"
+      ],
+      "m": 0.00330039113759995,
+      "pending": 3,
+      "tick": 556
+    },
+    {
+      "auras": [
+        "winged_stride@622",
+        "dread_roared@914"
+      ],
+      "m": 0.00247086863964796,
+      "pending": 2,
+      "tick": 557
+    },
+    {
+      "auras": [
+        "winged_stride@622",
+        "dread_roared@914"
+      ],
+      "m": 0.00156083889305592,
+      "pending": 2,
+      "tick": 558
+    },
+    {
+      "auras": [
+        "winged_stride@622",
+        "dread_roared@914"
+      ],
+      "m": 0.00301425135694444,
+      "pending": 3,
+      "tick": 559
+    },
+    {
+      "auras": [
+        "winged_stride@622",
+        "dread_roared@914"
+      ],
+      "m": 0.00117815064731985,
+      "pending": 2,
+      "tick": 560
+    },
+    {
+      "auras": [
+        "winged_stride@622",
+        "dread_roared@914"
+      ],
+      "m": 0.00278966617770493,
+      "pending": 3,
+      "tick": 561
+    },
+    {
+      "auras": [
+        "winged_stride@622",
+        "dread_roared@914"
+      ],
+      "m": 0.00243244995363057,
+      "pending": 2,
+      "tick": 562
+    },
+    {
+      "auras": [
+        "winged_stride@622",
+        "dread_roared@914"
+      ],
+      "m": 0.00163075549062341,
+      "pending": 3,
+      "tick": 563
+    },
+    {
+      "auras": [
+        "winged_stride@622",
+        "dread_roared@914"
+      ],
+      "m": 0.0061532654799521,
+      "pending": 3,
+      "tick": 564
+    },
+    {
+      "auras": [
+        "winged_stride@622",
+        "dread_roared@914"
+      ],
+      "m": 0.00895345862954855,
+      "pending": 3,
+      "tick": 565
+    },
+    {
+      "auras": [
+        "winged_stride@622",
+        "dread_roared@914"
+      ],
+      "m": 0.00855384673923254,
+      "pending": 3,
+      "tick": 566
+    },
+    {
+      "auras": [
+        "winged_stride@622",
+        "dread_roared@914"
+      ],
+      "m": 0.00361962011083961,
+      "pending": 2,
+      "tick": 567
+    },
+    {
+      "auras": [
+        "winged_stride@622",
+        "dread_roared@914"
+      ],
+      "m": 0.00566869787871838,
+      "pending": 3,
+      "tick": 568
+    },
+    {
+      "auras": [
+        "winged_stride@622",
+        "dread_roared@914"
+      ],
+      "m": 0.00325658335350454,
+      "pending": 2,
+      "tick": 569
+    },
+    {
+      "auras": [
+        "winged_stride@622",
+        "dread_roared@914"
+      ],
+      "m": 0.0037609338760376,
+      "pending": 2,
+      "tick": 570
+    },
+    {
+      "auras": [
+        "winged_stride@622",
+        "dread_roared@914"
+      ],
+      "m": 0.00490862922742963,
+      "pending": 3,
+      "tick": 571
+    },
+    {
+      "auras": [
+        "winged_stride@622",
+        "dread_roared@914"
+      ],
+      "m": 0.00358371599577367,
+      "pending": 2,
+      "tick": 572
+    },
+    {
+      "auras": [
+        "winged_stride@622",
+        "dread_roared@914"
+      ],
+      "m": 0.00714272912591696,
+      "pending": 3,
+      "tick": 573
+    },
+    {
+      "auras": [
+        "winged_stride@622",
+        "dread_roared@914"
+      ],
+      "m": 0.00289858831092715,
+      "pending": 2,
+      "tick": 574
+    },
+    {
+      "auras": [
+        "winged_stride@622",
+        "dread_roared@914"
+      ],
+      "m": 0.00589492032304406,
+      "pending": 2,
+      "tick": 575
+    }
+  ],
+  "correction_max_m": 0.0482234954833984,
+  "corrections": 65,
+  "effect_correction_max_m": 1.22499823570251,
+  "effect_corrections": 4,
+  "end_view": {},
+  "events_received": 1360,
+  "inputs_sent": 2699,
+  "log_errors": 0,
+  "log_warnings": 0,
+  "name": "bot8",
+  "rtt_avg_ms": 21.7538666666667,
+  "rtt_samples": 45,
+  "simulated_jitter_ms": 0.0,
+  "simulated_lag_ms": 0.0,
+  "simulated_loss": 0.0,
+  "snapshot_rate_hz": 57.5804981477865,
+  "snapshots": 2590,
+  "stale_snapshots": 0,
+  "stuck_casts": [],
+  "teleports": 0,
+  "unit_id": 8
+}

@@ -1,0 +1,49 @@
+{
+  "correction_avg_m": 0.000587194925174117,
+  "correction_log": [
+    {
+      "auras": [
+        "gashed@775",
+        "lingering_grace@1145",
+        "deep_winter@1212",
+        "dread_roared@688"
+      ],
+      "m": 0.00066375732421875,
+      "pending": 4,
+      "tick": 332
+    },
+    {
+      "auras": [
+        "gashed@775",
+        "lingering_grace@1145",
+        "deep_winter@1212",
+        "dread_roared@688",
+        "psalm_dread@513"
+      ],
+      "m": 0.000510632526129484,
+      "pending": 3,
+      "tick": 342
+    }
+  ],
+  "correction_max_m": 0.00066375732421875,
+  "corrections": 2,
+  "effect_correction_max_m": 0.491330683231354,
+  "effect_corrections": 4,
+  "end_view": {},
+  "events_received": 1320,
+  "inputs_sent": 2700,
+  "log_errors": 0,
+  "log_warnings": 0,
+  "name": "bot2",
+  "rtt_avg_ms": 22.1135555555556,
+  "rtt_samples": 45,
+  "simulated_jitter_ms": 0.0,
+  "simulated_lag_ms": 0.0,
+  "simulated_loss": 0.0,
+  "snapshot_rate_hz": 57.517110784845,
+  "snapshots": 2588,
+  "stale_snapshots": 0,
+  "stuck_casts": [],
+  "teleports": 2,
+  "unit_id": 2
+}

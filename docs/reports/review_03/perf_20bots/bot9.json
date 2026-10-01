@@ -1,0 +1,247 @@
+{
+  "correction_avg_m": 0.00536275141731542,
+  "correction_log": [
+    {
+      "auras": [
+        "chilled@1463",
+        "frostbitten@1583",
+        "chilled@1657",
+        "frostbitten@1599",
+        "red_mist@1722",
+        "lingering_grace@2041",
+        "chilled@1539",
+        "frostbitten@1659",
+        "chilled@1539",
+        "frostbitten@1659",
+        "chilled@1767",
+        "frostbitten@1887",
+        "psalm_dread@1803"
+      ],
+      "m": 0.00799120403826237,
+      "pending": 4,
+      "tick": 1445
+    },
+    {
+      "auras": [
+        "chilled@1463",
+        "frostbitten@1583",
+        "chilled@1657",
+        "frostbitten@1599",
+        "red_mist@1722",
+        "lingering_grace@2041",
+        "chilled@1539",
+        "frostbitten@1659",
+        "chilled@1539",
+        "frostbitten@1659",
+        "chilled@1767",
+        "frostbitten@1887",
+        "psalm_dread@1803"
+      ],
+      "m": 0.00703153293579817,
+      "pending": 4,
+      "tick": 1446
+    },
+    {
+      "auras": [
+        "chilled@1463",
+        "frostbitten@1583",
+        "chilled@1657",
+        "frostbitten@1599",
+        "red_mist@1722",
+        "lingering_grace@2041",
+        "chilled@1539",
+        "frostbitten@1659",
+        "chilled@1539",
+        "frostbitten@1659",
+        "chilled@1767",
+        "frostbitten@1887",
+        "psalm_dread@1803"
+      ],
+      "m": 0.00912169180810452,
+      "pending": 5,
+      "tick": 1447
+    },
+    {
+      "auras": [
+        "chilled@1463",
+        "frostbitten@1583",
+        "chilled@1657",
+        "frostbitten@1599",
+        "red_mist@1722",
+        "lingering_grace@2041",
+        "chilled@1539",
+        "frostbitten@1659",
+        "chilled@1539",
+        "frostbitten@1659",
+        "chilled@1767",
+        "frostbitten@1887",
+        "psalm_dread@1803"
+      ],
+      "m": 0.00565587775781751,
+      "pending": 4,
+      "tick": 1448
+    },
+    {
+      "auras": [
+        "chilled@1463",
+        "frostbitten@1583",
+        "chilled@1657",
+        "frostbitten@1599",
+        "red_mist@1722",
+        "lingering_grace@2041",
+        "chilled@1539",
+        "frostbitten@1659",
+        "chilled@1539",
+        "frostbitten@1659",
+        "chilled@1767",
+        "frostbitten@1887",
+        "psalm_dread@1803"
+      ],
+      "m": 0.00643031904473901,
+      "pending": 4,
+      "tick": 1449
+    },
+    {
+      "auras": [
+        "rimebound@2676",
+        "psalm_dread@3009"
+      ],
+      "m": 0.00273963250219822,
+      "pending": 2,
+      "tick": 2676
+    },
+    {
+      "auras": [
+        "psalm_dread@3009"
+      ],
+      "m": 0.00287361931987107,
+      "pending": 2,
+      "tick": 2677
+    },
+    {
+      "auras": [
+        "psalm_dread@3009"
+      ],
+      "m": 0.0102172316983342,
+      "pending": 2,
+      "tick": 2678
+    },
+    {
+      "auras": [
+        "psalm_dread@3009"
+      ],
+      "m": 0.00618241634219885,
+      "pending": 2,
+      "tick": 2679
+    },
+    {
+      "auras": [
+        "psalm_dread@3009"
+      ],
+      "m": 0.00390110746957362,
+      "pending": 2,
+      "tick": 2680
+    },
+    {
+      "auras": [
+        "psalm_dread@3009"
+      ],
+      "m": 0.00315162446349859,
+      "pending": 2,
+      "tick": 2681
+    },
+    {
+      "auras": [
+        "psalm_dread@3009"
+      ],
+      "m": 0.0043759630061686,
+      "pending": 2,
+      "tick": 2682
+    },
+    {
+      "auras": [
+        "psalm_dread@3009"
+      ],
+      "m": 0.00363011145964265,
+      "pending": 2,
+      "tick": 2683
+    },
+    {
+      "auras": [
+        "psalm_dread@3009"
+      ],
+      "m": 0.0145958475768566,
+      "pending": 2,
+      "tick": 2684
+    },
+    {
+      "auras": [
+        "psalm_dread@3009"
+      ],
+      "m": 0.00912054162472486,
+      "pending": 2,
+      "tick": 2685
+    },
+    {
+      "auras": [
+        "psalm_dread@3009"
+      ],
+      "m": 0.00208618445321918,
+      "pending": 2,
+      "tick": 2686
+    },
+    {
+      "auras": [
+        "psalm_dread@3009"
+      ],
+      "m": 0.00586171168833971,
+      "pending": 2,
+      "tick": 2687
+    },
+    {
+      "auras": [
+        "psalm_dread@3009"
+      ],
+      "m": 0.00759843597188592,
+      "pending": 2,
+      "tick": 2688
+    },
+    {
+      "auras": [
+        "psalm_dread@3009"
+      ],
+      "m": 0.0010158596560359,
+      "pending": 2,
+      "tick": 2692
+    },
+    {
+      "auras": [
+        "psalm_dread@3009"
+      ],
+      "m": 0.000798416207544506,
+      "pending": 2,
+      "tick": 2696
+    }
+  ],
+  "correction_max_m": 0.0145958475768566,
+  "corrections": 38,
+  "effect_correction_max_m": 0.759078919887543,
+  "effect_corrections": 7,
+  "end_view": {},
+  "events_received": 1360,
+  "inputs_sent": 2700,
+  "log_errors": 0,
+  "log_warnings": 0,
+  "name": "bot9",
+  "rtt_avg_ms": 23.0958222222222,
+  "rtt_samples": 45,
+  "simulated_jitter_ms": 0.0,
+  "simulated_lag_ms": 0.0,
+  "simulated_loss": 0.0,
+  "snapshot_rate_hz": 57.5673722181595,
+  "snapshots": 2590,
+  "stale_snapshots": 0,
+  "stuck_casts": [],
+  "teleports": 1,
+  "unit_id": 9
+}

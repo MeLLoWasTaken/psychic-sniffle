@@ -2,6 +2,15 @@
 
 One entry per build-loop iteration, newest first. Format: date, backlog ID, what changed, how it was checked.
 
+## 2026-10-01 — Review pass 3 and the M1 gate
+- Balance, 2v2 (1,000 matches), after fixing the bot targeting bug the review found:
+  - Arcanist 54%, Oracle 52%, Warblade 52%.
+  - Main compositions 48-52 head to head; every match ends by a kill; median 1:30.
+- The lineup passes the 30 m silhouette and grayscale tests. The arena was the weakest visual and got its dressing (F-05).
+- 20-player server: 2.0 ms average per tick. 4-player server: 0.30 ms. The client frame-time baseline is recorded on the software renderer.
+- M1 gate: a full 2v2 plays from menu to scoreboard with a human-controlled unit and bots, over a lossy network, without desync, and replays exactly. Only the 60 fps check is open; it needs a GPU machine.
+- Report: `docs/reports/review_03/review_03.md`.
+
 ## 2026-09-30 — F-05: Gallows Courtyard dressing; bot targeting fix
 - The arena now reads as a walled fortress in a town:
   - a skyline of keep, towers, a bell tower and town houses;

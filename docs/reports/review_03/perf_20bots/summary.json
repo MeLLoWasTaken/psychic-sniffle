@@ -1,0 +1,379 @@
+{
+  "by_unit": {
+    "-1": {
+      "absorbed": 0,
+      "casts": 0,
+      "cc_applied": 0,
+      "damage": 0,
+      "healing": 0,
+      "interrupts": 0,
+      "kills": 0
+    },
+    "1": {
+      "absorbed": 0,
+      "casts": 24,
+      "cc_applied": 4,
+      "damage": 67965,
+      "healing": 12000,
+      "interrupts": 2,
+      "kills": 0
+    },
+    "10": {
+      "absorbed": 0,
+      "casts": 12,
+      "cc_applied": 3,
+      "damage": 33700,
+      "healing": 0,
+      "interrupts": 2,
+      "kills": 0
+    },
+    "11": {
+      "absorbed": 3500,
+      "casts": 21,
+      "cc_applied": 6,
+      "damage": 8164,
+      "healing": 28208,
+      "interrupts": 1,
+      "kills": 0
+    },
+    "12": {
+      "absorbed": 0,
+      "casts": 20,
+      "cc_applied": 2,
+      "damage": 26124,
+      "healing": 7800,
+      "interrupts": 2,
+      "kills": 0
+    },
+    "13": {
+      "absorbed": 0,
+      "casts": 18,
+      "cc_applied": 4,
+      "damage": 33990,
+      "healing": 6750,
+      "interrupts": 2,
+      "kills": 0
+    },
+    "14": {
+      "absorbed": 0,
+      "casts": 12,
+      "cc_applied": 5,
+      "damage": 43120,
+      "healing": 0,
+      "interrupts": 1,
+      "kills": 0
+    },
+    "15": {
+      "absorbed": 3200,
+      "casts": 22,
+      "cc_applied": 2,
+      "damage": 13630,
+      "healing": 28845,
+      "interrupts": 2,
+      "kills": 0
+    },
+    "16": {
+      "absorbed": 0,
+      "casts": 18,
+      "cc_applied": 2,
+      "damage": 7028,
+      "healing": 5625,
+      "interrupts": 1,
+      "kills": 0
+    },
+    "17": {
+      "absorbed": 0,
+      "casts": 13,
+      "cc_applied": 3,
+      "damage": 30520,
+      "healing": 0,
+      "interrupts": 0,
+      "kills": 1
+    },
+    "18": {
+      "absorbed": 0,
+      "casts": 12,
+      "cc_applied": 6,
+      "damage": 35250,
+      "healing": 0,
+      "interrupts": 2,
+      "kills": 0
+    },
+    "19": {
+      "absorbed": 0,
+      "casts": 16,
+      "cc_applied": 1,
+      "damage": 0,
+      "healing": 18988,
+      "interrupts": 1,
+      "kills": 0
+    },
+    "2": {
+      "absorbed": 0,
+      "casts": 20,
+      "cc_applied": 7,
+      "damage": 59866,
+      "healing": 0,
+      "interrupts": 2,
+      "kills": 0
+    },
+    "20": {
+      "absorbed": 0,
+      "casts": 18,
+      "cc_applied": 4,
+      "damage": 18508,
+      "healing": 18600,
+      "interrupts": 1,
+      "kills": 0
+    },
+    "3": {
+      "absorbed": 0,
+      "casts": 14,
+      "cc_applied": 2,
+      "damage": 8229,
+      "healing": 31147,
+      "interrupts": 1,
+      "kills": 0
+    },
+    "4": {
+      "absorbed": 0,
+      "casts": 24,
+      "cc_applied": 2,
+      "damage": 15680,
+      "healing": 47769,
+      "interrupts": 2,
+      "kills": 0
+    },
+    "5": {
+      "absorbed": 1800,
+      "casts": 19,
+      "cc_applied": 4,
+      "damage": 39143,
+      "healing": 6750,
+      "interrupts": 1,
+      "kills": 0
+    },
+    "6": {
+      "absorbed": 0,
+      "casts": 13,
+      "cc_applied": 0,
+      "damage": 36040,
+      "healing": 0,
+      "interrupts": 2,
+      "kills": 0
+    },
+    "7": {
+      "absorbed": 3500,
+      "casts": 26,
+      "cc_applied": 1,
+      "damage": 12187,
+      "healing": 63386,
+      "interrupts": 2,
+      "kills": 0
+    },
+    "8": {
+      "absorbed": 0,
+      "casts": 24,
+      "cc_applied": 5,
+      "damage": 19490,
+      "healing": 35444,
+      "interrupts": 1,
+      "kills": 0
+    },
+    "9": {
+      "absorbed": 0,
+      "casts": 20,
+      "cc_applied": 5,
+      "damage": 29802,
+      "healing": 3797,
+      "interrupts": 1,
+      "kills": 1
+    }
+  },
+  "bytes_sent": 50265164,
+  "casts": 366,
+  "clients": {
+    "bot1": {
+      "lost_inputs": 0,
+      "seconds": 43.1166666666667,
+      "snapshot_rate_hz": 60.0,
+      "snapshots_sent": 2587,
+      "spec": "warblade_carnage",
+      "starved_ticks": 17
+    },
+    "bot10": {
+      "lost_inputs": 0,
+      "seconds": 43.1833333333333,
+      "snapshot_rate_hz": 60.0,
+      "snapshots_sent": 2591,
+      "spec": "arcanist_rime",
+      "starved_ticks": 25
+    },
+    "bot11": {
+      "lost_inputs": 0,
+      "seconds": 43.15,
+      "snapshot_rate_hz": 60.0,
+      "snapshots_sent": 2589,
+      "spec": "oracle_grace",
+      "starved_ticks": 24
+    },
+    "bot12": {
+      "lost_inputs": 0,
+      "seconds": 43.1833333333333,
+      "snapshot_rate_hz": 60.0,
+      "snapshots_sent": 2591,
+      "spec": "oracle_grace",
+      "starved_ticks": 22
+    },
+    "bot13": {
+      "lost_inputs": 0,
+      "seconds": 43.1666666666667,
+      "snapshot_rate_hz": 60.0,
+      "snapshots_sent": 2590,
+      "spec": "warblade_carnage",
+      "starved_ticks": 23
+    },
+    "bot14": {
+      "lost_inputs": 0,
+      "seconds": 43.15,
+      "snapshot_rate_hz": 60.0,
+      "snapshots_sent": 2589,
+      "spec": "arcanist_rime",
+      "starved_ticks": 21
+    },
+    "bot15": {
+      "lost_inputs": 0,
+      "seconds": 43.15,
+      "snapshot_rate_hz": 60.0,
+      "snapshots_sent": 2589,
+      "spec": "oracle_grace",
+      "starved_ticks": 30
+    },
+    "bot16": {
+      "lost_inputs": 0,
+      "seconds": 43.15,
+      "snapshot_rate_hz": 60.0,
+      "snapshots_sent": 2589,
+      "spec": "oracle_grace",
+      "starved_ticks": 33
+    },
+    "bot17": {
+      "lost_inputs": 0,
+      "seconds": 43.1666666666667,
+      "snapshot_rate_hz": 60.0,
+      "snapshots_sent": 2590,
+      "spec": "warblade_carnage",
+      "starved_ticks": 32
+    },
+    "bot18": {
+      "lost_inputs": 0,
+      "seconds": 43.15,
+      "snapshot_rate_hz": 60.0,
+      "snapshots_sent": 2589,
+      "spec": "arcanist_rime",
+      "starved_ticks": 26
+    },
+    "bot19": {
+      "lost_inputs": 0,
+      "seconds": 43.15,
+      "snapshot_rate_hz": 60.0,
+      "snapshots_sent": 2589,
+      "spec": "oracle_grace",
+      "starved_ticks": 27
+    },
+    "bot2": {
+      "lost_inputs": 0,
+      "seconds": 43.1666666666667,
+      "snapshot_rate_hz": 60.0,
+      "snapshots_sent": 2590,
+      "spec": "arcanist_rime",
+      "starved_ticks": 16
+    },
+    "bot20": {
+      "lost_inputs": 0,
+      "seconds": 43.15,
+      "snapshot_rate_hz": 60.0,
+      "snapshots_sent": 2589,
+      "spec": "oracle_grace",
+      "starved_ticks": 24
+    },
+    "bot3": {
+      "lost_inputs": 0,
+      "seconds": 43.1666666666667,
+      "snapshot_rate_hz": 60.0,
+      "snapshots_sent": 2590,
+      "spec": "oracle_grace",
+      "starved_ticks": 17
+    },
+    "bot4": {
+      "lost_inputs": 0,
+      "seconds": 43.1666666666667,
+      "snapshot_rate_hz": 60.0,
+      "snapshots_sent": 2590,
+      "spec": "oracle_grace",
+      "starved_ticks": 17
+    },
+    "bot5": {
+      "lost_inputs": 0,
+      "seconds": 43.1666666666667,
+      "snapshot_rate_hz": 60.0,
+      "snapshots_sent": 2590,
+      "spec": "warblade_carnage",
+      "starved_ticks": 17
+    },
+    "bot6": {
+      "lost_inputs": 0,
+      "seconds": 43.1833333333333,
+      "snapshot_rate_hz": 60.0,
+      "snapshots_sent": 2591,
+      "spec": "arcanist_rime",
+      "starved_ticks": 20
+    },
+    "bot7": {
+      "lost_inputs": 0,
+      "seconds": 43.1833333333333,
+      "snapshot_rate_hz": 60.0,
+      "snapshots_sent": 2591,
+      "spec": "oracle_grace",
+      "starved_ticks": 21
+    },
+    "bot8": {
+      "lost_inputs": 0,
+      "seconds": 43.1666666666667,
+      "snapshot_rate_hz": 60.0,
+      "snapshots_sent": 2590,
+      "spec": "oracle_grace",
+      "starved_ticks": 19
+    },
+    "bot9": {
+      "lost_inputs": 0,
+      "seconds": 43.1666666666667,
+      "snapshot_rate_hz": 60.0,
+      "snapshots_sent": 2590,
+      "spec": "warblade_carnage",
+      "starved_ticks": 20
+    }
+  },
+  "damage_events": 258,
+  "end_reason": "time_limit",
+  "end_states": {},
+  "heals": 104,
+  "input_log": "/home/claude/psychic-sniffle/docs/reports/review_03/perf_20bots/match.inputlog",
+  "interrupts": 29,
+  "kills": 2,
+  "log_errors": 0,
+  "log_warnings": 0,
+  "match_seconds": 61.0,
+  "mode": "skirmish",
+  "sim_seconds": 61.0,
+  "state_hash": "9d958357a822eda4f80dffdb058e6029e0ec6c9649935b5f9aee541377b43e89",
+  "tick_ms": {
+    "avg": 2.00226366120219,
+    "max": 38.996,
+    "p95": 9.192
+  },
+  "tick_rate_hz": 60,
+  "ticks": 3660,
+  "units": {},
+  "winner_team": -1
+}

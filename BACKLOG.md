@@ -289,10 +289,10 @@ The slice specs are Warblade Carnage (melee, rage), Arcanist Rime (casting, inte
 ### M1-30 Network test `[done]`
 - [x] A full bot 2v2 at 150 ms latency, 2% loss and 30 ms jitter completes without desync or stuck casts: new check_all (full) check "network 2v2 arena at 150 ms, 30 ms jitter, 2% loss". First run: 17,345 ticks (4.8 min of match time) to a kill; every client's first view of the ended match equals the server's health for every unit at that tick; no cast shown past its end tick (detector tested); own-movement corrections at most 0.125 m; the input log replays to the same hash.
 
-### M1-31 Performance baseline and M1 gate review `[doing]`
+### M1-31 Performance baseline and M1 gate review `[done]`
 - [x] Server tick time for a 4-player match recorded: 0.30 ms average, 0.45 ms 95th percentile over a full lagged 2v2 (17,345 ticks); one 55 ms spike (M1-32).
 - [x] Client frame time on the software renderer recorded as a relative baseline (`docs/reports/review_03/client_frames_*.json`, capture `--frame-report`): practice 2v2 before F-05 at 1280x720 5.2 s and 1920x1080 8.7 s per frame on llvmpipe (2 cores, shared), about 400 draw calls, 300k primitives average; F-05 dressing raised the player view from 87 to 182 draw calls and 347k to 528k primitives. GPU fps check pending in KNOWN_ISSUES.md (2026-09-28).
-- [ ] Full review pass; the M1 gate is checked and the result written to CHANGELOG.md.
+- [x] Full review pass (`docs/reports/review_03/review_03.md`); the M1 gate passes except the 60 fps check, which needs a GPU machine (F-02). Result in CHANGELOG.md.
 
 ---
 
