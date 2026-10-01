@@ -10,6 +10,8 @@ var brain: BotBrain
 
 func _ready() -> void:
 	super._ready()
+	if talents == "":
+		talents = BotBrain.build_talents(spec_id)["talents"]  # its default build unless --talents names one
 	quit_on_match_end = true
 	welcomed.connect(_on_welcomed)
 	input_source = _next_input

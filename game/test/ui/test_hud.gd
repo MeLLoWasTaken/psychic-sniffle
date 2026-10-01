@@ -110,6 +110,22 @@ func test_every_slice_spec_fits_on_the_bars() -> void:
 		assert_array(placed).contains(["break_free"])
 
 
+func test_talent_abilities_take_slots_after_the_kit() -> void:
+	for spec_id: String in Data.bots:
+		for b: Dictionary in Data.bots[spec_id].get("builds", []):
+			var text: String = BotBrain.build_talents(spec_id, b["name"])["talents"]
+			var grants: Array = TalentLoadouts.granted_abilities(spec_id, text)
+			var a: Dictionary = HudLogic.bar_assignment(Data.hud_layouts["default"], spec_id, grants)
+			var placed: Array = []
+			for bid: String in Data.hud_layouts["default"]["action_bars"]["fill_order"]:
+				placed.append_array(a[bid])
+			var kit: Array = Data.specs[spec_id]["abilities"]
+			for g: String in grants:
+				var at: int = placed.find(g)
+				assert_int(at).override_failure_message("%s@%s: %s not on a bar" % [spec_id, b["name"], g]).is_greater_equal(kit.size())
+			assert_array(placed).contains(["break_free"])
+
+
 func test_layout_assignments_replace_the_automatic_fill() -> void:
 	var layout: Dictionary = Data.hud_layouts["default"].duplicate(true)
 	layout["action_bars"]["assignments"] = {"warblade_carnage": {"action_bar_1": ["pommel_crack", "", "ruin_strike"]}}

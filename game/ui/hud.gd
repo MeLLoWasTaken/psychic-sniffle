@@ -28,6 +28,7 @@ const ANCHORS: Dictionary = {
 }
 const PHYSICAL_TEXT: Color = Color(1.0, 0.95, 0.82)
 
+var talent_abilities: Array = []  ## abilities the player's talents grant (set before the first push)
 var layout: Dictionary = {}
 var interface: Dictionary = {}
 var style: HudStyle
@@ -249,7 +250,7 @@ func _update_frames(id: String, e: Dictionary) -> void:
 
 func _assign_bars(p_spec: String) -> void:
 	spec_id = p_spec
-	var assignment: Dictionary = HudLogic.bar_assignment(layout, spec_id)
+	var assignment: Dictionary = HudLogic.bar_assignment(layout, spec_id, talent_abilities)
 	for id: String in bars:
 		var b: ActionBar = bars[id]
 		b.setup(style, layout["elements"][id], assignment.get(id, []))

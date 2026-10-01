@@ -5,31 +5,93 @@
   "title": "ARENA PVP",
   "subtitle": "Gallows Courtyard  ·  2v2 Arena",
   "fonts": {
-    "display": {"file": "cinzel/Cinzel-Variable.ttf", "weight": 700},
-    "text": {"file": "firasans/FiraSans-SemiBold.ttf"}
+    "display": {
+      "file": "cinzel/Cinzel-Variable.ttf",
+      "weight": 700
+    },
+    "text": {
+      "file": "firasans/FiraSans-SemiBold.ttf"
+    }
   },
   "buttons": [
-    {"id": "play_bots", "label": "Play 2v2 vs bots", "action": "play_bots", "hint": "You and a bot partner against two bots, on a match server started on this machine."},
-    {"id": "practice", "label": "Practice", "action": "practice", "hint": "The offline practice arena: the same fight without a server or an end screen."},
-    {"id": "settings", "label": "Settings", "action": "settings", "hint": "Your settings profile and key bindings."},
-    {"id": "quit", "label": "Quit", "action": "quit", "hint": "Close the game."}
+    {
+      "id": "play_bots",
+      "label": "Play 2v2 vs bots",
+      "action": "play_bots",
+      "hint": "You and a bot partner against two bots, on a match server started on this machine."
+    },
+    {
+      "id": "practice",
+      "label": "Practice",
+      "action": "practice",
+      "hint": "The offline practice arena: the same fight without a server or an end screen."
+    },
+    {
+      "id": "talents",
+      "label": "Talents",
+      "action": "talents",
+      "hint": "Your talent loadouts for the chosen specialization: class tree, spec tree and PvP talents."
+    },
+    {
+      "id": "settings",
+      "label": "Settings",
+      "action": "settings",
+      "hint": "Your settings profile and key bindings."
+    },
+    {
+      "id": "quit",
+      "label": "Quit",
+      "action": "quit",
+      "hint": "Close the game."
+    }
   ],
   "spec_picker": {
     "label": "Your specialization",
-    "specs": ["warblade_carnage", "arcanist_rime", "oracle_grace"],
+    "specs": [
+      "warblade_carnage",
+      "arcanist_rime",
+      "oracle_grace"
+    ],
     "default": "warblade_carnage"
   },
   "play_bots": {
     "map": "gallows_courtyard",
     "bracket": "2v2",
     "host_name": "player",
-    "port_range": [24700, 24799],
+    "port_range": [
+      24700,
+      24799
+    ],
     "comps": {
-      "warblade_carnage": {"partner": "oracle_grace", "enemies": ["arcanist_rime", "oracle_grace"]},
-      "arcanist_rime": {"partner": "oracle_grace", "enemies": ["warblade_carnage", "oracle_grace"]},
-      "oracle_grace": {"partner": "warblade_carnage", "enemies": ["arcanist_rime", "oracle_grace"]}
+      "warblade_carnage": {
+        "partner": "oracle_grace",
+        "enemies": [
+          "arcanist_rime",
+          "oracle_grace"
+        ]
+      },
+      "arcanist_rime": {
+        "partner": "oracle_grace",
+        "enemies": [
+          "warblade_carnage",
+          "oracle_grace"
+        ]
+      },
+      "oracle_grace": {
+        "partner": "warblade_carnage",
+        "enemies": [
+          "arcanist_rime",
+          "oracle_grace"
+        ]
+      }
     },
-    "bot_names": {"partner": "partner", "enemies": ["enemy1", "enemy2"]},
+    "bot_names": {
+      "partner": "partner",
+      "enemies": [
+        "enemy1",
+        "enemy2"
+      ]
+    },
     "server_start_timeout_s": 30,
     "server_silence_s": 10,
     "end_banner_s": 3.0,
@@ -38,17 +100,56 @@
   "settings_panel": {
     "profile": "default",
     "rows": [
-      {"label": "Mouse sensitivity", "path": "mouse.sensitivity_deg_per_px", "suffix": "° per pixel"},
-      {"label": "Invert mouse", "path": "mouse.invert_y"},
-      {"label": "Keyboard turn speed", "path": "movement.keyboard_turn_deg_s", "suffix": "° per second"},
-      {"label": "Camera distance", "path": "camera.default_distance_m", "suffix": " m"},
-      {"label": "Field of view", "path": "camera.fov_deg", "suffix": "°"},
-      {"label": "Interface scale", "path": "interface.ui_scale", "suffix": "×"},
-      {"label": "Combat text", "path": "interface.combat_text"},
-      {"label": "Tab target range", "path": "targeting.tab_range_m", "suffix": " m"}
+      {
+        "label": "Mouse sensitivity",
+        "path": "mouse.sensitivity_deg_per_px",
+        "suffix": "° per pixel"
+      },
+      {
+        "label": "Invert mouse",
+        "path": "mouse.invert_y"
+      },
+      {
+        "label": "Keyboard turn speed",
+        "path": "movement.keyboard_turn_deg_s",
+        "suffix": "° per second"
+      },
+      {
+        "label": "Camera distance",
+        "path": "camera.default_distance_m",
+        "suffix": " m"
+      },
+      {
+        "label": "Field of view",
+        "path": "camera.fov_deg",
+        "suffix": "°"
+      },
+      {
+        "label": "Interface scale",
+        "path": "interface.ui_scale",
+        "suffix": "×"
+      },
+      {
+        "label": "Combat text",
+        "path": "interface.combat_text"
+      },
+      {
+        "label": "Tab target range",
+        "path": "targeting.tab_range_m",
+        "suffix": " m"
+      }
     ],
-    "keys": ["move_forward", "move_back", "turn_left", "turn_right", "strafe_left", "strafe_right",
-      "target_nearest_enemy", "set_focus", "break_free"]
+    "keys": [
+      "move_forward",
+      "move_back",
+      "turn_left",
+      "turn_right",
+      "strafe_left",
+      "strafe_right",
+      "target_nearest_enemy",
+      "set_focus",
+      "break_free"
+    ]
   },
   "controls_hint": "W S move   ·   A D turn   ·   Q E strafe   ·   Right-drag steer   ·   Tab target   ·   1 – = and Shift+1 – = abilities   ·   Esc menu",
   "text": {
@@ -93,13 +194,60 @@
     "settings_note": "Editing settings and key bindings arrives with the settings suite.",
     "yes": "On",
     "no": "Off",
-    "close": "Close"
+    "close": "Close",
+    "talents_title": "Talents",
+    "talents_locked": "Talents are locked during the match.",
+    "talents_class_tree": "{name} class tree",
+    "talents_spec_tree": "{name} spec tree",
+    "talents_pvp": "PvP talents",
+    "talents_loadouts": "Loadouts",
+    "talents_needed_by_others": "Other talents depend on {name}; remove them first.",
+    "talents_no_points": "No points left in this tree.",
+    "talents_maxed": "{name} is fully ranked.",
+    "talents_gate": "Spend {points} points in the rows above first.",
+    "talents_requires": "Requires {names}.",
+    "talents_import_failed": "Could not import: {why}",
+    "talents_imported": "Loadout imported. Save it to keep it.",
+    "talents_outdated": "This loadout was made for an older version of the trees; it was cleared.",
+    "talents_saved": "Loadout saved.",
+    "talents_full": "You can keep {n} loadouts per specialization.",
+    "talents_new_name": "Loadout {n}",
+    "talents_save": "Save",
+    "talents_new": "Save as new",
+    "talents_delete": "Delete",
+    "talents_reset": "Reset",
+    "talents_export": "Export",
+    "talents_import": "Import",
+    "talents_done": "Done",
+    "talents_name_hint": "Loadout name",
+    "talents_code_hint": "Paste a talent code to import",
+    "talents_exported": "Talent code copied.",
+    "talents_choice": "Choose one",
+    "talents_type_passive": "Passive",
+    "talents_type_active": "Grants an ability",
+    "talents_type_choice": "Choice",
+    "talents_type_capstone": "Capstone",
+    "talents_rank": "Rank {rank} / {max}",
+    "talents_hint_add": "Left-click to add a rank.",
+    "talents_hint_remove": "Right-click to remove a rank."
   },
   "scoreboard_columns": [
-    {"id": "damage", "label": "Damage"},
-    {"id": "healing", "label": "Healing"},
-    {"id": "kills", "label": "Kills"},
-    {"id": "interrupts", "label": "Interrupts"}
+    {
+      "id": "damage",
+      "label": "Damage"
+    },
+    {
+      "id": "healing",
+      "label": "Healing"
+    },
+    {
+      "id": "kills",
+      "label": "Kills"
+    },
+    {
+      "id": "interrupts",
+      "label": "Interrupts"
+    }
   ],
   "style": {
     "background_top": "#16110d",

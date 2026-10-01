@@ -475,8 +475,12 @@ Exit gate (DESIGN.md): every combat rule has passing tests; every action is rebi
 - Trees, builds, new abilities and icons are in (2026-10-01). Left: the bot simulations for the second criterion, after the reference video render frees the CPU; a six-match smoke run had matches up to 11 minutes, so survival and healing talents likely need trimming.
 - Follow-ups: auras applied only through talents cannot have visual effects yet (X-13); bots read their own talented numbers but not an enemy's.
 
-### M2-05 Talent screen and loadouts `[todo]`
-- [ ] The screen draws itself from the data (positions, connecting lines, icons, tooltips, point counters); up to 10 loadouts per spec; export and import as a short text string; locked in a match.
+### M2-05 Talent screen and loadouts `[done]`
+- [x] The screen draws itself from the data (positions, connecting lines, icons, tooltips, point counters); up to 10 loadouts per spec; export and import as a short text string; locked in a match.
+- Follow-up: changing talents during a networked match's preparation needs a protocol message for MatchRunner.set_talents and a way to open the screen from the pause menu (M2-05b).
+
+### M2-05b Talents during preparation `[todo]`
+- [ ] During a match's preparation the player can open the talent screen from the pause menu and switch loadouts; the change reaches the server (a reliable message calling MatchRunner.set_talents), the action bars update, and after the gates open the screen opens read-only. Tests for the message, the server's refusal after the gates, and the bars.
 
 ### M2-06 Spellbook and tooltips from data `[todo]`
 - [ ] Ability and aura tooltips in the HUD and a spellbook screen, generated from data with the codex's computed numbers (no hand-written numbers that can drift).

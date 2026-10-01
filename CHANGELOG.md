@@ -2,6 +2,14 @@
 
 One entry per build-loop iteration, newest first. Format: date, backlog ID, what changed, how it was checked.
 
+## 2026-10-01 — M2-05 talent screen and loadouts
+- The main menu has a Talents button. The talent screen draws the class tree, spec tree and PvP row from the data: node positions, connecting lines, gate lines with their point badges, icons, ranks, point counters and tooltips (both options for choice nodes).
+  - Left click adds a rank (on a choice node, the half clicked picks the option); right click removes one. A change that breaks the rules is refused with the reason ("Requires ...", "Spend 8 points in the rows above first", "Other talents depend on ...").
+  - Loadouts: up to 10 per spec, selected on the right; Save, Save as new, Delete, Reset, Export (copies the code) and Import (pastes it). In a match the screen is read-only.
+- Play and Practice send the active loadout. Practice bots and networked bots play their default build. Abilities granted by talents get action bar slots.
+- `game/tools/ui_shot.gd`: a screenshot of one menu screen without the game flow, for checking layouts.
+- Checked: 12 talent screen tests plus a bar test for every build's granted abilities; all 296 Godot tests pass. Screenshots of the Warblade and Arcanist screens and the main menu were reviewed: the Import and Done buttons overlapped, and gate labels printed over nodes. Both are fixed.
+
 ## 2026-10-01 — M2-04 talent trees for Warblade, Arcanist and Oracle (trees done; balance runs next)
 - Three class trees (40 to 41 nodes), three spec trees (40 to 42 nodes, gates at 8 and 20, three capstones each) and three PvP rows of 12, all original names with icons. Written by three agents in parallel, one per class, then integrated and checked here.
 - 15 new abilities from active nodes and choices, each with a visual effect and sounds:

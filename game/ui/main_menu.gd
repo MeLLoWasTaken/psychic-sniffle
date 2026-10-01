@@ -15,7 +15,7 @@ signal action_chosen(action: String, spec: String)
 
 const CARD_SIZE: Vector2 = Vector2(360, 196)
 const CARDS_Y: float = 364.0
-const BUTTONS_Y: float = 606.0
+const BUTTONS_Y: float = 596.0
 
 var style: MenuStyle
 var menu: Dictionary
@@ -223,7 +223,7 @@ func _layout() -> void:
 	for b: Button in buttons.values():
 		b.size = b.custom_minimum_size
 		b.position = Vector2(cx - b.size.x * 0.5, y)
-		y += b.size.y + 14.0
+		y += b.size.y + 10.0
 	queue_redraw()
 
 

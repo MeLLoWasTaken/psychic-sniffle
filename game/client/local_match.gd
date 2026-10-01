@@ -29,9 +29,10 @@ class PlayerInputSource:
 
 
 func _init(map_id: String, player_spec: String, ally_specs: Array, enemy_specs: Array,
-		bracket: String = "2v2", prep_s: float = 0.0, seed_value: int = 1, player_bot: bool = false) -> void:
+		bracket: String = "2v2", prep_s: float = 0.0, seed_value: int = 1, player_bot: bool = false,
+		player_talents: String = "") -> void:
 	runner = MatchRunner.new(Data.maps[map_id], "arena", bracket, prep_s, seed_value)
-	player = runner.add_unit(player_spec, 0)
+	player = runner.add_unit(player_spec, 0, player_talents)
 	_source = PlayerInputSource.new()
 	_source.input = {"move": Vector2.ZERO, "yaw": player.facing}
 	# player_bot: the player's unit is played by its bot brain and step()'s input is ignored
@@ -46,7 +47,7 @@ func _init(map_id: String, player_spec: String, ally_specs: Array, enemy_specs: 
 
 
 func _add_bot(spec_id: String, team: int, seed_value: int) -> void:
-	var u: Unit = runner.add_unit(spec_id, team)
+	var u: Unit = runner.add_unit(spec_id, team, BotBrain.build_talents(spec_id)["talents"])  # its default build
 	brains[u.id] = BotBrain.new(spec_id, seed_value * 1000 + u.id, runner.geometry)
 
 

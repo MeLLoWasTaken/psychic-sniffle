@@ -25,7 +25,7 @@ const DEFAULTS: Dictionary = {
 	"spec": "warblade_carnage", "ally": "oracle_grace", "enemies": "arcanist_rime,oracle_grace",
 	"map": "gallows_courtyard", "prep": 0.0, "seed": 1, "settings": "default", "keybinds": "default",
 	"auto": "", "fast_forward": 0.0, "pause": false, "seconds": 0.0, "kit": true, "gi": true,
-	"lighting": true, "manual": false, "player_bot": false, "follow": "", "cam_yaw": 0.0, "cam_pitch": "",
+	"lighting": true, "manual": false, "player_bot": false, "talents": "", "follow": "", "cam_yaw": 0.0, "cam_pitch": "",
 	"cam_zoom": 0, "hud": true,
 }
 const MAX_FRAME_S: float = 0.25  ## longer frames are clamped, so a stall never runs away
@@ -60,7 +60,7 @@ func _ready() -> void:
 	var allies: PackedStringArray = str(options["ally"]).split(",", false)
 	world = LocalMatch.new(str(options["map"]), str(options["spec"]), Array(allies), Array(enemies),
 		"%dv%d" % [allies.size() + 1, enemies.size()], float(options["prep"]), int(options["seed"]),
-		bool(options["player_bot"]))
+		bool(options["player_bot"]), str(options["talents"]))
 	start_position = world.player.position
 
 	var map: Dictionary = Data.maps[str(options["map"])]
@@ -87,6 +87,7 @@ func _ready() -> void:
 	scripted = ScriptedInput.new(str(options["auto"]))
 	if bool(options["hud"]):
 		hud = Hud.new(settings)
+		hud.talent_abilities = TalentLoadouts.granted_abilities(str(options["spec"]), str(options["talents"]))
 		add_child(hud)
 		hud.bind(controller, cam.camera, renderer)
 

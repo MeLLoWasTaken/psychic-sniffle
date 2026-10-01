@@ -36,6 +36,7 @@ const SHOT_DELAYS: Dictionary = {"menu": 1.0, "prep": 3.0, "fight": 15.0, "ended
 var menu: MainMenu
 var match_scene: Node  ## the running NetMatch, or null
 var practice: Node  ## the running practice scene, or null
+var talent_screen: TalentScreen  ## the open talent screen, or null
 var practice_menu: PauseMenu
 var args: PackedStringArray
 var last_result: Dictionary = {}
@@ -119,6 +120,8 @@ func _on_action(action: String, spec: String) -> void:
 			start_practice(spec)
 		"settings":
 			menu.show_settings()
+		"talents":
+			show_talents(spec)
 		"quit":
 			get_tree().quit(0)
 
@@ -144,6 +147,7 @@ func _match_options(spec: String) -> Dictionary:
 		o["port_min"] = int(_arg("--port-min", ""))
 	if _arg("--seed", "") != "":
 		o["seed"] = int(_arg("--seed", ""))
+	o["talents"] = _arg("--talents", TalentLoadouts.new().active_text(spec))
 	o["record"] = _arg("--record", "")
 	o["playback"] = _arg("--playback", "")
 	o.merge(extra_options, true)
@@ -157,11 +161,27 @@ func _on_match_exited(result: Dictionary) -> void:
 	_show_menu()
 
 
+## The talent screen for a spec, over the menu; closing it returns to the menu.
+func show_talents(spec: String) -> TalentScreen:
+	if talent_screen != null:
+		return talent_screen
+	talent_screen = TalentScreen.new(spec)
+	talent_screen.closed.connect(func(_spec: String, _text: String) -> void:
+		talent_screen.queue_free()
+		talent_screen = null
+		menu.visible = true
+		menu.focus_default())
+	menu.visible = false
+	add_child(talent_screen)
+	return talent_screen
+
+
 func start_practice(spec: String) -> void:
 	if match_scene != null or practice != null:
 		return
 	practice = (load(PRACTICE) as PackedScene).instantiate()
-	var o: Dictionary = {"spec": spec, "hud": not ("--no-hud" in args), "kit": not ("--no-kit" in args),
+	var o: Dictionary = {"spec": spec, "talents": _arg("--talents", TalentLoadouts.new().active_text(spec)),
+		"hud": not ("--no-hud" in args), "kit": not ("--no-kit" in args),
 		"gi": not ("--no-gi" in args)}
 	o.merge(extra_options, true)
 	practice.options = o

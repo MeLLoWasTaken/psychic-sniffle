@@ -14,9 +14,9 @@ const NO_CC: Array[String] = ["none", "knockback"]
 
 ## Abilities per action bar for a spec: bar element id -> ability ids by slot ("" = empty).
 ## The layout's assignments for the spec win; otherwise the spec's abilities fill the bars in
-## fill_order, and class-shared abilities (Break Free) take the last slots of the last bar.
-## Passive and excluded abilities are left out.
-static func bar_assignment(layout: Dictionary, spec_id: String) -> Dictionary:
+## fill_order, then abilities the player's talents grant (`extra`), and class-shared abilities
+## (Break Free) take the last slots of the last bar. Passive and excluded abilities are left out.
+static func bar_assignment(layout: Dictionary, spec_id: String, extra: Array = []) -> Dictionary:
 	var bars_cfg: Dictionary = layout.get("action_bars", {})
 	var order: Array = bars_cfg.get("fill_order", [])
 	var elements: Dictionary = layout.get("elements", {})
@@ -44,6 +44,9 @@ static func bar_assignment(layout: Dictionary, spec_id: String) -> Dictionary:
 	var shared: Array[String] = []
 	for a: String in spec.get("abilities", []):
 		if _placeable(a, exclude):
+			kit.append(a)
+	for a: String in extra:
+		if _placeable(a, exclude) and not a in kit:
 			kit.append(a)
 	for a: String in cls.get("shared_abilities", []):
 		if _placeable(a, exclude) and not a in kit:

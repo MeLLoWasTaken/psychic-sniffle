@@ -111,7 +111,8 @@
               "play_bots",
               "practice",
               "settings",
-              "quit"
+              "quit",
+              "talents"
             ],
             "description": "What the button does; the client routes each action (GameFlow)"
           },

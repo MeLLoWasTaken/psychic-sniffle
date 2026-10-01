@@ -33,7 +33,7 @@ const DEFAULTS: Dictionary = {
 	"spec": "", "menu": "main", "prep": -1.0, "settings": "default", "keybinds": "default",
 	"kit": true, "gi": true, "lighting": true, "hud": true, "pilot": false, "auto": "", "seed": 0,
 	"port_min": 0, "port_max": 0, "lag_ms": 0.0, "jitter_ms": 0.0, "loss": 0.0,
-	"record": "", "playback": "",
+	"record": "", "playback": "", "talents": "",
 }
 
 var options: Dictionary = {}
@@ -99,6 +99,7 @@ func _ready() -> void:
 	cam.camera.current = true
 	if bool(options["hud"]):
 		hud = Hud.new(_settings)
+		hud.talent_abilities = TalentLoadouts.granted_abilities(spec_id, str(options["talents"]))
 		hud.visible = false
 		add_child(hud)
 		hud.bind(controller, cam.camera, renderer)
@@ -184,12 +185,14 @@ func _connect() -> void:
 	net.owns_tree = false
 	net.player_name = str(preset["host_name"])
 	net.spec_id = spec_id
+	net.talents = str(options["talents"])
 	net.server_silence_s = float(preset["server_silence_s"])
 	net.input_source = _next_input
 	add_child(net)
 	# after _ready (which reads the command line): this match's own settings win
 	net.player_name = str(preset["host_name"])
 	net.spec_id = spec_id
+	net.talents = str(options["talents"])
 	if float(options["lag_ms"]) > 0.0 or float(options["jitter_ms"]) > 0.0 or float(options["loss"]) > 0.0:
 		net.transport.configure_conditions(float(options["lag_ms"]), float(options["jitter_ms"]), float(options["loss"]), 7)
 	net.welcomed.connect(_on_welcomed)
