@@ -9,6 +9,7 @@ var min_level: Level = Level.INFO
 var role: String = "client"
 var warn_count: int = 0
 var error_count: int = 0
+var last_error: String = ""  ## the newest error message (tests name it when they fail)
 var _file: FileAccess
 
 
@@ -39,6 +40,7 @@ func warn(msg: String) -> void:
 
 func error(msg: String) -> void:
 	error_count += 1
+	last_error = msg
 	_write(Level.ERROR, msg)
 	push_error(msg)
 

@@ -57,8 +57,9 @@ func test_server_lost_mid_match_goes_back_to_the_menu_cleanly() -> void:
 	assert_bool(scene.screens.pause_menu.talents_button.visible).is_true()
 	scene.screens.pause_menu.talents_chosen.emit(text)
 	var answered: bool = await _wait_for(func() -> bool: return not answers.is_empty(), 10.0)
-	assert_bool(answered).is_true()
-	assert_array(answers[0]).is_equal([text, ""])
+	assert_bool(answered).override_failure_message("no answer to the talent change in preparation").is_true()
+	if answered:
+		assert_array(answers[0]).override_failure_message("answer %s" % [answers[0]]).is_equal([text, ""])
 	assert_str(scene.net.talents).is_equal(text)
 	var on_bars: Array = []
 	for b: ActionBar in scene.hud.bars.values():
@@ -83,7 +84,7 @@ func test_server_lost_mid_match_goes_back_to_the_menu_cleanly() -> void:
 	for pid: int in r["pids_started"]:
 		assert_bool(DirAccess.dir_exists_absolute("/proc/%d" % pid)).override_failure_message(
 			"process %d is still there (running or not reaped)" % pid).is_false()
-	assert_int(Log.error_count - errors_before).is_equal(0)
+	assert_int(Log.error_count - errors_before).override_failure_message("errors logged, the last: %s" % Log.last_error).is_equal(0)
 	scene.queue_free()
 
 
@@ -95,16 +96,18 @@ func test_leaving_from_the_match_menu_ends_the_server() -> void:
 	scene.exited.connect(func(r: Dictionary) -> void: exited.append(r))
 	var active: bool = await _wait_for(func() -> bool: return flow.state == MatchFlow.State.ACTIVE, 45.0)
 	assert_bool(active).override_failure_message("gates never opened: %s" % [flow.history]).is_true()
+	assert_int(Log.error_count - errors_before).override_failure_message("errors before the talent check, the last: %s" % Log.last_error).is_equal(0)
 	# M2-05b: once the gates are open the server refuses a talent change, and the menu's screen is read-only
 	var answers: Array = []
 	scene.net.talents_answered.connect(func(t: String, e: String) -> void: answers.append([t, e]))
 	scene.net.send_talents(_build_with_granted_ability(str(scene.spec_id)))
 	var answered: bool = await _wait_for(func() -> bool: return not answers.is_empty(), 10.0)
-	assert_bool(answered).is_true()
-	assert_array(answers[0]).is_equal(["", "talents_locked"])
+	assert_bool(answered).override_failure_message("no answer to the talent change after the gates").is_true()
+	if answered:
+		assert_array(answers[0]).override_failure_message("answer %s" % [answers[0]]).is_equal(["", "talents_locked"])
 	assert_str(scene.net.talents).is_equal("")
-	var ts: TalentScreen = scene.screens.pause_menu.open_talents()
-	assert_bool(ts.locked).is_true()
+	var ts: TalentScreen = scene.screens.pause_menu.open_talents(TalentLoadouts.new("user://test_net_match_talents.json"))
+	assert_bool(ts.locked).override_failure_message("the talent screen is editable after the gates").is_true()
 	ts.close()
 	await get_tree().process_frame
 	# Escape with no target opens the in-match menu; Leave match ends it
@@ -116,13 +119,15 @@ func test_leaving_from_the_match_menu_ends_the_server() -> void:
 	assert_bool(scene.screens.pause_visible()).is_true()
 	scene.screens.pause_menu.leave_button.pressed.emit()
 	var left: bool = await _wait_for(func() -> bool: return not exited.is_empty(), 15.0)
-	assert_bool(left).is_true()
+	assert_bool(left).override_failure_message("did not leave: %s" % [flow.history]).is_true()
+	if not left:
+		return
 	var r: Dictionary = exited[0]
 	assert_bool(r["left"]).is_true()
 	assert_array(r["history"]).is_equal(["loading", "prep", "active", "menu"])
 	assert_array(r["pids_running"]).is_empty()
 	assert_str(str(r["server_summary"].get("end_reason", ""))).is_equal("host_left")  # the server finished by itself
-	assert_int(Log.error_count - errors_before).is_equal(0)
+	assert_int(Log.error_count - errors_before).override_failure_message("errors logged, the last: %s" % Log.last_error).is_equal(0)
 	scene.queue_free()
 
 

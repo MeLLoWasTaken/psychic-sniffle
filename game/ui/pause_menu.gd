@@ -73,13 +73,13 @@ func open_settings() -> SettingsScreen:
 
 
 ## The talent screen on its own layer above the HUD, read-only once talents are locked.
-func open_talents() -> TalentScreen:
+func open_talents(store: TalentLoadouts = null) -> TalentScreen:
 	if talents_layer != null:
 		return talents_layer.get_child(0)
 	var locked: bool = talents_locked.is_valid() and bool(talents_locked.call())
 	talents_layer = CanvasLayer.new()
 	talents_layer.layer = 30
-	var t: TalentScreen = TalentScreen.new(spec_id, null, locked)
+	var t: TalentScreen = TalentScreen.new(spec_id, store, locked)
 	talents_layer.add_child(t)
 	get_tree().root.add_child(talents_layer)
 	t.closed.connect(func(_spec: String, text: String) -> void:
