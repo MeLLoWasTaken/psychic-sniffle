@@ -441,9 +441,62 @@ The human asked to incorporate any readily available offering that improves the 
 
 ---
 
+## M2 — Combat depth and settings (split 2026-10-01)
+
+Exit gate (DESIGN.md): every combat rule has passing tests; every action is rebindable; UI layouts save and load. Order: the M1 follow-ups above first (M1-32, F-06), then these.
+
+### M2-01 Combat rules test matrix `[todo]`
+- [ ] `docs/combat_rules.md`: every rule in DESIGN.md "Core combat system" (GCD and its haste floor, spell queue window, cast and channel rules, moving while casting, school lock, strongest slow only, damage formula terms, armor, resources, DR steps and reset, the 8 s CC cap, Break Free, dispel types, LoS at cast start and finish, ranges, arena rules) with the test that covers it.
+- [ ] A test for every rule that has none; a check that fails when a rule in the document names no test.
+
+### M2-02 Full crowd control and diminishing returns `[todo]`
+- [ ] Disarm (no weapon abilities or auto attack, own DR category) and knockback (displacement, no DR) in data and combat; at least one ability of each in the slice kits or a test-only ability.
+- [ ] Every category's break rule from DESIGN.md (incapacitate on any damage, disorient over 10% of max health, roots by data), the 8 s cap, DR 100/50/25/immune resetting 18 s after the last effect ends; tests per category.
+
+### M2-03 Talent system `[todo]`
+- [ ] Node types passive, active (grants an ability), choice and capstone; gates at 8 and 20 points; a node unlocks when a connected node above is fully ranked; 30 + 30 points and 3 PvP slots.
+- [ ] Talent effects apply to units at match start from data paths (ability numbers, aura numbers, unit stats, cooldowns), with no per-class code; talents lock when the gates open.
+- [ ] Validator: unreachable nodes, broken references, wrong point totals, duplicate positions.
+
+### M2-04 Talent trees for the three slice specs `[todo]`
+- [ ] Warblade, Arcanist and Oracle class trees (about 40 nodes), Carnage, Rime and Grace spec trees (about 40), 12 PvP talents each; original names; icons from game-icons.net in the HUD style.
+- [ ] At least three viable builds per spec in bot simulations (each within 40-60%), and no node taken by more than 90% of the top simulated builds.
+
+### M2-05 Talent screen and loadouts `[todo]`
+- [ ] The screen draws itself from the data (positions, connecting lines, icons, tooltips, point counters); up to 10 loadouts per spec; export and import as a short text string; locked in a match.
+
+### M2-06 Spellbook and tooltips from data `[todo]`
+- [ ] Ability and aura tooltips in the HUD and a spellbook screen, generated from data with the codex's computed numbers (no hand-written numbers that can drift).
+
+### M2-07 1v1 bracket `[todo]`
+- [ ] Rules: dampening from 1:00, 12-minute limit, health and mana pickups at 1:30; menu entry "Play 1v1 vs a bot"; balance per F-08 (each spec 40-60% in 1,000 simulated duels).
+
+### M2-08 3v3 bracket `[todo]`
+- [ ] Three-player teams through the whole flow (menu, prep, scoreboard), arena enemy frames 1 to 3; balance per F-08 (two-healer teams no longer dominate).
+
+### M2-09 Second arena `[todo]`
+- [ ] About 40 m across, 3 to 5 line-of-sight blockers, two starting rooms, one twist (for example a collapsing bridge); kit pieces by Blender script; navigation and bots work; screenshots against the art bible.
+
+### M2-10 Third arena `[todo]`
+- [ ] As M2-09 with a different twist (rotating obstacle, flood or shrinking safe zone) and a distinct look and lighting preset.
+
+### M2-11 Keybinding screen `[todo]`
+- [ ] Every action, bar button and interface toggle rebindable; Shift, Ctrl and Alt; mouse buttons 1 to 5 and wheel; a target mode per bind (target, focus, mouseover, self, arena 1 to 3); conflict warning; reset to default; import and export.
+
+### M2-12 HUD edit mode `[todo]`
+- [ ] Toggle with labeled outlines; drag to move with grid snap; scale 50-200%; opacity; per-element options; layouts saved as named profiles (optionally per spec), exported and imported as text; checked at the five DESIGN.md resolutions.
+
+### M2-13 Settings suite `[todo]`
+- [ ] Interface, Gameplay, Graphics, Audio and Accessibility pages with every setting in DESIGN.md; each applies instantly except resolution; saved per profile.
+
+### M2-14 Arena HUD for 2v2 and 3v3 `[todo]`
+- [ ] Arena enemy frames with spec icon, cast bar, Break Free cooldown and a DR tracker per CC category; focus target frame and cast bar; nameplates with class color, health, cast bar and important debuffs.
+
+### M2-15 Review pass and M2 gate `[todo]`
+- [ ] Full review pass; the M2 gate checked and written to CHANGELOG.md.
+
 ## Later milestones (split into items when the milestone starts)
 
-- **M2** Full CC and DR set (disarm, knockback), talent trees and talent screen, 1v1 and 3v3 brackets, two more arenas, full keybinding screen, UI edit mode, settings suite.
 - **M3** Remaining 10 classes in waves of 3 or 4, each with kits, bots, models, animations, effects and sounds.
 - **M4** Capture-the-flag and resource-control battlegrounds, raid frames, scoreboard, minimap, bot fill.
 - **M5** Art and audio polish, rated matchmaking with Glicko-2, accessibility options, performance work, balance.
