@@ -106,12 +106,33 @@ def _butter(x: np.ndarray, fx: dict, kind: str) -> np.ndarray:
     return signal.sosfilt(sos, x)
 
 
+def eq_coefficients(kind: str, hz: float, gain_db: float, q: float) -> tuple[np.ndarray, np.ndarray]:
+    """Biquad (b, a) for a shelf or peak EQ: the cookbook formulas JUCE uses for pedalboard's
+    LowShelfFilter, HighShelfFilter and PeakFilter (juce::dsp::IIR::ArrayCoefficients), so the
+    result matches them; computed here because pedalboard's filters crashed natively on some CI
+    runners (KNOWN_ISSUES)."""
+    big_a = np.sqrt(10.0 ** (gain_db / 20.0))
+    w = 2.0 * np.pi * max(hz, 2.0) / SR
+    cos_w = np.cos(w)
+    if kind == "peak":
+        alpha = np.sin(w) / (q * 2.0)
+        b = [1.0 + alpha * big_a, -2.0 * cos_w, 1.0 - alpha * big_a]
+        a = [1.0 + alpha / big_a, -2.0 * cos_w, 1.0 - alpha / big_a]
+    else:
+        am1, ap1 = big_a - 1.0, big_a + 1.0
+        beta = np.sin(w) * np.sqrt(big_a) / q
+        if kind == "low_shelf":
+            b = [big_a * (ap1 - am1 * cos_w + beta), big_a * 2.0 * (am1 - ap1 * cos_w), big_a * (ap1 - am1 * cos_w - beta)]
+            a = [ap1 + am1 * cos_w + beta, -2.0 * (am1 + ap1 * cos_w), ap1 + am1 * cos_w - beta]
+        else:  # high_shelf
+            b = [big_a * (ap1 + am1 * cos_w + beta), big_a * -2.0 * (am1 + ap1 * cos_w), big_a * (ap1 + am1 * cos_w - beta)]
+            a = [ap1 - am1 * cos_w + beta, 2.0 * (am1 - ap1 * cos_w), ap1 - am1 * cos_w - beta]
+    return np.array(b) / a[0], np.array(a) / a[0]
+
+
 def _eq(x: np.ndarray, fx: dict) -> np.ndarray:
-    import pedalboard
-    cls = {"low_shelf": pedalboard.LowShelfFilter, "high_shelf": pedalboard.HighShelfFilter,
-           "peak": pedalboard.PeakFilter}[fx["fx"]]
-    return _pb([cls(cutoff_frequency_hz=float(fx["hz"]), gain_db=float(fx["gain_db"]),
-                    q=float(fx.get("q", 0.707)))], x)
+    b, a = eq_coefficients(fx["fx"], float(fx["hz"]), float(fx["gain_db"]), float(fx.get("q", 0.707)))
+    return signal.lfilter(b, a, x)
 
 
 def _rms(x: np.ndarray) -> float:

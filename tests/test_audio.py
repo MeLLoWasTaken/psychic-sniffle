@@ -477,3 +477,21 @@ def test_no_processing_leaves_the_raw_mix():
     """A sound with "processing": "none" is its raw mix, sample for sample."""
     r = dict(RECIPES["ui_click"], processing="none")
     assert np.array_equal(synth.signal_for(r, 1), synth.signal_for(r, 1, processed=False))
+
+
+@pytest.mark.parametrize("kind,hz,gain_db", [("low_shelf", 190.0, 4.0), ("high_shelf", 3000.0, -6.0), ("peak", 800.0, 5.0)])
+def test_eq_filters_give_their_gain_where_they_should(kind, hz, gain_db):
+    """The shelf and peak EQ (scipy biquads with JUCE's formulas, KNOWN_ISSUES: pedalboard's crashed
+    on some CI runners): a low shelf has its gain at DC and none at Nyquist, a high shelf the
+    reverse, a peak its gain at its frequency."""
+    from scipy import signal as sg
+    b, a = processing.eq_coefficients(kind, hz, gain_db, 0.707)
+    sr = processing.SR
+    _, h = sg.freqz(b, a, worN=[1.0, hz, sr / 2 - 1.0], fs=sr)
+    db = 20 * np.log10(np.abs(h))
+    if kind == "low_shelf":
+        assert abs(db[0] - gain_db) < 0.05 and abs(db[2]) < 0.05
+    elif kind == "high_shelf":
+        assert abs(db[2] - gain_db) < 0.05 and abs(db[0]) < 0.05
+    else:
+        assert abs(db[1] - gain_db) < 0.05 and abs(db[0]) < 0.05

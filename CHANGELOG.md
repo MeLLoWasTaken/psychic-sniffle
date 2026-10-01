@@ -2,6 +2,11 @@
 
 One entry per build-loop iteration, newest first. Format: date, backlog ID, what changed, how it was checked.
 
+## 2026-10-01 — CI: audio tests no longer call pedalboard's EQ
+- Two CI runs crashed natively inside pedalboard's EQ filter (the known intermittent crash). The shelf and peak EQ are now scipy biquads with the same formulas JUCE uses; the output matches pedalboard's within 0.006% (about -85 dB), and the 80 sounds were rebuilt because their hash covers the generator code.
+- check_all's CI annotation now starts with the crash header instead of keeping only the tail.
+- Checked: all 493 audio tests, including a new one that checks each EQ's gain at DC, Nyquist and its frequency.
+
 ## 2026-10-01 — M2-06 spellbook and tooltips from data
 - `AbilityText` computes tooltip text from data, using the player's talented copies: cast type, cooldown, cost, range, and each effect with numbers by the combat formula, plus the auras an ability applies. It is the in-game twin of the codex generator.
 - Hand-written descriptions show this build's numbers: a number matching an untalented one is replaced by the talented one ("A steady heal for 13,000").
