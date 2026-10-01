@@ -343,8 +343,9 @@ The human asked to incorporate any readily available offering that improves the 
 - [ ] The body's Corrective Smooth shrinks it by 4-7 mm RMS and blurs the face, knuckles and knees. Widen the Oracle's mask and coif offsets (skin pokes through at the chin and ear without the smooth), drop the smooth, rerun the clipping gate and compare close-ups.
 
 
-### X-12 Client prediction with talented auras `[todo]`
-- [ ] Snapshots carry which player's version an aura is (or its speed effect), so the client predicts a talented slow or speed boost exactly; a test where a talented slow is predicted without a correction.
+### X-12 Client prediction with talented auras `[done]`
+- [x] Snapshots carry which player's version an aura is (or its speed effect), so the client predicts a talented slow or speed boost exactly; a test where a talented slow is predicted without a correction.
+- Done 2026-10-01: the player's own unit in each snapshot carries the movement speed values of its auras whose talented speed differs from the data (protocol 10); the client predicts with them. The test checks that the client's speed from a decoded snapshot equals the server's for a talented 50% Chilled (the data alone gives 40%), which is what keeps prediction from needing a correction.
 
 
 ### X-13 Visual effects for talent-applied auras `[todo]`

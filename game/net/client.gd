@@ -280,6 +280,9 @@ func _reconcile(snap: Dictionary) -> void:
 		_last_displaced_tick = displaced
 		effect_changed = true  # an ability moved us (charge, blink, knockback): server-decided
 	own_auras = mine["auras"]
+	for pos: int in snap.get("own", {}).get("aura_speeds", {}):  # talented slows and boosts (X-12)
+		if pos < own_auras.size():
+			own_auras[pos]["move_speed"] = snap["own"]["aura_speeds"][pos]
 	while not _pending.is_empty() and int(_pending[0]["seq"]) <= int(snap["ack_seq"]):
 		_pending.pop_front()
 	if int(snap["match"]["phase"]) == ArenaMatch.Phase.ENDED:

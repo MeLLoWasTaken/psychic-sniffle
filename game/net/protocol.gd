@@ -6,7 +6,7 @@ extends RefCounted
 ## Abilities, auras and specs travel as small indexes into their sorted id lists (both sides
 ## load the same data, and the protocol version changes whenever that could differ).
 
-const VERSION: int = 9
+const VERSION: int = 10
 const CH_RELIABLE: int = 0
 const CH_UNRELIABLE: int = 1
 const CHANNELS: int = 2
@@ -127,7 +127,7 @@ static func input_packet(inputs: Array) -> PackedByteArray:
 ## match state, every unit's state, and the receiving player's own cooldowns.
 ## `match_state` = {phase, start_tick, dampening_pct, winner, pickups (bit mask of active spots)}. (Delta compression: backlog F-01.)
 static func snapshot(tick: int, ack_seq: int, units: Array, match_state: Dictionary = {},
-		own: Unit = null) -> PackedByteArray:
+		own: Unit = null, own_speeds: Dictionary = {}) -> PackedByteArray:
 	var b: StreamPeerBuffer = _buf()
 	b.put_u8(Msg.SNAPSHOT)
 	b.put_u32(tick)
@@ -196,6 +196,14 @@ static func snapshot(tick: int, ack_seq: int, units: Array, match_state: Diction
 		for k: String in locks:
 			b.put_utf8_string(k)
 			b.put_u32(own.school_locks[k])
+		# talented movement speed of own auras (Combat.talented_speeds; X-12), by aura position
+		var speeds: Array = own_speeds.keys().filter(func(i: int) -> bool: return i < 32)
+		b.put_u8(speeds.size())
+		for i: int in speeds:
+			b.put_u8(i)
+			b.put_u8((own_speeds[i] as Array).size())
+			for v: float in own_speeds[i]:
+				b.put_float(v)
 	else:
 		b.put_u8(0)
 	return b.data_array
@@ -345,6 +353,14 @@ static func decode(data: PackedByteArray) -> Dictionary:
 				for j: int in nl:
 					var school: String = b.get_utf8_string()
 					own["school_locks"][school] = b.get_u32()
+				own["aura_speeds"] = {}
+				var ns: int = b.get_u8()
+				for j: int in ns:
+					var pos: int = b.get_u8()
+					var vals: Array = []
+					for k: int in b.get_u8():
+						vals.append(b.get_float())
+					own["aura_speeds"][pos] = vals
 				snap["own"] = own
 			return snap
 		Msg.PING, Msg.PONG:

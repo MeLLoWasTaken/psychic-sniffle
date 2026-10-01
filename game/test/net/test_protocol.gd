@@ -110,3 +110,27 @@ func test_talent_change_messages_round_trip() -> void:
 	var no: Dictionary = Protocol.decode(Protocol.talents("", "talents_locked"))
 	assert_str(str(no["talents"])).is_empty()
 	assert_str(str(no["error"])).is_equal("talents_locked")
+
+
+func test_snapshots_carry_talented_aura_speeds_so_prediction_matches_the_server() -> void:
+	# X-12: an Arcanist whose talents make Chilled a 50% slow (the data says 40%)
+	var runner: MatchRunner = MatchRunner.new(Data.maps["gallows_courtyard"], "arena", "2v2", 0.0, 5)
+	var me: Unit = runner.add_unit("warblade_carnage", 0)
+	var arc: Unit = runner.add_unit("arcanist_rime", 1)
+	var chilled: Dictionary = Data.auras["chilled"].duplicate(true)
+	chilled["modifiers"][0]["value"] = 0.5
+	arc.talent_auras["chilled"] = chilled
+	me.auras.append({"id": "chilled", "source": arc.id, "v": arc.id, "applied_tick": 0, "expires_tick": 600, "stacks": 1})
+	var speeds: Dictionary = runner.combat.talented_speeds(me)
+	assert_dict(speeds).is_equal({0: [0.5]})
+	var snap: Dictionary = Protocol.decode(Protocol.snapshot(10, 1, [me, arc], {}, me, speeds))
+	assert_dict(snap["own"]["aura_speeds"]).is_equal({0: [0.5]})
+	var mine: Dictionary = snap["units"].filter(func(u: Dictionary) -> bool: return int(u["id"]) == me.id)[0]
+	var auras: Array = mine["auras"]
+	var without: float = Combat.speed_multiplier_from(auras, Data.auras)
+	auras[0]["move_speed"] = snap["own"]["aura_speeds"][0]  # what NetClient does with the snapshot
+	assert_float(Combat.speed_multiplier_from(auras, Data.auras)).is_equal_approx(runner.combat.speed_multiplier(me), 1e-6)
+	assert_float(absf(without - runner.combat.speed_multiplier(me))).is_greater(0.05)  # the data alone mispredicts
+	# untalented auras send nothing
+	me.auras[0].erase("v")
+	assert_dict(runner.combat.talented_speeds(me)).is_empty()

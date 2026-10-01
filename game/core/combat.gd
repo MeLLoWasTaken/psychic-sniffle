@@ -807,7 +807,8 @@ func speed_multiplier(u: Unit) -> float:
 	return speed_multiplier_from(u.auras, auras_db, sim.units)
 
 
-## The same rule for an aura list (the client predicts with auras from snapshots).
+## The same rule for an aura list (the client predicts with auras from snapshots). An aura that
+## carries "move_speed" (the server's talented values, X-12) uses those instead of the data's.
 static func speed_multiplier_from(aura_list: Array, db: Dictionary, units: Dictionary = {}) -> float:
 	var slow: float = 1.0
 	var boost: float = 1.0
@@ -820,14 +821,36 @@ static func speed_multiplier_from(aura_list: Array, db: Dictionary, units: Dicti
 		var cat: String = data["cc_category"]
 		if cat == "root" or cat == "stun" or cat == "incapacitate":
 			return 0.0
-		for m: Dictionary in data.get("modifiers", []):
-			if m["stat"] == "move_speed" and m["op"] == "multiply":
-				var v: float = float(m["value"])
-				if v < 1.0:
-					slow = minf(slow, v)
-				else:
-					boost *= v
+		for v: float in (a["move_speed"] if a.has("move_speed") else move_speed_values(data)):
+			if v < 1.0:
+				slow = minf(slow, v)
+			else:
+				boost *= v
 	return slow * boost
+
+
+## An aura's movement speed multipliers (its move_speed multiply modifiers), in order.
+static func move_speed_values(data: Dictionary) -> Array:
+	var out: Array = []
+	for m: Dictionary in data.get("modifiers", []):
+		if m["stat"] == "move_speed" and m["op"] == "multiply":
+			out.append(float(m["value"]))
+	return out
+
+
+## The auras on `u` whose talented movement speed differs from the data's: position in u.auras
+## -> their move_speed values. Snapshots send these with the player's own unit (X-12) so the
+## client predicts a talented slow or speed boost exactly.
+func talented_speeds(u: Unit) -> Dictionary:
+	var out: Dictionary = {}
+	for i: int in u.auras.size():
+		var a: Dictionary = u.auras[i]
+		if not a.has("v"):
+			continue
+		var vals: Array = move_speed_values(aura_data(a))
+		if vals != move_speed_values(auras_db.get(a["id"], {})):
+			out[i] = vals
+	return out
 
 
 ## True when crowd control takes movement away from the player (stun, incapacitate, disorient).

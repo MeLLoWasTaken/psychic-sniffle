@@ -301,7 +301,8 @@ func _send_snapshots() -> void:
 	var ms: Dictionary = _match_state()
 	for c: Dictionary in clients.values():
 		var own: Unit = sim.units.get(c["unit_id"])
-		transport.send(c["peer"], Protocol.CH_UNRELIABLE, Protocol.snapshot(sim.tick, c["ack_seq"], units, ms, own), false)
+		transport.send(c["peer"], Protocol.CH_UNRELIABLE, Protocol.snapshot(sim.tick, c["ack_seq"], units, ms, own,
+			runner.combat.talented_speeds(own) if own else {}), false)
 		c["snapshots"] += 1
 		_stats["snapshots_sent"] += 1
 

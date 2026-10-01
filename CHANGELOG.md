@@ -2,6 +2,10 @@
 
 One entry per build-loop iteration, newest first. Format: date, backlog ID, what changed, how it was checked.
 
+## 2026-10-01 — X-12 prediction with talented slows
+- The client now predicts its own movement under a talented slow or speed boost exactly: snapshots carry the talented speed values of the player's own auras (protocol 10). Before, a talented slow mispredicted until the next correction.
+- Checked: a protocol test (a talented 50% Chilled: the client's speed from the decoded snapshot equals the server's; the data alone would give 40%); all Godot and Python tests pass (pre-commit run).
+
 ## 2026-10-01 — M2-14b nameplate clicks and mouseover
 - Clicking a nameplate targets its unit (the nearest plate where plates overlap), and the pointer over a plate counts as mouseover for keys set to that target mode, like unit frames.
 - Checked: a new nameplate test (plate under a point, click to target, mouseover, hidden plates); all Godot and Python tests pass (pre-commit run).
