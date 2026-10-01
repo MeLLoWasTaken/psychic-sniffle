@@ -756,6 +756,13 @@ def _check_effects(report: Report, db: dict, schemas: dict) -> None:
             continue
         covered |= set(s["abilities"])
         covered |= set(db["classes"].get(s["class"], {}).get("shared_abilities", []))
+    # talent-granted abilities count too, and talents can change what an ability applies (X-13)
+    talent_auras = _talent_applied_auras(db["talents"])
+    for t in db["talents"].values():
+        for n in t["nodes"]:
+            for src in n.get("choices") or [n]:
+                if src.get("grants_ability"):
+                    covered.add(src["grants_ability"])
     for aid in sorted(covered):
         if aid in abilities and aid not in effects:
             report.error(f"effects/{aid}.json", f"ability '{aid}' has no effect entry (add one, or \"none\": true with a reason)")
@@ -777,7 +784,7 @@ def _check_effects(report: Report, db: dict, schemas: dict) -> None:
             report.error(rel, "has no stages (mark it \"none\": true with a reason instead)")
         effect_types = {x["type"] for x in a["effects"]}
         radius = [x for x in a["effects"] if x.get("radius_m")]
-        applied = {x["aura"] for x in a["effects"] if x["type"] == "apply_aura"}
+        applied = {x["aura"] for x in a["effects"] if x["type"] == "apply_aura"} | talent_auras.get(eid, set())
         if "cast" in e and a["cast_type"] not in ("cast", "channel"):
             report.error(rel, f"cast glow on a {a['cast_type']} ability")
         if "projectile" in e and a["target"] not in UNIT_TARGETS:
@@ -798,7 +805,7 @@ def _check_effects(report: Report, db: dict, schemas: dict) -> None:
                 report.error(rel, f"aura '{auid}' not found")
                 continue
             if auid not in applied:
-                report.error(rel, f"aura '{auid}' is not applied by ability '{eid}'")
+                report.error(rel, f"aura '{auid}' is not applied by ability '{eid}' (nor by a talented version of it)")
             if auid in defined:
                 report.error(rel, f"aura '{auid}' already has a visual in effects/{defined[auid]}.json")
             defined[auid] = eid
@@ -808,12 +815,39 @@ def _check_effects(report: Report, db: dict, schemas: dict) -> None:
                 if style not in CC_AURA_STYLES:
                     report.error(rel, f"aura '{auid}' is crowd control ({cat}) and needs a readable CC style "
                                       f"({', '.join(sorted(CC_AURA_STYLES))}), not '{style}'")
-    # every aura a covered ability applies has a visual (or an explicit "none")
+    # every aura a covered ability applies, in its data or through a talent, has a visual (or "none")
     for aid in sorted(covered & set(abilities)):
-        for x in abilities[aid]["effects"]:
-            if x["type"] == "apply_aura" and x["aura"] in auras and x["aura"] not in defined:
-                report.error(f"effects/{aid}.json", f"aura '{x['aura']}' applied by '{aid}' has no visual in any effect file")
-                defined[x["aura"]] = aid  # report once
+        applies = [x["aura"] for x in abilities[aid]["effects"] if x["type"] == "apply_aura"] + sorted(talent_auras.get(aid, set()))
+        for auid in applies:
+            if auid in auras and auid not in defined:
+                report.error(f"effects/{aid}.json", f"aura '{auid}' applied by '{aid}' has no visual in any effect file")
+                defined[auid] = aid  # report once
+
+
+def _talent_applied_auras(trees: dict) -> dict[str, set[str]]:
+    """Ability id -> auras that talents make it apply: apply_aura entries in a talent effect that
+    sets or adds to "<ability>.effects" (or one of its entries)."""
+    out: dict[str, set[str]] = {}
+
+    def walk(v):
+        if isinstance(v, dict):
+            if v.get("type") == "apply_aura" and "aura" in v:
+                yield v["aura"]
+            for x in v.values():
+                yield from walk(x)
+        elif isinstance(v, list):
+            for x in v:
+                yield from walk(x)
+
+    for t in trees.values():
+        for n in t["nodes"]:
+            for src in n.get("choices") or [n]:
+                for e in src.get("effects", []):
+                    parts = e["modify"].split(".")
+                    if len(parts) >= 2 and parts[1] == "effects":
+                        for auid in walk([e.get(k) for k in ("set", "add", "per_rank") if k in e]):
+                            out.setdefault(parts[0], set()).add(auid)
+    return out
 
 
 def _check_tree_ref(report: Report, rel: str, trees: dict, tree_id: str, kind: str, owner: str) -> None:

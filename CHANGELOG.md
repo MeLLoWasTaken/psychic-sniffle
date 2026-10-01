@@ -2,6 +2,11 @@
 
 One entry per build-loop iteration, newest first. Format: date, backlog ID, what changed, how it was checked.
 
+## 2026-10-01 — X-13 visuals for auras that only talents apply
+- Seven auras that only talents apply now show on units: Windpipe Crushed (silence halo), Bound Dazed (slow mist), Stiff Neck (body glow), the two Break Free speed boosts (speed streaks), Seared by Judgment (drips) and Peal Shelter (small shield).
+- The data validator now knows which auras talents make an ability apply, and checks talent-granted abilities like kit abilities, so a new talent aura without a visual fails the checks.
+- Checked: a validator test (the talent aura needs a visual and may have one; an unrelated aura is still refused); all Godot and Python tests pass (pre-commit run).
+
 ## 2026-10-01 — X-12 prediction with talented slows
 - The client now predicts its own movement under a talented slow or speed boost exactly: snapshots carry the talented speed values of the player's own auras (protocol 10). Before, a talented slow mispredicted until the next correction.
 - Checked: a protocol test (a talented 50% Chilled: the client's speed from the decoded snapshot equals the server's; the data alone would give 40%); all Godot and Python tests pass (pre-commit run).

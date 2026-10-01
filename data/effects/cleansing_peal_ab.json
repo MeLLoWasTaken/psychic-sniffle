@@ -10,5 +10,11 @@
     "style": "nova",
     "center": "caster",
     "lifetime_s": 0.9
+  },
+  "auras": {
+    "oracle_peal_shelter": {
+      "style": "shield",
+      "size": 0.6
+    }
   }
 }

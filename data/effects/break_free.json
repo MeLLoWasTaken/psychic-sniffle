@@ -5,5 +5,17 @@
     "style": "flash",
     "at": "self",
     "size": 1.0
+  },
+  "auras": {
+    "oracle_unshackled_stride": {
+      "style": "speed"
+    },
+    "unbowed_stride": {
+      "style": "speed"
+    },
+    "stiff_neck": {
+      "style": "empower",
+      "size": 0.8
+    }
   }
 }

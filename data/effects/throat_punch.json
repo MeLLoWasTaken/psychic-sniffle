@@ -8,5 +8,10 @@
   "melee": {
     "style": "thrust",
     "size": 0.9
+  },
+  "auras": {
+    "windpipe_crushed": {
+      "style": "silence"
+    }
   }
 }

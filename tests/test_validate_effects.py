@@ -44,3 +44,19 @@ def test_every_applied_aura_needs_a_visual(tmp_path: Path):
     del doc["auras"]
     path.write_text(json.dumps(doc))
     assert any("aura 'rimebound' applied by 'rimebind' has no visual" in e for e in validate(data))
+
+
+def test_auras_that_only_talents_apply_need_a_visual_and_may_have_one(tmp_path: Path):
+    """X-13: Throat Punch silences only with a PvP talent (windpipe_crushed). Its effect file may
+    define that aura's visual, and must, since the talent makes the ability apply it."""
+    data = _copy(tmp_path)
+    path = data / "effects" / "throat_punch.json"
+    doc = json.loads(path.read_text())
+    assert doc["auras"]["windpipe_crushed"]["style"] == "silence"
+    del doc["auras"]
+    path.write_text(json.dumps(doc))
+    assert any("aura 'windpipe_crushed' applied by 'throat_punch' has no visual" in e for e in validate(data))
+    # an aura neither the ability nor any talented version of it applies is still refused
+    doc["auras"] = {"windpipe_crushed": {"style": "silence"}, "bound_dazed": {"style": "slow"}}
+    path.write_text(json.dumps(doc))
+    assert any("aura 'bound_dazed' is not applied by ability 'throat_punch'" in e for e in validate(data))

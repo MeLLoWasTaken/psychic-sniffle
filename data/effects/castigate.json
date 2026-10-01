@@ -11,5 +11,11 @@
   "impact": {
     "style": "burst",
     "at": "target"
+  },
+  "auras": {
+    "seared_by_judgment": {
+      "style": "dot",
+      "size": 0.7
+    }
   }
 }

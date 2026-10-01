@@ -348,8 +348,9 @@ The human asked to incorporate any readily available offering that improves the 
 - Done 2026-10-01: the player's own unit in each snapshot carries the movement speed values of its auras whose talented speed differs from the data (protocol 10); the client predicts with them. The test checks that the client's speed from a decoded snapshot equals the server's for a talented 50% Chilled (the data alone gives 40%), which is what keeps prediction from needing a correction.
 
 
-### X-13 Visual effects for talent-applied auras `[todo]`
-- [ ] The effects validator accepts entries for auras that only talents apply (bound_dazed, windpipe_crushed, stiff_neck and others), and those auras get readable effects like the kit's.
+### X-13 Visual effects for talent-applied auras `[done]`
+- [x] The effects validator accepts entries for auras that only talents apply (bound_dazed, windpipe_crushed, stiff_neck and others), and those auras get readable effects like the kit's.
+- Done 2026-10-01: the validator reads which auras talents make an ability apply (apply_aura entries in talent effects on "<ability>.effects") and counts talent-granted abilities as covered; it then required seven visuals, now added: speed streaks for the two Break Free speed boosts, a body glow for Stiff Neck's crowd control immunity, drips for Seared by Judgment (healing taken down), a small shield for Peal Shelter, mist at the feet for Bound Dazed, and the silence halo for Windpipe Crushed.
 
 ### X-14 Sound processing without native plugins `[done]`
 - [x] The five pedalboard effects (distortion, compressor, chorus, phaser, reverb) are our own numpy and scipy code matching pedalboard within 1e-3 of peak (most within 1e-6); pedalboard is only a test reference, run in a separate process so a crash skips those comparisons. Done 2026-10-01 after pedalboard's Distortion crashed a CI run with an illegal instruction.
