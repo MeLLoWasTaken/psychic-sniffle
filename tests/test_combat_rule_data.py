@@ -76,3 +76,32 @@ def test_healing_reaches_40_m_and_most_ranged_abilities_do():
             ranged.append(ab)
     at_40 = [ab for ab in ranged if ab["range_m"] == 40]
     assert len(at_40) * 3 >= len(ranged) * 2, f"only {len(at_40)} of {len(ranged)} ranged abilities reach 40 m"
+
+
+AURAS = _load("auras")
+
+# docs/DESIGN.md "Crowd control and diminishing returns": the break rule of each category.
+BREAK_RULES = {
+    "stun": {"never"},
+    "incapacitate": {"any"},
+    "disorient": {"threshold"},
+    "silence": {"never"},
+    "root": {"never", "threshold"},  # "after a damage threshold (on some roots)"
+    "disarm": {"never"},
+}
+
+
+def test_crowd_control_auras_follow_their_category_break_rule():
+    seen = set()
+    for aura in AURAS.values():
+        cat = aura["cc_category"]
+        if cat in ("none", "knockback"):
+            continue
+        seen.add(cat)
+        brk = aura.get("breaks_on_damage", "never")
+        assert brk in BREAK_RULES[cat], f"{aura['id']} ({cat}) breaks on damage '{brk}'"
+        if cat == "disorient":
+            assert aura["damage_threshold_pct"] == 10, f"{aura['id']}: disorients break past 10% of max health"
+        if brk == "threshold":
+            assert 0 < aura["damage_threshold_pct"] <= 50, aura["id"]
+    assert {"stun", "incapacitate", "disorient", "silence", "root"} <= seen

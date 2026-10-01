@@ -2,6 +2,15 @@
 
 One entry per build-loop iteration, newest first. Format: date, backlog ID, what changed, how it was checked.
 
+## 2026-10-01 — M2-02 crowd control by category
+- `game/test/core/test_crowd_control.gd` (12 tests) covers each category from DESIGN.md:
+  - stun, incapacitate and disorient take control; silence blocks spells only; root stops movement only; disarm blocks weapon attacks and auto attack only;
+  - break rules: incapacitate on any damage, disorient past 10% of max health (added up over hits), roots by their data, the rest never;
+  - Break Free removes every category; knockback pushes the full distance every time with no diminishing returns;
+  - every category steps 100%, 50%, 25%, immune, keeps its own count, and resets 18 s after its last effect ends; nothing lasts past 8 s.
+- A data test fails if a crowd-control aura's break rule disagrees with its category.
+- Checked: all 12 pass, and breaking the disarm and incapacitate rules in the code makes them fail.
+
 ## 2026-10-01 — M2-01 combat rules matrix; spellsever lock 4 s
 - `docs/combat_rules.md` lists all 42 combat and arena rules from DESIGN.md with the test that proves each. `tests/test_combat_rules_doc.py` fails if a rule names no test (or no backlog item for later work), or names a test that does not exist.
 - New tests for the eight rules that had none:

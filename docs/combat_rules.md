@@ -27,14 +27,14 @@ Column "Test" holds `file::test_name` (Godot tests under `game/test/`, Python te
 | Resources | Abilities need their resource; mana regenerates | core/test_combat.gd::test_cannot_cast_without_resource_and_mana_regenerates | |
 | Resources | Rage builds from dealing and taking damage and decays out of combat | core/test_combat.gd::test_rage_builds_from_damage_and_decays_out_of_combat; core/test_kits.gd::test_auto_attacks_and_damage_taken_build_rage | |
 | Auras | Periodic effects tick and expire; stacking buffs cap | core/test_combat.gd::test_periodic_damage_and_expiry; core/test_combat.gd::test_stacking_buff_caps_at_max_stacks | |
-| Crowd control | Repeated crowd control in one category lasts 100%, 50%, 25%, then immune | core/test_combat.gd::test_stun_diminishing_returns_100_50_25_then_immune | |
-| Crowd control | Diminishing returns reset 18 s after the last effect in the category ends | core/test_combat.gd::test_dr_resets_18_s_after_the_last_cc_ends | |
-| Crowd control | No crowd control lasts longer than 8 s | core/test_combat.gd::test_no_cc_lasts_longer_than_8_s | |
-| Crowd control | Incapacitate breaks on any damage | core/test_combat.gd::test_incapacitate_breaks_on_damage | |
-| Crowd control | Disorient breaks after damage over 10% of max health | | M2-02 |
-| Crowd control | Silence and stun do not break on damage; some roots break after a damage threshold | | M2-02 |
-| Crowd control | Disarm (own category) and knockback (no diminishing returns) | | M2-02 |
-| Crowd control | Stun blocks abilities; Break Free removes all crowd control | core/test_combat.gd::test_stun_blocks_abilities_but_break_free_removes_it | |
+| Crowd control | Repeated crowd control in one category lasts 100%, 50%, 25%, then immune | core/test_combat.gd::test_stun_diminishing_returns_100_50_25_then_immune; core/test_crowd_control.gd::test_every_category_steps_100_50_25_then_immune | |
+| Crowd control | Diminishing returns reset 18 s after the last effect in the category ends | core/test_combat.gd::test_dr_resets_18_s_after_the_last_cc_ends; core/test_crowd_control.gd::test_diminishing_returns_reset_18_s_after_the_last_effect_ends_in_each_category | |
+| Crowd control | No crowd control lasts longer than 8 s | core/test_combat.gd::test_no_cc_lasts_longer_than_8_s; core/test_crowd_control.gd::test_no_category_lasts_longer_than_8_s | |
+| Crowd control | Incapacitate breaks on any damage | core/test_combat.gd::test_incapacitate_breaks_on_damage; core/test_crowd_control.gd::test_incapacitate_blocks_everything_and_breaks_on_any_damage | |
+| Crowd control | Disorient breaks after damage over 10% of max health | core/test_crowd_control.gd::test_disorient_takes_control_and_breaks_past_10_percent_of_max_health; test_combat_rule_data.py::test_crowd_control_auras_follow_their_category_break_rule | |
+| Crowd control | Silence and stun do not break on damage; some roots break after a damage threshold | core/test_crowd_control.gd::test_stun_blocks_everything_and_holds_through_damage; core/test_crowd_control.gd::test_silence_blocks_spells_but_not_weapon_attacks_and_holds_through_damage; core/test_crowd_control.gd::test_root_stops_movement_but_not_casting_and_breaks_by_its_data; test_combat_rule_data.py::test_crowd_control_auras_follow_their_category_break_rule | |
+| Crowd control | Disarm (own category) and knockback (no diminishing returns) | core/test_crowd_control.gd::test_disarm_blocks_weapon_attacks_and_auto_attack_but_not_spells; core/test_crowd_control.gd::test_knockback_pushes_every_time_with_no_diminishing_returns; core/test_crowd_control.gd::test_categories_keep_separate_diminishing_returns | |
+| Crowd control | Stun blocks abilities; Break Free removes all crowd control | core/test_combat.gd::test_stun_blocks_abilities_but_break_free_removes_it; core/test_crowd_control.gd::test_break_free_works_under_every_category | |
 | Crowd control | Break Free has a 90 s cooldown | core/test_combat.gd::test_break_free_waits_90_s_between_uses; test_combat_rule_data.py::test_break_free_has_a_90_s_cooldown | |
 | Dispels | Dispels remove effects by type | core/test_combat.gd::test_dispel_removes_a_magic_debuff_from_an_ally; core/test_kits.gd::test_absolve_removes_a_magic_slow_from_an_ally | |
 | Dispels | An offensive dispel strips one magic buff | core/test_combat.gd::test_offensive_dispel_strips_one_magic_buff | |

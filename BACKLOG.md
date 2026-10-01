@@ -450,9 +450,10 @@ Exit gate (DESIGN.md): every combat rule has passing tests; every action is rebi
 - [x] `docs/combat_rules.md`: every rule in DESIGN.md "Core combat system" (GCD and its haste floor, spell queue window, cast and channel rules, moving while casting, school lock, strongest slow only, damage formula terms, armor, resources, DR steps and reset, the 8 s CC cap, Break Free, dispel types, LoS at cast start and finish, ranges, arena rules) with the test that covers it.
 - [x] A test for every rule that has none; a check that fails when a rule in the document names no test. (Rules owned by later items name them: energy GCD M3, queue window setting M2-13, CC break rules M2-02, targeting keybinds M2-11, 1v1 time limit M2-07.)
 
-### M2-02 Full crowd control and diminishing returns `[todo]`
-- [ ] Disarm (no weapon abilities or auto attack, own DR category) and knockback (displacement, no DR) in data and combat; at least one ability of each in the slice kits or a test-only ability.
-- [ ] Every category's break rule from DESIGN.md (incapacitate on any damage, disorient over 10% of max health, roots by data), the 8 s cap, DR 100/50/25/immune resetting 18 s after the last effect ends; tests per category.
+### M2-02 Full crowd control and diminishing returns `[done]`
+- [x] Disarm (no weapon abilities or auto attack, own DR category) and knockback (displacement, no DR) in data and combat; at least one ability of each in the slice kits or a test-only ability.
+- [x] Every category's break rule from DESIGN.md (incapacitate on any damage, disorient over 10% of max health, roots by data), the 8 s cap, DR 100/50/25/immune resetting 18 s after the last effect ends; tests per category.
+- Done with test-only disarm and knockback abilities; the slice kits get one of each when a class wave needs it. The code already handled both; M2-02 added the tests (`game/test/core/test_crowd_control.gd`; breaking the disarm and incapacitate rules in the code makes them fail) and a data rule tying every crowd-control aura to its category's break rule.
 
 ### M2-03 Talent system `[todo]`
 - [ ] Node types passive, active (grants an ability), choice and capstone; gates at 8 and 20 points; a node unlocks when a connected node above is fully ranked; 30 + 30 points and 3 PvP slots.
