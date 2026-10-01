@@ -234,7 +234,8 @@
               "settings",
               "quit",
               "talents",
-              "play_1v1"
+              "play_1v1",
+              "play_3v3"
             ],
             "description": "What the button does; the client routes each action (GameFlow)"
           },
@@ -244,6 +245,10 @@
           },
           "hint": {
             "type": "string"
+          },
+          "row": {
+            "type": "string",
+            "description": "Buttons with the same row id sit side by side in one row."
           }
         }
       }
@@ -367,6 +372,9 @@
       }
     },
     "play_1v1": {
+      "$ref": "#/$defs/play_preset"
+    },
+    "play_3v3": {
       "$ref": "#/$defs/play_preset"
     }
   }

@@ -3,7 +3,7 @@
   "name": "Main menu",
   "description": "Client main menu and match flow screens (backlog M1-28). Buttons route by action; the Play preset picks the local server's map, bracket and the bots filling the other slots for each spec the player can choose. Fonts and colors match the HUD (data/hud_layouts/default.json).",
   "title": "ARENA PVP",
-  "subtitle": "Gallows Courtyard  ·  1v1 and 2v2 Arena",
+  "subtitle": "Gallows Courtyard  ·  1v1, 2v2 and 3v3 Arena",
   "fonts": {
     "display": {
       "file": "cinzel/Cinzel-Variable.ttf",
@@ -15,16 +15,25 @@
   },
   "buttons": [
     {
-      "id": "play_bots",
-      "label": "Play 2v2 vs bots",
-      "action": "play_bots",
-      "hint": "You and a bot partner against two bots, on a match server started on this machine."
-    },
-    {
       "id": "play_1v1",
       "label": "Play 1v1 vs a bot",
       "action": "play_1v1",
-      "hint": "A duel against one bot on a match server started on this machine: dampening from 1:00, a 12-minute limit."
+      "hint": "A duel against one bot on a match server started on this machine: dampening from 1:00, a 12-minute limit.",
+      "row": "play"
+    },
+    {
+      "id": "play_bots",
+      "label": "Play 2v2 vs bots",
+      "action": "play_bots",
+      "hint": "You and a bot partner against two bots, on a match server started on this machine.",
+      "row": "play"
+    },
+    {
+      "id": "play_3v3",
+      "label": "Play 3v3 vs bots",
+      "action": "play_3v3",
+      "row": "play",
+      "hint": "You and two bot partners against three bots, on a match server started on this machine."
     },
     {
       "id": "practice",
@@ -322,6 +331,65 @@
       "allies": [],
       "enemies": [
         "opponent"
+      ]
+    },
+    "server_start_timeout_s": 30,
+    "server_silence_s": 10,
+    "end_banner_s": 3.0,
+    "gates_banner_s": 2.5
+  },
+  "play_3v3": {
+    "map": "gallows_courtyard",
+    "bracket": "3v3",
+    "host_name": "player",
+    "port_range": [
+      24900,
+      24999
+    ],
+    "comps": {
+      "warblade_carnage": {
+        "allies": [
+          "arcanist_rime",
+          "oracle_grace"
+        ],
+        "enemies": [
+          "warblade_carnage",
+          "arcanist_rime",
+          "oracle_grace"
+        ]
+      },
+      "arcanist_rime": {
+        "allies": [
+          "warblade_carnage",
+          "oracle_grace"
+        ],
+        "enemies": [
+          "warblade_carnage",
+          "arcanist_rime",
+          "oracle_grace"
+        ]
+      },
+      "oracle_grace": {
+        "allies": [
+          "warblade_carnage",
+          "arcanist_rime"
+        ],
+        "enemies": [
+          "warblade_carnage",
+          "arcanist_rime",
+          "oracle_grace"
+        ]
+      }
+    },
+    "bot_names": {
+      "allies": [
+        "partner",
+        "partner2"
+      ],
+      "enemies": [
+        "enemy1",
+        "enemy2",
+        "enemy3"
       ]
     },
     "server_start_timeout_s": 30,

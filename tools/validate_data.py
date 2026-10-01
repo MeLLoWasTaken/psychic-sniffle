@@ -565,7 +565,7 @@ def _check_menus(report: Report, db: dict) -> None:
         picker = m["spec_picker"]
         if picker["default"] not in picker["specs"]:
             report.error(rel, f"spec_picker.default '{picker['default']}' is not in spec_picker.specs")
-        presets = {k: m[k] for k in ("play_bots", "play_1v1") if k in m}
+        presets = {k: m[k] for k in ("play_bots", "play_1v1", "play_3v3") if k in m}
         for key, pb in presets.items():
             if pb["map"] not in db["maps"]:
                 report.error(rel, f"{key}.map '{pb['map']}' not found in maps")

@@ -489,8 +489,9 @@ Exit gate (DESIGN.md): every combat rule has passing tests; every action is rebi
 - [ ] Rules: dampening from 1:00, 12-minute limit, health and mana pickups at 1:30; menu entry "Play 1v1 vs a bot"; balance per F-08 (each spec 40-60% in 1,000 simulated duels).
 - Done 2026-10-01: the rules (dampening from 1:00, the 12-minute limit, pickups at 1:30 in 1v1 and 2v2), the menu entry, bots that take pickups. Left: the 1,000-duel balance run per F-08, after the reference video frees the CPU.
 
-### M2-08 3v3 bracket `[todo]`
+### M2-08 3v3 bracket `[doing]`
 - [ ] Three-player teams through the whole flow (menu, prep, scoreboard), arena enemy frames 1 to 3; balance per F-08 (two-healer teams no longer dominate).
+- Done 2026-10-01: three-player teams through the whole flow (menu, preparation, scoreboard), three arena frames. Left: the balance run per F-08 (two-healer teams), after the reference video frees the CPU.
 
 ### M2-09 Second arena `[todo]`
 - [ ] About 40 m across, 3 to 5 line-of-sight blockers, two starting rooms, one twist (for example a collapsing bridge); kit pieces by Blender script; navigation and bots work; screenshots against the art bible.

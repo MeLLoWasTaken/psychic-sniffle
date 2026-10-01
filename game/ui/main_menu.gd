@@ -17,6 +17,7 @@ const CARD_SIZE: Vector2 = Vector2(360, 196)
 const CARDS_Y: float = 364.0
 const BUTTONS_Y: float = 596.0
 const BUTTONS_BOTTOM: float = 940.0  ## the hint line sits below this
+const ROW_BUTTON_W: float = 330.0  ## width of each button in a shared row
 
 var style: MenuStyle
 var menu: Dictionary
@@ -172,7 +173,7 @@ func _ready() -> void:
 
 ## Put the keyboard focus on the first button (Play), as when the menu first opens.
 func focus_default() -> void:
-	var first: Button = buttons.values()[0] if not buttons.is_empty() else null
+	var first: Button = buttons.get("play_bots", buttons.values()[0] if not buttons.is_empty() else null)  # Play 2v2
 	if first:
 		first.grab_focus.call_deferred()
 
@@ -220,15 +221,28 @@ func _layout() -> void:
 		c.position = Vector2(cx - row_w * 0.5 + i * (CARD_SIZE.x + gap), CARDS_Y)
 		c.size = CARD_SIZE
 		i += 1
+	# buttons sharing a "row" id sit side by side; the rest stack, all above the hint line
+	var rows: Array = []
+	var row_of: Dictionary = {}
+	for b: Dictionary in menu["buttons"]:
+		var key: String = str(b.get("row", ""))
+		if key != "" and row_of.has(key):
+			(rows[row_of[key]] as Array).append(buttons[str(b["id"])])
+		else:
+			row_of[key if key != "" else str(b["id"])] = rows.size()
+			rows.append([buttons[str(b["id"])]])
+	var bgap: float = 10.0 if rows.size() <= 5 else 8.0
+	var h: float = minf(58.0, (BUTTONS_BOTTOM - BUTTONS_Y - bgap * (rows.size() - 1)) / maxi(rows.size(), 1))
 	var y: float = BUTTONS_Y
-	var n_buttons: int = buttons.size()
-	var bgap: float = 10.0 if n_buttons <= 5 else 8.0
-	var h: float = minf(58.0, (BUTTONS_BOTTOM - BUTTONS_Y - bgap * (n_buttons - 1)) / maxi(n_buttons, 1))  # all above the hint line
-	for b: Button in buttons.values():
-		b.custom_minimum_size.y = h
-		b.size = b.custom_minimum_size
-		b.position = Vector2(cx - b.size.x * 0.5, y)
-		y += b.size.y + bgap
+	for row: Array in rows:
+		var bw: float = (row[0] as Button).custom_minimum_size.x if row.size() == 1 else ROW_BUTTON_W
+		var total: float = row.size() * bw + (row.size() - 1) * 16.0
+		for k: int in row.size():
+			var b: Button = row[k]
+			b.custom_minimum_size = Vector2(bw, h)
+			b.size = b.custom_minimum_size
+			b.position = Vector2(cx - total * 0.5 + k * (bw + 16.0), y)
+		y += h + bgap
 	queue_redraw()
 
 

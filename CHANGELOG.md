@@ -2,6 +2,10 @@
 
 One entry per build-loop iteration, newest first. Format: date, backlog ID, what changed, how it was checked.
 
+## 2026-10-01 — M2-08 3v3 bracket (flow and HUD; balance runs next)
+- "Play 3v3 vs bots" in the main menu: you and two bot partners against three bots. The three Play buttons now share one row.
+- Checked: a real 3v3 ran end to end with no errors or warnings (six players joined, then preparation, fight, end screen, scoreboard, menu); a HUD test shows three arena frames and two party frames; the menu tests pass.
+
 ## 2026-10-01 — M2-07 1v1 bracket (rules, pickups, menu; balance runs next)
 - "Play 1v1 vs a bot" in the main menu: a duel on a local match server against one bot. Dampening starts at 1:00, and a 1v1 is a draw at 12:00 (now tested).
 - Regeneration pickups, as DESIGN.md asks for 1v1 and 2v2:

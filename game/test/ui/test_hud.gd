@@ -609,3 +609,14 @@ func test_action_bars_step_aside_when_the_match_ends() -> void:
 	for id: String in hud.elements:
 		if str(hud.layout["elements"][id]["type"]) == "unit_frame" and not hud.elements[id] is Array:
 			assert_bool((hud.elements[id] as CanvasItem).visible).is_true()  # frames stay for the end banner
+
+
+func test_a_3v3_fills_three_arena_frames_and_two_party_frames() -> void:
+	var trio: LocalMatch = LocalMatch.new("gallows_courtyard", "oracle_grace", ["warblade_carnage", "arcanist_rime"],
+		["warblade_carnage", "arcanist_rime", "oracle_grace"], "3v3")
+	hud.push(trio.view())
+	hud.update(0.0)
+	var shown: Callable = func(id: String) -> int:
+		return (hud.elements[id] as Array).filter(func(f: UnitFrame) -> bool: return f.visible).size()
+	assert_int(shown.call("arena_frames")).is_equal(3)
+	assert_int(shown.call("party_frames")).is_equal(2)

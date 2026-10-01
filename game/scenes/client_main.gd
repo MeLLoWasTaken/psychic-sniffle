@@ -116,8 +116,8 @@ func _on_action(action: String, spec: String) -> void:
 	match action:
 		"play_bots":
 			start_match(spec)
-		"play_1v1":
-			start_match(spec, "play_1v1")
+		"play_1v1", "play_3v3":
+			start_match(spec, action)
 		"practice":
 			start_practice(spec)
 		"settings":
