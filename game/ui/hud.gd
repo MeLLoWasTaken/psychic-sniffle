@@ -167,6 +167,8 @@ func bind(p_controller: PlayerController, camera: Camera3D = null, p_renderer: W
 		np.camera = camera
 		if renderer != null:
 			np.position_of = renderer.drawn_position
+		if controller != null:
+			controller.plate_picker = np.plate_at  # clicks and mouseover on plates (M2-14b)
 	_sync_bar_actions()
 
 

@@ -177,3 +177,26 @@ func test_the_break_free_box_follows_the_enemy_talented_cooldown() -> void:
 		"cooldown_ticks": 75 * 60}])
 	assert_int(int(hud.break_free[enemy]["ready_tick"])).is_equal(tick + 75 * 60)
 	assert_int(int(hud.break_free[enemy]["total_ticks"])).is_equal(75 * 60)
+
+
+func test_a_click_on_a_plate_targets_its_unit_and_the_pointer_over_it_is_mouseover() -> void:
+	var v: Dictionary = match_.view().duplicate(true)
+	await _show(v)
+	var b: int = int(_enemy(v, 1)["id"])
+	var r: Rect2 = _placed(b)["rect"]
+	assert_int(_plates().plate_at(r.get_center())).is_equal(b)
+	assert_int(_plates().plate_at(Vector2(5, 5))).is_equal(-1)
+	assert_int(ctl.plate_at(r.get_center())).is_equal(b)  # the HUD connected the picker
+	# a click (press and release without dragging) on the plate selects that unit
+	ctl._requests.append(["click", r.get_center()])
+	ctl.next_input(1.0 / 60.0, v, cam)
+	assert_int(ctl.target_id).is_equal(b)
+	# the pointer over the plate is the mouseover unit for a mouseover key
+	Keybinds.apply(Data.keybinds["default"].duplicate(true))
+	Keybinds.set_target_mode(Keybinds.current, "bar1_slot3", "mouseover")
+	ctl.mouse_pos = r.get_center()
+	assert_int(ctl.ability_target_for("bar1_slot3", v)).is_equal(b)
+	Keybinds.load_profile("default")
+	# hidden plates catch nothing
+	hud._on_setting("interface.nameplates", false)
+	assert_int(_plates().plate_at(r.get_center())).is_equal(-1)

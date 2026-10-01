@@ -54,6 +54,7 @@ signal ability_pressed(ability_id: String, action: String)
 var _presses: Array[Dictionary] = []  ## {ability, action} pressed and not sent yet, oldest first
 var mouse_pos: Vector2 = Vector2(-1, -1)  ## the pointer on screen (mouseover target mode)
 var frame_mouseover: int = -1  ## the unit whose HUD frame is under the pointer (Hud sets it), or -1
+var plate_picker: Callable  ## screen point -> the unit whose nameplate is there, or -1 (Hud sets it)
 
 var _requests: Array = []  ## ["tab"], ["clear"], ["click", screen position], in arrival order
 var _press_pos: Dictionary = {}  ## "steer"/"orbit" -> screen position of the press
@@ -234,7 +235,8 @@ func next_input(dt: float, view: Dictionary = {}, camera: Camera3D = null, units
 				"clear":
 					target_id = -1
 				"click":
-					target_id = targeting.click(camera, r[1], units, geometry, target_id)
+					var on_plate: int = plate_at(r[1])
+					target_id = on_plate if on_plate >= 0 else targeting.click(camera, r[1], units, geometry, target_id)
 				"tab":
 					target_id = targeting.tab(camera, view["me"], view.get("units", []), geometry, target_id)
 				"focus":
@@ -268,7 +270,7 @@ func next_input(dt: float, view: Dictionary = {}, camera: Camera3D = null, units
 
 
 ## The unit a key's target mode (Keybinds.target_mode) aims its ability at: the focus, the unit
-## under the pointer (in the world or on its HUD frame), the player, arena enemy 1 to 3 or party member 1 to 4 (the HUD frames'
+## under the pointer (in the world, on its HUD frame or on its nameplate), the player, arena enemy 1 to 3 or party member 1 to 4 (the HUD frames'
 ## order, by unit id); -1 for the default (the target) or when that unit is missing.
 func ability_target_for(action: String, view: Dictionary, camera: Camera3D = null, units: Array = [],
 		geometry: ArenaGeometry = null) -> int:
@@ -281,6 +283,8 @@ func ability_target_for(action: String, view: Dictionary, camera: Camera3D = nul
 		"mouseover":
 			if frame_mouseover >= 0:
 				return frame_mouseover  # a unit frame under the pointer counts, as in the world
+			if mouse_pos.x >= 0.0 and plate_at(mouse_pos) >= 0:
+				return plate_at(mouse_pos)  # so does a nameplate
 			if camera == null or mouse_pos.x < 0.0:
 				return -1
 			return targeting.pick_at(camera, mouse_pos, units if not units.is_empty() else view.get("units", []), geometry)
@@ -296,6 +300,11 @@ func ability_target_for(action: String, view: Dictionary, camera: Camera3D = nul
 		group.sort()
 		return group[n] if n >= 0 and n < group.size() else -1
 	return -1
+
+
+## The unit whose nameplate is at a screen point, or -1 (no plates, or none there).
+func plate_at(p: Vector2) -> int:
+	return int(plate_picker.call(p)) if plate_picker.is_valid() else -1
 
 
 ## True when `id` is a unit on another team than the player's in this view.

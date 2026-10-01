@@ -2,6 +2,10 @@
 
 One entry per build-loop iteration, newest first. Format: date, backlog ID, what changed, how it was checked.
 
+## 2026-10-01 — M2-14b nameplate clicks and mouseover
+- Clicking a nameplate targets its unit (the nearest plate where plates overlap), and the pointer over a plate counts as mouseover for keys set to that target mode, like unit frames.
+- Checked: a new nameplate test (plate under a point, click to target, mouseover, hidden plates); all Godot and Python tests pass (pre-commit run).
+
 ## 2026-10-01 — M2-05b talents during preparation; M2-14 review
 - The in-match menu (Escape) and the practice menu have a Talents button. During preparation, picking another loadout there sends it to the server; the bars and tooltips change when the server accepts. Once the gates open, the screen opens read-only and the server refuses changes.
 - Protocol version 9: a TALENTS message, both ways.

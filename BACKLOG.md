@@ -521,13 +521,13 @@ Exit gate (DESIGN.md): every combat rule has passing tests; every action is rebi
 - [x] Arena enemy frames with spec icon, cast bar, Break Free cooldown and a DR tracker per CC category; focus target frame and cast bar; nameplates with class color, health, cast bar and important debuffs.
 - [x] Screenshot reviewed on a stand-in 3v3 scene (`tools/ui_shot.gd --screen nameplates`: figures in a lit room with the real HUD, a cast, crowd control, a defensive and a marked target); it showed a plate's aura row overlapping the plate above, fixed by making the row part of the plate. The planned screenshot of a real networked fight could not run while the reference video renders (two Godot clients on two cores stall the match start); it moves to M2-14c.
 - Done (2026-10-01): spec icons in frame portraits (spec data `icon`); nameplates as a HUD layout element following the three nameplate settings; a unit frame under the pointer counts as mouseover; the arena Break Free box uses the cooldown the server started (talents included; cast_success events carry `cooldown_ticks`).
-- Follow-ups: clicking or hovering a nameplate does not target or count as mouseover yet (M2-14b); nameplates do not fade with distance or line of sight.
+- Follow-ups: clicking or hovering a nameplate does not target or count as mouseover yet (M2-14b, done); nameplates do not fade with distance or line of sight.
 
 ### M2-14c Nameplates in a real 3v3 fight `[todo]`
 - [ ] A screenshot of a networked 3v3 fight with nameplates, reviewed (plates over real character models, at real distances and with movement).
 
-### M2-14b Nameplate clicks and mouseover `[todo]`
-- [ ] A click on a nameplate targets its unit and the pointer over a plate counts as mouseover, like unit frames; tests with the plate rectangles.
+### M2-14b Nameplate clicks and mouseover `[done]`
+- [x] A click on a nameplate targets its unit and the pointer over a plate counts as mouseover, like unit frames; tests with the plate rectangles. Done 2026-10-01 (the nearest plate wins where plates overlap; hidden plates catch nothing).
 
 ### M2-15 Review pass and M2 gate `[todo]`
 - [ ] Full review pass; the M2 gate checked and written to CHANGELOG.md.

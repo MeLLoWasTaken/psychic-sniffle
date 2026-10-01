@@ -7,6 +7,7 @@ extends Control
 ## crowd control, major defensives and offensives, and the debuffs the player applied. The
 ## player's target gets a gold border and a slightly larger plate. Plates that would cover each
 ## other step upward. The interface settings turn plates, their cast bars and their auras on or off.
+## Clicking a plate targets its unit, and the pointer over a plate counts as mouseover (plate_at).
 ##
 ## Covers the whole screen unscaled (Hud.relayout); sizes are logical pixels times ui_scale.
 
@@ -85,6 +86,18 @@ static func unstack(rects: Array) -> Array:
 				break
 		out.append(moved)
 	return out
+
+
+## The unit whose plate (aura row included) is under a point, nearest plate first; -1 for none
+## or while plates are hidden. A click on a plate targets its unit; the pointer over one is a
+## mouseover (PlayerController.plate_picker).
+func plate_at(p: Vector2) -> int:
+	if not is_visible_in_tree():
+		return -1
+	for i: int in range(placed.size() - 1, -1, -1):  # drawn farthest first: the last is on top
+		if (placed[i]["rect"] as Rect2).has_point(p):
+			return int(placed[i]["id"])
+	return -1
 
 
 ## Where a unit's plate anchors on screen (its bottom center), or null when the unit is behind
