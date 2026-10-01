@@ -3,26 +3,1122 @@
   "kind": "spec",
   "owner": "arcanist_rime",
   "points": 30,
-  "status": "draft",
-  "nodes": [
-    {
-      "id": "arcanist_rime_placeholder",
-      "name": "Placeholder",
-      "type": "passive",
-      "effects": [
-        {
-          "modify": "self.max_health",
-          "per_rank": 0
-        }
-      ],
-      "pos": [
-        3,
-        0
-      ]
-    }
-  ],
   "gates": [
     8,
     20
+  ],
+  "status": "complete",
+  "nodes": [
+    {
+      "id": "splintering_lance",
+      "name": "Splintering Lance",
+      "type": "passive",
+      "ranks": 3,
+      "pos": [
+        1,
+        0
+      ],
+      "requires_any": [
+        "shiver_lance"
+      ],
+      "description": "Shiver Lance deals 250 more damage per rank (750 more against rooted or stunned targets).",
+      "icon": {
+        "image": "lorc/ice-spear",
+        "school": "frost"
+      },
+      "effects": [
+        {
+          "modify": "shiver_lance.effects.0.base",
+          "per_rank": 250
+        }
+      ]
+    },
+    {
+      "id": "dense_rime",
+      "name": "Dense Rime",
+      "type": "passive",
+      "ranks": 3,
+      "pos": [
+        3,
+        0
+      ],
+      "requires_any": [
+        "rime_bolt"
+      ],
+      "description": "Rime Bolt deals 300 more damage per rank.",
+      "icon": {
+        "image": "lorc/frozen-orb",
+        "school": "frost"
+      },
+      "effects": [
+        {
+          "modify": "rime_bolt.effects.0.base",
+          "per_rank": 300
+        }
+      ]
+    },
+    {
+      "id": "creeping_rime",
+      "name": "Creeping Rime",
+      "type": "passive",
+      "ranks": 2,
+      "pos": [
+        5,
+        0
+      ],
+      "requires_any": [
+        "rimebind"
+      ],
+      "description": "Rimebind's freeze takes 5% more of the target's maximum health in damage to break, per rank (20% to 30%).",
+      "icon": {
+        "image": "lorc/crystal-growth",
+        "school": "frost"
+      },
+      "effects": [
+        {
+          "modify": "rimebound.damage_threshold_pct",
+          "per_rank": 5
+        }
+      ]
+    },
+    {
+      "id": "fracture_lines",
+      "name": "Fracture Lines",
+      "type": "passive",
+      "ranks": 2,
+      "pos": [
+        0,
+        1
+      ],
+      "requires_any": [
+        "splintering_lance"
+      ],
+      "description": "Shiver Lance's bonus against rooted or stunned targets rises by 0.25 times damage per rank (triple to 3.5 times).",
+      "icon": {
+        "image": "lorc/cracked-glass",
+        "school": "frost"
+      },
+      "effects": [
+        {
+          "modify": "shiver_lance.effects.0.multiplier_if.value",
+          "per_rank": 0.25
+        }
+      ]
+    },
+    {
+      "id": "barbed_lash",
+      "name": "Barbed Lash",
+      "type": "passive",
+      "ranks": 2,
+      "pos": [
+        2,
+        1
+      ],
+      "requires_any": [
+        "splintering_lance",
+        "dense_rime"
+      ],
+      "description": "Winter's Lash deals 350 more damage per rank.",
+      "icon": {
+        "image": "lorc/swirl-string",
+        "school": "frost"
+      },
+      "effects": [
+        {
+          "modify": "winters_lash.effects.0.base",
+          "per_rank": 350
+        }
+      ]
+    },
+    {
+      "id": "thrift_of_winter",
+      "name": "Thrift of Winter",
+      "type": "passive",
+      "ranks": 2,
+      "pos": [
+        3,
+        1
+      ],
+      "requires_any": [
+        "dense_rime"
+      ],
+      "description": "Rime Bolt costs 150 less mana per rank.",
+      "icon": {
+        "image": "lorc/snow-bottle",
+        "school": "frost"
+      },
+      "effects": [
+        {
+          "modify": "rime_bolt.cost.amount",
+          "per_rank": -150
+        }
+      ]
+    },
+    {
+      "id": "lingering_chill",
+      "name": "Lingering Chill",
+      "type": "passive",
+      "ranks": 2,
+      "pos": [
+        4,
+        1
+      ],
+      "requires_any": [
+        "dense_rime",
+        "creeping_rime"
+      ],
+      "description": "Your Chilled slow lasts 1 s longer per rank (6 s to 8 s).",
+      "icon": {
+        "image": "lorc/snowing",
+        "school": "frost"
+      },
+      "effects": [
+        {
+          "modify": "chilled.duration_s",
+          "per_rank": 1
+        }
+      ]
+    },
+    {
+      "id": "gripping_frost",
+      "name": "Gripping Frost",
+      "type": "passive",
+      "ranks": 2,
+      "pos": [
+        6,
+        1
+      ],
+      "requires_any": [
+        "creeping_rime"
+      ],
+      "description": "Your Chilled slow is 5% stronger per rank (40% to 50%).",
+      "icon": {
+        "image": "lorc/grasping-claws",
+        "school": "frost"
+      },
+      "effects": [
+        {
+          "modify": "chilled.modifiers.0.value",
+          "per_rank": -0.05
+        }
+      ]
+    },
+    {
+      "id": "stopped_heart",
+      "name": "Stopped Heart",
+      "type": "choice",
+      "pos": [
+        0,
+        2
+      ],
+      "requires_any": [
+        "fracture_lines"
+      ],
+      "description": "Choose a longer Heartfreeze or a quicker one.",
+      "icon": {
+        "image": "lorc/glass-heart",
+        "school": "frost"
+      },
+      "choices": [
+        {
+          "id": "long_stillness",
+          "name": "Long Stillness",
+          "description": "Heartfreeze stuns for 1 s longer (5 s).",
+          "icon": {
+            "image": "lorc/chained-heart",
+            "school": "frost"
+          },
+          "effects": [
+            {
+              "modify": "heartfrozen.duration_s",
+              "per_rank": 1
+            }
+          ]
+        },
+        {
+          "id": "quick_stillness",
+          "name": "Quick Stillness",
+          "description": "Heartfreeze's cooldown is 6 s shorter (24 s).",
+          "icon": {
+            "image": "delapouite/heart-beats",
+            "school": "frost"
+          },
+          "effects": [
+            {
+              "modify": "heartfreeze.cooldown_s",
+              "per_rank": -6
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "heavy_hail",
+      "name": "Heavy Hail",
+      "type": "passive",
+      "ranks": 2,
+      "pos": [
+        1,
+        2
+      ],
+      "requires_any": [
+        "fracture_lines",
+        "barbed_lash"
+      ],
+      "description": "Each Hailstorm strike deals 300 more damage per rank (900 more per channel).",
+      "icon": {
+        "image": "lorc/ice-bomb",
+        "school": "frost"
+      },
+      "effects": [
+        {
+          "modify": "hailstorm.effects.0.base",
+          "per_rank": 300
+        }
+      ]
+    },
+    {
+      "id": "numb_flesh",
+      "name": "Numb Flesh",
+      "type": "passive",
+      "ranks": 2,
+      "pos": [
+        2,
+        2
+      ],
+      "requires_any": [
+        "barbed_lash"
+      ],
+      "description": "Winter's Lash's frostbite reduces healing taken by a further 5% per rank (25% to 35%).",
+      "icon": {
+        "image": "zeromancer/heart-minus",
+        "school": "frost"
+      },
+      "effects": [
+        {
+          "modify": "frostbitten.modifiers.0.value",
+          "per_rank": -0.05
+        }
+      ]
+    },
+    {
+      "id": "hoarfrost_snare_talent",
+      "name": "Hoarfrost Snare",
+      "type": "active",
+      "pos": [
+        3,
+        2
+      ],
+      "requires_any": [
+        "thrift_of_winter",
+        "lingering_chill"
+      ],
+      "description": "Grants Hoarfrost Snare: freeze an enemy within 40 m in place for 4 s; damage of 15% of its maximum health breaks the ice. 24 s cooldown, 1,000 mana.",
+      "icon": {
+        "image": "delapouite/frozen-ring",
+        "school": "frost"
+      },
+      "grants_ability": "hoarfrost_snare"
+    },
+    {
+      "id": "quick_sculpting",
+      "name": "Quick Sculpting",
+      "type": "passive",
+      "ranks": 2,
+      "pos": [
+        4,
+        2
+      ],
+      "requires_any": [
+        "lingering_chill"
+      ],
+      "description": "Frost Effigy's cast is 0.2 s shorter per rank (1.5 s to 1.1 s).",
+      "icon": {
+        "image": "delapouite/ice-golem",
+        "school": "frost"
+      },
+      "effects": [
+        {
+          "modify": "frost_effigy.cast_time_s",
+          "per_rank": -0.2
+        }
+      ]
+    },
+    {
+      "id": "swift_binding",
+      "name": "Swift Binding",
+      "type": "passive",
+      "ranks": 2,
+      "pos": [
+        5,
+        2
+      ],
+      "requires_any": [
+        "lingering_chill",
+        "gripping_frost"
+      ],
+      "description": "Rimebind's cooldown is 2 s shorter per rank (25 s to 21 s).",
+      "icon": {
+        "image": "lorc/crystal-bars",
+        "school": "frost"
+      },
+      "effects": [
+        {
+          "modify": "rimebind.cooldown_s",
+          "per_rank": -2
+        }
+      ]
+    },
+    {
+      "id": "wide_fan",
+      "name": "Wide Fan",
+      "type": "passive",
+      "pos": [
+        6,
+        2
+      ],
+      "requires_any": [
+        "gripping_frost"
+      ],
+      "description": "Rime Fan reaches 2 m farther (12 m).",
+      "icon": {
+        "image": "lorc/snowflake-2",
+        "school": "frost"
+      },
+      "effects": [
+        {
+          "modify": "rime_fan.effects.0.radius_m",
+          "per_rank": 2
+        },
+        {
+          "modify": "rime_fan.effects.1.radius_m",
+          "per_rank": 2
+        }
+      ]
+    },
+    {
+      "id": "lengthening_winter",
+      "name": "Lengthening Winter",
+      "type": "passive",
+      "ranks": 2,
+      "pos": [
+        0,
+        3
+      ],
+      "requires_any": [
+        "stopped_heart",
+        "heavy_hail"
+      ],
+      "description": "Deep Winter's cooldown is 15 s shorter per rank (120 s to 90 s).",
+      "icon": {
+        "image": "lorc/person-in-blizzard",
+        "school": "frost"
+      },
+      "effects": [
+        {
+          "modify": "deep_winter_ab.cooldown_s",
+          "per_rank": -15
+        }
+      ]
+    },
+    {
+      "id": "quick_rime",
+      "name": "Quick Rime",
+      "type": "passive",
+      "ranks": 2,
+      "pos": [
+        2,
+        3
+      ],
+      "requires_any": [
+        "heavy_hail",
+        "numb_flesh"
+      ],
+      "description": "Rime Bolt's cast is 0.1 s shorter per rank (1.8 s to 1.6 s).",
+      "icon": {
+        "image": "lorc/crystal-shine",
+        "school": "frost"
+      },
+      "effects": [
+        {
+          "modify": "rime_bolt.cast_time_s",
+          "per_rank": -0.1
+        }
+      ]
+    },
+    {
+      "id": "clinging_hoarfrost",
+      "name": "Clinging Hoarfrost",
+      "type": "passive",
+      "ranks": 2,
+      "pos": [
+        3,
+        3
+      ],
+      "requires_any": [
+        "hoarfrost_snare_talent"
+      ],
+      "description": "Hoarfrost Snare's cooldown is 3 s shorter per rank (24 s to 18 s).",
+      "icon": {
+        "image": "lorc/crystalize",
+        "school": "frost"
+      },
+      "effects": [
+        {
+          "modify": "hoarfrost_snare.cooldown_s",
+          "per_rank": -3
+        }
+      ]
+    },
+    {
+      "id": "locked_ice",
+      "name": "Locked Ice",
+      "type": "passive",
+      "pos": [
+        5,
+        3
+      ],
+      "requires_any": [
+        "quick_sculpting",
+        "swift_binding"
+      ],
+      "description": "Rimebind's freeze lasts 1 s longer (7 s).",
+      "icon": {
+        "image": "lorc/manacles",
+        "school": "frost"
+      },
+      "effects": [
+        {
+          "modify": "rimebound.duration_s",
+          "per_rank": 1
+        }
+      ]
+    },
+    {
+      "id": "gliding_ice",
+      "name": "Gliding Ice",
+      "type": "passive",
+      "pos": [
+        6,
+        3
+      ],
+      "requires_any": [
+        "wide_fan"
+      ],
+      "description": "While Glacier Shield holds, you move 20% faster.",
+      "icon": {
+        "image": "delapouite/ice-skate",
+        "school": "frost"
+      },
+      "effects": [
+        {
+          "modify": "glacier_shield.modifiers",
+          "set": [
+            {
+              "stat": "move_speed",
+              "op": "multiply",
+              "value": 1.2
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "deepening_winter",
+      "name": "Deepening Winter",
+      "type": "choice",
+      "pos": [
+        0,
+        4
+      ],
+      "requires_any": [
+        "lengthening_winter"
+      ],
+      "gate": 8,
+      "description": "Choose a longer Deep Winter or a harder one.",
+      "icon": {
+        "image": "lorc/snowflake-1",
+        "school": "frost"
+      },
+      "choices": [
+        {
+          "id": "long_winter",
+          "name": "Long Winter",
+          "description": "Deep Winter lasts 3 s longer (18 s).",
+          "icon": {
+            "image": "lorc/tension-snowflake",
+            "school": "frost"
+          },
+          "effects": [
+            {
+              "modify": "deep_winter.duration_s",
+              "per_rank": 3
+            }
+          ]
+        },
+        {
+          "id": "bitter_winter",
+          "name": "Bitter Winter",
+          "description": "Deep Winter increases your damage by 20% instead of 15%.",
+          "icon": {
+            "image": "lorc/barbed-star",
+            "school": "frost"
+          },
+          "effects": [
+            {
+              "modify": "deep_winter.modifiers.1.value",
+              "per_rank": 0.05
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "calving_ice_talent",
+      "name": "Calving Ice",
+      "type": "active",
+      "pos": [
+        1,
+        4
+      ],
+      "requires_any": [
+        "lengthening_winter",
+        "quick_rime"
+      ],
+      "gate": 8,
+      "description": "Grants Calving Ice: a 2.5 s cast that deals 10,000 damage, or 15,000 to a rooted or stunned target. 45 s cooldown, 2,500 mana.",
+      "icon": {
+        "image": "delapouite/iceberg",
+        "school": "frost"
+      },
+      "grants_ability": "calving_ice"
+    },
+    {
+      "id": "striding_storm",
+      "name": "Striding Storm",
+      "type": "passive",
+      "pos": [
+        3,
+        4
+      ],
+      "requires_any": [
+        "quick_rime",
+        "clinging_hoarfrost"
+      ],
+      "gate": 8,
+      "description": "Hailstorm can be channeled while moving.",
+      "icon": {
+        "image": "lorc/boot-stomp",
+        "school": "frost"
+      },
+      "effects": [
+        {
+          "modify": "hailstorm.castable_while_moving",
+          "set": true
+        }
+      ]
+    },
+    {
+      "id": "deep_snare",
+      "name": "Deep Snare",
+      "type": "passive",
+      "pos": [
+        4,
+        4
+      ],
+      "requires_any": [
+        "clinging_hoarfrost"
+      ],
+      "gate": 8,
+      "description": "Hoarfrost Snare's freeze lasts 1 s longer (5 s).",
+      "icon": {
+        "image": "delapouite/handcuffed",
+        "school": "frost"
+      },
+      "effects": [
+        {
+          "modify": "hoarfrost_snared.duration_s",
+          "per_rank": 1
+        }
+      ]
+    },
+    {
+      "id": "keen_fan",
+      "name": "Keen Fan",
+      "type": "passive",
+      "ranks": 2,
+      "pos": [
+        5,
+        4
+      ],
+      "requires_any": [
+        "locked_ice"
+      ],
+      "gate": 8,
+      "description": "Rime Fan deals 400 more damage per rank.",
+      "icon": {
+        "image": "delapouite/handheld-fan",
+        "school": "frost"
+      },
+      "effects": [
+        {
+          "modify": "rime_fan.effects.0.base",
+          "per_rank": 400
+        }
+      ]
+    },
+    {
+      "id": "quick_shell",
+      "name": "Quick Shell",
+      "type": "passive",
+      "ranks": 2,
+      "pos": [
+        6,
+        4
+      ],
+      "requires_any": [
+        "gliding_ice"
+      ],
+      "gate": 8,
+      "description": "Glacier Shield's cooldown is 2 s shorter per rank (25 s to 21 s).",
+      "icon": {
+        "image": "lorc/shield-echoes",
+        "school": "frost"
+      },
+      "effects": [
+        {
+          "modify": "glacier_shield_ab.cooldown_s",
+          "per_rank": -2
+        }
+      ]
+    },
+    {
+      "id": "thin_shards",
+      "name": "Thin Shards",
+      "type": "passive",
+      "ranks": 2,
+      "pos": [
+        0,
+        5
+      ],
+      "requires_any": [
+        "deepening_winter"
+      ],
+      "gate": 8,
+      "description": "Shiver Lance costs 250 less mana per rank (1,000 to 500).",
+      "icon": {
+        "image": "lorc/shattered-glass",
+        "school": "frost"
+      },
+      "effects": [
+        {
+          "modify": "shiver_lance.cost.amount",
+          "per_rank": -250
+        }
+      ]
+    },
+    {
+      "id": "quick_calving",
+      "name": "Quick Calving",
+      "type": "passive",
+      "ranks": 2,
+      "pos": [
+        1,
+        5
+      ],
+      "requires_any": [
+        "calving_ice_talent"
+      ],
+      "gate": 8,
+      "description": "Calving Ice's cooldown is 5 s shorter per rank (45 s to 35 s).",
+      "icon": {
+        "image": "delapouite/melting-ice-cube",
+        "school": "frost"
+      },
+      "effects": [
+        {
+          "modify": "calving_ice.cooldown_s",
+          "per_rank": -5
+        }
+      ]
+    },
+    {
+      "id": "quick_lash",
+      "name": "Quick Lash",
+      "type": "passive",
+      "ranks": 2,
+      "pos": [
+        2,
+        5
+      ],
+      "requires_any": [
+        "calving_ice_talent",
+        "striding_storm"
+      ],
+      "gate": 8,
+      "description": "Winter's Lash's cooldown is 1 s shorter per rank (8 s to 6 s).",
+      "icon": {
+        "image": "lorc/spiral-thrust",
+        "school": "frost"
+      },
+      "effects": [
+        {
+          "modify": "winters_lash.cooldown_s",
+          "per_rank": -1
+        }
+      ]
+    },
+    {
+      "id": "restless_hail",
+      "name": "Restless Hail",
+      "type": "passive",
+      "ranks": 2,
+      "pos": [
+        3,
+        5
+      ],
+      "requires_any": [
+        "striding_storm"
+      ],
+      "gate": 8,
+      "description": "Hailstorm's cooldown is 2 s shorter per rank (20 s to 16 s).",
+      "icon": {
+        "image": "lorc/droplets",
+        "school": "frost"
+      },
+      "effects": [
+        {
+          "modify": "hailstorm.cooldown_s",
+          "per_rank": -2
+        }
+      ]
+    },
+    {
+      "id": "wide_binding",
+      "name": "Wide Binding",
+      "type": "passive",
+      "pos": [
+        4,
+        5
+      ],
+      "requires_any": [
+        "deep_snare",
+        "keen_fan"
+      ],
+      "gate": 8,
+      "description": "Rimebind freezes enemies within 12 m instead of 10 m.",
+      "icon": {
+        "image": "lorc/spiked-fence",
+        "school": "frost"
+      },
+      "effects": [
+        {
+          "modify": "rimebind.effects.0.radius_m",
+          "per_rank": 2
+        }
+      ]
+    },
+    {
+      "id": "thawing_sepulcher",
+      "name": "Thawing Sepulcher",
+      "type": "passive",
+      "pos": [
+        5,
+        5
+      ],
+      "requires_any": [
+        "keen_fan",
+        "quick_shell"
+      ],
+      "gate": 8,
+      "description": "While in Rime Sepulcher you heal 2,000 every 2 s (8,000 over the full 8 s).",
+      "icon": {
+        "image": "sbed/water-drop",
+        "school": "frost"
+      },
+      "effects": [
+        {
+          "modify": "rime_sepulcher.periodic",
+          "set": {
+            "interval_s": 2,
+            "effect": {
+              "type": "heal",
+              "base": 2000,
+              "can_crit": false,
+              "school": "frost"
+            }
+          }
+        }
+      ]
+    },
+    {
+      "id": "glacial_clarity",
+      "name": "Glacial Clarity",
+      "type": "passive",
+      "ranks": 2,
+      "pos": [
+        0,
+        6
+      ],
+      "requires_any": [
+        "thin_shards",
+        "quick_calving"
+      ],
+      "gate": 8,
+      "description": "Your critical strike chance is 2% higher per rank.",
+      "icon": {
+        "image": "lorc/cut-diamond",
+        "school": "frost"
+      },
+      "effects": [
+        {
+          "modify": "self.stats.crit_chance",
+          "per_rank": 0.02
+        }
+      ]
+    },
+    {
+      "id": "crushing_slab",
+      "name": "Crushing Slab",
+      "type": "passive",
+      "ranks": 2,
+      "pos": [
+        2,
+        6
+      ],
+      "requires_any": [
+        "quick_calving"
+      ],
+      "gate": 8,
+      "description": "Calving Ice deals 800 more damage per rank (1,200 more against rooted or stunned targets).",
+      "icon": {
+        "image": "lorc/icebergs",
+        "school": "frost"
+      },
+      "effects": [
+        {
+          "modify": "calving_ice.effects.0.base",
+          "per_rank": 800
+        }
+      ]
+    },
+    {
+      "id": "gnawing_chill",
+      "name": "Gnawing Chill",
+      "type": "passive",
+      "pos": [
+        4,
+        6
+      ],
+      "requires_any": [
+        "restless_hail",
+        "wide_binding"
+      ],
+      "gate": 8,
+      "description": "Winter's Lash's frostbite also deals 300 frost damage every 2 s (1,200 over 8 s). The ticks break effects that end on damage.",
+      "icon": {
+        "image": "lorc/tearing",
+        "school": "frost"
+      },
+      "effects": [
+        {
+          "modify": "frostbitten.periodic",
+          "set": {
+            "interval_s": 2,
+            "effect": {
+              "type": "damage",
+              "base": 300,
+              "can_crit": false,
+              "school": "frost"
+            }
+          }
+        }
+      ]
+    },
+    {
+      "id": "rimehide",
+      "name": "Rimehide",
+      "type": "passive",
+      "ranks": 2,
+      "pos": [
+        6,
+        6
+      ],
+      "requires_any": [
+        "thawing_sepulcher",
+        "quick_shell"
+      ],
+      "gate": 8,
+      "description": "You take 2% less damage per rank.",
+      "icon": {
+        "image": "lorc/crystal-cluster",
+        "school": "frost"
+      },
+      "grants_aura": "rimehide_passive",
+      "effects": [
+        {
+          "modify": "rimehide_passive.modifiers.0.value",
+          "per_rank": -0.02
+        }
+      ]
+    },
+    {
+      "id": "cold_verdict",
+      "name": "Cold Verdict",
+      "type": "capstone",
+      "pos": [
+        0,
+        7
+      ],
+      "requires_any": [
+        "glacial_clarity"
+      ],
+      "gate": 20,
+      "description": "Heartfreeze deals 7,500 more damage (9,000).",
+      "icon": {
+        "image": "lorc/pierced-heart",
+        "school": "frost"
+      },
+      "effects": [
+        {
+          "modify": "heartfreeze.effects.0.base",
+          "per_rank": 7500
+        }
+      ]
+    },
+    {
+      "id": "sudden_calving",
+      "name": "Sudden Calving",
+      "type": "passive",
+      "pos": [
+        1,
+        7
+      ],
+      "requires_any": [
+        "crushing_slab"
+      ],
+      "gate": 20,
+      "description": "Calving Ice's cast is 0.5 s shorter (2 s).",
+      "icon": {
+        "image": "lorc/hammer-drop",
+        "school": "frost"
+      },
+      "effects": [
+        {
+          "modify": "calving_ice.cast_time_s",
+          "per_rank": -0.5
+        }
+      ]
+    },
+    {
+      "id": "lingering_hail",
+      "name": "Lingering Hail",
+      "type": "passive",
+      "pos": [
+        2,
+        7
+      ],
+      "requires_any": [
+        "crushing_slab",
+        "restless_hail"
+      ],
+      "gate": 20,
+      "description": "Hailstorm lasts 1 s longer and strikes 4 times instead of 3.",
+      "icon": {
+        "image": "delapouite/ice-cubes",
+        "school": "frost"
+      },
+      "effects": [
+        {
+          "modify": "hailstorm.cast_time_s",
+          "per_rank": 1
+        },
+        {
+          "modify": "hailstorm.channel_ticks",
+          "per_rank": 1
+        }
+      ]
+    },
+    {
+      "id": "drifting_rime",
+      "name": "Drifting Rime",
+      "type": "capstone",
+      "pos": [
+        3,
+        7
+      ],
+      "requires_any": [
+        "crushing_slab",
+        "gnawing_chill"
+      ],
+      "gate": 20,
+      "description": "Rime Bolt can be cast while moving, but its cast takes 0.4 s longer.",
+      "icon": {
+        "image": "lorc/windy-stripes",
+        "school": "frost"
+      },
+      "effects": [
+        {
+          "modify": "rime_bolt.castable_while_moving",
+          "set": true
+        },
+        {
+          "modify": "rime_bolt.cast_time_s",
+          "per_rank": 0.4
+        }
+      ]
+    },
+    {
+      "id": "ready_snare",
+      "name": "Ready Snare",
+      "type": "passive",
+      "pos": [
+        4,
+        7
+      ],
+      "requires_any": [
+        "deep_snare"
+      ],
+      "gate": 20,
+      "description": "Hoarfrost Snare's cooldown is 4 s shorter.",
+      "icon": {
+        "image": "delapouite/sticky-boot",
+        "school": "frost"
+      },
+      "effects": [
+        {
+          "modify": "hoarfrost_snare.cooldown_s",
+          "per_rank": -4
+        }
+      ]
+    },
+    {
+      "id": "spreading_hoarfrost",
+      "name": "Spreading Hoarfrost",
+      "type": "capstone",
+      "pos": [
+        4,
+        8
+      ],
+      "requires_any": [
+        "ready_snare"
+      ],
+      "gate": 20,
+      "description": "Hoarfrost Snare freezes every enemy within 8 m of its target, not just the target.",
+      "icon": {
+        "image": "lorc/rear-aura",
+        "school": "frost"
+      },
+      "effects": [
+        {
+          "modify": "hoarfrost_snare.effects.0.affects",
+          "set": "enemies_in_radius"
+        },
+        {
+          "modify": "hoarfrost_snare.effects.0.radius_m",
+          "set": 8
+        }
+      ]
+    }
   ]
 }

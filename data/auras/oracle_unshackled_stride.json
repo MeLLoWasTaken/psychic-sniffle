@@ -1,0 +1,22 @@
+{
+  "id": "oracle_unshackled_stride",
+  "name": "Unshackled Stride",
+  "description": "Movement up 30%.",
+  "kind": "buff",
+  "duration_s": 3,
+  "dispel_type": "magic",
+  "cc_category": "none",
+  "hud_priority": "normal",
+  "modifiers": [
+    {
+      "stat": "move_speed",
+      "op": "multiply",
+      "value": 1.3
+    }
+  ],
+  "icon": {
+    "symbol": "winged_leg",
+    "school": "holy",
+    "image": "lorc/winged-arrow"
+  }
+}

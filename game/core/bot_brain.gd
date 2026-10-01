@@ -173,7 +173,7 @@ func _choose_ability(view: Dictionary, me: Dictionary, target: Dictionary, enemi
 		explanation = []
 	for rule: Dictionary in profile["priorities"]:
 		var ab_id: String = rule["ability"]
-		var ab: Dictionary = Data.abilities.get(ab_id, {})
+		var ab: Dictionary = view.get("talent_abilities", {}).get(ab_id, Data.abilities.get(ab_id, {}))  # this build's numbers
 		if view.has("known") and not ab_id in view["known"]:
 			_why(ab_id, "not_known")  # a talent ability this build does not take
 			continue

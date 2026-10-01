@@ -3,16 +3,259 @@
   "kind": "pvp",
   "owner": "oracle_grace",
   "points": 3,
-  "status": "draft",
+  "status": "complete",
   "nodes": [
     {
-      "id": "oracle_grace_pvp_placeholder",
-      "name": "Placeholder",
+      "id": "unyielding_prayer",
+      "name": "Unyielding Prayer",
       "type": "passive",
+      "ranks": 1,
+      "description": "Interrupts no longer stop Mending Light, but its cast takes 0.5 s longer.",
+      "icon": {
+        "image": "lorc/book-aura",
+        "school": "holy"
+      },
+      "effects": [
+        {
+          "modify": "mending_light.interruptible",
+          "set": false
+        },
+        {
+          "modify": "mending_light.cast_time_s",
+          "per_rank": 0.5
+        }
+      ]
+    },
+    {
+      "id": "pilgrims_benediction",
+      "name": "Pilgrim's Benediction",
+      "type": "passive",
+      "ranks": 1,
+      "description": "You can cast Swift Benediction while moving, but it costs 600 more mana.",
+      "icon": {
+        "image": "delapouite/arrow-wings",
+        "school": "holy"
+      },
+      "effects": [
+        {
+          "modify": "swift_benediction.castable_while_moving",
+          "set": true
+        },
+        {
+          "modify": "swift_benediction.cost.amount",
+          "per_rank": 600
+        }
+      ]
+    },
+    {
+      "id": "absolution_in_chains",
+      "name": "Absolution in Chains",
+      "type": "passive",
+      "ranks": 1,
+      "description": "You can cast Absolve while stunned, incapacitated or disoriented.",
+      "icon": {
+        "image": "delapouite/hand-of-god",
+        "school": "holy"
+      },
+      "effects": [
+        {
+          "modify": "absolve.usable_while_cc",
+          "set": [
+            "stun",
+            "incapacitate",
+            "disorient"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "unbreakable_faith",
+      "name": "Unbreakable Faith",
+      "type": "passive",
+      "ranks": 1,
+      "description": "Enemy dispels can no longer remove your Lingering Grace or Veil of Faith.",
+      "icon": {
+        "image": "lorc/eye-shield",
+        "school": "holy"
+      },
+      "effects": [
+        {
+          "modify": "lingering_grace.dispel_type",
+          "set": "none"
+        },
+        {
+          "modify": "veil_of_faith.dispel_type",
+          "set": "none"
+        }
+      ]
+    },
+    {
+      "id": "searing_judgment",
+      "name": "Searing Judgment",
+      "type": "passive",
+      "ranks": 1,
+      "description": "Castigate also reduces the healing its target receives by 25% for 6 s.",
+      "icon": {
+        "image": "lorc/barbed-sun",
+        "school": "holy"
+      },
+      "effects": [
+        {
+          "modify": "castigate.effects",
+          "set": [
+            {
+              "type": "damage",
+              "base": 3500
+            },
+            {
+              "type": "apply_aura",
+              "aura": "seared_by_judgment"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "unbroken_dread",
+      "name": "Unbroken Dread",
+      "type": "passive",
+      "ranks": 1,
+      "description": "Psalm of Dread's fear lasts 3 s, but damage no longer breaks it.",
+      "icon": {
+        "image": "lorc/candle-skull",
+        "school": "shadow"
+      },
+      "effects": [
+        {
+          "modify": "psalm_dread.breaks_on_damage",
+          "set": "never"
+        },
+        {
+          "modify": "psalm_dread.duration_s",
+          "set": 3
+        }
+      ]
+    },
+    {
+      "id": "swift_veil",
+      "name": "Swift Veil",
+      "type": "passive",
+      "ranks": 1,
+      "description": "Veil of Faith's cooldown is 30 s shorter, but it reduces damage taken by 30% instead of 40%.",
+      "icon": {
+        "image": "lorc/bolt-shield",
+        "school": "holy"
+      },
+      "effects": [
+        {
+          "modify": "veil_of_faith_ab.cooldown_s",
+          "per_rank": -30
+        },
+        {
+          "modify": "veil_of_faith.modifiers.0.value",
+          "per_rank": 0.1
+        }
+      ]
+    },
+    {
+      "id": "faith_unbound",
+      "name": "Faith Unbound",
+      "type": "passive",
+      "ranks": 1,
+      "description": "You can use Waning Light while stunned, incapacitated, disoriented or silenced.",
+      "icon": {
+        "image": "lorc/freedom-dove",
+        "school": "holy"
+      },
+      "effects": [
+        {
+          "modify": "waning_light_ab.usable_while_cc",
+          "set": [
+            "stun",
+            "incapacitate",
+            "disorient",
+            "silence"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "vow_of_endurance",
+      "name": "Vow of Endurance",
+      "type": "passive",
+      "ranks": 1,
+      "description": "You take 8% less damage, but Break Free's cooldown is 45 s longer.",
+      "icon": {
+        "image": "delapouite/locked-heart",
+        "school": "holy"
+      },
+      "effects": [
+        {
+          "modify": "break_free.cooldown_s",
+          "per_rank": 45
+        }
+      ],
+      "grants_aura": "oracle_vow_of_endurance"
+    },
+    {
+      "id": "quickened_hush",
+      "name": "Quickened Hush",
+      "type": "passive",
+      "ranks": 1,
+      "description": "Hush's cooldown is 10 s shorter, but it locks the school for 1 s less.",
+      "icon": {
+        "image": "lorc/lips",
+        "school": "holy"
+      },
+      "effects": [
+        {
+          "modify": "hush.cooldown_s",
+          "per_rank": -10
+        },
+        {
+          "modify": "hush.effects.0.school_lock_s",
+          "per_rank": -1
+        }
+      ]
+    },
+    {
+      "id": "enduring_vigil",
+      "name": "Enduring Vigil",
+      "type": "passive",
+      "ranks": 1,
+      "description": "Your maximum health is 4,000 higher, but your healing is reduced by 5%.",
+      "icon": {
+        "image": "lorc/lantern-flame",
+        "school": "holy"
+      },
       "effects": [
         {
           "modify": "self.max_health",
-          "per_rank": 0
+          "per_rank": 4000
+        }
+      ],
+      "grants_aura": "oracle_enduring_vigil"
+    },
+    {
+      "id": "humbling_chains",
+      "name": "Humbling Chains",
+      "type": "passive",
+      "ranks": 1,
+      "description": "Chains of Awe also reduces the target's damage by 20% while it lasts.",
+      "icon": {
+        "image": "lorc/chained-arrow-heads",
+        "school": "holy"
+      },
+      "effects": [
+        {
+          "modify": "awed_silence.modifiers",
+          "set": [
+            {
+              "stat": "damage_done",
+              "op": "multiply",
+              "value": 0.8
+            }
+          ]
         }
       ]
     }

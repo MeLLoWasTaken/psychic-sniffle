@@ -1,0 +1,22 @@
+{
+  "id": "hourglass_warded",
+  "name": "Hourglass Ward",
+  "description": "Damage taken reduced by 20%.",
+  "kind": "buff",
+  "duration_s": 8,
+  "dispel_type": "magic",
+  "cc_category": "none",
+  "hud_priority": "major_defensive",
+  "modifiers": [
+    {
+      "stat": "damage_taken",
+      "op": "multiply",
+      "value": 0.8
+    }
+  ],
+  "icon": {
+    "symbol": "hourglass_ward",
+    "school": "time",
+    "image": "lorc/empty-hourglass"
+  }
+}

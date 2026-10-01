@@ -1,0 +1,24 @@
+{
+  "id": "oracle_stillness_of_spirit",
+  "name": "Stillness of Spirit",
+  "description": "Talent: restores 300 mana every 3 s.",
+  "kind": "buff",
+  "duration_s": 0,
+  "refresh": "refresh",
+  "dispel_type": "none",
+  "cc_category": "none",
+  "hud_priority": "hidden",
+  "periodic": {
+    "interval_s": 3,
+    "effect": {
+      "type": "resource",
+      "resource": "mana",
+      "amount": 300
+    }
+  },
+  "icon": {
+    "symbol": "lotus",
+    "school": "holy",
+    "image": "lorc/lotus"
+  }
+}

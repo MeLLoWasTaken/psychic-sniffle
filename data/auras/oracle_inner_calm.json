@@ -1,0 +1,23 @@
+{
+  "id": "oracle_inner_calm",
+  "name": "Inner Calm",
+  "description": "Talent: damage taken reduced.",
+  "kind": "buff",
+  "duration_s": 0,
+  "refresh": "refresh",
+  "dispel_type": "none",
+  "cc_category": "none",
+  "hud_priority": "hidden",
+  "modifiers": [
+    {
+      "stat": "damage_taken",
+      "op": "multiply",
+      "value": 1.0
+    }
+  ],
+  "icon": {
+    "symbol": "meditation",
+    "school": "holy",
+    "image": "lorc/meditation"
+  }
+}

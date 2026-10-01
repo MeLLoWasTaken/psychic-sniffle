@@ -346,6 +346,10 @@ The human asked to incorporate any readily available offering that improves the 
 ### X-12 Client prediction with talented auras `[todo]`
 - [ ] Snapshots carry which player's version an aura is (or its speed effect), so the client predicts a talented slow or speed boost exactly; a test where a talented slow is predicted without a correction.
 
+
+### X-13 Visual effects for talent-applied auras `[todo]`
+- [ ] The effects validator accepts entries for auras that only talents apply (bound_dazed, windpipe_crushed, stiff_neck and others), and those auras get readable effects like the kit's.
+
 ### X-06 Continuous integration on GitHub Actions `[doing]`
 - [ ] Run tools/check_all on every push, and a nightly job on a multi-core runner for the balance simulations and the 20-player performance profile (the workspace has 2 cores, which skews those numbers).
 
@@ -465,9 +469,11 @@ Exit gate (DESIGN.md): every combat rule has passing tests; every action is rebi
 - [x] Validator: unreachable nodes, broken references, wrong point totals, duplicate positions.
 - Follow-ups: the client predicts movement with untalented aura data (a talented slow mispredicts until the next snapshot corrects it; X-12); the arena frame's enemy Break Free timer uses the untalented 90 s (M2-14); talent-granted abilities need action bar slots (M2-05); bots and the batch simulator need loadouts for build simulations (M2-04).
 
-### M2-04 Talent trees for the three slice specs `[todo]`
-- [ ] Warblade, Arcanist and Oracle class trees (about 40 nodes), Carnage, Rime and Grace spec trees (about 40), 12 PvP talents each; original names; icons from game-icons.net in the HUD style.
+### M2-04 Talent trees for the three slice specs `[doing]`
+- [x] Warblade, Arcanist and Oracle class trees (about 40 nodes), Carnage, Rime and Grace spec trees (about 40), 12 PvP talents each; original names; icons from game-icons.net in the HUD style.
 - [ ] At least three viable builds per spec in bot simulations (each within 40-60%), and no node taken by more than 90% of the top simulated builds.
+- Trees, builds, new abilities and icons are in (2026-10-01). Left: the bot simulations for the second criterion, after the reference video render frees the CPU; a six-match smoke run had matches up to 11 minutes, so survival and healing talents likely need trimming.
+- Follow-ups: auras applied only through talents cannot have visual effects yet (X-13); bots read their own talented numbers but not an enemy's.
 
 ### M2-05 Talent screen and loadouts `[todo]`
 - [ ] The screen draws itself from the data (positions, connecting lines, icons, tooltips, point counters); up to 10 loadouts per spec; export and import as a short text string; locked in a match.

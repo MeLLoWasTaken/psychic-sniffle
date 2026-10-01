@@ -1,0 +1,22 @@
+{
+  "id": "long_stride_passive",
+  "name": "Long Stride",
+  "description": "Movement speed increased.",
+  "kind": "buff",
+  "duration_s": 0,
+  "dispel_type": "none",
+  "cc_category": "none",
+  "hud_priority": "hidden",
+  "modifiers": [
+    {
+      "stat": "move_speed",
+      "op": "multiply",
+      "value": 1.0
+    }
+  ],
+  "icon": {
+    "symbol": "long_stride_passive",
+    "school": "physical",
+    "image": "delapouite/fur-boot"
+  }
+}

@@ -1,0 +1,23 @@
+{
+  "id": "oracle_devout_focus",
+  "name": "Devout Focus",
+  "description": "Talent: healing done increased.",
+  "kind": "buff",
+  "duration_s": 0,
+  "refresh": "refresh",
+  "dispel_type": "none",
+  "cc_category": "none",
+  "hud_priority": "hidden",
+  "modifiers": [
+    {
+      "stat": "healing_done",
+      "op": "multiply",
+      "value": 1.0
+    }
+  ],
+  "icon": {
+    "symbol": "orb",
+    "school": "holy",
+    "image": "lorc/ball-glow"
+  }
+}

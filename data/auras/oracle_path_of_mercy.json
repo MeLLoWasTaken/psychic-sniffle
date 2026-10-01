@@ -1,0 +1,23 @@
+{
+  "id": "oracle_path_of_mercy",
+  "name": "Path of Mercy",
+  "description": "Talent: healing done up 4%.",
+  "kind": "buff",
+  "duration_s": 0,
+  "refresh": "refresh",
+  "dispel_type": "none",
+  "cc_category": "none",
+  "hud_priority": "hidden",
+  "modifiers": [
+    {
+      "stat": "healing_done",
+      "op": "multiply",
+      "value": 1.04
+    }
+  ],
+  "icon": {
+    "symbol": "heal",
+    "school": "holy",
+    "image": "delapouite/healing"
+  }
+}

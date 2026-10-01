@@ -190,6 +190,7 @@ func view_for(unit: Unit) -> Dictionary:
 	return {"tick": sim.tick, "tick_rate": sim.tick_rate, "me": unit_view(unit), "units": units,
 		"gcd_ready_tick": unit.gcd_ready_tick, "cooldowns": unit.cooldowns.duplicate(),
 		"school_locks": unit.school_locks.duplicate(), "known": unit.known_abilities.duplicate(),
+		"talent_abilities": unit.talent_abilities,
 		"match": match_state(), "map": map["id"]}
 
 

@@ -1,0 +1,37 @@
+{
+  "id": "calving_ice",
+  "name": "Calving Ice",
+  "description": "Drop a slab of glacier on an enemy: 10,000 damage, or 15,000 to a rooted or stunned target.",
+  "owner": "arcanist_rime",
+  "kit_slot": "core",
+  "school": "frost",
+  "cast_type": "cast",
+  "cast_time_s": 2.5,
+  "cooldown_s": 45,
+  "triggers_gcd": true,
+  "range_m": 40,
+  "requires_los": true,
+  "target": "enemy",
+  "effects": [
+    {
+      "type": "damage",
+      "base": 10000,
+      "multiplier_if": {
+        "target_cc": [
+          "root",
+          "stun"
+        ],
+        "value": 1.5
+      }
+    }
+  ],
+  "icon": {
+    "symbol": "calving_ice",
+    "school": "frost",
+    "image": "delapouite/iceberg"
+  },
+  "cost": {
+    "resource": "mana",
+    "amount": 2500
+  }
+}

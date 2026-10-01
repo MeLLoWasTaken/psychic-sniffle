@@ -1,0 +1,29 @@
+{
+  "id": "plea_of_mercy_ab",
+  "name": "Plea of Mercy",
+  "description": "Instantly heal an ally for 14,000.",
+  "owner": "oracle_grace",
+  "kit_slot": "core",
+  "school": "holy",
+  "cast_type": "instant",
+  "cooldown_s": 40,
+  "triggers_gcd": true,
+  "range_m": 40,
+  "requires_los": true,
+  "target": "ally",
+  "effects": [
+    {
+      "type": "heal",
+      "base": 14000
+    }
+  ],
+  "icon": {
+    "symbol": "winged_heart",
+    "school": "holy",
+    "image": "delapouite/heart-wings"
+  },
+  "cost": {
+    "resource": "mana",
+    "amount": 3000
+  }
+}

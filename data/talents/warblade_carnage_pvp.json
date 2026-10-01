@@ -3,14 +3,219 @@
   "kind": "pvp",
   "owner": "warblade_carnage",
   "points": 3,
-  "status": "draft",
+  "status": "complete",
   "nodes": [
     {
       "id": "festering_cut",
       "name": "Festering Cut",
-      "description": "Ruin Strike's bleed also reduces healing taken by 25%.",
       "type": "passive",
-      "effects": [{"modify": "ruin_bleed.modifiers", "set": [{"stat": "healing_taken", "op": "multiply", "value": 0.75}]}]
+      "description": "Ruin Strike's bleed also reduces healing taken by 10%.",
+      "icon": {
+        "image": "lorc/spotted-wound",
+        "school": "physical"
+      },
+      "effects": [
+        {
+          "modify": "ruin_bleed.modifiers",
+          "set": [
+            {
+              "stat": "healing_taken",
+              "op": "multiply",
+              "value": 0.9
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "gangrenous_edge",
+      "name": "Gangrenous Edge",
+      "type": "passive",
+      "description": "Gashing Blow's healing reduction is 10% stronger (25% to 35%).",
+      "icon": {
+        "image": "lorc/gooey-sword",
+        "school": "physical"
+      },
+      "effects": [
+        {
+          "modify": "gashed.modifiers.0.value",
+          "per_rank": -0.1
+        }
+      ]
+    },
+    {
+      "id": "wrench_grip_talent",
+      "name": "Wrench Grip",
+      "type": "active",
+      "description": "Learn Wrench Grip: twist the weapon out of an enemy's hands, disarming it for 4 s. 45 s cooldown.",
+      "icon": {
+        "image": "skoll/drop-weapon",
+        "school": "physical"
+      },
+      "grants_ability": "wrench_grip"
+    },
+    {
+      "id": "crushed_windpipe",
+      "name": "Crushed Windpipe",
+      "type": "passive",
+      "description": "Throat Punch also silences the target for 2 s.",
+      "icon": {
+        "image": "lorc/fist",
+        "school": "physical"
+      },
+      "effects": [
+        {
+          "modify": "throat_punch.effects",
+          "set": [
+            {
+              "type": "interrupt",
+              "school_lock_s": 4
+            },
+            {
+              "type": "apply_aura",
+              "aura": "windpipe_crushed"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "battering_charge",
+      "name": "Battering Charge",
+      "type": "passive",
+      "description": "Warpath Charge also interrupts a cast and locks that school for 3 s.",
+      "icon": {
+        "image": "delapouite/shield-bash",
+        "school": "physical"
+      },
+      "effects": [
+        {
+          "modify": "warpath_charge.effects",
+          "set": [
+            {
+              "type": "charge"
+            },
+            {
+              "type": "interrupt",
+              "school_lock_s": 3
+            },
+            {
+              "type": "apply_aura",
+              "aura": "charge_dazed"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "close_quarters",
+      "name": "Close Quarters",
+      "type": "passive",
+      "description": "Warpath Charge has no minimum range: it can be used on enemies closer than 8 m.",
+      "icon": {
+        "image": "lorc/sword-clash",
+        "school": "physical"
+      },
+      "effects": [
+        {
+          "modify": "warpath_charge.min_range_m",
+          "set": 0
+        }
+      ]
+    },
+    {
+      "id": "stiff_neck_talent",
+      "name": "Stiff Neck",
+      "type": "passive",
+      "description": "Break Free also makes you immune to crowd control for 2 s.",
+      "icon": {
+        "image": "lorc/shield-echoes",
+        "school": "physical"
+      },
+      "effects": [
+        {
+          "modify": "break_free.effects",
+          "set": [
+            {
+              "type": "remove_cc"
+            },
+            {
+              "type": "apply_aura",
+              "aura": "stiff_neck"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "bone_deep_dread",
+      "name": "Bone-Deep Dread",
+      "type": "passive",
+      "description": "Dread Roar's fear breaks only after 20% of the target's maximum health in damage, instead of 10%.",
+      "icon": {
+        "image": "lorc/daemon-skull",
+        "school": "physical"
+      },
+      "effects": [
+        {
+          "modify": "dread_roared.damage_threshold_pct",
+          "per_rank": 10
+        }
+      ]
+    },
+    {
+      "id": "hurled_breaker",
+      "name": "Hurled Breaker",
+      "type": "passive",
+      "description": "Shield Breaker's cooldown is 30 s shorter (60 s to 30 s).",
+      "icon": {
+        "image": "lorc/cracked-shield",
+        "school": "physical"
+      },
+      "effects": [
+        {
+          "modify": "shield_breaker.cooldown_s",
+          "per_rank": -30
+        }
+      ]
+    },
+    {
+      "id": "short_fuse",
+      "name": "Short Fuse",
+      "type": "passive",
+      "description": "Red Mist's cooldown is 10 s shorter.",
+      "icon": {
+        "image": "lorc/time-bomb",
+        "school": "physical"
+      },
+      "effects": [
+        {
+          "modify": "red_mist_ab.cooldown_s",
+          "per_rank": -10
+        }
+      ]
+    },
+    {
+      "id": "knotted_scars_talent",
+      "name": "Knotted Scars",
+      "type": "passive",
+      "description": "You take 6% less damage, but healing you receive is 10% weaker.",
+      "icon": {
+        "image": "lorc/stitched-wound",
+        "school": "physical"
+      },
+      "grants_aura": "knotted_scars"
+    },
+    {
+      "id": "blood_wager_talent",
+      "name": "Blood Wager",
+      "type": "passive",
+      "description": "You deal 8% more damage, but take 8% more damage.",
+      "icon": {
+        "image": "lorc/bloody-stash",
+        "school": "physical"
+      },
+      "grants_aura": "blood_wager"
     }
   ]
 }

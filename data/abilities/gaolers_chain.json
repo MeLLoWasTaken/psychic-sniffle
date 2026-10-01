@@ -1,0 +1,19 @@
+{
+  "id": "gaolers_chain",
+  "name": "Gaoler's Chain",
+  "description": "Hurl a weighted chain at an enemy up to 20 m away: 600 damage, and it is rooted for 3 s.",
+  "owner": "warblade_carnage",
+  "kit_slot": "cc",
+  "school": "physical",
+  "cast_type": "instant",
+  "cooldown_s": 30,
+  "triggers_gcd": true,
+  "range_m": 20,
+  "requires_los": true,
+  "target": "enemy",
+  "effects": [
+    {"type": "damage", "base": 600},
+    {"type": "apply_aura", "aura": "chained"}
+  ],
+  "icon": {"symbol": "chain", "school": "physical", "image": "lorc/harpoon-chain"}
+}

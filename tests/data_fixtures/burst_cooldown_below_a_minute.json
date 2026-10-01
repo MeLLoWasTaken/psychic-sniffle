@@ -1,0 +1,6 @@
+{
+  "description": "talents can push a burst cooldown under a minute",
+  "file": "abilities/red_mist_ab.json",
+  "expect": "burst cooldown can reach 40 to 70 s with talents",
+  "set": {"/cooldown_s": 70}
+}

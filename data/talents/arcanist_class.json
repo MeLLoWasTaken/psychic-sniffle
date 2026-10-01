@@ -3,26 +3,1091 @@
   "kind": "class",
   "owner": "arcanist",
   "points": 30,
-  "status": "draft",
-  "nodes": [
-    {
-      "id": "arcanist_class_placeholder",
-      "name": "Placeholder",
-      "type": "passive",
-      "effects": [
-        {
-          "modify": "self.max_health",
-          "per_rank": 0
-        }
-      ],
-      "pos": [
-        3,
-        0
-      ]
-    }
-  ],
   "gates": [
     8,
     20
+  ],
+  "status": "complete",
+  "nodes": [
+    {
+      "id": "slip_the_bonds",
+      "name": "Slip the Bonds",
+      "type": "passive",
+      "ranks": 2,
+      "pos": [
+        0,
+        0
+      ],
+      "requires_any": [
+        "break_free"
+      ],
+      "description": "Break Free's cooldown is 8 s shorter per rank.",
+      "icon": {
+        "image": "skoll/breaking-chain",
+        "school": "physical"
+      },
+      "effects": [
+        {
+          "modify": "break_free.cooldown_s",
+          "per_rank": -8
+        }
+      ]
+    },
+    {
+      "id": "deep_reserves",
+      "name": "Deep Reserves",
+      "type": "passive",
+      "ranks": 2,
+      "pos": [
+        2,
+        0
+      ],
+      "description": "Your maximum mana is 2,500 higher per rank.",
+      "icon": {
+        "image": "delapouite/magic-potion",
+        "school": "time"
+      },
+      "effects": [
+        {
+          "modify": "self.resource_max.mana",
+          "per_rank": 2500
+        }
+      ]
+    },
+    {
+      "id": "layered_robes",
+      "name": "Layered Robes",
+      "type": "passive",
+      "ranks": 2,
+      "pos": [
+        4,
+        0
+      ],
+      "description": "Your maximum health is 1,500 higher per rank.",
+      "icon": {
+        "image": "lorc/robe",
+        "school": "physical"
+      },
+      "effects": [
+        {
+          "modify": "self.max_health",
+          "per_rank": 1500
+        }
+      ]
+    },
+    {
+      "id": "quick_study",
+      "name": "Quick Study",
+      "type": "passive",
+      "ranks": 2,
+      "pos": [
+        6,
+        0
+      ],
+      "description": "Your haste is 2% higher per rank.",
+      "icon": {
+        "image": "lorc/open-book",
+        "school": "time"
+      },
+      "effects": [
+        {
+          "modify": "self.stats.haste",
+          "per_rank": 0.02
+        }
+      ]
+    },
+    {
+      "id": "unbowed",
+      "name": "Unbowed",
+      "type": "passive",
+      "pos": [
+        0,
+        1
+      ],
+      "requires_any": [
+        "slip_the_bonds"
+      ],
+      "description": "Break Free also makes you 30% faster for 3 s.",
+      "icon": {
+        "image": "lorc/winged-leg",
+        "school": "physical"
+      },
+      "effects": [
+        {
+          "modify": "break_free.effects",
+          "set": [
+            {
+              "type": "remove_cc"
+            },
+            {
+              "type": "apply_aura",
+              "aura": "unbowed_stride"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "turning_hours",
+      "name": "Turning Hours",
+      "type": "passive",
+      "ranks": 2,
+      "pos": [
+        2,
+        1
+      ],
+      "requires_any": [
+        "deep_reserves"
+      ],
+      "description": "Your cooldowns recover 3% faster per rank.",
+      "icon": {
+        "image": "caro-asercion/clock-tower",
+        "school": "time"
+      },
+      "grants_aura": "turning_hours_passive",
+      "effects": [
+        {
+          "modify": "turning_hours_passive.modifiers.0.value",
+          "per_rank": 0.03
+        }
+      ]
+    },
+    {
+      "id": "still_pulse",
+      "name": "Still Pulse",
+      "type": "passive",
+      "ranks": 2,
+      "pos": [
+        4,
+        1
+      ],
+      "requires_any": [
+        "layered_robes"
+      ],
+      "description": "You take 2% less damage per rank.",
+      "icon": {
+        "image": "lorc/mineral-heart",
+        "school": "physical"
+      },
+      "grants_aura": "still_pulse_passive",
+      "effects": [
+        {
+          "modify": "still_pulse_passive.modifiers.0.value",
+          "per_rank": -0.02
+        }
+      ]
+    },
+    {
+      "id": "keen_focus",
+      "name": "Keen Focus",
+      "type": "passive",
+      "ranks": 2,
+      "pos": [
+        6,
+        1
+      ],
+      "requires_any": [
+        "quick_study"
+      ],
+      "description": "Your critical strike chance is 2% higher per rank.",
+      "icon": {
+        "image": "lorc/third-eye",
+        "school": "time"
+      },
+      "effects": [
+        {
+          "modify": "self.stats.crit_chance",
+          "per_rank": 0.02
+        }
+      ]
+    },
+    {
+      "id": "gale_glyph_talent",
+      "name": "Gale Glyph",
+      "type": "active",
+      "pos": [
+        1,
+        2
+      ],
+      "requires_any": [
+        "unbowed",
+        "turning_hours"
+      ],
+      "description": "Grants Gale Glyph: enemies within 8 m are slowed by 30% for 3 s and thrown 10 m back. 30 s cooldown, 1,000 mana.",
+      "icon": {
+        "image": "lorc/whirlwind",
+        "school": "storm"
+      },
+      "grants_ability": "gale_glyph"
+    },
+    {
+      "id": "lining",
+      "name": "Lining",
+      "type": "choice",
+      "pos": [
+        3,
+        2
+      ],
+      "requires_any": [
+        "turning_hours",
+        "still_pulse"
+      ],
+      "description": "Choose how your robes protect you.",
+      "icon": {
+        "image": "lorc/layered-armor",
+        "school": "physical"
+      },
+      "choices": [
+        {
+          "id": "padded_lining",
+          "name": "Padded Lining",
+          "description": "Physical damage you take is reduced by a further 6%.",
+          "icon": {
+            "image": "delapouite/cape-armor",
+            "school": "physical"
+          },
+          "grants_aura": "padded_lining_passive"
+        },
+        {
+          "id": "warded_lining",
+          "name": "Warded Lining",
+          "description": "Healing you receive is 5% stronger.",
+          "icon": {
+            "image": "delapouite/healing-shield",
+            "school": "time"
+          },
+          "grants_aura": "warded_lining_passive"
+        }
+      ]
+    },
+    {
+      "id": "light_tread",
+      "name": "Light Tread",
+      "type": "passive",
+      "ranks": 2,
+      "pos": [
+        5,
+        2
+      ],
+      "requires_any": [
+        "still_pulse",
+        "keen_focus"
+      ],
+      "description": "You move 3% faster per rank.",
+      "icon": {
+        "image": "lorc/wingfoot",
+        "school": "physical"
+      },
+      "grants_aura": "light_tread_passive",
+      "effects": [
+        {
+          "modify": "light_tread_passive.modifiers.0.value",
+          "per_rank": 0.03
+        }
+      ]
+    },
+    {
+      "id": "sharpened_will",
+      "name": "Sharpened Will",
+      "type": "passive",
+      "ranks": 2,
+      "pos": [
+        6,
+        2
+      ],
+      "requires_any": [
+        "keen_focus"
+      ],
+      "description": "You deal 2% more damage per rank.",
+      "icon": {
+        "image": "lorc/concentration-orb",
+        "school": "time"
+      },
+      "effects": [
+        {
+          "modify": "self.stats.power_bonus",
+          "per_rank": 0.02
+        }
+      ]
+    },
+    {
+      "id": "glyph_practice",
+      "name": "Glyph Practice",
+      "type": "passive",
+      "ranks": 2,
+      "pos": [
+        0,
+        3
+      ],
+      "requires_any": [
+        "gale_glyph_talent"
+      ],
+      "description": "Gale Glyph's cooldown is 4 s shorter per rank.",
+      "icon": {
+        "image": "lorc/wind-hole",
+        "school": "storm"
+      },
+      "effects": [
+        {
+          "modify": "gale_glyph.cooldown_s",
+          "per_rank": -4
+        }
+      ]
+    },
+    {
+      "id": "hidden_cistern",
+      "name": "Hidden Cistern",
+      "type": "passive",
+      "pos": [
+        2,
+        3
+      ],
+      "requires_any": [
+        "gale_glyph_talent",
+        "lining"
+      ],
+      "description": "Your maximum mana is 4,000 higher.",
+      "icon": {
+        "image": "lorc/chalice-drops",
+        "school": "time"
+      },
+      "effects": [
+        {
+          "modify": "self.resource_max.mana",
+          "per_rank": 4000
+        }
+      ]
+    },
+    {
+      "id": "hourglass_ward_talent",
+      "name": "Hourglass Ward",
+      "type": "active",
+      "pos": [
+        3,
+        3
+      ],
+      "requires_any": [
+        "lining"
+      ],
+      "description": "Grants Hourglass Ward: take 20% less damage for 8 s. 90 s cooldown, off the global cooldown.",
+      "icon": {
+        "image": "lorc/empty-hourglass",
+        "school": "time"
+      },
+      "grants_ability": "hourglass_ward"
+    },
+    {
+      "id": "reserves",
+      "name": "Reserves",
+      "type": "choice",
+      "pos": [
+        4,
+        3
+      ],
+      "requires_any": [
+        "lining",
+        "light_tread"
+      ],
+      "description": "Choose a deeper well of health or of mana.",
+      "icon": {
+        "image": "lorc/heart-bottle",
+        "school": "time"
+      },
+      "choices": [
+        {
+          "id": "stout_reserve",
+          "name": "Stout Reserve",
+          "description": "Your maximum health is 3,000 higher.",
+          "icon": {
+            "image": "delapouite/heart-armor",
+            "school": "physical"
+          },
+          "effects": [
+            {
+              "modify": "self.max_health",
+              "per_rank": 3000
+            }
+          ]
+        },
+        {
+          "id": "mind_reserve",
+          "name": "Mind Reserve",
+          "description": "Your maximum mana is 5,000 higher.",
+          "icon": {
+            "image": "lorc/spiral-bottle",
+            "school": "time"
+          },
+          "effects": [
+            {
+              "modify": "self.resource_max.mana",
+              "per_rank": 5000
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "far_step",
+      "name": "Far Step",
+      "type": "passive",
+      "pos": [
+        5,
+        3
+      ],
+      "requires_any": [
+        "light_tread"
+      ],
+      "description": "Frost Step carries you 5 m farther (20 m).",
+      "icon": {
+        "image": "lorc/boot-prints",
+        "school": "frost"
+      },
+      "effects": [
+        {
+          "modify": "frost_step.effects.1.distance_m",
+          "per_rank": 5
+        }
+      ]
+    },
+    {
+      "id": "scholars_bent",
+      "name": "Scholar's Bent",
+      "type": "choice",
+      "pos": [
+        6,
+        3
+      ],
+      "requires_any": [
+        "sharpened_will"
+      ],
+      "description": "Choose speed or weight in your spellwork.",
+      "icon": {
+        "image": "delapouite/scroll-quill",
+        "school": "time"
+      },
+      "choices": [
+        {
+          "id": "swift_hand",
+          "name": "Swift Hand",
+          "description": "Your haste is 3% higher.",
+          "icon": {
+            "image": "lorc/magic-palm",
+            "school": "time"
+          },
+          "effects": [
+            {
+              "modify": "self.stats.haste",
+              "per_rank": 0.03
+            }
+          ]
+        },
+        {
+          "id": "heavy_hand",
+          "name": "Heavy Hand",
+          "description": "You deal 3% more damage.",
+          "icon": {
+            "image": "lorc/fist",
+            "school": "time"
+          },
+          "effects": [
+            {
+              "modify": "self.stats.power_bonus",
+              "per_rank": 0.03
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "buffeting_gale",
+      "name": "Buffeting Gale",
+      "type": "passive",
+      "pos": [
+        0,
+        4
+      ],
+      "requires_any": [
+        "glyph_practice"
+      ],
+      "gate": 8,
+      "description": "Gale Glyph's slow is 50% instead of 30% and lasts 1 s longer (4 s).",
+      "icon": {
+        "image": "lorc/wind-slap",
+        "school": "storm"
+      },
+      "effects": [
+        {
+          "modify": "gale_buffeted.modifiers.0.value",
+          "per_rank": -0.2
+        },
+        {
+          "modify": "gale_buffeted.duration_s",
+          "per_rank": 1
+        }
+      ]
+    },
+    {
+      "id": "spellsever_drill",
+      "name": "Spellsever Drill",
+      "type": "passive",
+      "ranks": 2,
+      "pos": [
+        1,
+        4
+      ],
+      "requires_any": [
+        "gale_glyph_talent",
+        "hidden_cistern"
+      ],
+      "gate": 8,
+      "description": "Spellsever's cooldown is 2 s shorter per rank.",
+      "icon": {
+        "image": "delapouite/mute",
+        "school": "frost"
+      },
+      "effects": [
+        {
+          "modify": "spellsever.cooldown_s",
+          "per_rank": -2
+        }
+      ]
+    },
+    {
+      "id": "long_hour",
+      "name": "Long Hour",
+      "type": "passive",
+      "ranks": 2,
+      "pos": [
+        2,
+        4
+      ],
+      "requires_any": [
+        "hourglass_ward_talent"
+      ],
+      "gate": 8,
+      "description": "Hourglass Ward's cooldown is 15 s shorter per rank.",
+      "icon": {
+        "image": "lorc/hourglass",
+        "school": "time"
+      },
+      "effects": [
+        {
+          "modify": "hourglass_ward.cooldown_s",
+          "per_rank": -15
+        }
+      ]
+    },
+    {
+      "id": "waking_hour",
+      "name": "Waking Hour",
+      "type": "passive",
+      "pos": [
+        3,
+        4
+      ],
+      "requires_any": [
+        "hourglass_ward_talent"
+      ],
+      "gate": 8,
+      "description": "Hourglass Ward can be used while stunned.",
+      "icon": {
+        "image": "delapouite/alarm-clock",
+        "school": "time"
+      },
+      "effects": [
+        {
+          "modify": "hourglass_ward.usable_while_cc",
+          "set": [
+            "stun"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "weathered_frame",
+      "name": "Weathered Frame",
+      "type": "passive",
+      "ranks": 2,
+      "pos": [
+        4,
+        4
+      ],
+      "requires_any": [
+        "reserves",
+        "far_step"
+      ],
+      "gate": 8,
+      "description": "Your maximum health is 2,000 higher per rank.",
+      "icon": {
+        "image": "lorc/heart-tower",
+        "school": "physical"
+      },
+      "effects": [
+        {
+          "modify": "self.max_health",
+          "per_rank": 2000
+        }
+      ]
+    },
+    {
+      "id": "cold_footing",
+      "name": "Cold Footing",
+      "type": "passive",
+      "pos": [
+        5,
+        4
+      ],
+      "requires_any": [
+        "far_step"
+      ],
+      "gate": 8,
+      "description": "Frost Step's cooldown is 2 s shorter (10 s).",
+      "icon": {
+        "image": "lorc/walking-boot",
+        "school": "frost"
+      },
+      "effects": [
+        {
+          "modify": "frost_step.cooldown_s",
+          "per_rank": -2
+        }
+      ]
+    },
+    {
+      "id": "glacier_lore",
+      "name": "Glacier Lore",
+      "type": "passive",
+      "ranks": 2,
+      "pos": [
+        6,
+        4
+      ],
+      "requires_any": [
+        "scholars_bent"
+      ],
+      "gate": 8,
+      "description": "Glacier Shield absorbs 1,500 more damage per rank.",
+      "icon": {
+        "image": "delapouite/secret-book",
+        "school": "frost"
+      },
+      "effects": [
+        {
+          "modify": "glacier_shield.absorb",
+          "per_rank": 1500
+        }
+      ]
+    },
+    {
+      "id": "tempest_glyph",
+      "name": "Tempest Glyph",
+      "type": "passive",
+      "pos": [
+        0,
+        5
+      ],
+      "requires_any": [
+        "buffeting_gale"
+      ],
+      "gate": 8,
+      "description": "Gale Glyph throws enemies 5 m farther (15 m).",
+      "icon": {
+        "image": "lorc/vortex",
+        "school": "storm"
+      },
+      "effects": [
+        {
+          "modify": "gale_glyph.effects.1.distance_m",
+          "per_rank": 5
+        }
+      ]
+    },
+    {
+      "id": "receptive_soul",
+      "name": "Receptive Soul",
+      "type": "passive",
+      "ranks": 2,
+      "pos": [
+        1,
+        5
+      ],
+      "requires_any": [
+        "spellsever_drill",
+        "long_hour"
+      ],
+      "gate": 8,
+      "description": "Healing you receive is 3% stronger per rank.",
+      "icon": {
+        "image": "lorc/heart-drop",
+        "school": "time"
+      },
+      "grants_aura": "receptive_soul_passive",
+      "effects": [
+        {
+          "modify": "receptive_soul_passive.modifiers.0.value",
+          "per_rank": 0.03
+        }
+      ]
+    },
+    {
+      "id": "long_stride",
+      "name": "Long Stride",
+      "type": "passive",
+      "ranks": 2,
+      "pos": [
+        2,
+        5
+      ],
+      "requires_any": [
+        "long_hour",
+        "spellsever_drill"
+      ],
+      "gate": 8,
+      "description": "You move 3% faster per rank.",
+      "icon": {
+        "image": "delapouite/fur-boot",
+        "school": "physical"
+      },
+      "grants_aura": "long_stride_passive",
+      "effects": [
+        {
+          "modify": "long_stride_passive.modifiers.0.value",
+          "per_rank": 0.03
+        }
+      ]
+    },
+    {
+      "id": "hours_weight",
+      "name": "Hour's Weight",
+      "type": "choice",
+      "pos": [
+        3,
+        5
+      ],
+      "requires_any": [
+        "long_hour",
+        "waking_hour"
+      ],
+      "gate": 8,
+      "description": "Choose how Hourglass Ward is strengthened.",
+      "icon": {
+        "image": "delapouite/pendulum-swing",
+        "school": "time"
+      },
+      "choices": [
+        {
+          "id": "stretched_hour",
+          "name": "Stretched Hour",
+          "description": "Hourglass Ward lasts 2 s longer (10 s).",
+          "icon": {
+            "image": "delapouite/anticlockwise-rotation",
+            "school": "time"
+          },
+          "effects": [
+            {
+              "modify": "hourglass_warded.duration_s",
+              "per_rank": 2
+            }
+          ]
+        },
+        {
+          "id": "heavy_hour",
+          "name": "Heavy Hour",
+          "description": "Hourglass Ward reduces damage taken by 25% instead of 20%.",
+          "icon": {
+            "image": "delapouite/cuckoo-clock",
+            "school": "time"
+          },
+          "effects": [
+            {
+              "modify": "hourglass_warded.modifiers.0.value",
+              "per_rank": -0.05
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "sepulcher_lore",
+      "name": "Sepulcher Lore",
+      "type": "passive",
+      "pos": [
+        5,
+        5
+      ],
+      "requires_any": [
+        "weathered_frame",
+        "cold_footing"
+      ],
+      "gate": 8,
+      "description": "Rime Sepulcher's cooldown is 30 s shorter (210 s).",
+      "icon": {
+        "image": "lorc/frozen-block",
+        "school": "frost"
+      },
+      "effects": [
+        {
+          "modify": "rime_sepulcher_ab.cooldown_s",
+          "per_rank": -30
+        }
+      ]
+    },
+    {
+      "id": "honed_insight",
+      "name": "Honed Insight",
+      "type": "passive",
+      "ranks": 2,
+      "pos": [
+        6,
+        5
+      ],
+      "requires_any": [
+        "glacier_lore"
+      ],
+      "gate": 8,
+      "description": "Your critical strike chance is 2% higher per rank.",
+      "icon": {
+        "image": "lorc/crystal-eye",
+        "school": "time"
+      },
+      "effects": [
+        {
+          "modify": "self.stats.crit_chance",
+          "per_rank": 0.02
+        }
+      ]
+    },
+    {
+      "id": "measured_casting",
+      "name": "Measured Casting",
+      "type": "passive",
+      "ranks": 2,
+      "pos": [
+        0,
+        6
+      ],
+      "requires_any": [
+        "tempest_glyph",
+        "receptive_soul"
+      ],
+      "gate": 8,
+      "description": "You cast 2% faster per rank.",
+      "icon": {
+        "image": "delapouite/spell-book",
+        "school": "time"
+      },
+      "grants_aura": "measured_casting_passive",
+      "effects": [
+        {
+          "modify": "measured_casting_passive.modifiers.0.value",
+          "per_rank": 0.02
+        }
+      ]
+    },
+    {
+      "id": "quiet_breath",
+      "name": "Quiet Breath",
+      "type": "passive",
+      "ranks": 2,
+      "pos": [
+        2,
+        6
+      ],
+      "requires_any": [
+        "receptive_soul",
+        "long_stride",
+        "hours_weight"
+      ],
+      "gate": 8,
+      "description": "You take 2% less damage per rank.",
+      "icon": {
+        "image": "lorc/fluffy-swirl",
+        "school": "time"
+      },
+      "grants_aura": "quiet_breath_passive",
+      "effects": [
+        {
+          "modify": "quiet_breath_passive.modifiers.0.value",
+          "per_rank": -0.02
+        }
+      ]
+    },
+    {
+      "id": "unhurried_mind",
+      "name": "Unhurried Mind",
+      "type": "passive",
+      "ranks": 2,
+      "pos": [
+        4,
+        6
+      ],
+      "requires_any": [
+        "hours_weight",
+        "sepulcher_lore",
+        "weathered_frame"
+      ],
+      "gate": 8,
+      "description": "Your cooldowns recover 3% faster per rank.",
+      "icon": {
+        "image": "lorc/brain",
+        "school": "time"
+      },
+      "grants_aura": "unhurried_mind_passive",
+      "effects": [
+        {
+          "modify": "unhurried_mind_passive.modifiers.0.value",
+          "per_rank": 0.03
+        }
+      ]
+    },
+    {
+      "id": "practiced_unraveling",
+      "name": "Practiced Unraveling",
+      "type": "passive",
+      "pos": [
+        5,
+        6
+      ],
+      "requires_any": [
+        "sepulcher_lore",
+        "honed_insight"
+      ],
+      "gate": 8,
+      "description": "Unravel costs 600 less mana (600).",
+      "icon": {
+        "image": "lorc/ink-swirl",
+        "school": "frost"
+      },
+      "effects": [
+        {
+          "modify": "unravel.cost.amount",
+          "per_rank": -600
+        }
+      ]
+    },
+    {
+      "id": "grim_study",
+      "name": "Grim Study",
+      "type": "passive",
+      "ranks": 2,
+      "pos": [
+        6,
+        6
+      ],
+      "requires_any": [
+        "honed_insight"
+      ],
+      "gate": 8,
+      "description": "You deal 2% more damage per rank.",
+      "icon": {
+        "image": "lorc/evil-book",
+        "school": "time"
+      },
+      "effects": [
+        {
+          "modify": "self.stats.power_bonus",
+          "per_rank": 0.02
+        }
+      ]
+    },
+    {
+      "id": "unyielding_scholar",
+      "name": "Unyielding Scholar",
+      "type": "capstone",
+      "pos": [
+        1,
+        7
+      ],
+      "requires_any": [
+        "measured_casting",
+        "quiet_breath"
+      ],
+      "gate": 20,
+      "description": "You take 6% less damage.",
+      "icon": {
+        "image": "lorc/magic-shield",
+        "school": "time"
+      },
+      "grants_aura": "unyielding_scholar_passive"
+    },
+    {
+      "id": "vast_reserves",
+      "name": "Vast Reserves",
+      "type": "passive",
+      "pos": [
+        3,
+        7
+      ],
+      "requires_any": [
+        "quiet_breath",
+        "unhurried_mind"
+      ],
+      "gate": 20,
+      "description": "Your maximum mana is 6,000 higher and your maximum health 2,000 higher.",
+      "icon": {
+        "image": "lorc/crystal-ball",
+        "school": "time"
+      },
+      "effects": [
+        {
+          "modify": "self.resource_max.mana",
+          "per_rank": 6000
+        },
+        {
+          "modify": "self.max_health",
+          "per_rank": 2000
+        }
+      ]
+    },
+    {
+      "id": "perfected_study",
+      "name": "Perfected Study",
+      "type": "capstone",
+      "pos": [
+        5,
+        7
+      ],
+      "requires_any": [
+        "unhurried_mind",
+        "grim_study"
+      ],
+      "gate": 20,
+      "description": "You deal 6% more damage.",
+      "icon": {
+        "image": "caro-asercion/tarot-01-the-magician",
+        "school": "time"
+      },
+      "effects": [
+        {
+          "modify": "self.stats.power_bonus",
+          "per_rank": 0.06
+        }
+      ]
+    },
+    {
+      "id": "relentless_tempo",
+      "name": "Relentless Tempo",
+      "type": "passive",
+      "ranks": 2,
+      "pos": [
+        6,
+        7
+      ],
+      "requires_any": [
+        "grim_study"
+      ],
+      "gate": 20,
+      "description": "Your haste is 2% higher per rank.",
+      "icon": {
+        "image": "lorc/clockwork",
+        "school": "time"
+      },
+      "effects": [
+        {
+          "modify": "self.stats.haste",
+          "per_rank": 0.02
+        }
+      ]
+    }
   ]
 }

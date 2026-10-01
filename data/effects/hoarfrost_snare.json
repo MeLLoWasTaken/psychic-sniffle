@@ -1,0 +1,18 @@
+{
+  "id": "hoarfrost_snare",
+  "projectile": {
+    "style": "shard",
+    "speed_mps": 55,
+    "size": 0.8
+  },
+  "impact": {
+    "style": "shards",
+    "at": "target",
+    "size": 0.9
+  },
+  "auras": {
+    "hoarfrost_snared": {
+      "style": "root"
+    }
+  }
+}

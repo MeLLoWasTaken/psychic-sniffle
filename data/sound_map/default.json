@@ -297,6 +297,72 @@
     },
     "break_free": {
       "release": "break_free"
+    },
+    "hurtling_bound": {
+      "release": "charge_rush",
+      "impact": "charge_impact"
+    },
+    "iron_oath_ab": {
+      "release": "unbroken_stance"
+    },
+    "gaolers_chain": {
+      "release": "shield_breaker_release",
+      "impact": "shield_breaker_impact"
+    },
+    "reaping_turn": {
+      "release": "swing_greatsword_wide",
+      "impact": "@weapon_hit"
+    },
+    "bonecleaver": {
+      "release": "@weapon_swing",
+      "impact": [
+        "@weapon_hit",
+        "gash_wet"
+      ]
+    },
+    "wrench_grip": {
+      "release": "@weapon_swing",
+      "impact": "pommel_crack_impact"
+    },
+    "gale_glyph": {
+      "release": "rime_fan_release",
+      "impact": "impact_blunt"
+    },
+    "hourglass_ward": {
+      "release": "glacier_shield"
+    },
+    "hoarfrost_snare": {
+      "release": "shiver_lance_release",
+      "impact": "root_ice_impact"
+    },
+    "calving_ice": {
+      "cast_start": "frost_cast_start",
+      "cast_loop": "frost_cast_loop",
+      "release": "heartfreeze_release",
+      "impact": "heartfreeze_impact"
+    },
+    "cleansing_peal_ab": {
+      "release": "dispel_holy",
+      "impact": "dispel_impact"
+    },
+    "burden_of_penance_ab": {
+      "release": "holy_release",
+      "impact": "chains_of_awe_impact"
+    },
+    "plea_of_mercy_ab": {
+      "release": "heal_release",
+      "impact": "holy_heal"
+    },
+    "canticle_of_morning_ab": {
+      "cast_start": "holy_cast_start",
+      "cast_loop": "holy_cast_loop",
+      "impact": "heal_chorus"
+    },
+    "hallowed_stillness_ab": {
+      "cast_start": "holy_cast_start",
+      "cast_loop": "holy_cast_loop",
+      "release": "holy_release",
+      "impact": "chains_of_awe_impact"
     }
   },
   "auras": {

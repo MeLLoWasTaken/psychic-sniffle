@@ -1,0 +1,29 @@
+{
+  "id": "hoarfrost_snare",
+  "name": "Hoarfrost Snare",
+  "description": "Freeze an enemy's feet to the ground for 4 s. Heavy damage breaks the ice.",
+  "owner": "arcanist_rime",
+  "kit_slot": "cc",
+  "school": "frost",
+  "cast_type": "instant",
+  "cooldown_s": 24,
+  "triggers_gcd": true,
+  "range_m": 40,
+  "requires_los": true,
+  "target": "enemy",
+  "effects": [
+    {
+      "type": "apply_aura",
+      "aura": "hoarfrost_snared"
+    }
+  ],
+  "icon": {
+    "symbol": "hoarfrost_snare",
+    "school": "frost",
+    "image": "delapouite/frozen-ring"
+  },
+  "cost": {
+    "resource": "mana",
+    "amount": 1000
+  }
+}

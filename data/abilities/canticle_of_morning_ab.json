@@ -1,0 +1,33 @@
+{
+  "id": "canticle_of_morning_ab",
+  "name": "Canticle of Morning",
+  "description": "Channel for 3 s, healing you and every ally within 30 m for 3,000 each second (9,000 total).",
+  "owner": "oracle_grace",
+  "kit_slot": "core",
+  "school": "holy",
+  "cast_type": "channel",
+  "cast_time_s": 3.0,
+  "channel_ticks": 3,
+  "cooldown_s": 60,
+  "triggers_gcd": true,
+  "range_m": 0,
+  "requires_los": false,
+  "target": "self",
+  "effects": [
+    {
+      "type": "heal",
+      "base": 3000,
+      "affects": "allies_in_radius",
+      "radius_m": 30
+    }
+  ],
+  "icon": {
+    "symbol": "sunrise",
+    "school": "holy",
+    "image": "lorc/sunrise"
+  },
+  "cost": {
+    "resource": "mana",
+    "amount": 4000
+  }
+}

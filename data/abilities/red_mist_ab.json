@@ -1,7 +1,7 @@
 {
   "id": "red_mist_ab",
   "name": "Red Mist",
-  "description": "For 10 s, deal 25% more damage with 20% more critical chance.",
+  "description": "For 10 s, deal 20% more damage with 20% more critical chance.",
   "owner": "warblade_carnage",
   "kit_slot": "burst",
   "school": "physical",

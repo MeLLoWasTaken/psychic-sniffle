@@ -3,26 +3,1103 @@
   "kind": "spec",
   "owner": "oracle_grace",
   "points": 30,
-  "status": "draft",
-  "nodes": [
-    {
-      "id": "oracle_grace_placeholder",
-      "name": "Placeholder",
-      "type": "passive",
-      "effects": [
-        {
-          "modify": "self.max_health",
-          "per_rank": 0
-        }
-      ],
-      "pos": [
-        3,
-        0
-      ]
-    }
-  ],
   "gates": [
     8,
     20
+  ],
+  "status": "complete",
+  "nodes": [
+    {
+      "id": "sheltering_veil",
+      "name": "Sheltering Veil",
+      "type": "passive",
+      "ranks": 1,
+      "pos": [
+        4,
+        6
+      ],
+      "requires_any": [
+        "enfolding_veil"
+      ],
+      "gate": 20,
+      "description": "Veil of Faith also heals the ally for 6,000.",
+      "icon": {
+        "image": "lorc/bell-shield",
+        "school": "holy"
+      },
+      "effects": [
+        {
+          "modify": "veil_of_faith_ab.effects",
+          "set": [
+            {
+              "type": "apply_aura",
+              "aura": "veil_of_faith"
+            },
+            {
+              "type": "heal",
+              "base": 6000
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "cleansing_mercy",
+      "name": "Cleansing Mercy",
+      "type": "passive",
+      "ranks": 1,
+      "pos": [
+        6,
+        6
+      ],
+      "requires_any": [
+        "righteous_unravel"
+      ],
+      "gate": 20,
+      "description": "Absolve also heals the ally for 4,000.",
+      "icon": {
+        "image": "delapouite/health-potion",
+        "school": "holy"
+      },
+      "effects": [
+        {
+          "modify": "absolve.effects",
+          "set": [
+            {
+              "type": "dispel",
+              "dispel_types": [
+                "magic",
+                "disease"
+              ],
+              "dispel_count": 1
+            },
+            {
+              "type": "heal",
+              "base": 4000
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "radiant_mending",
+      "name": "Radiant Mending",
+      "type": "passive",
+      "ranks": 2,
+      "pos": [
+        0,
+        0
+      ],
+      "requires_any": [
+        "mending_light"
+      ],
+      "description": "Mending Light heals 500 more per rank.",
+      "icon": {
+        "image": "lorc/sunbeams",
+        "school": "holy"
+      },
+      "effects": [
+        {
+          "modify": "mending_light.effects.0.base",
+          "per_rank": 500
+        }
+      ]
+    },
+    {
+      "id": "quickened_benediction",
+      "name": "Quickened Benediction",
+      "type": "passive",
+      "ranks": 2,
+      "pos": [
+        2,
+        0
+      ],
+      "requires_any": [
+        "swift_benediction"
+      ],
+      "description": "Swift Benediction's cast is 0.1 s faster per rank.",
+      "icon": {
+        "image": "lorc/comet-spark",
+        "school": "holy"
+      },
+      "effects": [
+        {
+          "modify": "swift_benediction.cast_time_s",
+          "per_rank": -0.1
+        }
+      ]
+    },
+    {
+      "id": "enduring_grace",
+      "name": "Enduring Grace",
+      "type": "passive",
+      "ranks": 2,
+      "pos": [
+        3,
+        0
+      ],
+      "requires_any": [
+        "lingering_grace_ab"
+      ],
+      "description": "Lingering Grace heals 150 more every 3 s per rank.",
+      "icon": {
+        "image": "lorc/circle-sparks",
+        "school": "holy"
+      },
+      "effects": [
+        {
+          "modify": "lingering_grace.periodic.effect.base",
+          "per_rank": 150
+        }
+      ]
+    },
+    {
+      "id": "swelling_chorus",
+      "name": "Swelling Chorus",
+      "type": "passive",
+      "ranks": 2,
+      "pos": [
+        4,
+        0
+      ],
+      "requires_any": [
+        "chorus_of_mending"
+      ],
+      "description": "Chorus of Mending heals 300 more per rank.",
+      "icon": {
+        "image": "lorc/lyre",
+        "school": "holy"
+      },
+      "effects": [
+        {
+          "modify": "chorus_of_mending.effects.0.base",
+          "per_rank": 300
+        }
+      ]
+    },
+    {
+      "id": "dread_cadence",
+      "name": "Dread Cadence",
+      "type": "passive",
+      "ranks": 2,
+      "pos": [
+        5,
+        0
+      ],
+      "requires_any": [
+        "psalm_of_dread"
+      ],
+      "description": "Psalm of Dread's cooldown is 3 s shorter per rank.",
+      "icon": {
+        "image": "delapouite/musical-notes",
+        "school": "shadow"
+      },
+      "effects": [
+        {
+          "modify": "psalm_of_dread.cooldown_s",
+          "per_rank": -3
+        }
+      ]
+    },
+    {
+      "id": "ready_absolution",
+      "name": "Ready Absolution",
+      "type": "passive",
+      "ranks": 2,
+      "pos": [
+        6,
+        0
+      ],
+      "requires_any": [
+        "absolve"
+      ],
+      "description": "Absolve's cooldown is 2 s shorter per rank.",
+      "icon": {
+        "image": "delapouite/holy-water",
+        "school": "holy"
+      },
+      "effects": [
+        {
+          "modify": "absolve.cooldown_s",
+          "per_rank": -2
+        }
+      ]
+    },
+    {
+      "id": "frugal_light",
+      "name": "Frugal Light",
+      "type": "passive",
+      "ranks": 2,
+      "pos": [
+        0,
+        1
+      ],
+      "requires_any": [
+        "radiant_mending"
+      ],
+      "description": "Mending Light costs 150 less mana per rank.",
+      "icon": {
+        "image": "lorc/candlebright",
+        "school": "holy"
+      },
+      "effects": [
+        {
+          "modify": "mending_light.cost.amount",
+          "per_rank": -150
+        }
+      ]
+    },
+    {
+      "id": "practiced_hands",
+      "name": "Practiced Hands",
+      "type": "passive",
+      "ranks": 2,
+      "pos": [
+        1,
+        1
+      ],
+      "requires_any": [
+        "radiant_mending",
+        "quickened_benediction"
+      ],
+      "description": "Mending Light's cast is 0.1 s faster per rank.",
+      "icon": {
+        "image": "lorc/hand",
+        "school": "holy"
+      },
+      "effects": [
+        {
+          "modify": "mending_light.cast_time_s",
+          "per_rank": -0.1
+        }
+      ]
+    },
+    {
+      "id": "thrifty_benediction",
+      "name": "Thrifty Benediction",
+      "type": "passive",
+      "ranks": 2,
+      "pos": [
+        2,
+        1
+      ],
+      "requires_any": [
+        "quickened_benediction"
+      ],
+      "description": "Swift Benediction costs 250 less mana per rank.",
+      "icon": {
+        "image": "lorc/jeweled-chalice",
+        "school": "holy"
+      },
+      "effects": [
+        {
+          "modify": "swift_benediction.cost.amount",
+          "per_rank": -250
+        }
+      ]
+    },
+    {
+      "id": "lasting_grace",
+      "name": "Lasting Grace",
+      "type": "passive",
+      "ranks": 1,
+      "pos": [
+        3,
+        1
+      ],
+      "requires_any": [
+        "enduring_grace"
+      ],
+      "description": "Lingering Grace lasts 3 s longer: one more heal.",
+      "icon": {
+        "image": "delapouite/backward-time",
+        "school": "holy"
+      },
+      "effects": [
+        {
+          "modify": "lingering_grace.duration_s",
+          "per_rank": 3
+        }
+      ]
+    },
+    {
+      "id": "chorus_reach",
+      "name": "Carrying Chorus",
+      "type": "passive",
+      "ranks": 1,
+      "pos": [
+        4,
+        1
+      ],
+      "requires_any": [
+        "swelling_chorus"
+      ],
+      "description": "Chorus of Mending reaches allies within 16 m of its target instead of 12 m.",
+      "icon": {
+        "image": "delapouite/musical-score",
+        "school": "holy"
+      },
+      "effects": [
+        {
+          "modify": "chorus_of_mending.effects.0.radius_m",
+          "per_rank": 4
+        }
+      ]
+    },
+    {
+      "id": "haunting_psalm",
+      "name": "Haunting Psalm",
+      "type": "passive",
+      "ranks": 1,
+      "pos": [
+        5,
+        1
+      ],
+      "requires_any": [
+        "dread_cadence"
+      ],
+      "description": "Psalm of Dread's fear lasts 1 s longer.",
+      "icon": {
+        "image": "lorc/ghost",
+        "school": "shadow"
+      },
+      "effects": [
+        {
+          "modify": "psalm_dread.duration_s",
+          "per_rank": 1
+        }
+      ]
+    },
+    {
+      "id": "absolution_choice",
+      "name": "Deep Absolution",
+      "type": "choice",
+      "pos": [
+        6,
+        1
+      ],
+      "requires_any": [
+        "ready_absolution"
+      ],
+      "description": "Choose how far Absolve reaches.",
+      "icon": {
+        "image": "lorc/pouring-chalice",
+        "school": "holy"
+      },
+      "choices": [
+        {
+          "id": "thorough_absolution",
+          "name": "Thorough Absolution",
+          "description": "Absolve removes up to two effects instead of one.",
+          "icon": {
+            "image": "lorc/pouring-chalice",
+            "school": "holy"
+          },
+          "effects": [
+            {
+              "modify": "absolve.effects.0.dispel_count",
+              "per_rank": 1
+            }
+          ]
+        },
+        {
+          "id": "broad_absolution",
+          "name": "Broad Absolution",
+          "description": "Absolve also removes poison and curse effects.",
+          "icon": {
+            "image": "lorc/splashy-stream",
+            "school": "holy"
+          },
+          "effects": [
+            {
+              "modify": "absolve.effects.0.dispel_types",
+              "set": [
+                "magic",
+                "disease",
+                "poison",
+                "curse"
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "tithe_of_light",
+      "name": "Tithe of Light",
+      "type": "passive",
+      "ranks": 1,
+      "pos": [
+        0,
+        2
+      ],
+      "requires_any": [
+        "frugal_light",
+        "practiced_hands"
+      ],
+      "description": "Castigate restores 1,000 mana to you when it lands (it costs 800).",
+      "icon": {
+        "image": "caro-asercion/heraldic-sun",
+        "school": "holy"
+      },
+      "effects": [
+        {
+          "modify": "castigate.generates",
+          "set": {
+            "resource": "mana",
+            "amount": 1000
+          }
+        }
+      ]
+    },
+    {
+      "id": "earnest_benediction",
+      "name": "Earnest Benediction",
+      "type": "passive",
+      "ranks": 2,
+      "pos": [
+        2,
+        2
+      ],
+      "requires_any": [
+        "thrifty_benediction",
+        "practiced_hands"
+      ],
+      "description": "Swift Benediction heals 400 more per rank.",
+      "icon": {
+        "image": "lorc/spark-spirit",
+        "school": "holy"
+      },
+      "effects": [
+        {
+          "modify": "swift_benediction.effects.0.base",
+          "per_rank": 400
+        }
+      ]
+    },
+    {
+      "id": "grace_upon_grace",
+      "name": "Grace upon Grace",
+      "type": "passive",
+      "ranks": 2,
+      "pos": [
+        3,
+        2
+      ],
+      "requires_any": [
+        "lasting_grace"
+      ],
+      "description": "Lingering Grace costs 150 less mana per rank.",
+      "icon": {
+        "image": "lorc/rainbow-star",
+        "school": "holy"
+      },
+      "effects": [
+        {
+          "modify": "lingering_grace_ab.cost.amount",
+          "per_rank": -150
+        }
+      ]
+    },
+    {
+      "id": "chorus_cadence",
+      "name": "Chorus Cadence",
+      "type": "passive",
+      "ranks": 2,
+      "pos": [
+        4,
+        2
+      ],
+      "requires_any": [
+        "chorus_reach"
+      ],
+      "description": "Chorus of Mending's cooldown is 1 s shorter per rank.",
+      "icon": {
+        "image": "lorc/music-spell",
+        "school": "holy"
+      },
+      "effects": [
+        {
+          "modify": "chorus_of_mending.cooldown_s",
+          "per_rank": -1
+        }
+      ]
+    },
+    {
+      "id": "severing_hush",
+      "name": "Severing Hush",
+      "type": "passive",
+      "ranks": 1,
+      "pos": [
+        5,
+        2
+      ],
+      "requires_any": [
+        "haunting_psalm"
+      ],
+      "description": "Hush locks the interrupted school for 4 s instead of 3 s.",
+      "icon": {
+        "image": "lorc/interdiction",
+        "school": "holy"
+      },
+      "effects": [
+        {
+          "modify": "hush.effects.0.school_lock_s",
+          "per_rank": 1
+        }
+      ]
+    },
+    {
+      "id": "keen_unravel",
+      "name": "Keen Unravel",
+      "type": "passive",
+      "ranks": 2,
+      "pos": [
+        6,
+        2
+      ],
+      "requires_any": [
+        "absolution_choice"
+      ],
+      "description": "Unravel costs 300 less mana per rank.",
+      "icon": {
+        "image": "lorc/crystal-wand",
+        "school": "holy"
+      },
+      "effects": [
+        {
+          "modify": "unravel_holy.cost.amount",
+          "per_rank": -300
+        }
+      ]
+    },
+    {
+      "id": "seraphic_fervor",
+      "name": "Seraphic Fervor",
+      "type": "passive",
+      "ranks": 2,
+      "pos": [
+        0,
+        3
+      ],
+      "requires_any": [
+        "tithe_of_light"
+      ],
+      "gate": 8,
+      "description": "Seraphic Surge's cooldown is 15 s shorter per rank.",
+      "icon": {
+        "image": "lorc/angel-wings",
+        "school": "holy"
+      },
+      "effects": [
+        {
+          "modify": "seraphic_surge_ab.cooldown_s",
+          "per_rank": -15
+        }
+      ]
+    },
+    {
+      "id": "plea_of_mercy",
+      "name": "Plea of Mercy",
+      "type": "active",
+      "pos": [
+        1,
+        3
+      ],
+      "requires_any": [
+        "tithe_of_light",
+        "earnest_benediction"
+      ],
+      "gate": 8,
+      "description": "Grants Plea of Mercy: instantly heal an ally for 14,000. Costs 3,000 mana, 40 s cooldown.",
+      "icon": {
+        "image": "delapouite/heart-wings",
+        "school": "holy"
+      },
+      "grants_ability": "plea_of_mercy_ab"
+    },
+    {
+      "id": "exalted_surge",
+      "name": "Exalted Surge",
+      "type": "passive",
+      "ranks": 1,
+      "pos": [
+        2,
+        3
+      ],
+      "requires_any": [
+        "earnest_benediction"
+      ],
+      "gate": 8,
+      "description": "Seraphic Surge increases your healing by 40% instead of 30%.",
+      "icon": {
+        "image": "lorc/beams-aura",
+        "school": "holy"
+      },
+      "effects": [
+        {
+          "modify": "seraphic_surge.modifiers.0.value",
+          "per_rank": 0.1
+        }
+      ]
+    },
+    {
+      "id": "canticle_of_morning",
+      "name": "Canticle of Morning",
+      "type": "active",
+      "pos": [
+        3,
+        3
+      ],
+      "requires_any": [
+        "grace_upon_grace",
+        "chorus_cadence"
+      ],
+      "gate": 8,
+      "description": "Grants Canticle of Morning: channel for 3 s, healing you and every ally within 30 m for 3,000 each second (9,000 total). Costs 4,000 mana, 60 s cooldown.",
+      "icon": {
+        "image": "lorc/sunrise",
+        "school": "holy"
+      },
+      "grants_ability": "canticle_of_morning_ab"
+    },
+    {
+      "id": "steadfast_veil",
+      "name": "Steadfast Veil",
+      "type": "passive",
+      "ranks": 2,
+      "pos": [
+        4,
+        3
+      ],
+      "requires_any": [
+        "chorus_cadence"
+      ],
+      "gate": 8,
+      "description": "Veil of Faith's cooldown is 15 s shorter per rank.",
+      "icon": {
+        "image": "lorc/winged-shield",
+        "school": "holy"
+      },
+      "effects": [
+        {
+          "modify": "veil_of_faith_ab.cooldown_s",
+          "per_rank": -15
+        }
+      ]
+    },
+    {
+      "id": "hallowed_stillness",
+      "name": "Hallowed Stillness",
+      "type": "active",
+      "pos": [
+        5,
+        3
+      ],
+      "requires_any": [
+        "severing_hush",
+        "keen_unravel"
+      ],
+      "gate": 8,
+      "description": "Grants Hallowed Stillness: an enemy within 30 m kneels, unable to act, for 5 s; any damage ends it. 1.5 s cast, costs 1,500 mana, 45 s cooldown.",
+      "icon": {
+        "image": "delapouite/kneeling",
+        "school": "holy"
+      },
+      "grants_ability": "hallowed_stillness_ab"
+    },
+    {
+      "id": "righteous_unravel",
+      "name": "Righteous Unravel",
+      "type": "passive",
+      "ranks": 1,
+      "pos": [
+        6,
+        3
+      ],
+      "requires_any": [
+        "keen_unravel"
+      ],
+      "gate": 8,
+      "description": "Unravel strips up to two magic effects instead of one.",
+      "icon": {
+        "image": "lorc/star-swirl",
+        "school": "holy"
+      },
+      "effects": [
+        {
+          "modify": "unravel_holy.effects.0.dispel_count",
+          "per_rank": 1
+        }
+      ]
+    },
+    {
+      "id": "surge_of_plenty",
+      "name": "Surge of Plenty",
+      "type": "passive",
+      "ranks": 1,
+      "pos": [
+        0,
+        4
+      ],
+      "requires_any": [
+        "seraphic_fervor"
+      ],
+      "gate": 8,
+      "description": "Seraphic Surge also restores 5,000 mana.",
+      "icon": {
+        "image": "lorc/holy-grail",
+        "school": "holy"
+      },
+      "effects": [
+        {
+          "modify": "seraphic_surge_ab.generates",
+          "set": {
+            "resource": "mana",
+            "amount": 5000
+          }
+        }
+      ]
+    },
+    {
+      "id": "swift_plea",
+      "name": "Swift Plea",
+      "type": "passive",
+      "ranks": 2,
+      "pos": [
+        1,
+        4
+      ],
+      "requires_any": [
+        "plea_of_mercy"
+      ],
+      "gate": 8,
+      "description": "Plea of Mercy's cooldown is 5 s shorter per rank.",
+      "icon": {
+        "image": "delapouite/falling-star",
+        "school": "holy"
+      },
+      "effects": [
+        {
+          "modify": "plea_of_mercy_ab.cooldown_s",
+          "per_rank": -5
+        }
+      ]
+    },
+    {
+      "id": "lengthened_surge",
+      "name": "Lengthened Surge",
+      "type": "passive",
+      "ranks": 1,
+      "pos": [
+        2,
+        4
+      ],
+      "requires_any": [
+        "exalted_surge"
+      ],
+      "gate": 8,
+      "description": "Seraphic Surge lasts 3 s longer.",
+      "icon": {
+        "image": "lorc/curly-wing",
+        "school": "holy"
+      },
+      "effects": [
+        {
+          "modify": "seraphic_surge.duration_s",
+          "per_rank": 3
+        }
+      ]
+    },
+    {
+      "id": "resounding_canticle",
+      "name": "Resounding Canticle",
+      "type": "passive",
+      "ranks": 2,
+      "pos": [
+        3,
+        4
+      ],
+      "requires_any": [
+        "canticle_of_morning"
+      ],
+      "gate": 8,
+      "description": "Canticle of Morning heals 300 more each second per rank.",
+      "icon": {
+        "image": "delapouite/sunrise",
+        "school": "holy"
+      },
+      "effects": [
+        {
+          "modify": "canticle_of_morning_ab.effects.0.base",
+          "per_rank": 300
+        }
+      ]
+    },
+    {
+      "id": "enfolding_veil",
+      "name": "Enfolding Veil",
+      "type": "passive",
+      "ranks": 1,
+      "pos": [
+        4,
+        4
+      ],
+      "requires_any": [
+        "steadfast_veil"
+      ],
+      "gate": 8,
+      "description": "Veil of Faith lasts 2 s longer.",
+      "icon": {
+        "image": "lorc/rosa-shield",
+        "school": "holy"
+      },
+      "effects": [
+        {
+          "modify": "veil_of_faith.duration_s",
+          "per_rank": 2
+        }
+      ]
+    },
+    {
+      "id": "deep_stillness",
+      "name": "Deep Stillness",
+      "type": "passive",
+      "ranks": 2,
+      "pos": [
+        5,
+        4
+      ],
+      "requires_any": [
+        "hallowed_stillness"
+      ],
+      "gate": 8,
+      "description": "Hallowed Stillness lasts 1 s longer per rank.",
+      "icon": {
+        "image": "lorc/semi-closed-eye",
+        "school": "holy"
+      },
+      "effects": [
+        {
+          "modify": "stilled_in_reverence.duration_s",
+          "per_rank": 1
+        }
+      ]
+    },
+    {
+      "id": "mercy_unbounded",
+      "name": "Mercy Unbounded",
+      "type": "passive",
+      "ranks": 1,
+      "pos": [
+        1,
+        5
+      ],
+      "requires_any": [
+        "swift_plea"
+      ],
+      "gate": 8,
+      "description": "Plea of Mercy heals 2,000 more.",
+      "icon": {
+        "image": "delapouite/nested-hearts",
+        "school": "holy"
+      },
+      "effects": [
+        {
+          "modify": "plea_of_mercy_ab.effects.0.base",
+          "per_rank": 2000
+        }
+      ]
+    },
+    {
+      "id": "devout_focus",
+      "name": "Devout Focus",
+      "type": "passive",
+      "ranks": 2,
+      "pos": [
+        2,
+        5
+      ],
+      "requires_any": [
+        "lengthened_surge",
+        "resounding_canticle"
+      ],
+      "gate": 8,
+      "description": "Your healing is increased by 2% per rank.",
+      "icon": {
+        "image": "lorc/ball-glow",
+        "school": "holy"
+      },
+      "effects": [
+        {
+          "modify": "oracle_devout_focus.modifiers.0.value",
+          "per_rank": 0.02
+        }
+      ],
+      "grants_aura": "oracle_devout_focus"
+    },
+    {
+      "id": "canticle_unhindered",
+      "name": "Wandering Canticle",
+      "type": "passive",
+      "ranks": 1,
+      "pos": [
+        3,
+        5
+      ],
+      "requires_any": [
+        "resounding_canticle"
+      ],
+      "gate": 8,
+      "description": "You can move while channeling Canticle of Morning.",
+      "icon": {
+        "image": "lorc/fluffy-wing",
+        "school": "holy"
+      },
+      "effects": [
+        {
+          "modify": "canticle_of_morning_ab.castable_while_moving",
+          "set": true
+        }
+      ]
+    },
+    {
+      "id": "swift_reverence",
+      "name": "Swift Reverence",
+      "type": "passive",
+      "ranks": 1,
+      "pos": [
+        5,
+        5
+      ],
+      "requires_any": [
+        "deep_stillness"
+      ],
+      "gate": 8,
+      "description": "Hallowed Stillness casts in 1 s instead of 1.5 s.",
+      "icon": {
+        "image": "lorc/octogonal-eye",
+        "school": "holy"
+      },
+      "effects": [
+        {
+          "modify": "hallowed_stillness_ab.cast_time_s",
+          "per_rank": -0.5
+        }
+      ]
+    },
+    {
+      "id": "clear_radiance",
+      "name": "Clear Radiance",
+      "type": "passive",
+      "ranks": 2,
+      "pos": [
+        0,
+        6
+      ],
+      "requires_any": [
+        "surge_of_plenty"
+      ],
+      "gate": 20,
+      "description": "Your critical strike chance is 3% higher per rank.",
+      "icon": {
+        "image": "lorc/beveled-star",
+        "school": "holy"
+      },
+      "effects": [
+        {
+          "modify": "self.stats.crit_chance",
+          "per_rank": 0.03
+        }
+      ]
+    },
+    {
+      "id": "zenith_of_mercy",
+      "name": "Zenith of Mercy",
+      "type": "capstone",
+      "pos": [
+        1,
+        6
+      ],
+      "requires_any": [
+        "mercy_unbounded"
+      ],
+      "gate": 20,
+      "description": "Mending Light heals 1,000 more and Swift Benediction heals 400 more.",
+      "icon": {
+        "image": "delapouite/sun-priest",
+        "school": "holy"
+      },
+      "effects": [
+        {
+          "modify": "mending_light.effects.0.base",
+          "per_rank": 1000
+        },
+        {
+          "modify": "swift_benediction.effects.0.base",
+          "per_rank": 400
+        }
+      ]
+    },
+    {
+      "id": "everlasting_grace",
+      "name": "Everlasting Grace",
+      "type": "capstone",
+      "pos": [
+        3,
+        6
+      ],
+      "requires_any": [
+        "canticle_unhindered"
+      ],
+      "gate": 20,
+      "description": "Lingering Grace heals 200 more every 3 s and Chorus of Mending heals 500 more.",
+      "icon": {
+        "image": "lorc/trefoil-lily",
+        "school": "holy"
+      },
+      "effects": [
+        {
+          "modify": "lingering_grace.periodic.effect.base",
+          "per_rank": 200
+        },
+        {
+          "modify": "chorus_of_mending.effects.0.base",
+          "per_rank": 500
+        }
+      ]
+    },
+    {
+      "id": "dominion_of_dread",
+      "name": "Dominion of Dread",
+      "type": "capstone",
+      "pos": [
+        5,
+        6
+      ],
+      "requires_any": [
+        "swift_reverence"
+      ],
+      "gate": 20,
+      "description": "Psalm of Dread's fear lasts 1 s longer, its cooldown is 3 s shorter, and it reaches 2 m farther.",
+      "icon": {
+        "image": "lorc/crowned-skull",
+        "school": "shadow"
+      },
+      "effects": [
+        {
+          "modify": "psalm_dread.duration_s",
+          "per_rank": 1
+        },
+        {
+          "modify": "psalm_of_dread.cooldown_s",
+          "per_rank": -3
+        },
+        {
+          "modify": "psalm_of_dread.effects.0.radius_m",
+          "per_rank": 2
+        }
+      ]
+    }
   ]
 }

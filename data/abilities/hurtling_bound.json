@@ -1,0 +1,20 @@
+{
+  "id": "hurtling_bound",
+  "name": "Hurtling Bound",
+  "description": "Leap 15 m forward. Enemies within 6 m of where you land take 1,500 damage.",
+  "owner": "warblade",
+  "kit_slot": "mobility",
+  "school": "physical",
+  "cast_type": "instant",
+  "cooldown_s": 45,
+  "triggers_gcd": false,
+  "range_m": 0,
+  "requires_los": false,
+  "target": "self",
+  "castable_while_moving": true,
+  "effects": [
+    {"type": "teleport", "distance_m": 15},
+    {"type": "damage", "base": 1500, "school": "physical", "affects": "enemies_in_radius", "radius_m": 6}
+  ],
+  "icon": {"symbol": "leap", "school": "physical", "image": "delapouite/jump-across"}
+}

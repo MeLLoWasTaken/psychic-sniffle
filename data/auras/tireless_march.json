@@ -1,0 +1,15 @@
+{
+  "id": "tireless_march",
+  "name": "Tireless March",
+  "description": "Talent: movement speed increased.",
+  "kind": "buff",
+  "duration_s": 0,
+  "refresh": "refresh",
+  "dispel_type": "none",
+  "cc_category": "none",
+  "modifiers": [
+    {"stat": "move_speed", "op": "multiply", "value": 1.0}
+  ],
+  "hud_priority": "hidden",
+  "icon": {"symbol": "talent", "school": "physical", "image": "lorc/walking-boot"}
+}

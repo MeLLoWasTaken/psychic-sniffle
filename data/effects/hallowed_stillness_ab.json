@@ -1,0 +1,17 @@
+{
+  "id": "hallowed_stillness_ab",
+  "cast": {
+    "style": "hand_glow",
+    "hands": "both"
+  },
+  "impact": {
+    "style": "flash",
+    "at": "target",
+    "size": 0.8
+  },
+  "auras": {
+    "stilled_in_reverence": {
+      "style": "stun"
+    }
+  }
+}

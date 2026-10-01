@@ -1,0 +1,25 @@
+{
+  "id": "hourglass_ward",
+  "name": "Hourglass Ward",
+  "description": "Slow the moments that strike you: take 20% less damage for 8 s.",
+  "owner": "arcanist",
+  "kit_slot": "defensive",
+  "school": "time",
+  "cast_type": "instant",
+  "cooldown_s": 90,
+  "triggers_gcd": false,
+  "range_m": 0,
+  "requires_los": false,
+  "target": "self",
+  "effects": [
+    {
+      "type": "apply_aura",
+      "aura": "hourglass_warded"
+    }
+  ],
+  "icon": {
+    "symbol": "hourglass_ward",
+    "school": "time",
+    "image": "lorc/empty-hourglass"
+  }
+}

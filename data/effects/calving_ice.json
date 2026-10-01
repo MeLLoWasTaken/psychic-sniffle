@@ -1,0 +1,13 @@
+{
+  "id": "calving_ice",
+  "cast": {
+    "style": "hand_glow",
+    "hands": "both",
+    "size": 1.3
+  },
+  "impact": {
+    "style": "shards",
+    "at": "target",
+    "size": 1.6
+  }
+}

@@ -1,0 +1,22 @@
+{
+  "id": "rimehide_passive",
+  "name": "Rimehide",
+  "description": "Damage taken reduced.",
+  "kind": "buff",
+  "duration_s": 0,
+  "dispel_type": "none",
+  "cc_category": "none",
+  "hud_priority": "hidden",
+  "modifiers": [
+    {
+      "stat": "damage_taken",
+      "op": "multiply",
+      "value": 1.0
+    }
+  ],
+  "icon": {
+    "symbol": "rimehide_passive",
+    "school": "frost",
+    "image": "lorc/crystal-cluster"
+  }
+}

@@ -1,0 +1,13 @@
+{
+  "id": "hourglass_ward",
+  "impact": {
+    "style": "ring",
+    "at": "self",
+    "size": 1.0
+  },
+  "auras": {
+    "hourglass_warded": {
+      "style": "shield"
+    }
+  }
+}

@@ -1,0 +1,11 @@
+{
+  "id": "wrenched",
+  "name": "Wrenched",
+  "description": "Disarmed.",
+  "kind": "debuff",
+  "duration_s": 4,
+  "dispel_type": "none",
+  "cc_category": "disarm",
+  "hud_priority": "cc",
+  "icon": {"symbol": "disarm", "school": "physical", "image": "skoll/drop-weapon"}
+}

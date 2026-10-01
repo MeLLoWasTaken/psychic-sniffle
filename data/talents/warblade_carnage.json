@@ -4,17 +4,578 @@
   "owner": "warblade_carnage",
   "points": 30,
   "gates": [8, 20],
-  "status": "draft",
+  "status": "complete",
   "nodes": [
     {
       "id": "lingering_gash",
       "name": "Lingering Gash",
-      "description": "Ruin Strike's bleed deals more damage.",
+      "type": "passive",
+      "ranks": 2,
+      "pos": [1, 0],
+      "requires_any": ["ruin_strike"],
+      "description": "Ruin Strike's bleed deals 120 more damage per tick per rank (600 to 720, then 840).",
+      "icon": {"image": "lorc/bleeding-wound", "school": "physical"},
+      "effects": [
+        {"modify": "ruin_bleed.periodic.effect.base", "per_rank": 120}
+      ]
+    },
+    {
+      "id": "full_swing",
+      "name": "Full Swing",
+      "type": "passive",
+      "ranks": 2,
+      "pos": [3, 0],
+      "requires_any": ["ruin_strike"],
+      "description": "Ruin Strike deals 300 more damage per rank (4,200 to 4,500, then 4,800).",
+      "icon": {"image": "lorc/broadsword", "school": "physical"},
+      "effects": [
+        {"modify": "ruin_strike.effects.0.base", "per_rank": 300}
+      ]
+    },
+    {
+      "id": "bitter_edge",
+      "name": "Bitter Edge",
+      "type": "passive",
+      "ranks": 2,
+      "pos": [5, 0],
+      "requires_any": ["grim_hack"],
+      "description": "Grim Hack generates 3 more rage per rank (12 to 15, then 18).",
+      "icon": {"image": "delapouite/sharp-axe", "school": "physical"},
+      "effects": [
+        {"modify": "grim_hack.generates.amount", "per_rank": 3}
+      ]
+    },
+    {
+      "id": "seeping_wound",
+      "name": "Seeping Wound",
+      "type": "passive",
+      "pos": [0, 1],
+      "requires_any": ["lingering_gash"],
+      "description": "Ruin Strike's bleed ticks every 2.5 s instead of every 3 s.",
+      "icon": {"image": "lorc/droplets", "school": "physical"},
+      "effects": [
+        {"modify": "ruin_bleed.periodic.interval_s", "per_rank": -0.5}
+      ]
+    },
+    {
+      "id": "festering_edge",
+      "name": "Festering Edge",
+      "type": "passive",
+      "ranks": 2,
+      "pos": [1, 1],
+      "requires_any": ["lingering_gash"],
+      "description": "Gashing Blow's healing reduction is 5% stronger per rank (25% to 30%, then 35%).",
+      "icon": {"image": "lorc/open-wound", "school": "physical"},
+      "effects": [
+        {"modify": "gashed.modifiers.0.value", "per_rank": -0.05}
+      ]
+    },
+    {
+      "id": "sweeping_weight",
+      "name": "Sweeping Weight",
+      "type": "passive",
+      "ranks": 2,
+      "pos": [2, 1],
+      "requires_any": ["full_swing"],
+      "description": "Wide Hew deals 250 more damage per rank (2,500 to 2,750, then 3,000).",
+      "icon": {"image": "lorc/blade-drag", "school": "physical"},
+      "effects": [
+        {"modify": "wide_hew.effects.0.base", "per_rank": 250}
+      ]
+    },
+    {
+      "id": "cold_eye",
+      "name": "Cold Eye",
       "type": "passive",
       "ranks": 2,
       "pos": [3, 1],
-      "requires_any": ["ruin_strike"],
-      "effects": [{"modify": "ruin_bleed.periodic.effect.base", "per_rank": 90}]
+      "requires_any": ["full_swing"],
+      "description": "Critical strike chance is 2% higher per rank.",
+      "icon": {"image": "lorc/dead-eye", "school": "physical"},
+      "effects": [
+        {"modify": "self.stats.crit_chance", "per_rank": 0.02}
+      ]
+    },
+    {
+      "id": "red_hunger",
+      "name": "Red Hunger",
+      "type": "passive",
+      "ranks": 2,
+      "pos": [4, 1],
+      "requires_any": ["full_swing"],
+      "description": "Red Mist's cooldown is 10 s shorter per rank (90 s to 80 s, then 70 s).",
+      "icon": {"image": "lorc/burning-eye", "school": "physical"},
+      "effects": [
+        {"modify": "red_mist_ab.cooldown_s", "per_rank": -10}
+      ]
+    },
+    {
+      "id": "hacking_rhythm",
+      "name": "Hacking Rhythm",
+      "type": "passive",
+      "ranks": 2,
+      "pos": [5, 1],
+      "requires_any": ["bitter_edge"],
+      "description": "Grim Hack's cooldown is 0.5 s shorter per rank (4.5 s to 4 s, then 3.5 s).",
+      "icon": {"image": "lorc/wood-axe", "school": "physical"},
+      "effects": [
+        {"modify": "grim_hack.cooldown_s", "per_rank": -0.5}
+      ]
+    },
+    {
+      "id": "skull_rattler",
+      "name": "Skull Rattler",
+      "type": "passive",
+      "pos": [6, 1],
+      "requires_any": ["bitter_edge"],
+      "description": "Pommel Crack stuns for 0.5 s longer (3 s to 3.5 s).",
+      "icon": {"image": "lorc/skull-crack", "school": "physical"},
+      "effects": [
+        {"modify": "pommel_cracked.duration_s", "per_rank": 0.5}
+      ]
+    },
+    {
+      "id": "butchers_thrift",
+      "name": "Butcher's Thrift",
+      "type": "passive",
+      "pos": [0, 2],
+      "requires_any": ["seeping_wound", "festering_edge"],
+      "description": "Gashing Blow costs 5 less rage (15 to 10).",
+      "icon": {"image": "lorc/meat-cleaver", "school": "physical"},
+      "effects": [
+        {"modify": "gashing_blow.cost.amount", "per_rank": -5}
+      ]
+    },
+    {
+      "id": "lean_swings",
+      "name": "Lean Swings",
+      "type": "passive",
+      "ranks": 2,
+      "pos": [1, 2],
+      "requires_any": ["festering_edge", "sweeping_weight"],
+      "description": "Wide Hew costs 2 less rage per rank (20 to 18, then 16).",
+      "icon": {"image": "lorc/quick-slash", "school": "physical"},
+      "effects": [
+        {"modify": "wide_hew.cost.amount", "per_rank": -2}
+      ]
+    },
+    {
+      "id": "heavy_verdict",
+      "name": "Heavy Verdict",
+      "type": "passive",
+      "ranks": 2,
+      "pos": [3, 2],
+      "requires_any": ["cold_eye", "red_hunger"],
+      "description": "Headsman's Verdict deals 1,000 more damage per rank (14,000 to 15,000, then 16,000).",
+      "icon": {"image": "delapouite/war-axe", "school": "physical"},
+      "effects": [
+        {"modify": "headsmans_verdict.effects.0.base", "per_rank": 1000}
+      ]
+    },
+    {
+      "id": "gaolers_chain_talent",
+      "name": "Gaoler's Chain",
+      "type": "active",
+      "pos": [5, 2],
+      "requires_any": ["hacking_rhythm", "skull_rattler"],
+      "description": "Learn Gaoler's Chain: hurl a weighted chain at an enemy up to 20 m away for 600 damage, rooting it for 3 s. 30 s cooldown.",
+      "icon": {"image": "lorc/harpoon-chain", "school": "physical"},
+      "grants_ability": "gaolers_chain"
+    },
+    {
+      "id": "tendon_ripper",
+      "name": "Tendon Ripper",
+      "type": "passive",
+      "pos": [6, 2],
+      "requires_any": ["skull_rattler"],
+      "description": "Crippling Slash slows by 60% instead of 50%.",
+      "icon": {"image": "lorc/nailed-foot", "school": "physical"},
+      "effects": [
+        {"modify": "crippled.modifiers.0.value", "per_rank": -0.1}
+      ]
+    },
+    {
+      "id": "red_harvest",
+      "name": "Red Harvest",
+      "type": "passive",
+      "pos": [1, 3],
+      "requires_any": ["lean_swings", "butchers_thrift"],
+      "gate": 8,
+      "description": "Grim Hack also heals you for 800.",
+      "icon": {"image": "lorc/bleeding-heart", "school": "physical"},
+      "effects": [
+        {
+          "modify": "grim_hack.effects",
+          "set": [
+            {"type": "damage", "base": 2000},
+            {"type": "heal", "base": 800, "can_crit": false, "affects": "self"}
+          ]
+        }
+      ]
+    },
+    {
+      "id": "open_veins",
+      "name": "Open Veins",
+      "type": "passive",
+      "ranks": 2,
+      "pos": [0, 3],
+      "requires_any": ["butchers_thrift", "seeping_wound"],
+      "gate": 8,
+      "description": "Gashing Blow deals 400 more damage per rank (2,400 to 2,800, then 3,200).",
+      "icon": {"image": "lorc/large-wound", "school": "physical"},
+      "effects": [
+        {"modify": "gashing_blow.effects.0.base", "per_rank": 400}
+      ]
+    },
+    {
+      "id": "pressing_the_wound",
+      "name": "Pressing the Wound",
+      "type": "passive",
+      "pos": [2, 3],
+      "requires_any": ["lean_swings"],
+      "gate": 8,
+      "description": "Wide Hew deals 20% more damage to targets bleeding from Ruin Strike.",
+      "icon": {"image": "lorc/sword-wound", "school": "physical"},
+      "effects": [
+        {
+          "modify": "wide_hew.effects.0.multiplier_if",
+          "set": {"target_has_aura": "ruin_bleed", "value": 1.2}
+        }
+      ]
+    },
+    {
+      "id": "sentence",
+      "name": "The Sentence",
+      "type": "choice",
+      "pos": [3, 3],
+      "requires_any": ["heavy_verdict"],
+      "gate": 8,
+      "description": "Choose how Headsman's Verdict falls: on targets below 25% health, or for less rage.",
+      "icon": {"image": "lorc/chopped-skull", "school": "physical"},
+      "choices": [
+        {
+          "id": "early_sentence",
+          "name": "Early Sentence",
+          "description": "Headsman's Verdict can be used on targets below 25% health instead of 20%.",
+          "icon": {"image": "lorc/chopped-skull", "school": "physical"},
+          "effects": [
+            {"modify": "headsmans_verdict.usable_if.target_health_below_pct", "per_rank": 5}
+          ]
+        },
+        {
+          "id": "swift_sentence",
+          "name": "Swift Sentence",
+          "description": "Headsman's Verdict costs 15 less rage (40 to 25).",
+          "icon": {"image": "lorc/guillotine", "school": "physical"},
+          "effects": [
+            {"modify": "headsmans_verdict.cost.amount", "per_rank": -15}
+          ]
+        }
+      ]
+    },
+    {
+      "id": "lingering_mist",
+      "name": "Lingering Mist",
+      "type": "passive",
+      "ranks": 2,
+      "pos": [4, 3],
+      "requires_any": ["heavy_verdict", "red_hunger"],
+      "gate": 8,
+      "description": "Red Mist lasts 1 s longer per rank (10 s to 11 s, then 12 s).",
+      "icon": {"image": "lorc/empty-hourglass", "school": "physical"},
+      "effects": [
+        {"modify": "red_mist.duration_s", "per_rank": 1}
+      ]
+    },
+    {
+      "id": "ringing_skull",
+      "name": "Ringing Skull",
+      "type": "passive",
+      "ranks": 2,
+      "pos": [5, 3],
+      "requires_any": ["gaolers_chain_talent"],
+      "gate": 8,
+      "description": "Pommel Crack's cooldown is 5 s shorter per rank (30 s to 25 s, then 20 s).",
+      "icon": {"image": "lorc/broken-skull", "school": "physical"},
+      "effects": [
+        {"modify": "pommel_crack.cooldown_s", "per_rank": -5}
+      ]
+    },
+    {
+      "id": "long_chain",
+      "name": "Long Chain",
+      "type": "passive",
+      "pos": [6, 3],
+      "requires_any": ["gaolers_chain_talent", "tendon_ripper"],
+      "gate": 8,
+      "description": "Gaoler's Chain reaches 10 m farther (20 m to 30 m) and its cooldown is 5 s shorter (30 s to 25 s).",
+      "icon": {"image": "lorc/wavy-chains", "school": "physical"},
+      "effects": [
+        {"modify": "gaolers_chain.range_m", "per_rank": 10},
+        {"modify": "gaolers_chain.cooldown_s", "per_rank": -5}
+      ]
+    },
+    {
+      "id": "measured_fury",
+      "name": "Measured Fury",
+      "type": "passive",
+      "ranks": 2,
+      "pos": [0, 4],
+      "requires_any": ["open_veins", "red_harvest"],
+      "gate": 8,
+      "description": "Ruin Strike costs 5 less rage per rank (30 to 25, then 20).",
+      "icon": {"image": "lorc/dripping-blade", "school": "physical"},
+      "effects": [
+        {"modify": "ruin_strike.cost.amount", "per_rank": -5}
+      ]
+    },
+    {
+      "id": "carving",
+      "name": "Carving Stroke",
+      "type": "choice",
+      "pos": [2, 4],
+      "requires_any": ["pressing_the_wound", "sentence"],
+      "gate": 8,
+      "description": "Choose a new attack: Reaping Turn, a spin that hits every enemy near you, or Bonecleaver, one huge chop.",
+      "icon": {"image": "lorc/sword-spin", "school": "physical"},
+      "choices": [
+        {
+          "id": "reaping_turn_choice",
+          "name": "Reaping Turn",
+          "description": "Learn Reaping Turn: spin with your blade for 3,000 damage to every enemy within 8 m. 25 rage, 12 s cooldown.",
+          "icon": {"image": "lorc/sword-spin", "school": "physical"},
+          "grants_ability": "reaping_turn"
+        },
+        {
+          "id": "bonecleaver_choice",
+          "name": "Bonecleaver",
+          "description": "Learn Bonecleaver: a crushing overhead chop for 6,000 damage. 20 rage, 45 s cooldown.",
+          "icon": {"image": "delapouite/cleaver", "school": "physical"},
+          "grants_ability": "bonecleaver"
+        }
+      ]
+    },
+    {
+      "id": "long_dread",
+      "name": "Long Dread",
+      "type": "passive",
+      "pos": [4, 4],
+      "requires_any": ["lingering_mist", "ringing_skull"],
+      "gate": 8,
+      "description": "Dread Roar's fear lasts 1 s longer (6 s to 7 s).",
+      "icon": {"image": "lorc/dread-skull", "school": "physical"},
+      "effects": [
+        {"modify": "dread_roared.duration_s", "per_rank": 1}
+      ]
+    },
+    {
+      "id": "strike_the_fallen",
+      "name": "Strike the Fallen",
+      "type": "passive",
+      "pos": [5, 4],
+      "requires_any": ["ringing_skull", "long_chain"],
+      "gate": 8,
+      "description": "Ruin Strike deals 25% more damage to stunned or rooted targets.",
+      "icon": {"image": "lorc/crossed-slashes", "school": "physical"},
+      "effects": [
+        {
+          "modify": "ruin_strike.effects.0.multiplier_if",
+          "set": {"target_cc": ["stun", "root"], "value": 1.25}
+        }
+      ]
+    },
+    {
+      "id": "iron_collar",
+      "name": "Iron Collar",
+      "type": "passive",
+      "pos": [6, 4],
+      "requires_any": ["long_chain"],
+      "gate": 8,
+      "description": "Gaoler's Chain roots for 1 s longer (3 s to 4 s).",
+      "icon": {"image": "lorc/handcuffs", "school": "physical"},
+      "effects": [
+        {"modify": "chained.duration_s", "per_rank": 1}
+      ]
+    },
+    {
+      "id": "deep_fury",
+      "name": "Deep Fury",
+      "type": "passive",
+      "pos": [1, 5],
+      "requires_any": ["measured_fury", "carving"],
+      "gate": 8,
+      "description": "Maximum rage is 20 higher (100 to 120).",
+      "icon": {"image": "lorc/heartburn", "school": "physical"},
+      "effects": [
+        {"modify": "self.resource_max.rage", "per_rank": 20}
+      ]
+    },
+    {
+      "id": "butchers_rhythm",
+      "name": "Butcher's Rhythm",
+      "type": "passive",
+      "ranks": 2,
+      "pos": [3, 5],
+      "requires_any": ["carving", "long_dread"],
+      "gate": 8,
+      "description": "Haste is 2% higher per rank.",
+      "icon": {"image": "lorc/serrated-slash", "school": "physical"},
+      "effects": [
+        {"modify": "self.stats.haste", "per_rank": 0.02}
+      ]
+    },
+    {
+      "id": "grim_vigor",
+      "name": "Grim Vigor",
+      "type": "passive",
+      "ranks": 2,
+      "pos": [5, 5],
+      "requires_any": ["long_dread", "strike_the_fallen", "iron_collar"],
+      "gate": 8,
+      "description": "You take 3% less damage per rank.",
+      "icon": {"image": "lorc/spiked-armor", "school": "physical"},
+      "grants_aura": "grim_vigor",
+      "effects": [
+        {"modify": "grim_vigor.modifiers.0.value", "per_rank": -0.03}
+      ]
+    },
+    {
+      "id": "relentless_ruin",
+      "name": "Relentless Ruin",
+      "type": "passive",
+      "pos": [0, 6],
+      "requires_any": ["measured_fury", "deep_fury"],
+      "gate": 20,
+      "description": "Ruin Strike's cooldown is 1 s shorter (6 s to 5 s).",
+      "icon": {"image": "lorc/blade-fall", "school": "physical"},
+      "effects": [
+        {"modify": "ruin_strike.cooldown_s", "per_rank": -1}
+      ]
+    },
+    {
+      "id": "carving_mastery",
+      "name": "Carving Mastery",
+      "type": "passive",
+      "pos": [2, 6],
+      "requires_any": ["carving", "deep_fury", "butchers_rhythm"],
+      "gate": 20,
+      "description": "Reaping Turn's cooldown is 3 s shorter (12 s to 9 s); Bonecleaver's is 10 s shorter (45 s to 35 s).",
+      "icon": {"image": "lorc/spinning-blades", "school": "physical"},
+      "effects": [
+        {"modify": "reaping_turn.cooldown_s", "per_rank": -3},
+        {"modify": "bonecleaver.cooldown_s", "per_rank": -10}
+      ]
+    },
+    {
+      "id": "seething_mist",
+      "name": "Seething Mist",
+      "type": "passive",
+      "pos": [4, 6],
+      "requires_any": ["butchers_rhythm", "lingering_mist"],
+      "gate": 20,
+      "description": "Red Mist's critical strike bonus is 10% higher (20% to 30%).",
+      "icon": {"image": "lorc/bleeding-eye", "school": "physical"},
+      "effects": [
+        {"modify": "red_mist.modifiers.1.value", "per_rank": 0.1}
+      ]
+    },
+    {
+      "id": "sucker_blow",
+      "name": "Sucker Blow",
+      "type": "passive",
+      "pos": [6, 6],
+      "requires_any": ["grim_vigor", "iron_collar"],
+      "gate": 20,
+      "description": "Pommel Crack no longer triggers the global cooldown.",
+      "icon": {"image": "delapouite/high-punch", "school": "physical"},
+      "effects": [
+        {"modify": "pommel_crack.triggers_gcd", "set": false}
+      ]
+    },
+    {
+      "id": "ravenous_edge",
+      "name": "Ravenous Edge",
+      "type": "passive",
+      "ranks": 2,
+      "pos": [1, 7],
+      "requires_any": ["relentless_ruin", "carving_mastery"],
+      "gate": 20,
+      "description": "Grim Hack deals 400 more damage per rank (2,000 to 2,400, then 2,800).",
+      "icon": {"image": "lorc/axe-in-stump", "school": "physical"},
+      "effects": [
+        {"modify": "grim_hack.effects.0.base", "per_rank": 400}
+      ]
+    },
+    {
+      "id": "crushing_ruin",
+      "name": "Crushing Ruin",
+      "type": "passive",
+      "ranks": 2,
+      "pos": [3, 7],
+      "requires_any": ["carving_mastery", "seething_mist"],
+      "gate": 20,
+      "description": "Ruin Strike and Wide Hew deal 250 more damage per rank.",
+      "icon": {"image": "lorc/shattered-sword", "school": "physical"},
+      "effects": [
+        {"modify": "ruin_strike.effects.0.base", "per_rank": 250},
+        {"modify": "wide_hew.effects.0.base", "per_rank": 250}
+      ]
+    },
+    {
+      "id": "pit_hardened",
+      "name": "Pit-Hardened",
+      "type": "passive",
+      "ranks": 2,
+      "pos": [5, 7],
+      "requires_any": ["seething_mist", "sucker_blow", "grim_vigor"],
+      "gate": 20,
+      "description": "Maximum health is 2,000 higher per rank.",
+      "icon": {"image": "delapouite/spiked-shoulder-armor", "school": "physical"},
+      "effects": [
+        {"modify": "self.max_health", "per_rank": 2000}
+      ]
+    },
+    {
+      "id": "weeping_ruin",
+      "name": "Weeping Ruin",
+      "type": "capstone",
+      "pos": [1, 8],
+      "requires_any": ["ravenous_edge", "relentless_ruin"],
+      "gate": 20,
+      "description": "Ruin Strike's bleed deals 240 more damage per tick, and Ruin Strike costs 5 less rage.",
+      "icon": {"image": "lorc/dripping-sword", "school": "physical"},
+      "effects": [
+        {"modify": "ruin_bleed.periodic.effect.base", "per_rank": 240},
+        {"modify": "ruin_strike.cost.amount", "per_rank": -5}
+      ]
+    },
+    {
+      "id": "crimson_frenzy",
+      "name": "Crimson Frenzy",
+      "type": "capstone",
+      "pos": [3, 8],
+      "requires_any": ["crushing_ruin", "seething_mist"],
+      "gate": 20,
+      "description": "Red Mist lasts 3 s longer, and its damage bonus is 10% higher (20% to 30%).",
+      "icon": {"image": "lorc/dervish-swords", "school": "physical"},
+      "effects": [
+        {"modify": "red_mist.duration_s", "per_rank": 3},
+        {"modify": "red_mist.modifiers.0.value", "per_rank": 0.1}
+      ]
+    },
+    {
+      "id": "iron_jailer",
+      "name": "Iron Jailer",
+      "type": "capstone",
+      "pos": [5, 8],
+      "requires_any": ["pit_hardened", "sucker_blow"],
+      "gate": 20,
+      "description": "Pommel Crack's cooldown is 5 s shorter, and Dread Roar's is 15 s shorter.",
+      "icon": {"image": "delapouite/prisoner", "school": "physical"},
+      "effects": [
+        {"modify": "pommel_crack.cooldown_s", "per_rank": -5},
+        {"modify": "dread_roar.cooldown_s", "per_rank": -15}
+      ]
     }
   ]
 }

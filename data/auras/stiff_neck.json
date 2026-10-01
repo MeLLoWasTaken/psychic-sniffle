@@ -1,0 +1,12 @@
+{
+  "id": "stiff_neck",
+  "name": "Stiff Neck",
+  "description": "Immune to crowd control.",
+  "kind": "buff",
+  "duration_s": 2,
+  "dispel_type": "none",
+  "cc_category": "none",
+  "hud_priority": "major_defensive",
+  "immune": ["cc"],
+  "icon": {"symbol": "shield", "school": "physical", "image": "lorc/shield-echoes"}
+}

@@ -1,0 +1,23 @@
+{
+  "id": "oracle_patient_devotion",
+  "name": "Patient Devotion",
+  "description": "Talent: cooldowns recover faster.",
+  "kind": "buff",
+  "duration_s": 0,
+  "refresh": "refresh",
+  "dispel_type": "none",
+  "cc_category": "none",
+  "hud_priority": "hidden",
+  "modifiers": [
+    {
+      "stat": "cooldown_rate",
+      "op": "multiply",
+      "value": 1.0
+    }
+  ],
+  "icon": {
+    "symbol": "sundial",
+    "school": "holy",
+    "image": "lorc/sundial"
+  }
+}

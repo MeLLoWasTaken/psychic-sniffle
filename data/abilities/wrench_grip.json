@@ -1,0 +1,18 @@
+{
+  "id": "wrench_grip",
+  "name": "Wrench Grip",
+  "description": "Twist the weapon out of an enemy's hands: it is disarmed for 4 s.",
+  "owner": "warblade_carnage",
+  "kit_slot": "cc",
+  "school": "physical",
+  "cast_type": "instant",
+  "cooldown_s": 45,
+  "triggers_gcd": true,
+  "range_m": 5,
+  "requires_los": true,
+  "target": "enemy",
+  "effects": [
+    {"type": "apply_aura", "aura": "wrenched"}
+  ],
+  "icon": {"symbol": "disarm", "school": "physical", "image": "skoll/drop-weapon"}
+}

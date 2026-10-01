@@ -1,0 +1,22 @@
+{
+  "id": "padded_lining_passive",
+  "name": "Padded Lining",
+  "description": "Physical damage taken reduced by a further 6%.",
+  "kind": "buff",
+  "duration_s": 0,
+  "dispel_type": "none",
+  "cc_category": "none",
+  "hud_priority": "hidden",
+  "modifiers": [
+    {
+      "stat": "armor",
+      "op": "add",
+      "value": 0.06
+    }
+  ],
+  "icon": {
+    "symbol": "padded_lining_passive",
+    "school": "physical",
+    "image": "delapouite/cape-armor"
+  }
+}

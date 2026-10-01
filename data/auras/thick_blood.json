@@ -1,0 +1,15 @@
+{
+  "id": "thick_blood",
+  "name": "Thick Blood",
+  "description": "Talent: healing received increased.",
+  "kind": "buff",
+  "duration_s": 0,
+  "refresh": "refresh",
+  "dispel_type": "none",
+  "cc_category": "none",
+  "modifiers": [
+    {"stat": "healing_taken", "op": "multiply", "value": 1.0}
+  ],
+  "hud_priority": "hidden",
+  "icon": {"symbol": "talent", "school": "physical", "image": "skoll/blood"}
+}

@@ -1,0 +1,23 @@
+{
+  "id": "oracle_fervent_litany",
+  "name": "Fervent Litany",
+  "description": "Talent: casting speed increased.",
+  "kind": "buff",
+  "duration_s": 0,
+  "refresh": "refresh",
+  "dispel_type": "none",
+  "cc_category": "none",
+  "hud_priority": "hidden",
+  "modifiers": [
+    {
+      "stat": "cast_speed",
+      "op": "multiply",
+      "value": 1.0
+    }
+  ],
+  "icon": {
+    "symbol": "scroll",
+    "school": "holy",
+    "image": "lorc/scroll-unfurled"
+  }
+}

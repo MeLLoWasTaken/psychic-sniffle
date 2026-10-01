@@ -1,0 +1,9 @@
+{
+  "id": "wrench_grip",
+  "description": "Short thrust; the disarmed target gets the struck-through halo.",
+  "melee": {"style": "thrust"},
+  "impact": {"style": "spark", "at": "target"},
+  "auras": {
+    "wrenched": {"style": "silence"}
+  }
+}

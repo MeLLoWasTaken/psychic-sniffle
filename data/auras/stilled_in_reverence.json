@@ -1,0 +1,16 @@
+{
+  "id": "stilled_in_reverence",
+  "name": "Hallowed Stillness",
+  "description": "Kneeling in reverence. Any damage ends it.",
+  "kind": "debuff",
+  "duration_s": 5,
+  "dispel_type": "magic",
+  "cc_category": "incapacitate",
+  "hud_priority": "cc",
+  "breaks_on_damage": "any",
+  "icon": {
+    "symbol": "kneeling",
+    "school": "holy",
+    "image": "delapouite/kneeling"
+  }
+}

@@ -1,0 +1,22 @@
+{
+  "id": "oracle_peal_shelter",
+  "name": "Pealing Shelter",
+  "description": "Damage taken down 10%.",
+  "kind": "buff",
+  "duration_s": 4,
+  "dispel_type": "magic",
+  "cc_category": "none",
+  "hud_priority": "normal",
+  "modifiers": [
+    {
+      "stat": "damage_taken",
+      "op": "multiply",
+      "value": 0.9
+    }
+  ],
+  "icon": {
+    "symbol": "shield",
+    "school": "holy",
+    "image": "lorc/surrounded-shield"
+  }
+}

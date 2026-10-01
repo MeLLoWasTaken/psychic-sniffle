@@ -1,0 +1,15 @@
+{
+  "id": "unbending",
+  "name": "Unbending",
+  "description": "Talent: damage taken reduced.",
+  "kind": "buff",
+  "duration_s": 0,
+  "refresh": "refresh",
+  "dispel_type": "none",
+  "cc_category": "none",
+  "modifiers": [
+    {"stat": "damage_taken", "op": "multiply", "value": 1.0}
+  ],
+  "hud_priority": "hidden",
+  "icon": {"symbol": "talent", "school": "physical", "image": "lorc/layered-armor"}
+}

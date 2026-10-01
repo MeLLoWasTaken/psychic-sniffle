@@ -1,0 +1,14 @@
+{
+  "id": "cleansing_peal_ab",
+  "description": "A bell's ring: a nova from the caster and a dispel ring.",
+  "impact": {
+    "style": "ring",
+    "at": "self",
+    "size": 1.2
+  },
+  "ground": {
+    "style": "nova",
+    "center": "caster",
+    "lifetime_s": 0.9
+  }
+}

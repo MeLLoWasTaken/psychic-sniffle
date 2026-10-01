@@ -1,0 +1,22 @@
+{
+  "id": "measured_casting_passive",
+  "name": "Measured Casting",
+  "description": "Casting speed increased.",
+  "kind": "buff",
+  "duration_s": 0,
+  "dispel_type": "none",
+  "cc_category": "none",
+  "hud_priority": "hidden",
+  "modifiers": [
+    {
+      "stat": "cast_speed",
+      "op": "multiply",
+      "value": 1.0
+    }
+  ],
+  "icon": {
+    "symbol": "measured_casting_passive",
+    "school": "time",
+    "image": "delapouite/spell-book"
+  }
+}

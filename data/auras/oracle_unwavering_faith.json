@@ -1,0 +1,23 @@
+{
+  "id": "oracle_unwavering_faith",
+  "name": "Unwavering Faith",
+  "description": "Talent: damage taken down 4%.",
+  "kind": "buff",
+  "duration_s": 0,
+  "refresh": "refresh",
+  "dispel_type": "none",
+  "cc_category": "none",
+  "hud_priority": "hidden",
+  "modifiers": [
+    {
+      "stat": "damage_taken",
+      "op": "multiply",
+      "value": 0.96
+    }
+  ],
+  "icon": {
+    "symbol": "holy_symbol",
+    "school": "holy",
+    "image": "lorc/holy-symbol"
+  }
+}

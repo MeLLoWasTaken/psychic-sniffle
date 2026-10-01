@@ -1,0 +1,29 @@
+{
+  "id": "burden_of_penance_ab",
+  "name": "Burden of Penance",
+  "description": "An enemy moves 50% slower for 4 s.",
+  "owner": "oracle",
+  "kit_slot": "utility",
+  "school": "holy",
+  "cast_type": "instant",
+  "cooldown_s": 24,
+  "triggers_gcd": true,
+  "range_m": 30,
+  "requires_los": true,
+  "target": "enemy",
+  "effects": [
+    {
+      "type": "apply_aura",
+      "aura": "penance_burdened"
+    }
+  ],
+  "icon": {
+    "symbol": "yoke",
+    "school": "holy",
+    "image": "delapouite/heavy-collar"
+  },
+  "cost": {
+    "resource": "mana",
+    "amount": 1200
+  }
+}

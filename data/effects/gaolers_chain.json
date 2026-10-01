@@ -1,0 +1,9 @@
+{
+  "id": "gaolers_chain",
+  "description": "Thrown chain streak; the target gets root spikes.",
+  "projectile": {"style": "streak", "speed_mps": 40},
+  "impact": {"style": "spark", "at": "target"},
+  "auras": {
+    "chained": {"style": "root"}
+  }
+}

@@ -64,6 +64,18 @@ def test_health_comes_from_the_role_template():
         assert "health_override" not in spec, f"{spec_id} overrides the role's health template"
 
 
+CLASSES = _load("classes")
+
+
+def _ranged_owner(owner):
+    """True for abilities of ranged specs (casters and healers), or of a class whose specs all are."""
+    if owner in SPECS:
+        return SPECS[owner]["range"] != "melee"
+    if owner in CLASSES:
+        return all(SPECS[s]["range"] != "melee" for s in CLASSES[owner]["specs"] if s in SPECS)
+    return False
+
+
 def test_healing_reaches_40_m_and_most_ranged_abilities_do():
     ranged = []
     for ab in ABILITIES.values():
@@ -72,8 +84,8 @@ def test_healing_reaches_40_m_and_most_ranged_abilities_do():
         assert ab["range_m"] <= 40, f"{ab['id']} reaches {ab['range_m']} m, past the 40 m maximum"
         if ab["target"] == "ally" and (_effects(ab, "heal") or _effects(ab, "apply_aura")):
             assert ab["range_m"] == 40, f"{ab['id']} heals at {ab['range_m']} m"
-        if ab["target"] == "enemy" and ab["range_m"] > TUNING["ranges"]["melee_m"]:
-            ranged.append(ab)
+        if ab["target"] == "enemy" and _ranged_owner(ab["owner"]):
+            ranged.append(ab)  # a melee spec's gap closers and pulls are not what the rule is about
     at_40 = [ab for ab in ranged if ab["range_m"] == 40]
     assert len(at_40) * 3 >= len(ranged) * 2, f"only {len(at_40)} of {len(ranged)} ranged abilities reach 40 m"
 

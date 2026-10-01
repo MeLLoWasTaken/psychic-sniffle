@@ -1,0 +1,7 @@
+{
+  "id": "reaping_turn",
+  "description": "A full spin: sweeping trail and a ring at the blade's reach.",
+  "melee": {"style": "arc", "size": 1.5},
+  "ground": {"style": "nova", "center": "caster", "lifetime_s": 0.5},
+  "impact": {"style": "spark", "at": "hits"}
+}

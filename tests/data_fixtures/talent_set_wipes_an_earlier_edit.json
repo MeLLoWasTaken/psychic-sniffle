@@ -1,0 +1,8 @@
+{
+  "description": "a PvP talent replaces a whole field that a spec talent already changed inside",
+  "file": "talents/warblade_carnage_pvp.json",
+  "expect": "sets ruin_bleed.periodic after 'lingering_gash' changed ruin_bleed.periodic.effect.base",
+  "set": {
+    "/nodes/0/effects": [{"modify": "ruin_bleed.periodic", "set": {"interval_s": 2, "effect": {"type": "damage", "base": 400, "can_crit": false, "school": "physical"}}}]
+  }
+}

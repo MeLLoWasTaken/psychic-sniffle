@@ -1,0 +1,11 @@
+{
+  "id": "windpipe_crushed",
+  "name": "Crushed Windpipe",
+  "description": "Silenced.",
+  "kind": "debuff",
+  "duration_s": 2,
+  "dispel_type": "none",
+  "cc_category": "silence",
+  "hud_priority": "cc",
+  "icon": {"symbol": "silence", "school": "physical", "image": "delapouite/silenced"}
+}

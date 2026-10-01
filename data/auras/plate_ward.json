@@ -1,0 +1,15 @@
+{
+  "id": "plate_ward",
+  "name": "Plate Ward",
+  "description": "Talent: armor turns aside more physical damage.",
+  "kind": "buff",
+  "duration_s": 0,
+  "refresh": "refresh",
+  "dispel_type": "none",
+  "cc_category": "none",
+  "modifiers": [
+    {"stat": "armor", "op": "add", "value": 0.0}
+  ],
+  "hud_priority": "hidden",
+  "icon": {"symbol": "talent", "school": "physical", "image": "lorc/breastplate"}
+}

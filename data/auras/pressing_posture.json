@@ -1,0 +1,15 @@
+{
+  "id": "pressing_posture",
+  "name": "Pressing Posture",
+  "description": "Talent: damage done increased by 3%.",
+  "kind": "buff",
+  "duration_s": 0,
+  "refresh": "refresh",
+  "dispel_type": "none",
+  "cc_category": "none",
+  "modifiers": [
+    {"stat": "damage_done", "op": "multiply", "value": 1.03}
+  ],
+  "hud_priority": "hidden",
+  "icon": {"symbol": "talent", "school": "physical", "image": "delapouite/sword-brandish"}
+}

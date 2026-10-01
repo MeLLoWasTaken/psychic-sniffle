@@ -39,6 +39,13 @@
       }
     },
     {
+      "ability": "plea_of_mercy_ab",
+      "on": "lowest_ally",
+      "when": {
+        "ally_health_below_pct": 40
+      }
+    },
+    {
       "ability": "waning_light_ab",
       "on": "self",
       "when": {
@@ -53,11 +60,27 @@
       }
     },
     {
+      "ability": "cleansing_peal_ab",
+      "on": "self",
+      "when": {
+        "has_dispellable": true
+      }
+    },
+    {
       "ability": "chains_of_awe",
       "on": "ally_attacker",
       "when": {
         "ally_health_below_pct": 45,
         "target_not_cc": true
+      }
+    },
+    {
+      "ability": "hallowed_stillness_ab",
+      "on": "ally_attacker",
+      "when": {
+        "ally_health_below_pct": 55,
+        "target_not_cc": true,
+        "no_free_melee_within_m": 6
       }
     },
     {
@@ -71,10 +94,26 @@
       }
     },
     {
+      "ability": "burden_of_penance_ab",
+      "on": "ally_attacker",
+      "when": {
+        "ally_health_below_pct": 70,
+        "target_not_has_aura": "penance_burdened"
+      }
+    },
+    {
       "ability": "seraphic_surge_ab",
       "on": "self",
       "when": {
         "ally_health_below_pct": 45
+      }
+    },
+    {
+      "ability": "canticle_of_morning_ab",
+      "on": "self",
+      "when": {
+        "ally_health_below_pct": 55,
+        "no_free_melee_within_m": 8
       }
     },
     {
@@ -129,6 +168,164 @@
       "when": {
         "no_free_melee_within_m": 6
       }
+    }
+  ],
+  "builds": [
+    {
+      "name": "radiant_mender",
+      "description": "Big single-target heals: Mending Light and Swift Benediction, Plea of Mercy for emergencies, long Seraphic Surges that refill mana; throughput and mana in the class tree.",
+      "class": {
+        "wellspring": 2,
+        "still_waters": 2,
+        "keen_insight": 2,
+        "fleet_devotion": 2,
+        "mercy_or_judgment": 1,
+        "deep_conviction": 2,
+        "light_step": 2,
+        "unbowed": 2,
+        "unshackled": 2,
+        "patient_devotion": 2,
+        "winged_haste": 2,
+        "soaring_stride": 1,
+        "dread_reach": 1,
+        "fervent_litany": 2,
+        "lucid_reserve": 2,
+        "burden_of_penance": 1,
+        "crushing_burden": 1,
+        "crowned_in_light": 2,
+        "stillness_of_spirit": 1
+      },
+      "spec": {
+        "radiant_mending": 2,
+        "quickened_benediction": 2,
+        "frugal_light": 2,
+        "practiced_hands": 2,
+        "thrifty_benediction": 2,
+        "tithe_of_light": 1,
+        "earnest_benediction": 2,
+        "dread_cadence": 2,
+        "haunting_psalm": 1,
+        "plea_of_mercy": 1,
+        "seraphic_fervor": 2,
+        "exalted_surge": 1,
+        "swift_plea": 2,
+        "mercy_unbounded": 1,
+        "lengthened_surge": 1,
+        "surge_of_plenty": 1,
+        "devout_focus": 2,
+        "zenith_of_mercy": 1,
+        "clear_radiance": 2
+      },
+      "pvp": [
+        "unyielding_prayer",
+        "swift_veil",
+        "vow_of_endurance"
+      ]
+    },
+    {
+      "name": "choir_of_dawn",
+      "description": "Periodic and area healing: Lingering Grace and Chorus of Mending on every ally, Canticle of Morning on the move, a longer Veil that heals; survival and Cleansing Peal in the class tree.",
+      "class": {
+        "hale_spirit": 2,
+        "sanctified_vestments": 2,
+        "inner_calm": 2,
+        "open_vessel": 2,
+        "ember_of_faith": 1,
+        "steadfast_vow": 2,
+        "wellspring": 2,
+        "still_waters": 2,
+        "keen_insight": 2,
+        "fleet_devotion": 2,
+        "mercy_or_judgment": 1,
+        "deep_conviction": 2,
+        "cleansing_peal": 1,
+        "peal_swiftness": 2,
+        "peal_of_grace": 1,
+        "peal_resonance": 1,
+        "unwavering_faith": 1,
+        "hallowed_mantle": 1,
+        "unbroken_will": 1
+      },
+      "spec": {
+        "enduring_grace": 2,
+        "lasting_grace": 1,
+        "grace_upon_grace": 2,
+        "swelling_chorus": 2,
+        "chorus_reach": 1,
+        "chorus_cadence": 2,
+        "radiant_mending": 2,
+        "frugal_light": 2,
+        "ready_absolution": 2,
+        "absolution_choice": 1,
+        "canticle_of_morning": 1,
+        "resounding_canticle": 2,
+        "canticle_unhindered": 1,
+        "steadfast_veil": 2,
+        "enfolding_veil": 1,
+        "devout_focus": 2,
+        "everlasting_grace": 1,
+        "sheltering_veil": 1,
+        "keen_unravel": 2
+      },
+      "pvp": [
+        "unbreakable_faith",
+        "pilgrims_benediction",
+        "enduring_vigil"
+      ]
+    },
+    {
+      "name": "dread_warden",
+      "description": "Control and dispels: frequent Psalm of Dread, Hallowed Stillness, two-effect Unravel, Absolve that heals; Burden of Penance, Chains of Awe and Hush in the class tree.",
+      "class": {
+        "light_step": 2,
+        "winged_haste": 2,
+        "unbowed": 2,
+        "soaring_stride": 1,
+        "unshackled": 1,
+        "dread_reach": 1,
+        "patient_devotion": 2,
+        "hale_spirit": 2,
+        "inner_calm": 2,
+        "sanctified_vestments": 2,
+        "waning_resolve": 2,
+        "burden_of_penance": 1,
+        "tightened_chains": 1,
+        "lingering_burden": 2,
+        "crushing_burden": 1,
+        "swift_hush": 2,
+        "penance_choice": 2,
+        "lingering_awe": 1,
+        "wages_of_penance": 1,
+        "radiant_soul": 2
+      },
+      "spec": {
+        "dread_cadence": 2,
+        "haunting_psalm": 1,
+        "severing_hush": 1,
+        "ready_absolution": 2,
+        "absolution_choice": 2,
+        "keen_unravel": 2,
+        "hallowed_stillness": 1,
+        "deep_stillness": 2,
+        "swift_reverence": 1,
+        "righteous_unravel": 1,
+        "enduring_grace": 2,
+        "lasting_grace": 1,
+        "swelling_chorus": 2,
+        "chorus_reach": 1,
+        "dominion_of_dread": 1,
+        "cleansing_mercy": 1,
+        "quickened_benediction": 2,
+        "thrifty_benediction": 2,
+        "earnest_benediction": 2,
+        "plea_of_mercy": 1,
+        "exalted_surge": 1
+      },
+      "pvp": [
+        "unbroken_dread",
+        "humbling_chains",
+        "absolution_in_chains"
+      ]
     }
   ]
 }

@@ -1,0 +1,19 @@
+{
+  "id": "reaping_turn",
+  "name": "Reaping Turn",
+  "description": "Spin with your blade, dealing 3,000 damage to every enemy within 8 m.",
+  "owner": "warblade_carnage",
+  "kit_slot": "core",
+  "school": "physical",
+  "cast_type": "instant",
+  "cooldown_s": 12,
+  "triggers_gcd": true,
+  "cost": {"resource": "rage", "amount": 25},
+  "range_m": 0,
+  "requires_los": false,
+  "target": "self",
+  "effects": [
+    {"type": "damage", "base": 3000, "affects": "enemies_in_radius", "radius_m": 8}
+  ],
+  "icon": {"symbol": "spin", "school": "physical", "image": "lorc/sword-spin"}
+}

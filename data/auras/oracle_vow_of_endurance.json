@@ -1,0 +1,23 @@
+{
+  "id": "oracle_vow_of_endurance",
+  "name": "Vow of Endurance",
+  "description": "PvP talent: damage taken down 8%.",
+  "kind": "buff",
+  "duration_s": 0,
+  "refresh": "refresh",
+  "dispel_type": "none",
+  "cc_category": "none",
+  "hud_priority": "hidden",
+  "modifiers": [
+    {
+      "stat": "damage_taken",
+      "op": "multiply",
+      "value": 0.92
+    }
+  ],
+  "icon": {
+    "symbol": "locked_heart",
+    "school": "holy",
+    "image": "delapouite/locked-heart"
+  }
+}

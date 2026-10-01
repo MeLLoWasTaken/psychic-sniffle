@@ -1,0 +1,11 @@
+{
+  "id": "chained",
+  "name": "Chained",
+  "description": "Rooted by a weighted chain.",
+  "kind": "debuff",
+  "duration_s": 3,
+  "dispel_type": "none",
+  "cc_category": "root",
+  "hud_priority": "cc",
+  "icon": {"symbol": "chain", "school": "physical", "image": "lorc/manacles"}
+}

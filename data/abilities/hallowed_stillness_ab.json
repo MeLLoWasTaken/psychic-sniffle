@@ -1,0 +1,30 @@
+{
+  "id": "hallowed_stillness_ab",
+  "name": "Hallowed Stillness",
+  "description": "An enemy kneels in reverence, unable to act, for 5 s. Any damage ends it.",
+  "owner": "oracle_grace",
+  "kit_slot": "cc",
+  "school": "holy",
+  "cast_type": "cast",
+  "cast_time_s": 1.5,
+  "cooldown_s": 45,
+  "triggers_gcd": true,
+  "range_m": 30,
+  "requires_los": true,
+  "target": "enemy",
+  "effects": [
+    {
+      "type": "apply_aura",
+      "aura": "stilled_in_reverence"
+    }
+  ],
+  "icon": {
+    "symbol": "kneeling",
+    "school": "holy",
+    "image": "delapouite/kneeling"
+  },
+  "cost": {
+    "resource": "mana",
+    "amount": 1500
+  }
+}

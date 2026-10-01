@@ -1,0 +1,19 @@
+{
+  "id": "iron_oath_ab",
+  "name": "Iron Oath",
+  "description": "You and allies within 15 m take 10% less damage for 8 s.",
+  "owner": "warblade",
+  "kit_slot": "utility",
+  "school": "physical",
+  "cast_type": "instant",
+  "cooldown_s": 120,
+  "triggers_gcd": false,
+  "range_m": 0,
+  "requires_los": false,
+  "target": "self",
+  "castable_while_moving": true,
+  "effects": [
+    {"type": "apply_aura", "aura": "iron_oath", "affects": "allies_in_radius", "radius_m": 15}
+  ],
+  "icon": {"symbol": "banner", "school": "physical", "image": "delapouite/knight-banner"}
+}

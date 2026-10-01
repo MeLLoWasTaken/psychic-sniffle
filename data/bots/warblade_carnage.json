@@ -1,116 +1,259 @@
 {
   "id": "warblade_carnage",
   "behavior": {
-    "preferred_range_m": [
-      0,
-      3.5
-    ],
+    "preferred_range_m": [0, 3.5],
     "target_priority": "healer_first",
-    "reaction_ms": [
-      250,
-      600
-    ],
+    "reaction_ms": [250, 600],
     "break_los_below_pct": 25,
     "kill_window_pct": 40
   },
   "priorities": [
     {
       "ability": "throat_punch",
-      "when": {
-        "target_casting": true
-      },
+      "when": {"target_casting": true},
       "on": "enemy_caster"
     },
     {
       "ability": "break_free",
       "on": "self",
-      "when": {
-        "self_hard_cc": true,
-        "self_health_below_pct": 70
-      }
+      "when": {"self_hard_cc": true, "self_health_below_pct": 70}
+    },
+    {
+      "ability": "iron_oath_ab",
+      "on": "self",
+      "when": {"self_health_below_pct": 60}
     },
     {
       "ability": "unbroken_stance_ab",
       "on": "self",
-      "when": {
-        "self_health_below_pct": 40
-      }
+      "when": {"self_health_below_pct": 40}
     },
     {
       "ability": "bloody_resolve",
       "on": "self",
-      "when": {
-        "self_health_below_pct": 55
-      }
+      "when": {"self_health_below_pct": 55}
     },
     {
       "ability": "warpath_charge",
-      "when": {
-        "target_distance_above_m": 8,
-        "target_distance_below_m": 25
-      }
+      "when": {"target_distance_above_m": 8, "target_distance_below_m": 25}
+    },
+    {
+      "ability": "hurtling_bound",
+      "on": "self",
+      "when": {"target_distance_above_m": 12, "target_distance_below_m": 25}
+    },
+    {
+      "ability": "gaolers_chain",
+      "when": {"target_distance_above_m": 6, "target_distance_below_m": 20, "target_not_cc": true}
     },
     {
       "ability": "headsmans_verdict",
-      "when": {
-        "target_health_below_pct": 20
-      }
+      "when": {"target_health_below_pct": 20}
     },
     {
       "ability": "red_mist_ab",
       "on": "self",
-      "when": {
-        "target_health_below_pct": 80,
-        "target_distance_below_m": 5
-      }
+      "when": {"target_health_below_pct": 80, "target_distance_below_m": 5}
+    },
+    {
+      "ability": "bonecleaver",
+      "when": {"self_has_aura": "red_mist"}
     },
     {
       "ability": "pommel_crack",
-      "when": {
-        "target_not_cc": true,
-        "target_health_below_pct": 70
-      }
+      "when": {"target_not_cc": true, "target_health_below_pct": 70}
     },
     {
       "ability": "shield_breaker",
-      "when": {
-        "target_has_aura": "rime_sepulcher"
-      }
+      "when": {"target_has_aura": "rime_sepulcher"}
+    },
+    {
+      "ability": "wrench_grip",
+      "on": "ally_attacker",
+      "when": {"target_not_cc": true}
+    },
+    {
+      "ability": "bonecleaver",
+      "when": {"target_health_below_pct": 40}
     },
     {
       "ability": "gashing_blow",
-      "when": {
-        "target_not_has_aura": "gashed"
-      }
+      "when": {"target_not_has_aura": "gashed"}
     },
     {
       "ability": "crippling_slash",
-      "when": {
-        "target_not_has_aura": "crippled",
-        "target_not_cc": true
-      }
+      "when": {"target_not_has_aura": "crippled", "target_not_cc": true}
     },
     {
       "ability": "dread_roar",
       "on": "self",
-      "when": {
-        "enemies_within_m": [
-          8,
-          2
-        ]
-      }
+      "when": {"enemies_within_m": [8, 2]}
     },
     {
-      "ability": "ruin_strike"
+      "ability": "reaping_turn",
+      "on": "self",
+      "when": {"enemies_within_m": [8, 2]}
+    },
+    {"ability": "ruin_strike"},
+    {
+      "ability": "reaping_turn",
+      "on": "self",
+      "when": {"enemies_within_m": [8, 1], "resource_at_least": 60}
     },
     {
       "ability": "wide_hew",
-      "when": {
-        "resource_at_least": 60
-      }
+      "when": {"resource_at_least": 60}
+    },
+    {"ability": "grim_hack"}
+  ],
+  "builds": [
+    {
+      "name": "headsman",
+      "description": "Burst: a longer, harder Red Mist, heavier and earlier Verdicts and Bonecleaver; raw damage, crit and haste from the class tree.",
+      "class": {
+        "whetted_edge": 2,
+        "weapon_drills": 2,
+        "hard_knuckles": 1,
+        "heavy_hands": 2,
+        "iron_hide": 2,
+        "grim_resolve": 1,
+        "fighting_posture": 1,
+        "heavy_swings": 2,
+        "headlong_rush": 1,
+        "war_tempo": 2,
+        "deep_reserves": 1,
+        "battle_fever": 2,
+        "unshaken": 2,
+        "rolling_roar": 1,
+        "spiteful_cut": 1,
+        "brutal_cadence": 2,
+        "relentless_tempo": 2,
+        "warborn": 1,
+        "bowling_charge": 1,
+        "fearsome_bellow": 1
+      },
+      "spec": {
+        "full_swing": 2,
+        "cold_eye": 2,
+        "red_hunger": 2,
+        "heavy_verdict": 2,
+        "sweeping_weight": 2,
+        "lean_swings": 2,
+        "sentence": 1,
+        "lingering_mist": 2,
+        "carving": 2,
+        "butchers_rhythm": 2,
+        "long_dread": 1,
+        "pressing_the_wound": 1,
+        "deep_fury": 1,
+        "seething_mist": 1,
+        "crushing_ruin": 2,
+        "crimson_frenzy": 1,
+        "carving_mastery": 1,
+        "ravenous_edge": 2,
+        "pit_hardened": 2
+      },
+      "pvp": ["blood_wager_talent", "battering_charge", "hurled_breaker"]
     },
     {
-      "ability": "grim_hack"
+      "name": "butcher",
+      "description": "Bleed and sustain: a heavier, faster Ruin bleed and deep anti-healing, Reaping Turn, Grim Hack self-healing; health, damage reduction and Iron Oath from the class tree.",
+      "class": {
+        "broad_frame": 2,
+        "scarred_hide": 2,
+        "thick_blood": 2,
+        "stanch_the_flow": 2,
+        "iron_hide": 2,
+        "hurtling_bound_talent": 1,
+        "field_dressing": 2,
+        "old_scars": 2,
+        "unbending": 2,
+        "long_bound": 1,
+        "landing": 1,
+        "iron_oath": 1,
+        "oath_unbroken": 2,
+        "mending_scars": 1,
+        "plate_ward": 2,
+        "last_to_fall": 1,
+        "oath_of_mending": 1,
+        "hurtling_fury": 1,
+        "tireless_march": 2
+      },
+      "spec": {
+        "lingering_gash": 2,
+        "seeping_wound": 1,
+        "festering_edge": 2,
+        "butchers_thrift": 1,
+        "lean_swings": 2,
+        "bitter_edge": 2,
+        "hacking_rhythm": 2,
+        "red_harvest": 1,
+        "open_veins": 2,
+        "measured_fury": 2,
+        "pressing_the_wound": 1,
+        "carving": 1,
+        "deep_fury": 1,
+        "butchers_rhythm": 2,
+        "relentless_ruin": 1,
+        "ravenous_edge": 2,
+        "weeping_ruin": 1,
+        "carving_mastery": 1,
+        "crushing_ruin": 2,
+        "seething_mist": 1
+      },
+      "pvp": ["festering_cut", "gangrenous_edge", "stiff_neck_talent"]
+    },
+    {
+      "name": "gaoler",
+      "description": "Control and survival: Gaoler's Chain, longer and more frequent stuns and fears, extra damage on stunned or rooted targets, Grim Vigor; utility cooldowns, Hurtling Bound and Iron Oath from the class tree.",
+      "class": {
+        "whetted_edge": 2,
+        "hard_knuckles": 1,
+        "headlong_rush": 1,
+        "broad_frame": 2,
+        "tireless_march": 2,
+        "scarred_hide": 2,
+        "hurtling_bound_talent": 1,
+        "thick_blood": 2,
+        "weapon_drills": 2,
+        "unshaken": 2,
+        "rolling_roar": 1,
+        "spiteful_cut": 1,
+        "long_bound": 1,
+        "landing": 1,
+        "iron_oath": 1,
+        "oath_terms": 1,
+        "oath_unbroken": 2,
+        "bowling_charge": 1,
+        "fearsome_bellow": 1,
+        "oath_of_mending": 1,
+        "hurtling_fury": 1,
+        "unrelenting": 1
+      },
+      "spec": {
+        "bitter_edge": 2,
+        "skull_rattler": 1,
+        "hacking_rhythm": 2,
+        "gaolers_chain_talent": 1,
+        "tendon_ripper": 1,
+        "full_swing": 2,
+        "cold_eye": 2,
+        "red_hunger": 1,
+        "ringing_skull": 2,
+        "long_chain": 1,
+        "iron_collar": 1,
+        "strike_the_fallen": 1,
+        "long_dread": 1,
+        "grim_vigor": 2,
+        "sucker_blow": 1,
+        "pit_hardened": 2,
+        "iron_jailer": 1,
+        "lingering_gash": 2,
+        "festering_edge": 2,
+        "butchers_thrift": 1,
+        "seeping_wound": 1
+      },
+      "pvp": ["wrench_grip_talent", "crushed_windpipe", "close_quarters"]
     }
   ]
 }

@@ -1,0 +1,8 @@
+{
+  "id": "iron_oath_ab",
+  "description": "A pulse out to the oath's radius; sworn allies get a faint shell.",
+  "ground": {"style": "nova", "center": "caster", "lifetime_s": 0.8},
+  "auras": {
+    "iron_oath": {"style": "shield", "size": 0.8}
+  }
+}

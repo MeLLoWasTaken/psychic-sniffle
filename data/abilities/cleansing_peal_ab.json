@@ -1,0 +1,34 @@
+{
+  "id": "cleansing_peal_ab",
+  "name": "Cleansing Peal",
+  "description": "Remove one magic effect from you and each ally within 12 m.",
+  "owner": "oracle",
+  "kit_slot": "utility",
+  "school": "holy",
+  "cast_type": "instant",
+  "cooldown_s": 45,
+  "triggers_gcd": true,
+  "range_m": 0,
+  "requires_los": false,
+  "target": "self",
+  "effects": [
+    {
+      "type": "dispel",
+      "dispel_types": [
+        "magic"
+      ],
+      "dispel_count": 1,
+      "affects": "allies_in_radius",
+      "radius_m": 12
+    }
+  ],
+  "icon": {
+    "symbol": "bell",
+    "school": "holy",
+    "image": "lorc/ringing-bell"
+  },
+  "cost": {
+    "resource": "mana",
+    "amount": 2000
+  }
+}

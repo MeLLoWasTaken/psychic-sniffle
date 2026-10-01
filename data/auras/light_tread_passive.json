@@ -1,0 +1,22 @@
+{
+  "id": "light_tread_passive",
+  "name": "Light Tread",
+  "description": "Movement speed increased.",
+  "kind": "buff",
+  "duration_s": 0,
+  "dispel_type": "none",
+  "cc_category": "none",
+  "hud_priority": "hidden",
+  "modifiers": [
+    {
+      "stat": "move_speed",
+      "op": "multiply",
+      "value": 1.0
+    }
+  ],
+  "icon": {
+    "symbol": "light_tread_passive",
+    "school": "physical",
+    "image": "lorc/wingfoot"
+  }
+}

@@ -1,0 +1,21 @@
+{
+  "id": "unbowed_stride",
+  "name": "Unbowed",
+  "description": "Movement speed up 30%.",
+  "kind": "buff",
+  "duration_s": 3,
+  "dispel_type": "magic",
+  "cc_category": "none",
+  "hud_priority": "normal",
+  "modifiers": [
+    {
+      "stat": "move_speed",
+      "op": "multiply",
+      "value": 1.3
+    }
+  ],
+  "icon": {
+    "symbol": "unbowed_stride",
+    "image": "lorc/winged-leg"
+  }
+}

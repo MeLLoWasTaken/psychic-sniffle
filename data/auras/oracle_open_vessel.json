@@ -1,0 +1,23 @@
+{
+  "id": "oracle_open_vessel",
+  "name": "Open Vessel",
+  "description": "Talent: healing received increased.",
+  "kind": "buff",
+  "duration_s": 0,
+  "refresh": "refresh",
+  "dispel_type": "none",
+  "cc_category": "none",
+  "hud_priority": "hidden",
+  "modifiers": [
+    {
+      "stat": "healing_taken",
+      "op": "multiply",
+      "value": 1.0
+    }
+  ],
+  "icon": {
+    "symbol": "chalice",
+    "school": "holy",
+    "image": "caro-asercion/round-potion"
+  }
+}

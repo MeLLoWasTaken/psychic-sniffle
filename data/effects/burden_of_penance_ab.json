@@ -1,0 +1,13 @@
+{
+  "id": "burden_of_penance_ab",
+  "impact": {
+    "style": "ring",
+    "at": "target",
+    "size": 0.6
+  },
+  "auras": {
+    "penance_burdened": {
+      "style": "slow"
+    }
+  }
+}

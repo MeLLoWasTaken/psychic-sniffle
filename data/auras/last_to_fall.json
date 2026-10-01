@@ -1,0 +1,15 @@
+{
+  "id": "last_to_fall",
+  "name": "Last to Fall",
+  "description": "Talent: damage taken reduced by 6%.",
+  "kind": "buff",
+  "duration_s": 0,
+  "refresh": "refresh",
+  "dispel_type": "none",
+  "cc_category": "none",
+  "modifiers": [
+    {"stat": "damage_taken", "op": "multiply", "value": 0.94}
+  ],
+  "hud_priority": "hidden",
+  "icon": {"symbol": "talent", "school": "physical", "image": "carl-olsen/brutal-helm"}
+}

@@ -1,0 +1,17 @@
+{
+  "id": "hoarfrost_snared",
+  "name": "Hoarfrost Snare",
+  "description": "Feet frozen to the ground. Heavy damage breaks the ice.",
+  "kind": "debuff",
+  "duration_s": 4,
+  "dispel_type": "magic",
+  "cc_category": "root",
+  "hud_priority": "cc",
+  "breaks_on_damage": "threshold",
+  "damage_threshold_pct": 15,
+  "icon": {
+    "symbol": "hoarfrost_snare",
+    "school": "frost",
+    "image": "delapouite/frozen-ring"
+  }
+}

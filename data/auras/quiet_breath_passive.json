@@ -1,0 +1,22 @@
+{
+  "id": "quiet_breath_passive",
+  "name": "Quiet Breath",
+  "description": "Damage taken reduced.",
+  "kind": "buff",
+  "duration_s": 0,
+  "dispel_type": "none",
+  "cc_category": "none",
+  "hud_priority": "hidden",
+  "modifiers": [
+    {
+      "stat": "damage_taken",
+      "op": "multiply",
+      "value": 1.0
+    }
+  ],
+  "icon": {
+    "symbol": "quiet_breath_passive",
+    "school": "time",
+    "image": "lorc/fluffy-swirl"
+  }
+}

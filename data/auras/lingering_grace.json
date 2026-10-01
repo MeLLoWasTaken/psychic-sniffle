@@ -1,7 +1,7 @@
 {
   "id": "lingering_grace",
   "name": "Lingering Grace",
-  "description": "Healing 1,500 every 3 s.",
+  "description": "Healing 2,000 every 3 s.",
   "kind": "buff",
   "duration_s": 15,
   "dispel_type": "magic",

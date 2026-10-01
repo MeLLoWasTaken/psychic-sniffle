@@ -1,0 +1,23 @@
+{
+  "id": "oracle_enduring_vigil",
+  "name": "Enduring Vigil",
+  "description": "PvP talent: healing done down 5%.",
+  "kind": "buff",
+  "duration_s": 0,
+  "refresh": "refresh",
+  "dispel_type": "none",
+  "cc_category": "none",
+  "hud_priority": "hidden",
+  "modifiers": [
+    {
+      "stat": "healing_done",
+      "op": "multiply",
+      "value": 0.95
+    }
+  ],
+  "icon": {
+    "symbol": "lantern",
+    "school": "holy",
+    "image": "lorc/lantern-flame"
+  }
+}

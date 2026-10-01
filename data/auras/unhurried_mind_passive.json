@@ -1,0 +1,22 @@
+{
+  "id": "unhurried_mind_passive",
+  "name": "Unhurried Mind",
+  "description": "Cooldowns recover faster.",
+  "kind": "buff",
+  "duration_s": 0,
+  "dispel_type": "none",
+  "cc_category": "none",
+  "hud_priority": "hidden",
+  "modifiers": [
+    {
+      "stat": "cooldown_rate",
+      "op": "multiply",
+      "value": 1.0
+    }
+  ],
+  "icon": {
+    "symbol": "unhurried_mind_passive",
+    "school": "time",
+    "image": "lorc/brain"
+  }
+}

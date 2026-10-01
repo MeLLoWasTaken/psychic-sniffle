@@ -1,0 +1,22 @@
+{
+  "id": "unyielding_scholar_passive",
+  "name": "Unyielding Scholar",
+  "description": "Damage taken reduced by 6%.",
+  "kind": "buff",
+  "duration_s": 0,
+  "dispel_type": "none",
+  "cc_category": "none",
+  "hud_priority": "hidden",
+  "modifiers": [
+    {
+      "stat": "damage_taken",
+      "op": "multiply",
+      "value": 0.94
+    }
+  ],
+  "icon": {
+    "symbol": "unyielding_scholar_passive",
+    "school": "time",
+    "image": "lorc/magic-shield"
+  }
+}

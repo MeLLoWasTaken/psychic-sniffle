@@ -1,0 +1,22 @@
+{
+  "id": "receptive_soul_passive",
+  "name": "Receptive Soul",
+  "description": "Healing received increased.",
+  "kind": "buff",
+  "duration_s": 0,
+  "dispel_type": "none",
+  "cc_category": "none",
+  "hud_priority": "hidden",
+  "modifiers": [
+    {
+      "stat": "healing_taken",
+      "op": "multiply",
+      "value": 1.0
+    }
+  ],
+  "icon": {
+    "symbol": "receptive_soul_passive",
+    "school": "time",
+    "image": "lorc/heart-drop"
+  }
+}

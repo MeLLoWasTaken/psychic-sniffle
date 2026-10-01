@@ -1,0 +1,14 @@
+{
+  "id": "bound_dazed",
+  "name": "Shaken",
+  "description": "Movement speed down 50%.",
+  "kind": "debuff",
+  "duration_s": 4,
+  "dispel_type": "none",
+  "cc_category": "none",
+  "hud_priority": "normal",
+  "modifiers": [
+    {"stat": "move_speed", "op": "multiply", "value": 0.5}
+  ],
+  "icon": {"symbol": "quake", "school": "physical", "image": "lorc/anvil-impact"}
+}

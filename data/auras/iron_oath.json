@@ -1,0 +1,14 @@
+{
+  "id": "iron_oath",
+  "name": "Iron Oath",
+  "description": "Damage taken down 10%.",
+  "kind": "buff",
+  "duration_s": 8,
+  "dispel_type": "none",
+  "cc_category": "none",
+  "hud_priority": "major_defensive",
+  "modifiers": [
+    {"stat": "damage_taken", "op": "multiply", "value": 0.9}
+  ],
+  "icon": {"symbol": "banner", "school": "physical", "image": "delapouite/knight-banner"}
+}

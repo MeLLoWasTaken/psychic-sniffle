@@ -1,0 +1,18 @@
+{
+  "id": "gale_glyph",
+  "ground": {
+    "style": "nova",
+    "center": "caster",
+    "lifetime_s": 0.6
+  },
+  "impact": {
+    "style": "burst",
+    "at": "hits",
+    "size": 0.8
+  },
+  "auras": {
+    "gale_buffeted": {
+      "style": "slow"
+    }
+  }
+}

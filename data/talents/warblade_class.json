@@ -3,49 +3,588 @@
   "kind": "class",
   "owner": "warblade",
   "points": 30,
-  "gates": [
-    8,
-    20
-  ],
-  "status": "draft",
+  "gates": [8, 20],
+  "status": "complete",
   "nodes": [
+    {
+      "id": "broad_frame",
+      "name": "Broad Frame",
+      "type": "passive",
+      "ranks": 2,
+      "pos": [1, 0],
+      "description": "Maximum health is 1,500 higher per rank.",
+      "icon": {"image": "lorc/muscle-up", "school": "physical"},
+      "effects": [
+        {"modify": "self.max_health", "per_rank": 1500}
+      ]
+    },
     {
       "id": "iron_hide",
       "name": "Iron Hide",
-      "description": "Reduces physical damage taken.",
       "type": "passive",
       "ranks": 2,
-      "pos": [
-        3,
-        0
-      ],
+      "pos": [3, 0],
+      "description": "Your armor turns aside 2% more physical damage per rank (plate 30% to 32%, then 34%).",
+      "icon": {"image": "lorc/bell-shield", "school": "physical"},
+      "grants_aura": "iron_hide",
       "effects": [
-        {
-          "modify": "iron_hide.modifiers.0.value",
-          "per_rank": 0.02
-        }
-      ],
-      "grants_aura": "iron_hide"
+        {"modify": "iron_hide.modifiers.0.value", "per_rank": 0.02}
+      ]
+    },
+    {
+      "id": "whetted_edge",
+      "name": "Whetted Edge",
+      "type": "passive",
+      "ranks": 2,
+      "pos": [5, 0],
+      "description": "Critical strike chance is 2% higher per rank.",
+      "icon": {"image": "lorc/piercing-sword", "school": "physical"},
+      "effects": [
+        {"modify": "self.stats.crit_chance", "per_rank": 0.02}
+      ]
+    },
+    {
+      "id": "scarred_hide",
+      "name": "Scarred Hide",
+      "type": "passive",
+      "ranks": 2,
+      "pos": [0, 1],
+      "requires_any": ["broad_frame"],
+      "description": "You take 2% less damage per rank.",
+      "icon": {"image": "lorc/scar-wound", "school": "physical"},
+      "grants_aura": "scarred_hide",
+      "effects": [
+        {"modify": "scarred_hide.modifiers.0.value", "per_rank": -0.02}
+      ]
+    },
+    {
+      "id": "tireless_march",
+      "name": "Tireless March",
+      "type": "passive",
+      "ranks": 2,
+      "pos": [2, 1],
+      "requires_any": ["broad_frame", "iron_hide"],
+      "description": "You move 4% faster per rank.",
+      "icon": {"image": "lorc/walking-boot", "school": "physical"},
+      "grants_aura": "tireless_march",
+      "effects": [
+        {"modify": "tireless_march.modifiers.0.value", "per_rank": 0.04}
+      ]
     },
     {
       "id": "grim_resolve",
       "name": "Grim Resolve",
-      "description": "Break Free recharges faster.",
       "type": "passive",
-      "ranks": 1,
-      "pos": [
-        3,
-        1
-      ],
-      "requires_any": [
-        "iron_hide"
-      ],
+      "pos": [3, 1],
+      "requires_any": ["iron_hide"],
+      "description": "Break Free's cooldown is 15 s shorter (90 s to 75 s).",
+      "icon": {"image": "skoll/breaking-chain", "school": "physical"},
       "effects": [
+        {"modify": "break_free.cooldown_s", "per_rank": -15}
+      ]
+    },
+    {
+      "id": "weapon_drills",
+      "name": "Weapon Drills",
+      "type": "passive",
+      "ranks": 2,
+      "pos": [4, 1],
+      "requires_any": ["iron_hide", "whetted_edge"],
+      "description": "Haste is 2% higher per rank: a shorter global cooldown.",
+      "icon": {"image": "lorc/target-dummy", "school": "physical"},
+      "effects": [
+        {"modify": "self.stats.haste", "per_rank": 0.02}
+      ]
+    },
+    {
+      "id": "hard_knuckles",
+      "name": "Hard Knuckles",
+      "type": "passive",
+      "pos": [6, 1],
+      "requires_any": ["whetted_edge"],
+      "description": "Throat Punch's cooldown is 3 s shorter (15 s to 12 s).",
+      "icon": {"image": "delapouite/brass-knuckles", "school": "physical"},
+      "effects": [
+        {"modify": "throat_punch.cooldown_s", "per_rank": -3}
+      ]
+    },
+    {
+      "id": "thick_blood",
+      "name": "Thick Blood",
+      "type": "passive",
+      "ranks": 2,
+      "pos": [0, 2],
+      "requires_any": ["scarred_hide"],
+      "description": "Healing you receive is 3% stronger per rank.",
+      "icon": {"image": "skoll/blood", "school": "physical"},
+      "grants_aura": "thick_blood",
+      "effects": [
+        {"modify": "thick_blood.modifiers.0.value", "per_rank": 0.03}
+      ]
+    },
+    {
+      "id": "stanch_the_flow",
+      "name": "Stanch the Flow",
+      "type": "passive",
+      "ranks": 2,
+      "pos": [1, 2],
+      "requires_any": ["scarred_hide", "tireless_march"],
+      "description": "Bloody Resolve heals for 1,500 more per rank (12,000 to 13,500, then 15,000).",
+      "icon": {"image": "delapouite/hand-bandage", "school": "physical"},
+      "effects": [
+        {"modify": "bloody_resolve.effects.0.base", "per_rank": 1500}
+      ]
+    },
+    {
+      "id": "fighting_posture",
+      "name": "Fighting Posture",
+      "type": "choice",
+      "pos": [3, 2],
+      "requires_any": ["grim_resolve"],
+      "description": "Choose how you carry yourself: 3% more damage dealt, or 3% less damage taken.",
+      "icon": {"image": "delapouite/sword-brandish", "school": "physical"},
+      "choices": [
         {
-          "modify": "break_free.cooldown_s",
-          "per_rank": -15
+          "id": "pressing_posture",
+          "name": "Pressing Posture",
+          "description": "You deal 3% more damage.",
+          "icon": {"image": "delapouite/sword-brandish", "school": "physical"},
+          "grants_aura": "pressing_posture"
+        },
+        {
+          "id": "guarded_posture",
+          "name": "Guarded Posture",
+          "description": "You take 3% less damage.",
+          "icon": {"image": "lorc/checked-shield", "school": "physical"},
+          "grants_aura": "guarded_posture"
         }
       ]
+    },
+    {
+      "id": "heavy_hands",
+      "name": "Heavy Hands",
+      "type": "passive",
+      "ranks": 2,
+      "pos": [5, 2],
+      "requires_any": ["weapon_drills", "hard_knuckles"],
+      "description": "Your abilities deal 2% more damage and healing per rank (power bonus +2%; auto attacks are unchanged).",
+      "icon": {"image": "lorc/mailed-fist", "school": "physical"},
+      "effects": [
+        {"modify": "self.stats.power_bonus", "per_rank": 0.02}
+      ]
+    },
+    {
+      "id": "headlong_rush",
+      "name": "Headlong Rush",
+      "type": "passive",
+      "pos": [6, 2],
+      "requires_any": ["hard_knuckles"],
+      "description": "Warpath Charge's cooldown is 5 s shorter (20 s to 15 s).",
+      "icon": {"image": "lorc/bull-horns", "school": "physical"},
+      "effects": [
+        {"modify": "warpath_charge.cooldown_s", "per_rank": -5}
+      ]
+    },
+    {
+      "id": "hurtling_bound_talent",
+      "name": "Hurtling Bound",
+      "type": "active",
+      "pos": [2, 3],
+      "requires_any": ["tireless_march", "stanch_the_flow", "fighting_posture"],
+      "description": "Learn Hurtling Bound: leap 15 m forward; enemies within 6 m of where you land take 1,500 damage. 45 s cooldown.",
+      "icon": {"image": "delapouite/jump-across", "school": "physical"},
+      "grants_ability": "hurtling_bound"
+    },
+    {
+      "id": "heavy_swings",
+      "name": "Heavy Swings",
+      "type": "passive",
+      "ranks": 2,
+      "pos": [4, 3],
+      "requires_any": ["heavy_hands", "fighting_posture"],
+      "description": "Auto attacks deal 6% more damage per rank, and build rage to match.",
+      "icon": {"image": "delapouite/two-handed-sword", "school": "physical"},
+      "effects": [
+        {"modify": "auto_attack.pvp_modifier", "per_rank": 0.06}
+      ]
+    },
+    {
+      "id": "field_dressing",
+      "name": "Field Dressing",
+      "type": "passive",
+      "ranks": 2,
+      "pos": [0, 4],
+      "requires_any": ["thick_blood"],
+      "gate": 8,
+      "description": "Your healing is 5% stronger per rank.",
+      "icon": {"image": "lorc/heart-bottle", "school": "physical"},
+      "grants_aura": "field_dressing",
+      "effects": [
+        {"modify": "field_dressing.modifiers.0.value", "per_rank": 0.05}
+      ]
+    },
+    {
+      "id": "long_bound",
+      "name": "Long Bound",
+      "type": "passive",
+      "pos": [1, 4],
+      "requires_any": ["hurtling_bound_talent"],
+      "gate": 8,
+      "description": "Hurtling Bound's cooldown is 10 s shorter (45 s to 35 s).",
+      "icon": {"image": "lorc/boot-prints", "school": "physical"},
+      "effects": [
+        {"modify": "hurtling_bound.cooldown_s", "per_rank": -10}
+      ]
+    },
+    {
+      "id": "iron_oath",
+      "name": "Iron Oath",
+      "type": "active",
+      "pos": [3, 4],
+      "requires_any": ["fighting_posture", "hurtling_bound_talent", "heavy_swings"],
+      "gate": 8,
+      "description": "Learn Iron Oath: you and allies within 15 m take 10% less damage for 8 s. 2 min cooldown.",
+      "icon": {"image": "delapouite/knight-banner", "school": "physical"},
+      "grants_ability": "iron_oath_ab"
+    },
+    {
+      "id": "war_tempo",
+      "name": "War Tempo",
+      "type": "passive",
+      "ranks": 2,
+      "pos": [5, 4],
+      "requires_any": ["heavy_hands", "heavy_swings"],
+      "gate": 8,
+      "description": "All your cooldowns recover 3% faster per rank.",
+      "icon": {"image": "lorc/hourglass", "school": "physical"},
+      "grants_aura": "war_tempo",
+      "effects": [
+        {"modify": "war_tempo.modifiers.0.value", "per_rank": 0.03}
+      ]
+    },
+    {
+      "id": "unshaken",
+      "name": "Unshaken",
+      "type": "passive",
+      "ranks": 2,
+      "pos": [6, 4],
+      "requires_any": ["headlong_rush"],
+      "gate": 8,
+      "description": "Unbroken Stance's cooldown is 15 s shorter per rank (120 s to 105 s, then 90 s).",
+      "icon": {"image": "lorc/heavy-helm", "school": "physical"},
+      "effects": [
+        {"modify": "unbroken_stance_ab.cooldown_s", "per_rank": -15}
+      ]
+    },
+    {
+      "id": "old_scars",
+      "name": "Old Scars",
+      "type": "passive",
+      "ranks": 2,
+      "pos": [0, 5],
+      "requires_any": ["field_dressing"],
+      "gate": 8,
+      "description": "Maximum health is 1,500 higher per rank.",
+      "icon": {"image": "delapouite/heart-armor", "school": "physical"},
+      "effects": [
+        {"modify": "self.max_health", "per_rank": 1500}
+      ]
+    },
+    {
+      "id": "landing",
+      "name": "Hard Landing",
+      "type": "choice",
+      "pos": [1, 5],
+      "requires_any": ["long_bound"],
+      "gate": 8,
+      "description": "Choose how Hurtling Bound lands: it slows the enemies it hits, or it carries you farther.",
+      "icon": {"image": "lorc/anvil-impact", "school": "physical"},
+      "choices": [
+        {
+          "id": "shaking_landing",
+          "name": "Shaking Landing",
+          "description": "Enemies hit by Hurtling Bound's landing are also slowed by 50% for 4 s.",
+          "icon": {"image": "lorc/anvil-impact", "school": "physical"},
+          "effects": [
+            {
+              "modify": "hurtling_bound.effects",
+              "set": [
+                {"type": "teleport", "distance_m": 15},
+                {"type": "damage", "base": 1500, "school": "physical", "affects": "enemies_in_radius", "radius_m": 6},
+                {"type": "apply_aura", "aura": "bound_dazed", "affects": "enemies_in_radius", "radius_m": 6}
+              ]
+            }
+          ]
+        },
+        {
+          "id": "far_bound",
+          "name": "Far Bound",
+          "description": "Hurtling Bound leaps 5 m farther (15 m to 20 m).",
+          "icon": {"image": "lorc/wingfoot", "school": "physical"},
+          "effects": [
+            {"modify": "hurtling_bound.effects.0.distance_m", "per_rank": 5}
+          ]
+        }
+      ]
+    },
+    {
+      "id": "oath_unbroken",
+      "name": "Oath Unbroken",
+      "type": "passive",
+      "ranks": 2,
+      "pos": [3, 5],
+      "requires_any": ["iron_oath"],
+      "gate": 8,
+      "description": "Iron Oath lasts 2 s longer per rank (8 s to 10 s, then 12 s).",
+      "icon": {"image": "delapouite/vertical-banner", "school": "physical"},
+      "effects": [
+        {"modify": "iron_oath.duration_s", "per_rank": 2}
+      ]
+    },
+    {
+      "id": "oath_terms",
+      "name": "Terms of the Oath",
+      "type": "choice",
+      "pos": [4, 5],
+      "requires_any": ["iron_oath"],
+      "gate": 8,
+      "description": "Choose Iron Oath's terms: stronger protection, or a shorter cooldown.",
+      "icon": {"image": "delapouite/templar-shield", "school": "physical"},
+      "choices": [
+        {
+          "id": "stern_oath",
+          "name": "Stern Oath",
+          "description": "Iron Oath reduces damage taken by 15% instead of 10%.",
+          "icon": {"image": "delapouite/templar-shield", "school": "physical"},
+          "effects": [
+            {"modify": "iron_oath.modifiers.0.value", "per_rank": -0.05}
+          ]
+        },
+        {
+          "id": "ready_oath",
+          "name": "Ready Oath",
+          "description": "Iron Oath's cooldown is 30 s shorter (2 min to 90 s).",
+          "icon": {"image": "lorc/sands-of-time", "school": "physical"},
+          "effects": [
+            {"modify": "iron_oath_ab.cooldown_s", "per_rank": -30}
+          ]
+        }
+      ]
+    },
+    {
+      "id": "deep_reserves",
+      "name": "Deep Reserves",
+      "type": "passive",
+      "pos": [5, 5],
+      "requires_any": ["war_tempo"],
+      "gate": 8,
+      "description": "Maximum rage is 20 higher (100 to 120).",
+      "icon": {"image": "delapouite/enrage", "school": "physical"},
+      "effects": [
+        {"modify": "self.resource_max.rage", "per_rank": 20}
+      ]
+    },
+    {
+      "id": "rolling_roar",
+      "name": "Rolling Roar",
+      "type": "passive",
+      "pos": [6, 5],
+      "requires_any": ["unshaken"],
+      "gate": 8,
+      "description": "Dread Roar's cooldown is 15 s shorter (60 s to 45 s).",
+      "icon": {"image": "lorc/sonic-shout", "school": "physical"},
+      "effects": [
+        {"modify": "dread_roar.cooldown_s", "per_rank": -15}
+      ]
+    },
+    {
+      "id": "unbending",
+      "name": "Unbending",
+      "type": "passive",
+      "ranks": 2,
+      "pos": [1, 6],
+      "requires_any": ["old_scars", "landing"],
+      "gate": 8,
+      "description": "You take 2% less damage per rank.",
+      "icon": {"image": "lorc/layered-armor", "school": "physical"},
+      "grants_aura": "unbending",
+      "effects": [
+        {"modify": "unbending.modifiers.0.value", "per_rank": -0.02}
+      ]
+    },
+    {
+      "id": "battle_fever",
+      "name": "Battle Fever",
+      "type": "passive",
+      "ranks": 2,
+      "pos": [5, 6],
+      "requires_any": ["deep_reserves", "oath_terms"],
+      "gate": 8,
+      "description": "Critical strike chance is 2% higher per rank.",
+      "icon": {"image": "delapouite/angry-eyes", "school": "physical"},
+      "effects": [
+        {"modify": "self.stats.crit_chance", "per_rank": 0.02}
+      ]
+    },
+    {
+      "id": "spiteful_cut",
+      "name": "Spiteful Cut",
+      "type": "passive",
+      "pos": [6, 6],
+      "requires_any": ["rolling_roar"],
+      "gate": 8,
+      "description": "Crippling Slash costs no rage (10 to 0).",
+      "icon": {"image": "lorc/foot-trip", "school": "physical"},
+      "effects": [
+        {"modify": "crippling_slash.cost.amount", "per_rank": -10}
+      ]
+    },
+    {
+      "id": "mending_scars",
+      "name": "Mending Scars",
+      "type": "passive",
+      "pos": [0, 7],
+      "requires_any": ["old_scars", "unbending"],
+      "gate": 20,
+      "description": "Bloody Resolve's cooldown is 15 s shorter (60 s to 45 s).",
+      "icon": {"image": "zeromancer/heart-plus", "school": "physical"},
+      "effects": [
+        {"modify": "bloody_resolve.cooldown_s", "per_rank": -15}
+      ]
+    },
+    {
+      "id": "plate_ward",
+      "name": "Plate Ward",
+      "type": "passive",
+      "ranks": 2,
+      "pos": [2, 7],
+      "requires_any": ["unbending", "oath_unbroken"],
+      "gate": 20,
+      "description": "Your armor turns aside 2% more physical damage per rank.",
+      "icon": {"image": "lorc/breastplate", "school": "physical"},
+      "grants_aura": "plate_ward",
+      "effects": [
+        {"modify": "plate_ward.modifiers.0.value", "per_rank": 0.02}
+      ]
+    },
+    {
+      "id": "oath_of_mending",
+      "name": "Oath of Mending",
+      "type": "passive",
+      "pos": [3, 7],
+      "requires_any": ["oath_unbroken", "oath_terms"],
+      "gate": 20,
+      "description": "Iron Oath also heals you and allies within 15 m for 4,000.",
+      "icon": {"image": "delapouite/healing-shield", "school": "physical"},
+      "effects": [
+        {
+          "modify": "iron_oath_ab.effects",
+          "set": [
+            {"type": "apply_aura", "aura": "iron_oath", "affects": "allies_in_radius", "radius_m": 15},
+            {"type": "heal", "base": 4000, "can_crit": false, "affects": "allies_in_radius", "radius_m": 15}
+          ]
+        }
+      ]
+    },
+    {
+      "id": "relentless_tempo",
+      "name": "Relentless Tempo",
+      "type": "passive",
+      "ranks": 2,
+      "pos": [4, 7],
+      "requires_any": ["oath_terms", "battle_fever"],
+      "gate": 20,
+      "description": "Haste is 2% higher per rank.",
+      "icon": {"image": "lorc/heavy-timer", "school": "physical"},
+      "effects": [
+        {"modify": "self.stats.haste", "per_rank": 0.02}
+      ]
+    },
+    {
+      "id": "brutal_cadence",
+      "name": "Brutal Cadence",
+      "type": "passive",
+      "ranks": 2,
+      "pos": [5, 7],
+      "requires_any": ["battle_fever"],
+      "gate": 20,
+      "description": "Your abilities deal 2% more damage and healing per rank (power bonus +2%).",
+      "icon": {"image": "lorc/hammer-drop", "school": "physical"},
+      "effects": [
+        {"modify": "self.stats.power_bonus", "per_rank": 0.02}
+      ]
+    },
+    {
+      "id": "bowling_charge",
+      "name": "Bowling Charge",
+      "type": "passive",
+      "pos": [6, 7],
+      "requires_any": ["spiteful_cut", "battle_fever"],
+      "gate": 20,
+      "description": "Warpath Charge stuns for 0.5 s longer (1.5 s to 2 s).",
+      "icon": {"image": "delapouite/shield-impact", "school": "physical"},
+      "effects": [
+        {"modify": "charge_dazed.duration_s", "per_rank": 0.5}
+      ]
+    },
+    {
+      "id": "hurtling_fury",
+      "name": "Hurtling Fury",
+      "type": "passive",
+      "pos": [2, 8],
+      "requires_any": ["plate_ward", "oath_of_mending"],
+      "gate": 20,
+      "description": "Hurtling Bound's landing deals 1,500 more damage (1,500 to 3,000).",
+      "icon": {"image": "lorc/boot-stomp", "school": "physical"},
+      "effects": [
+        {"modify": "hurtling_bound.effects.1.base", "per_rank": 1500}
+      ]
+    },
+    {
+      "id": "fearsome_bellow",
+      "name": "Fearsome Bellow",
+      "type": "passive",
+      "pos": [6, 8],
+      "requires_any": ["bowling_charge"],
+      "gate": 20,
+      "description": "Dread Roar reaches 2 m farther (8 m to 10 m).",
+      "icon": {"image": "delapouite/mighty-horn", "school": "physical"},
+      "effects": [
+        {"modify": "dread_roar.effects.0.radius_m", "per_rank": 2}
+      ]
+    },
+    {
+      "id": "last_to_fall",
+      "name": "Last to Fall",
+      "type": "capstone",
+      "pos": [1, 9],
+      "requires_any": ["mending_scars", "plate_ward", "hurtling_fury"],
+      "gate": 20,
+      "description": "You take 6% less damage.",
+      "icon": {"image": "carl-olsen/brutal-helm", "school": "physical"},
+      "grants_aura": "last_to_fall"
+    },
+    {
+      "id": "unrelenting",
+      "name": "Unrelenting",
+      "type": "capstone",
+      "pos": [3, 9],
+      "requires_any": ["oath_of_mending", "hurtling_fury", "relentless_tempo"],
+      "gate": 20,
+      "description": "All your cooldowns recover 8% faster.",
+      "icon": {"image": "lorc/clockwork", "school": "physical"},
+      "grants_aura": "unrelenting"
+    },
+    {
+      "id": "warborn",
+      "name": "Warborn",
+      "type": "capstone",
+      "pos": [5, 9],
+      "requires_any": ["brutal_cadence", "relentless_tempo", "fearsome_bellow"],
+      "gate": 20,
+      "description": "You deal 5% more damage.",
+      "icon": {"image": "lorc/crossed-axes", "school": "physical"},
+      "grants_aura": "warborn"
     }
   ]
 }

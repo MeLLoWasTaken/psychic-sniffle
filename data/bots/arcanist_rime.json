@@ -31,6 +31,13 @@
       }
     },
     {
+      "ability": "hourglass_ward",
+      "on": "self",
+      "when": {
+        "self_health_below_pct": 50
+      }
+    },
+    {
       "ability": "frost_step",
       "on": "self",
       "when": {
@@ -64,6 +71,16 @@
       }
     },
     {
+      "ability": "gale_glyph",
+      "on": "self",
+      "when": {
+        "enemies_within_m": [
+          6,
+          1
+        ]
+      }
+    },
+    {
       "ability": "frost_step",
       "on": "self",
       "when": {
@@ -79,6 +96,14 @@
       "on": "ally_attacker",
       "when": {
         "ally_health_below_pct": 55,
+        "target_not_cc": true
+      }
+    },
+    {
+      "ability": "hoarfrost_snare",
+      "on": "ally_attacker",
+      "when": {
+        "ally_health_below_pct": 60,
         "target_not_cc": true
       }
     },
@@ -102,6 +127,16 @@
       }
     },
     {
+      "ability": "calving_ice",
+      "when": {
+        "target_cc": [
+          "root",
+          "stun"
+        ],
+        "no_free_melee_within_m": 12
+      }
+    },
+    {
       "ability": "shiver_lance",
       "when": {
         "target_cc": [
@@ -119,6 +154,13 @@
         "no_free_melee_within_m": 12,
         "focus_health_below_pct": 70,
         "not_focus": true
+      }
+    },
+    {
+      "ability": "hoarfrost_snare",
+      "when": {
+        "target_not_cc": true,
+        "target_distance_above_m": 10
       }
     },
     {
@@ -141,6 +183,13 @@
       }
     },
     {
+      "ability": "calving_ice",
+      "when": {
+        "no_free_melee_within_m": 12,
+        "target_health_below_pct": 60
+      }
+    },
+    {
       "ability": "winters_lash"
     },
     {
@@ -158,6 +207,157 @@
       "when": {
         "no_free_melee_within_m": 12
       }
+    }
+  ],
+  "builds": [
+    {
+      "name": "shatter_burst",
+      "description": "Burst: stronger Shiver Lance against frozen targets, longer Heartfreeze, Calving Ice and a 9,000 Heartfreeze for kill windows; class points in damage.",
+      "class": {
+        "quick_study": 2,
+        "keen_focus": 2,
+        "sharpened_will": 2,
+        "scholars_bent": 2,
+        "layered_robes": 2,
+        "still_pulse": 2,
+        "light_tread": 2,
+        "far_step": 1,
+        "reserves": 1,
+        "deep_reserves": 2,
+        "turning_hours": 2,
+        "slip_the_bonds": 2,
+        "glacier_lore": 2,
+        "honed_insight": 2,
+        "grim_study": 2,
+        "perfected_study": 1,
+        "relentless_tempo": 2
+      },
+      "spec": {
+        "splintering_lance": 3,
+        "fracture_lines": 2,
+        "stopped_heart": 1,
+        "heavy_hail": 2,
+        "lengthening_winter": 2,
+        "dense_rime": 3,
+        "quick_rime": 2,
+        "barbed_lash": 2,
+        "numb_flesh": 1,
+        "deepening_winter": 2,
+        "calving_ice_talent": 1,
+        "quick_calving": 2,
+        "crushing_slab": 2,
+        "thin_shards": 2,
+        "glacial_clarity": 2,
+        "cold_verdict": 1,
+        "sudden_calving": 1
+      },
+      "pvp": [
+        "bitter_frostbite",
+        "sealed_ice",
+        "swift_effigy"
+      ]
+    },
+    {
+      "name": "control_root",
+      "description": "Control: harder, longer and more frequent roots, a ranged Hoarfrost Snare that spreads to nearby enemies, Gale Glyph and faster cooldowns.",
+      "class": {
+        "slip_the_bonds": 2,
+        "unbowed": 1,
+        "deep_reserves": 2,
+        "turning_hours": 2,
+        "gale_glyph_talent": 1,
+        "glyph_practice": 2,
+        "layered_robes": 2,
+        "still_pulse": 2,
+        "lining": 1,
+        "hidden_cistern": 1,
+        "hourglass_ward_talent": 1,
+        "buffeting_gale": 1,
+        "tempest_glyph": 1,
+        "spellsever_drill": 2,
+        "long_hour": 2,
+        "hours_weight": 1,
+        "receptive_soul": 2,
+        "measured_casting": 1,
+        "unhurried_mind": 2,
+        "vast_reserves": 1
+      },
+      "spec": {
+        "creeping_rime": 2,
+        "gripping_frost": 2,
+        "lingering_chill": 2,
+        "swift_binding": 2,
+        "quick_sculpting": 2,
+        "locked_ice": 1,
+        "dense_rime": 3,
+        "thrift_of_winter": 2,
+        "hoarfrost_snare_talent": 1,
+        "clinging_hoarfrost": 2,
+        "splintering_lance": 3,
+        "wide_fan": 1,
+        "deep_snare": 1,
+        "wide_binding": 1,
+        "keen_fan": 2,
+        "gnawing_chill": 1,
+        "ready_snare": 1,
+        "spreading_hoarfrost": 1
+      },
+      "pvp": [
+        "clinging_effigy",
+        "hasty_binding",
+        "quick_sever"
+      ]
+    },
+    {
+      "name": "survival_kite",
+      "description": "Kite: Rime Bolt and Hailstorm on the move, stronger slows, a faster Glacier Shield, a healing Rime Sepulcher and heavy class survival.",
+      "class": {
+        "layered_robes": 2,
+        "still_pulse": 2,
+        "lining": 2,
+        "hourglass_ward_talent": 1,
+        "light_tread": 2,
+        "far_step": 1,
+        "reserves": 1,
+        "quick_study": 2,
+        "keen_focus": 2,
+        "hidden_cistern": 1,
+        "waking_hour": 1,
+        "long_hour": 2,
+        "hours_weight": 2,
+        "weathered_frame": 2,
+        "cold_footing": 1,
+        "sepulcher_lore": 1,
+        "quiet_breath": 2,
+        "long_stride": 2,
+        "receptive_soul": 2,
+        "unyielding_scholar": 1
+      },
+      "spec": {
+        "dense_rime": 3,
+        "lingering_chill": 2,
+        "creeping_rime": 2,
+        "gripping_frost": 2,
+        "wide_fan": 1,
+        "gliding_ice": 1,
+        "barbed_lash": 2,
+        "numb_flesh": 2,
+        "quick_rime": 2,
+        "quick_shell": 2,
+        "thawing_sepulcher": 1,
+        "rimehide": 2,
+        "striding_storm": 1,
+        "quick_lash": 2,
+        "restless_hail": 2,
+        "gnawing_chill": 1,
+        "drifting_rime": 1,
+        "lingering_hail": 1
+      },
+      "pvp": [
+        "rime_plating",
+        "reflexive_ice",
+        "hollow_sepulcher"
+      ]
     }
   ]
 }

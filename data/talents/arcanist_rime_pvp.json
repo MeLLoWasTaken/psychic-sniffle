@@ -3,16 +3,232 @@
   "kind": "pvp",
   "owner": "arcanist_rime",
   "points": 3,
-  "status": "draft",
+  "status": "complete",
   "nodes": [
     {
-      "id": "arcanist_rime_pvp_placeholder",
-      "name": "Placeholder",
+      "id": "clinging_effigy",
+      "name": "Clinging Effigy",
       "type": "passive",
+      "description": "Frost Effigy no longer shatters on the first hit: it breaks once the target has taken damage equal to 6% of its maximum health (3,600 for most players).",
+      "icon": {
+        "image": "delapouite/crystal-shrine",
+        "school": "frost"
+      },
       "effects": [
         {
-          "modify": "self.max_health",
-          "per_rank": 0
+          "modify": "effigy_encased.breaks_on_damage",
+          "set": "threshold"
+        },
+        {
+          "modify": "effigy_encased.damage_threshold_pct",
+          "set": 6
+        }
+      ]
+    },
+    {
+      "id": "unbidden_stillness",
+      "name": "Unbidden Stillness",
+      "type": "passive",
+      "description": "Heartfreeze no longer needs a rooted or stunned target, but its cooldown is 15 s longer (45 s).",
+      "icon": {
+        "image": "lorc/broken-heart",
+        "school": "frost"
+      },
+      "effects": [
+        {
+          "modify": "heartfreeze.usable_if",
+          "set": {}
+        },
+        {
+          "modify": "heartfreeze.cooldown_s",
+          "per_rank": 15
+        }
+      ]
+    },
+    {
+      "id": "bitter_frostbite",
+      "name": "Bitter Frostbite",
+      "type": "passive",
+      "description": "Winter's Lash's frostbite reduces healing taken by a further 10% (25% to 35%).",
+      "icon": {
+        "image": "delapouite/shattered-heart",
+        "school": "frost"
+      },
+      "effects": [
+        {
+          "modify": "frostbitten.modifiers.0.value",
+          "per_rank": -0.1
+        }
+      ]
+    },
+    {
+      "id": "quick_sever",
+      "name": "Quick Sever",
+      "type": "passive",
+      "description": "Spellsever's cooldown is 5 s shorter (19 s), but it locks the school for 3 s instead of 4 s.",
+      "icon": {
+        "image": "lorc/edge-crack",
+        "school": "frost"
+      },
+      "effects": [
+        {
+          "modify": "spellsever.cooldown_s",
+          "per_rank": -5
+        },
+        {
+          "modify": "spellsever.effects.0.school_lock_s",
+          "per_rank": -1
+        }
+      ]
+    },
+    {
+      "id": "sealed_ice",
+      "name": "Sealed Ice",
+      "type": "passive",
+      "description": "Your Glacier Shield and Deep Winter cannot be dispelled or stripped.",
+      "icon": {
+        "image": "lorc/checked-shield",
+        "school": "frost"
+      },
+      "effects": [
+        {
+          "modify": "glacier_shield.dispel_type",
+          "set": "none"
+        },
+        {
+          "modify": "deep_winter.dispel_type",
+          "set": "none"
+        }
+      ]
+    },
+    {
+      "id": "twofold_unravel",
+      "name": "Twofold Unravel",
+      "type": "passive",
+      "description": "Unravel strips two magic effects, but costs 1,200 more mana.",
+      "icon": {
+        "image": "lorc/divided-spiral",
+        "school": "frost"
+      },
+      "effects": [
+        {
+          "modify": "unravel.effects.0.dispel_count",
+          "per_rank": 1
+        },
+        {
+          "modify": "unravel.cost.amount",
+          "per_rank": 1200
+        }
+      ]
+    },
+    {
+      "id": "rime_plating",
+      "name": "Rime Plating",
+      "type": "passive",
+      "description": "Physical damage you take is reduced by a further 10%.",
+      "icon": {
+        "image": "lorc/spiked-armor",
+        "school": "frost"
+      },
+      "grants_aura": "rime_plating_passive"
+    },
+    {
+      "id": "hollow_sepulcher",
+      "name": "Hollow Sepulcher",
+      "type": "passive",
+      "description": "Rime Sepulcher lasts 4 s instead of 8 s, and its cooldown is 60 s shorter (180 s).",
+      "icon": {
+        "image": "lorc/cracked-shield",
+        "school": "frost"
+      },
+      "effects": [
+        {
+          "modify": "rime_sepulcher.duration_s",
+          "per_rank": -4
+        },
+        {
+          "modify": "rime_sepulcher_ab.cooldown_s",
+          "per_rank": -60
+        }
+      ]
+    },
+    {
+      "id": "hasty_binding",
+      "name": "Hasty Binding",
+      "type": "passive",
+      "description": "Rimebind's cooldown is 6 s shorter (19 s), but its freeze lasts 2 s less (4 s).",
+      "icon": {
+        "image": "lorc/andromeda-chain",
+        "school": "frost"
+      },
+      "effects": [
+        {
+          "modify": "rimebind.cooldown_s",
+          "per_rank": -6
+        },
+        {
+          "modify": "rimebound.duration_s",
+          "per_rank": -2
+        }
+      ]
+    },
+    {
+      "id": "swift_effigy",
+      "name": "Swift Effigy",
+      "type": "passive",
+      "description": "Frost Effigy's cast is 0.4 s shorter (1.1 s), but it now has a 15 s cooldown.",
+      "icon": {
+        "image": "lorc/snowman",
+        "school": "frost"
+      },
+      "effects": [
+        {
+          "modify": "frost_effigy.cast_time_s",
+          "per_rank": -0.4
+        },
+        {
+          "modify": "frost_effigy.cooldown_s",
+          "per_rank": 15
+        }
+      ]
+    },
+    {
+      "id": "reflexive_ice",
+      "name": "Reflexive Ice",
+      "type": "passive",
+      "description": "Glacier Shield can be cast while stunned.",
+      "icon": {
+        "image": "lorc/shield-reflect",
+        "school": "frost"
+      },
+      "effects": [
+        {
+          "modify": "glacier_shield_ab.usable_while_cc",
+          "set": [
+            "stun"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "sepulcher_reflex",
+      "name": "Sepulcher Reflex",
+      "type": "passive",
+      "description": "Rime Sepulcher can also be used while incapacitated or disoriented, and breaks those effects too.",
+      "icon": {
+        "image": "lorc/diamond-hard",
+        "school": "frost"
+      },
+      "effects": [
+        {
+          "modify": "rime_sepulcher_ab.usable_while_cc",
+          "set": [
+            "stun",
+            "root",
+            "silence",
+            "incapacitate",
+            "disorient"
+          ]
         }
       ]
     }

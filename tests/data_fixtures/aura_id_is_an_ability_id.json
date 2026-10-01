@@ -1,0 +1,6 @@
+{
+  "description": "an aura shares its id with an ability",
+  "file": "auras/red_mist.json",
+  "expect": "aura id 'hush' is also an ability id",
+  "set": {"/id": "hush"}
+}

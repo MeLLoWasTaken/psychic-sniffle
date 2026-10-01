@@ -1,0 +1,22 @@
+{
+  "id": "still_pulse_passive",
+  "name": "Still Pulse",
+  "description": "Damage taken reduced.",
+  "kind": "buff",
+  "duration_s": 0,
+  "dispel_type": "none",
+  "cc_category": "none",
+  "hud_priority": "hidden",
+  "modifiers": [
+    {
+      "stat": "damage_taken",
+      "op": "multiply",
+      "value": 1.0
+    }
+  ],
+  "icon": {
+    "symbol": "still_pulse_passive",
+    "school": "physical",
+    "image": "lorc/mineral-heart"
+  }
+}

@@ -1,0 +1,29 @@
+{
+  "id": "bonecleaver",
+  "name": "Bonecleaver",
+  "description": "A crushing overhead chop for 6,000 damage.",
+  "owner": "warblade_carnage",
+  "kit_slot": "core",
+  "school": "physical",
+  "cast_type": "instant",
+  "cooldown_s": 45,
+  "triggers_gcd": true,
+  "cost": {
+    "resource": "rage",
+    "amount": 20
+  },
+  "range_m": 5,
+  "requires_los": true,
+  "target": "enemy",
+  "effects": [
+    {
+      "type": "damage",
+      "base": 6000
+    }
+  ],
+  "icon": {
+    "symbol": "cleaver",
+    "school": "physical",
+    "image": "delapouite/cleaver"
+  }
+}

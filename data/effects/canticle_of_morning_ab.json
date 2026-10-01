@@ -1,0 +1,14 @@
+{
+  "id": "canticle_of_morning_ab",
+  "description": "Channel: glowing hands, a beam on every ally healed each tick.",
+  "cast": {
+    "style": "hand_glow",
+    "hands": "both",
+    "size": 1.2
+  },
+  "impact": {
+    "style": "rays",
+    "at": "hits",
+    "size": 0.7
+  }
+}

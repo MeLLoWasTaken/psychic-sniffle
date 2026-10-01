@@ -3,26 +3,1191 @@
   "kind": "class",
   "owner": "oracle",
   "points": 30,
-  "status": "draft",
-  "nodes": [
-    {
-      "id": "oracle_class_placeholder",
-      "name": "Placeholder",
-      "type": "passive",
-      "effects": [
-        {
-          "modify": "self.max_health",
-          "per_rank": 0
-        }
-      ],
-      "pos": [
-        3,
-        0
-      ]
-    }
-  ],
   "gates": [
     8,
     20
+  ],
+  "status": "complete",
+  "nodes": [
+    {
+      "id": "hale_spirit",
+      "name": "Hale Spirit",
+      "type": "passive",
+      "ranks": 2,
+      "pos": [
+        1,
+        0
+      ],
+      "description": "Your maximum health is 1,200 higher per rank.",
+      "icon": {
+        "image": "lorc/shining-heart",
+        "school": "holy"
+      },
+      "effects": [
+        {
+          "modify": "self.max_health",
+          "per_rank": 1200
+        }
+      ]
+    },
+    {
+      "id": "sanctified_vestments",
+      "name": "Sanctified Vestments",
+      "type": "passive",
+      "ranks": 2,
+      "pos": [
+        0,
+        1
+      ],
+      "requires_any": [
+        "hale_spirit"
+      ],
+      "description": "Your armor turns aside 3% more physical damage per rank.",
+      "icon": {
+        "image": "lorc/angel-outfit",
+        "school": "holy"
+      },
+      "effects": [
+        {
+          "modify": "oracle_sanctified_vestments.modifiers.0.value",
+          "per_rank": 0.03
+        }
+      ],
+      "grants_aura": "oracle_sanctified_vestments"
+    },
+    {
+      "id": "inner_calm",
+      "name": "Inner Calm",
+      "type": "passive",
+      "ranks": 2,
+      "pos": [
+        2,
+        1
+      ],
+      "requires_any": [
+        "hale_spirit"
+      ],
+      "description": "You take 2% less damage per rank.",
+      "icon": {
+        "image": "lorc/meditation",
+        "school": "holy"
+      },
+      "effects": [
+        {
+          "modify": "oracle_inner_calm.modifiers.0.value",
+          "per_rank": -0.02
+        }
+      ],
+      "grants_aura": "oracle_inner_calm"
+    },
+    {
+      "id": "ember_of_faith",
+      "name": "Ember of Faith",
+      "type": "passive",
+      "ranks": 1,
+      "pos": [
+        0,
+        2
+      ],
+      "requires_any": [
+        "sanctified_vestments"
+      ],
+      "description": "You heal yourself for 300 every 5 s.",
+      "icon": {
+        "image": "lorc/candle-light",
+        "school": "holy"
+      },
+      "grants_aura": "oracle_ember_of_faith"
+    },
+    {
+      "id": "open_vessel",
+      "name": "Open Vessel",
+      "type": "passive",
+      "ranks": 2,
+      "pos": [
+        1,
+        2
+      ],
+      "requires_any": [
+        "sanctified_vestments",
+        "inner_calm"
+      ],
+      "description": "Healing you receive is increased by 3% per rank.",
+      "icon": {
+        "image": "caro-asercion/round-potion",
+        "school": "holy"
+      },
+      "effects": [
+        {
+          "modify": "oracle_open_vessel.modifiers.0.value",
+          "per_rank": 0.03
+        }
+      ],
+      "grants_aura": "oracle_open_vessel"
+    },
+    {
+      "id": "waning_resolve",
+      "name": "Waning Resolve",
+      "type": "passive",
+      "ranks": 2,
+      "pos": [
+        2,
+        2
+      ],
+      "requires_any": [
+        "inner_calm"
+      ],
+      "description": "Waning Light's cooldown is 5 s shorter per rank.",
+      "icon": {
+        "image": "delapouite/sunset",
+        "school": "holy"
+      },
+      "effects": [
+        {
+          "modify": "waning_light_ab.cooldown_s",
+          "per_rank": -5
+        }
+      ]
+    },
+    {
+      "id": "steadfast_vow",
+      "name": "Steadfast Vow",
+      "type": "passive",
+      "ranks": 2,
+      "pos": [
+        0,
+        3
+      ],
+      "requires_any": [
+        "ember_of_faith",
+        "open_vessel"
+      ],
+      "description": "Your maximum health is 1,500 higher per rank.",
+      "icon": {
+        "image": "delapouite/heart-shield",
+        "school": "holy"
+      },
+      "effects": [
+        {
+          "modify": "self.max_health",
+          "per_rank": 1500
+        }
+      ]
+    },
+    {
+      "id": "deepening_dusk",
+      "name": "Deepening Dusk",
+      "type": "passive",
+      "ranks": 1,
+      "pos": [
+        2,
+        3
+      ],
+      "requires_any": [
+        "waning_resolve"
+      ],
+      "description": "Waning Light reduces the damage you take by 30% instead of 20%.",
+      "icon": {
+        "image": "lorc/eclipse",
+        "school": "holy"
+      },
+      "effects": [
+        {
+          "modify": "waning_light.modifiers.0.value",
+          "per_rank": -0.1
+        }
+      ]
+    },
+    {
+      "id": "cleansing_peal",
+      "name": "Cleansing Peal",
+      "type": "active",
+      "pos": [
+        1,
+        4
+      ],
+      "requires_any": [
+        "steadfast_vow",
+        "deepening_dusk"
+      ],
+      "gate": 8,
+      "description": "Grants Cleansing Peal: remove one magic effect from you and each ally within 12 m. Costs 2,000 mana, 45 s cooldown.",
+      "icon": {
+        "image": "lorc/ringing-bell",
+        "school": "holy"
+      },
+      "grants_ability": "cleansing_peal_ab"
+    },
+    {
+      "id": "peal_of_grace",
+      "name": "Peal of Grace",
+      "type": "choice",
+      "pos": [
+        1,
+        5
+      ],
+      "requires_any": [
+        "cleansing_peal"
+      ],
+      "gate": 8,
+      "description": "Choose what else Cleansing Peal does.",
+      "icon": {
+        "image": "sbed/health-increase",
+        "school": "holy"
+      },
+      "choices": [
+        {
+          "id": "pealing_mercy",
+          "name": "Pealing Mercy",
+          "description": "Cleansing Peal also heals each ally it reaches for 3,000.",
+          "icon": {
+            "image": "sbed/health-increase",
+            "school": "holy"
+          },
+          "effects": [
+            {
+              "modify": "cleansing_peal_ab.effects",
+              "set": [
+                {
+                  "type": "dispel",
+                  "dispel_types": [
+                    "magic"
+                  ],
+                  "dispel_count": 1,
+                  "affects": "allies_in_radius",
+                  "radius_m": 12
+                },
+                {
+                  "type": "heal",
+                  "base": 3000,
+                  "affects": "allies_in_radius",
+                  "radius_m": 12
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "id": "pealing_shelter",
+          "name": "Pealing Shelter",
+          "description": "Cleansing Peal also makes each ally it reaches take 10% less damage for 4 s.",
+          "icon": {
+            "image": "lorc/surrounded-shield",
+            "school": "holy"
+          },
+          "effects": [
+            {
+              "modify": "cleansing_peal_ab.effects",
+              "set": [
+                {
+                  "type": "dispel",
+                  "dispel_types": [
+                    "magic"
+                  ],
+                  "dispel_count": 1,
+                  "affects": "allies_in_radius",
+                  "radius_m": 12
+                },
+                {
+                  "type": "apply_aura",
+                  "aura": "oracle_peal_shelter",
+                  "affects": "allies_in_radius",
+                  "radius_m": 12
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "peal_swiftness",
+      "name": "Quickened Peal",
+      "type": "passive",
+      "ranks": 2,
+      "pos": [
+        0,
+        5
+      ],
+      "requires_any": [
+        "cleansing_peal"
+      ],
+      "gate": 8,
+      "description": "Cleansing Peal's cooldown is 5 s shorter per rank.",
+      "icon": {
+        "image": "delapouite/extra-time",
+        "school": "holy"
+      },
+      "effects": [
+        {
+          "modify": "cleansing_peal_ab.cooldown_s",
+          "per_rank": -5
+        }
+      ]
+    },
+    {
+      "id": "peal_resonance",
+      "name": "Resonant Peal",
+      "type": "passive",
+      "ranks": 1,
+      "pos": [
+        2,
+        5
+      ],
+      "requires_any": [
+        "cleansing_peal"
+      ],
+      "gate": 8,
+      "description": "Cleansing Peal removes up to two magic effects from each ally instead of one.",
+      "icon": {
+        "image": "lorc/echo-ripples",
+        "school": "holy"
+      },
+      "effects": [
+        {
+          "modify": "cleansing_peal_ab.effects.0.dispel_count",
+          "per_rank": 1
+        }
+      ]
+    },
+    {
+      "id": "unbroken_will",
+      "name": "Unbroken Will",
+      "type": "passive",
+      "ranks": 1,
+      "pos": [
+        0,
+        7
+      ],
+      "requires_any": [
+        "peal_swiftness"
+      ],
+      "gate": 20,
+      "description": "Break Free's cooldown is 8 s shorter.",
+      "icon": {
+        "image": "delapouite/liberty-wing",
+        "school": "physical"
+      },
+      "effects": [
+        {
+          "modify": "break_free.cooldown_s",
+          "per_rank": -8
+        }
+      ]
+    },
+    {
+      "id": "unwavering_faith",
+      "name": "Unwavering Faith",
+      "type": "passive",
+      "ranks": 1,
+      "pos": [
+        1,
+        7
+      ],
+      "requires_any": [
+        "peal_of_grace"
+      ],
+      "gate": 20,
+      "description": "You take 4% less damage.",
+      "icon": {
+        "image": "lorc/holy-symbol",
+        "school": "holy"
+      },
+      "grants_aura": "oracle_unwavering_faith"
+    },
+    {
+      "id": "hallowed_mantle",
+      "name": "Hallowed Mantle",
+      "type": "passive",
+      "ranks": 1,
+      "pos": [
+        2,
+        7
+      ],
+      "requires_any": [
+        "peal_resonance"
+      ],
+      "gate": 20,
+      "description": "Your armor turns aside 4% more physical damage, and healing you receive is increased by 3%.",
+      "icon": {
+        "image": "lorc/wing-cloak",
+        "school": "holy"
+      },
+      "grants_aura": "oracle_hallowed_mantle"
+    },
+    {
+      "id": "wellspring",
+      "name": "Wellspring",
+      "type": "passive",
+      "ranks": 2,
+      "pos": [
+        3,
+        0
+      ],
+      "description": "Your maximum mana is 2,500 higher per rank.",
+      "icon": {
+        "image": "delapouite/water-fountain",
+        "school": "holy"
+      },
+      "effects": [
+        {
+          "modify": "self.resource_max.mana",
+          "per_rank": 2500
+        }
+      ]
+    },
+    {
+      "id": "still_waters",
+      "name": "Still Waters",
+      "type": "passive",
+      "ranks": 2,
+      "pos": [
+        3,
+        1
+      ],
+      "requires_any": [
+        "wellspring"
+      ],
+      "description": "You regain 100 mana every 3 s per rank.",
+      "icon": {
+        "image": "lorc/water-splash",
+        "school": "holy"
+      },
+      "effects": [
+        {
+          "modify": "oracle_still_waters.periodic.effect.amount",
+          "per_rank": 100
+        }
+      ],
+      "grants_aura": "oracle_still_waters"
+    },
+    {
+      "id": "keen_insight",
+      "name": "Keen Insight",
+      "type": "passive",
+      "ranks": 2,
+      "pos": [
+        4,
+        1
+      ],
+      "requires_any": [
+        "wellspring"
+      ],
+      "description": "Your critical strike chance is 2% higher per rank.",
+      "icon": {
+        "image": "lorc/star-pupil",
+        "school": "holy"
+      },
+      "effects": [
+        {
+          "modify": "self.stats.crit_chance",
+          "per_rank": 0.02
+        }
+      ]
+    },
+    {
+      "id": "fleet_devotion",
+      "name": "Fleet Devotion",
+      "type": "passive",
+      "ranks": 2,
+      "pos": [
+        3,
+        2
+      ],
+      "requires_any": [
+        "still_waters",
+        "keen_insight"
+      ],
+      "description": "Your haste is 2% higher per rank: faster casts and a shorter global cooldown.",
+      "icon": {
+        "image": "delapouite/prayer-beads",
+        "school": "holy"
+      },
+      "effects": [
+        {
+          "modify": "self.stats.haste",
+          "per_rank": 0.02
+        }
+      ]
+    },
+    {
+      "id": "mercy_or_judgment",
+      "name": "Mercy or Judgment",
+      "type": "choice",
+      "pos": [
+        3,
+        3
+      ],
+      "requires_any": [
+        "fleet_devotion"
+      ],
+      "description": "Choose to heal more or to strike harder.",
+      "icon": {
+        "image": "delapouite/healing",
+        "school": "holy"
+      },
+      "choices": [
+        {
+          "id": "path_of_mercy",
+          "name": "Path of Mercy",
+          "description": "Your healing is increased by 4%.",
+          "icon": {
+            "image": "delapouite/healing",
+            "school": "holy"
+          },
+          "grants_aura": "oracle_path_of_mercy"
+        },
+        {
+          "id": "path_of_judgment",
+          "name": "Path of Judgment",
+          "description": "Your damage is increased by 4%.",
+          "icon": {
+            "image": "lorc/justice-star",
+            "school": "holy"
+          },
+          "grants_aura": "oracle_path_of_judgment"
+        }
+      ]
+    },
+    {
+      "id": "deep_conviction",
+      "name": "Deep Conviction",
+      "type": "passive",
+      "ranks": 2,
+      "pos": [
+        4,
+        3
+      ],
+      "requires_any": [
+        "fleet_devotion"
+      ],
+      "description": "Your damage and healing are 2% higher per rank.",
+      "icon": {
+        "image": "lorc/enlightenment",
+        "school": "holy"
+      },
+      "effects": [
+        {
+          "modify": "self.stats.power_bonus",
+          "per_rank": 0.02
+        }
+      ]
+    },
+    {
+      "id": "fervent_litany",
+      "name": "Fervent Litany",
+      "type": "passive",
+      "ranks": 2,
+      "pos": [
+        3,
+        4
+      ],
+      "requires_any": [
+        "mercy_or_judgment",
+        "deep_conviction"
+      ],
+      "gate": 8,
+      "description": "You cast 2% faster per rank.",
+      "icon": {
+        "image": "lorc/scroll-unfurled",
+        "school": "holy"
+      },
+      "effects": [
+        {
+          "modify": "oracle_fervent_litany.modifiers.0.value",
+          "per_rank": 0.02
+        }
+      ],
+      "grants_aura": "oracle_fervent_litany"
+    },
+    {
+      "id": "lucid_reserve",
+      "name": "Lucid Reserve",
+      "type": "passive",
+      "ranks": 2,
+      "pos": [
+        3,
+        5
+      ],
+      "requires_any": [
+        "fervent_litany"
+      ],
+      "gate": 8,
+      "description": "Your maximum mana is 2,500 higher per rank.",
+      "icon": {
+        "image": "lorc/potion-ball",
+        "school": "holy"
+      },
+      "effects": [
+        {
+          "modify": "self.resource_max.mana",
+          "per_rank": 2500
+        }
+      ]
+    },
+    {
+      "id": "stillness_of_spirit",
+      "name": "Stillness of Spirit",
+      "type": "passive",
+      "ranks": 1,
+      "pos": [
+        3,
+        7
+      ],
+      "requires_any": [
+        "lucid_reserve"
+      ],
+      "gate": 20,
+      "description": "You regain 300 mana every 3 s.",
+      "icon": {
+        "image": "lorc/lotus",
+        "school": "holy"
+      },
+      "grants_aura": "oracle_stillness_of_spirit"
+    },
+    {
+      "id": "crowned_in_light",
+      "name": "Crowned in Light",
+      "type": "choice",
+      "pos": [
+        4,
+        7
+      ],
+      "requires_any": [
+        "lucid_reserve",
+        "crushing_burden"
+      ],
+      "gate": 20,
+      "description": "Choose sharper criticals or quicker prayers.",
+      "icon": {
+        "image": "lorc/sun-radiations",
+        "school": "holy"
+      },
+      "choices": [
+        {
+          "id": "piercing_radiance",
+          "name": "Piercing Radiance",
+          "description": "Your critical strike chance is 4% higher.",
+          "icon": {
+            "image": "lorc/sun-radiations",
+            "school": "holy"
+          },
+          "effects": [
+            {
+              "modify": "self.stats.crit_chance",
+              "per_rank": 0.04
+            }
+          ]
+        },
+        {
+          "id": "ceaseless_rite",
+          "name": "Ceaseless Rite",
+          "description": "Your haste is 4% higher.",
+          "icon": {
+            "image": "lorc/star-cycle",
+            "school": "holy"
+          },
+          "effects": [
+            {
+              "modify": "self.stats.haste",
+              "per_rank": 0.04
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "light_step",
+      "name": "Light Step",
+      "type": "passive",
+      "ranks": 2,
+      "pos": [
+        5,
+        0
+      ],
+      "description": "You move 4% faster per rank.",
+      "icon": {
+        "image": "delapouite/sandal",
+        "school": "holy"
+      },
+      "effects": [
+        {
+          "modify": "oracle_light_step.modifiers.0.value",
+          "per_rank": 0.04
+        }
+      ],
+      "grants_aura": "oracle_light_step"
+    },
+    {
+      "id": "winged_haste",
+      "name": "Winged Haste",
+      "type": "passive",
+      "ranks": 2,
+      "pos": [
+        5,
+        1
+      ],
+      "requires_any": [
+        "light_step"
+      ],
+      "description": "Winged Stride's cooldown is 3 s shorter per rank.",
+      "icon": {
+        "image": "lorc/two-feathers",
+        "school": "holy"
+      },
+      "effects": [
+        {
+          "modify": "winged_stride_ab.cooldown_s",
+          "per_rank": -3
+        }
+      ]
+    },
+    {
+      "id": "unbowed",
+      "name": "Unbowed",
+      "type": "passive",
+      "ranks": 2,
+      "pos": [
+        6,
+        1
+      ],
+      "requires_any": [
+        "light_step"
+      ],
+      "description": "Break Free's cooldown is 6 s shorter per rank.",
+      "icon": {
+        "image": "skoll/breaking-chain",
+        "school": "physical"
+      },
+      "effects": [
+        {
+          "modify": "break_free.cooldown_s",
+          "per_rank": -6
+        }
+      ]
+    },
+    {
+      "id": "soaring_stride",
+      "name": "Soaring Stride",
+      "type": "passive",
+      "ranks": 1,
+      "pos": [
+        5,
+        2
+      ],
+      "requires_any": [
+        "winged_haste"
+      ],
+      "description": "Winged Stride lasts 2 s longer.",
+      "icon": {
+        "image": "lorc/feathered-wing",
+        "school": "holy"
+      },
+      "effects": [
+        {
+          "modify": "winged_stride.duration_s",
+          "per_rank": 2
+        }
+      ]
+    },
+    {
+      "id": "unshackled",
+      "name": "Unshackled",
+      "type": "choice",
+      "pos": [
+        6,
+        2
+      ],
+      "requires_any": [
+        "unbowed"
+      ],
+      "description": "Choose what Break Free also does.",
+      "icon": {
+        "image": "lorc/winged-arrow",
+        "school": "holy"
+      },
+      "choices": [
+        {
+          "id": "unshackled_stride",
+          "name": "Unshackled Stride",
+          "description": "Break Free also makes you move 30% faster for 3 s.",
+          "icon": {
+            "image": "lorc/winged-arrow",
+            "school": "holy"
+          },
+          "effects": [
+            {
+              "modify": "break_free.effects",
+              "set": [
+                {
+                  "type": "remove_cc"
+                },
+                {
+                  "type": "apply_aura",
+                  "aura": "oracle_unshackled_stride"
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "id": "unshackled_mercy",
+          "name": "Unshackled Mercy",
+          "description": "Break Free also heals you for 4,000.",
+          "icon": {
+            "image": "lorc/heart-inside",
+            "school": "holy"
+          },
+          "effects": [
+            {
+              "modify": "break_free.effects",
+              "set": [
+                {
+                  "type": "remove_cc"
+                },
+                {
+                  "type": "heal",
+                  "base": 4000,
+                  "can_crit": false,
+                  "school": "holy"
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "dread_reach",
+      "name": "Dread Reach",
+      "type": "passive",
+      "ranks": 1,
+      "pos": [
+        5,
+        3
+      ],
+      "requires_any": [
+        "soaring_stride",
+        "unshackled"
+      ],
+      "description": "Psalm of Dread reaches enemies within 10 m instead of 8 m.",
+      "icon": {
+        "image": "lorc/psychic-waves",
+        "school": "shadow"
+      },
+      "effects": [
+        {
+          "modify": "psalm_of_dread.effects.0.radius_m",
+          "per_rank": 2
+        }
+      ]
+    },
+    {
+      "id": "patient_devotion",
+      "name": "Patient Devotion",
+      "type": "passive",
+      "ranks": 2,
+      "pos": [
+        6,
+        3
+      ],
+      "requires_any": [
+        "unshackled"
+      ],
+      "description": "Your cooldowns recover 3% faster per rank.",
+      "icon": {
+        "image": "lorc/sundial",
+        "school": "holy"
+      },
+      "effects": [
+        {
+          "modify": "oracle_patient_devotion.modifiers.0.value",
+          "per_rank": 0.03
+        }
+      ],
+      "grants_aura": "oracle_patient_devotion"
+    },
+    {
+      "id": "burden_of_penance",
+      "name": "Burden of Penance",
+      "type": "active",
+      "pos": [
+        5,
+        4
+      ],
+      "requires_any": [
+        "dread_reach",
+        "patient_devotion"
+      ],
+      "gate": 8,
+      "description": "Grants Burden of Penance: an enemy within 30 m moves 50% slower for 4 s. Costs 1,200 mana, 24 s cooldown.",
+      "icon": {
+        "image": "delapouite/heavy-collar",
+        "school": "holy"
+      },
+      "grants_ability": "burden_of_penance_ab"
+    },
+    {
+      "id": "tightened_chains",
+      "name": "Tightened Chains",
+      "type": "passive",
+      "ranks": 1,
+      "pos": [
+        6,
+        4
+      ],
+      "requires_any": [
+        "patient_devotion"
+      ],
+      "gate": 8,
+      "description": "Chains of Awe's cooldown is 10 s shorter.",
+      "icon": {
+        "image": "lorc/crossed-chains",
+        "school": "holy"
+      },
+      "effects": [
+        {
+          "modify": "chains_of_awe.cooldown_s",
+          "per_rank": -10
+        }
+      ]
+    },
+    {
+      "id": "wages_of_penance",
+      "name": "Wages of Penance",
+      "type": "passive",
+      "ranks": 1,
+      "pos": [
+        5,
+        7
+      ],
+      "requires_any": [
+        "penance_choice"
+      ],
+      "gate": 20,
+      "description": "Burden of Penance also reduces the healing its target receives by 15%.",
+      "icon": {
+        "image": "delapouite/weight-scale",
+        "school": "holy"
+      },
+      "effects": [
+        {
+          "modify": "penance_burdened.modifiers",
+          "set": [
+            {
+              "stat": "move_speed",
+              "op": "multiply",
+              "value": 0.5
+            },
+            {
+              "stat": "healing_taken",
+              "op": "multiply",
+              "value": 0.85
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "lingering_burden",
+      "name": "Lingering Burden",
+      "type": "passive",
+      "ranks": 2,
+      "pos": [
+        5,
+        5
+      ],
+      "requires_any": [
+        "burden_of_penance"
+      ],
+      "gate": 8,
+      "description": "Burden of Penance lasts 1 s longer per rank.",
+      "icon": {
+        "image": "lorc/heavy-fall",
+        "school": "holy"
+      },
+      "effects": [
+        {
+          "modify": "penance_burdened.duration_s",
+          "per_rank": 1
+        }
+      ]
+    },
+    {
+      "id": "crushing_burden",
+      "name": "Crushing Burden",
+      "type": "passive",
+      "ranks": 1,
+      "pos": [
+        4,
+        5
+      ],
+      "requires_any": [
+        "burden_of_penance"
+      ],
+      "gate": 8,
+      "description": "Burden of Penance slows by 65% instead of 50%.",
+      "icon": {
+        "image": "sbed/weight-crush",
+        "school": "holy"
+      },
+      "effects": [
+        {
+          "modify": "penance_burdened.modifiers.0.value",
+          "per_rank": -0.15
+        }
+      ]
+    },
+    {
+      "id": "swift_hush",
+      "name": "Swift Hush",
+      "type": "passive",
+      "ranks": 2,
+      "pos": [
+        6,
+        5
+      ],
+      "requires_any": [
+        "tightened_chains"
+      ],
+      "gate": 8,
+      "description": "Hush's cooldown is 2 s shorter per rank.",
+      "icon": {
+        "image": "lorc/silence",
+        "school": "holy"
+      },
+      "effects": [
+        {
+          "modify": "hush.cooldown_s",
+          "per_rank": -2
+        }
+      ]
+    },
+    {
+      "id": "penance_choice",
+      "name": "Penitent's Reach",
+      "type": "choice",
+      "pos": [
+        5,
+        6
+      ],
+      "requires_any": [
+        "lingering_burden"
+      ],
+      "gate": 8,
+      "description": "Choose a longer reach or a shorter cooldown for Burden of Penance.",
+      "icon": {
+        "image": "lorc/heavy-arrow",
+        "school": "holy"
+      },
+      "choices": [
+        {
+          "id": "far_penance",
+          "name": "Far Penance",
+          "description": "Burden of Penance reaches 40 m instead of 30 m.",
+          "icon": {
+            "image": "lorc/heavy-arrow",
+            "school": "holy"
+          },
+          "effects": [
+            {
+              "modify": "burden_of_penance_ab.range_m",
+              "per_rank": 10
+            }
+          ]
+        },
+        {
+          "id": "swift_penance",
+          "name": "Swift Penance",
+          "description": "Burden of Penance's cooldown is 6 s shorter.",
+          "icon": {
+            "image": "delapouite/solar-time",
+            "school": "holy"
+          },
+          "effects": [
+            {
+              "modify": "burden_of_penance_ab.cooldown_s",
+              "per_rank": -6
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "lingering_awe",
+      "name": "Lingering Awe",
+      "type": "passive",
+      "ranks": 1,
+      "pos": [
+        6,
+        6
+      ],
+      "requires_any": [
+        "swift_hush"
+      ],
+      "gate": 8,
+      "description": "Chains of Awe silences for 5 s instead of 4 s.",
+      "icon": {
+        "image": "lorc/gem-chain",
+        "school": "holy"
+      },
+      "effects": [
+        {
+          "modify": "awed_silence.duration_s",
+          "per_rank": 1
+        }
+      ]
+    },
+    {
+      "id": "radiant_soul",
+      "name": "Radiant Soul",
+      "type": "choice",
+      "pos": [
+        6,
+        7
+      ],
+      "requires_any": [
+        "lingering_awe",
+        "penance_choice"
+      ],
+      "gate": 20,
+      "description": "Choose more power or more health.",
+      "icon": {
+        "image": "delapouite/soul",
+        "school": "holy"
+      },
+      "choices": [
+        {
+          "id": "radiant_soul_power",
+          "name": "Radiant Soul",
+          "description": "Your damage and healing are 4% higher.",
+          "icon": {
+            "image": "delapouite/soul",
+            "school": "holy"
+          },
+          "effects": [
+            {
+              "modify": "self.stats.power_bonus",
+              "per_rank": 0.04
+            }
+          ]
+        },
+        {
+          "id": "vessel_of_life",
+          "name": "Vessel of Life",
+          "description": "Your maximum health is 3,000 higher.",
+          "icon": {
+            "image": "delapouite/soul-vessel",
+            "school": "holy"
+          },
+          "effects": [
+            {
+              "modify": "self.max_health",
+              "per_rank": 3000
+            }
+          ]
+        }
+      ]
+    }
   ]
 }

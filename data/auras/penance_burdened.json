@@ -1,0 +1,22 @@
+{
+  "id": "penance_burdened",
+  "name": "Burden of Penance",
+  "description": "Movement slowed by 50%.",
+  "kind": "debuff",
+  "duration_s": 4,
+  "dispel_type": "magic",
+  "cc_category": "none",
+  "hud_priority": "normal",
+  "modifiers": [
+    {
+      "stat": "move_speed",
+      "op": "multiply",
+      "value": 0.5
+    }
+  ],
+  "icon": {
+    "symbol": "yoke",
+    "school": "holy",
+    "image": "delapouite/heavy-collar"
+  }
+}

@@ -1,7 +1,7 @@
 {
   "id": "red_mist",
   "name": "Red Mist",
-  "description": "Damage done up 25%, critical chance up 20%.",
+  "description": "Damage done up 20%, critical chance up 20%.",
   "kind": "buff",
   "duration_s": 10,
   "dispel_type": "none",

@@ -2,6 +2,26 @@
 
 One entry per build-loop iteration, newest first. Format: date, backlog ID, what changed, how it was checked.
 
+## 2026-10-01 — M2-04 talent trees for Warblade, Arcanist and Oracle (trees done; balance runs next)
+- Three class trees (40 to 41 nodes), three spec trees (40 to 42 nodes, gates at 8 and 20, three capstones each) and three PvP rows of 12, all original names with icons. Written by three agents in parallel, one per class, then integrated and checked here.
+- 15 new abilities from active nodes and choices, each with a visual effect and sounds:
+  - Warblade: Hurtling Bound, Iron Oath, Gaoler's Chain, Reaping Turn or Bonecleaver, Wrench Grip;
+  - Arcanist: Gale Glyph, Hourglass Ward, Hoarfrost Snare, Calving Ice;
+  - Oracle: Cleansing Peal, Burden of Penance, Plea of Mercy, Canticle of Morning, Hallowed Stillness.
+- About 50 new auras, mostly hidden passives (armor, damage taken, movement, cast speed).
+- Three named builds per spec in the bot profiles:
+  - Carnage: headsman, butcher, gaoler;
+  - Rime: shatter burst, control root, survival kite;
+  - Grace: radiant mender, choir of dawn, dread warden.
+- 323 icon glyphs rendered and credited.
+- Bots now decide with their build's numbers.
+- New validator rules:
+  - burst cooldowns stay 60 to 180 s however talents stack;
+  - an aura may not share an ability's id;
+  - talent effects that replace a field must come before edits inside it.
+- Fixes: Red Mist's text said 25% (it is 20%); Lingering Grace's said 1,500 (it is 2,000).
+- Checked: all 284 Godot tests, the Python tests and data validation pass; a six-match smoke run of mixed builds ended every match by a kill with no errors, but matches ran long (up to 11 minutes). The balance runs will look at that.
+
 ## 2026-10-01 — M2-03 talent system
 - `game/core/talents.gd`:
   - checks a loadout against its trees (ranks, choice options, points, gates at 8 and 20, connections, 3 PvP slots);

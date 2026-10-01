@@ -1,0 +1,23 @@
+{
+  "id": "oracle_sanctified_vestments",
+  "name": "Sanctified Vestments",
+  "description": "Talent: armor turns aside more physical damage.",
+  "kind": "buff",
+  "duration_s": 0,
+  "refresh": "refresh",
+  "dispel_type": "none",
+  "cc_category": "none",
+  "hud_priority": "hidden",
+  "modifiers": [
+    {
+      "stat": "armor",
+      "op": "add",
+      "value": 0
+    }
+  ],
+  "icon": {
+    "symbol": "robe",
+    "school": "holy",
+    "image": "lorc/angel-outfit"
+  }
+}

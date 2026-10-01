@@ -287,7 +287,10 @@ def validate(data_dir: Path) -> list[str]:
     abilities, auras, trees = db["abilities"], db["auras"], db["talents"]
 
     # ids must be unique across abilities and talent nodes, since talents can reference either
-    # (checked per tree below)
+    # (checked per tree below); and across abilities and auras, since a talent effect's path
+    # starts with one of them and would otherwise silently change the ability
+    for clash in sorted(set(abilities) & set(auras)):
+        report.error(f"auras/{clash}.json", f"aura id '{clash}' is also an ability id; talent paths could not tell them apart")
 
     # ---- tuning sanity -----------------------------------------------------
     if tuning:
@@ -328,6 +331,7 @@ def validate(data_dir: Path) -> list[str]:
                 report.error(rel, f"ability '{aid}' is owned by '{abilities[aid]['owner']}'")
         _check_tree_ref(report, rel, trees, s["spec_tree"], "spec", sid)
         _check_tree_ref(report, rel, trees, s["pvp_talents"], "pvp", sid)
+        _check_talent_order(report, rel, _trees_for(s, classes, trees))
         if "asset" in s and s["asset"] not in db["assets"]:
             report.error(rel, f"asset '{s['asset']}' not found")
         if s["kit_status"] == "complete":
@@ -349,6 +353,23 @@ def validate(data_dir: Path) -> list[str]:
             report.error(rel, f"periodic effect aura '{eff['aura']}' not found")
         if au["cc_category"] != "none" and au["kind"] != "debuff":
             report.error(rel, "crowd control auras must be debuffs")
+
+    # ---- burst windows stay 1 to 3 minutes (DESIGN.md kit template), whatever talents stack ----
+    for aid, ab in abilities.items():
+        if ab.get("kit_slot") != "burst":
+            continue
+        low = high = float(ab["cooldown_s"])
+        for t in trees.values():
+            for n in t["nodes"]:
+                ranks = n.get("ranks", 1)
+                options = n.get("choices") or [n]
+                deltas = [sum(e.get("per_rank", 0) * (ranks if src is n else 1) for e in src.get("effects", [])
+                              if e["modify"] == f"{aid}.cooldown_s") for src in options]
+                low += min(0, min(deltas))
+                high += max(0, max(deltas))
+        if low < 60 or high > 180:
+            report.error(f"abilities/{aid}.json", f"burst cooldown can reach {low:g} to {high:g} s with talents; "
+                         "burst windows are 60 to 180 s (DESIGN.md kit template)")
 
     # ---- talent trees --------------------------------------------------------
     for tid, t in trees.items():
@@ -805,6 +826,29 @@ def _check_tree_ref(report: Report, rel: str, trees: dict, tree_id: str, kind: s
         report.error(rel, f"talent tree '{tree_id}' is kind '{t['kind']}', expected '{kind}'")
     elif t["owner"] != owner:
         report.error(rel, f"talent tree '{tree_id}' is owned by '{t['owner']}'")
+
+
+def _check_talent_order(report: Report, rel: str, spec_trees: dict) -> None:
+    """Talents apply class tree, spec tree, then PvP, each in node order (Talents.resolve). A talent
+    that sets a whole field after another talent edited inside it would wipe that edit out, and two
+    talents setting one field leave only the later one; both depend on file order, so reject them.
+    The two options of one choice node never apply together, so they may set the same field."""
+    seen: list[tuple[str, str, str]] = []  # (modify path, node id, how)
+    for layer in ("class", "spec", "pvp"):
+        for n in (spec_trees.get(layer) or {}).get("nodes", []):
+            for src in n.get("choices") or [n]:
+                for e in src.get("effects", []):
+                    path = e["modify"]
+                    if "set" in e:
+                        for other, node, how in seen:
+                            if node == n["id"]:
+                                continue
+                            if other.startswith(path + "."):
+                                report.error(rel, f"talent '{n['id']}' sets {path} after '{node}' changed {other}, "
+                                             "which the set would undo; move the set earlier")
+                            elif other == path and how == "set":
+                                report.error(rel, f"talents '{node}' and '{n['id']}' both set {path}; only the later would count")
+                    seen.append((path, n["id"], "set" if "set" in e else "add"))
 
 
 def _trees_for(spec: dict, classes: dict, trees: dict) -> dict:
