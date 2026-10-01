@@ -24,7 +24,7 @@ var menu: Dictionary
 var spec: String = ""  ## the chosen spec
 var buttons: Dictionary = {}  ## button id -> Button
 var cards: Dictionary = {}  ## spec id -> SpecCard
-var settings_panel: SettingsPanel
+var settings_screen: SettingsScreen  ## open over the menu, or null
 var keybind_screen: KeybindScreen  ## open over the menu, or null
 var hint: String = ""
 var _group: ButtonGroup = ButtonGroup.new()
@@ -63,78 +63,6 @@ class SpecCard:
 			draw_rect(Rect2(Vector2.ZERO, size).grow(-3.0), style.color("accent"), false, 3.0)
 
 
-## The Settings screen: the settings profile's values (menu data rows) and key bindings.
-class SettingsPanel:
-	extends Control
-	const PANEL: Vector2 = Vector2(1120, 680)
-	var style: MenuStyle
-	var close_button: Button
-	var keys_button: Button
-
-	func _init(p_style: MenuStyle) -> void:
-		style = p_style
-		name = "SettingsPanel"
-		set_anchors_preset(Control.PRESET_FULL_RECT)
-		mouse_filter = Control.MOUSE_FILTER_STOP
-		close_button = style.button(style.text("close"), Vector2(240, 54), 22)
-		close_button.name = "Close"
-		close_button.pressed.connect(func() -> void: visible = false)
-		add_child(close_button)
-		keys_button = style.button(style.text("settings_keybinds"), Vector2(240, 54), 22)
-		keys_button.name = "KeyBindings"
-		add_child(keys_button)
-		resized.connect(_layout)
-
-	func _layout() -> void:
-		var r: Rect2 = panel_rect()
-		close_button.position = Vector2(r.get_center().x + 10.0, r.end.y - 84.0)
-		keys_button.position = Vector2(r.get_center().x - 250.0, r.end.y - 84.0)
-
-	func panel_rect() -> Rect2:
-		return Rect2((size - PANEL) * 0.5 + Vector2(0, 40), PANEL)
-
-	func _draw() -> void:
-		draw_rect(Rect2(Vector2.ZERO, size), style.color("dim"))
-		var r: Rect2 = panel_rect()
-		style.draw_panel(self, r, Color(style.color("panel_bg"), 1.0))
-		var sp: Dictionary = style.menu.get("settings_panel", {})
-		var prof_id: String = str(sp.get("profile", "default"))
-		var prof: Dictionary = Data.settings.get(prof_id, {})
-		style.draw_text(self, Vector2(r.position.x, r.position.y + 72), style.text("settings_title"), 44, style.color("title"),
-			HORIZONTAL_ALIGNMENT_CENTER, r.size.x, &"display")
-		style.draw_rule(self, Vector2(r.get_center().x, r.position.y + 96), 260.0)
-		var lx: float = r.position.x + 70.0
-		var col_w: float = (r.size.x - 180.0) * 0.5
-		var rx: float = lx + col_w + 40.0
-		var y0: float = r.position.y + 150.0
-		style.draw_text(self, Vector2(lx, y0), style.text("settings_profile", {"name": prof.get("name", prof_id)}).to_upper(),
-			20, style.color("accent"), HORIZONTAL_ALIGNMENT_LEFT, -1, &"display")
-		style.draw_text(self, Vector2(rx, y0), style.text("settings_keys").to_upper(), 20, style.color("accent"),
-			HORIZONTAL_ALIGNMENT_LEFT, -1, &"display")
-		var y: float = y0 + 42.0
-		for row: Dictionary in sp.get("rows", []):
-			style.draw_text(self, Vector2(lx, y), str(row["label"]), 20, style.color("text_dim"))
-			style.draw_text(self, Vector2(lx, y), _value(prof, row), 20, style.color("text"), HORIZONTAL_ALIGNMENT_RIGHT, col_w)
-			y += 36.0
-		y = y0 + 42.0
-		for action: String in sp.get("keys", []):
-			style.draw_text(self, Vector2(rx, y), action.replace("_", " ").capitalize(), 20, style.color("text_dim"))
-			style.draw_text(self, Vector2(rx, y), Keybinds.label(action), 20, style.color("text"), HORIZONTAL_ALIGNMENT_RIGHT, col_w)
-			y += 36.0
-		style.draw_text(self, Vector2(r.position.x, r.end.y - 108.0), style.text("settings_note"), 18, style.color("text_dim"),
-			HORIZONTAL_ALIGNMENT_CENTER, r.size.x)
-
-	func _value(prof: Dictionary, row: Dictionary) -> String:
-		var node: Variant = prof
-		for part: String in str(row["path"]).split("."):
-			node = (node as Dictionary).get(part) if node is Dictionary else null
-		if node is bool:
-			return style.text("yes") if node else style.text("no")
-		if node is float and is_equal_approx(node, roundf(node)):
-			node = int(node)
-		return "%s%s" % [str(node), str(row.get("suffix", ""))]
-
-
 func _init(menu_id: String = "main") -> void:
 	style = MenuStyle.new(menu_id)
 	menu = style.menu
@@ -163,13 +91,6 @@ func _init(menu_id: String = "main") -> void:
 		btn.focus_entered.connect(_set_hint.bind(str(b.get("hint", ""))))
 		add_child(btn)
 		buttons[str(b["id"])] = btn
-	settings_panel = SettingsPanel.new(style)
-	settings_panel.visible = false
-	settings_panel.visibility_changed.connect(func() -> void:
-		if not settings_panel.visible and buttons.has("settings"):
-			(buttons["settings"] as Button).grab_focus())
-	settings_panel.keys_button.pressed.connect(show_keybinds)
-	add_child(settings_panel)
 	resized.connect(_layout)
 
 
@@ -200,10 +121,19 @@ func choose(action: String) -> void:
 	action_chosen.emit(action, spec)
 
 
-## The Settings screen.
-func show_settings() -> void:
-	settings_panel.visible = true
-	settings_panel.close_button.grab_focus.call_deferred()
+## The settings suite over the menu (M2-13); closing it returns focus to the Settings button.
+func show_settings() -> SettingsScreen:
+	if settings_screen != null:
+		return settings_screen
+	settings_screen = SettingsScreen.new()
+	settings_screen.closed.connect(func() -> void:
+		settings_screen.queue_free()
+		settings_screen = null
+		if buttons.has("settings"):
+			(buttons["settings"] as Button).grab_focus())
+	add_child(settings_screen)
+	settings_screen.size = size
+	return settings_screen
 
 
 ## The keybinding screen over the menu (from the Settings panel).
@@ -213,17 +143,12 @@ func show_keybinds() -> KeybindScreen:
 	keybind_screen = KeybindScreen.new()
 	keybind_screen.closed.connect(func() -> void:
 		keybind_screen.queue_free()
-		keybind_screen = null
-		settings_panel.queue_redraw())
+		keybind_screen = null)
 	add_child(keybind_screen)
 	keybind_screen.size = size
 	return keybind_screen
 
 
-func _unhandled_input(event: InputEvent) -> void:
-	if settings_panel.visible and event.is_action_pressed("ui_cancel"):
-		settings_panel.visible = false
-		get_viewport().set_input_as_handled()
 
 
 func _set_hint(text: String) -> void:

@@ -82,7 +82,9 @@ func _init(p_bank: SoundBank = null) -> void:
 	name = "AudioDirector"
 	bank = p_bank if p_bank != null else SoundBank.shared()
 	max_voices = int(bank.map.get("voices", {}).get("max", max_voices))
-	cc_warning_enabled = bool(bank.map.get("cc_warning", {}).get("enabled_default", true))
+	cc_warning_enabled = bool(bank.map.get("cc_warning", {}).get("enabled_default", true)) \
+		and bool(Settings.get_value("audio.cc_warning", true))
+	Settings.bus.changed.connect(_on_setting)
 	apply_ducking()
 	apply_acoustics("")
 
@@ -145,6 +147,11 @@ func apply_ducking() -> void:
 
 ## Take the newest world view: who the local player is, unit positions (footsteps, landings),
 ## loops following their casters, voices that have finished.
+func _on_setting(p: String, v: Variant) -> void:
+	if p == "audio.cc_warning":
+		cc_warning_enabled = bool(v)
+
+
 func push_view(v: Dictionary) -> void:
 	if v.is_empty() or int(v["tick"]) == tick:
 		return

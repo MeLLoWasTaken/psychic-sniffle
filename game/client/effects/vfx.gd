@@ -29,6 +29,7 @@ var age: float = 0.0
 var stopping: bool = false
 var hold: bool = false  ## preview: the clock is frozen at `age`, emitters loop
 var amount: int = 0  ## particles this effect can have alive (budget)
+var opacity: float = 1.0  ## settings: others' effect opacity, reduced flashing (M2-13)
 var data: Dictionary = {}  ## per-kind state (projectile target and speed...)
 
 var parts: Array[Dictionary] = []  ## {node: Node3D, anchor: String} placed at anchors of `unit`
@@ -118,7 +119,7 @@ func current_alpha() -> float:
 	var a: float = clampf(age / fade_in, 0.0, 1.0) if fade_in > 0.0 else 1.0
 	if stopping and not hold:
 		a *= clampf(1.0 - (age - _stop_age) / maxf(linger, 0.001), 0.0, 1.0)
-	return a
+	return a * opacity
 
 
 func _apply(t: float) -> void:

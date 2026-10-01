@@ -565,6 +565,7 @@ def _check_menus(report: Report, db: dict) -> None:
         picker = m["spec_picker"]
         if picker["default"] not in picker["specs"]:
             report.error(rel, f"spec_picker.default '{picker['default']}' is not in spec_picker.specs")
+        _check_settings_screen(report, rel, m.get("settings_screen", {}), db["settings"].get("default", {}))
         presets = {k: m[k] for k in ("play_bots", "play_1v1", "play_3v3") if k in m}
         for key, pb in presets.items():
             if pb["map"] not in db["maps"]:
@@ -621,26 +622,8 @@ def _check_menus(report: Report, db: dict) -> None:
                 report.error(rel, f"fonts.{face}: font file '{spec['file']}' not found in game/assets/fonts")
             elif not (path.parent / "OFL.txt").exists():
                 report.error(rel, f"fonts.{face}: no licence (OFL.txt) next to '{spec['file']}'")
-        panel = m.get("settings_panel")
-        if panel:
-            prof = db["settings"].get(panel["profile"])
-            if prof is None:
-                report.error(rel, f"settings_panel.profile '{panel['profile']}' not found in settings")
-            else:
-                for row in panel["rows"]:
-                    node = prof
-                    for part in row["path"].split("."):
-                        node = node.get(part) if isinstance(node, dict) else None
-                    if node is None or isinstance(node, (dict, list)):
-                        report.error(rel, f"settings_panel row '{row['label']}': no setting '{row['path']}' "
-                                          f"in settings/{panel['profile']}.json")
-            for kid, k in db["keybinds"].items():
-                bound = {b["action"] for b in k["binds"]}
-                for action in panel.get("keys", []):
-                    if action not in bound:
-                        report.error(rel, f"settings_panel.keys: '{action}' is not bound in keybinds/{kid}.json")
-        elif "settings" in actions:
-            report.error(rel, "a button opens the settings but there is no settings_panel")
+        if "settings" in actions and not m.get("settings_screen", {}).get("pages"):
+            report.error(rel, "a button opens the settings but there is no settings_screen")
 
 
 def _check_hud_layouts(report: Report, db: dict) -> None:
@@ -864,6 +847,34 @@ def _check_talent_order(report: Report, rel: str, spec_trees: dict) -> None:
                             elif other == path and how == "set":
                                 report.error(rel, f"talents '{node}' and '{n['id']}' both set {path}; only the later would count")
                     seen.append((path, n["id"], "set" if "set" in e else "add"))
+
+
+def _check_settings_screen(report: Report, rel: str, screen: dict, profile: dict) -> None:
+    """Every settings row names a setting of the default profile, of the row's kind; a slider's
+    default lies in its range and a choice's among its choices (M2-13)."""
+    for page in screen.get("pages", []):
+        for i, row in enumerate(page["rows"]):
+            where = f"settings_screen.{page['id']}.rows/{i}"
+            if row["type"] in ("note", "keybinds"):
+                continue
+            node = profile
+            for part in row.get("path", "").split("."):
+                node = node.get(part) if isinstance(node, dict) else None
+            if node is None:
+                report.error(rel, f"{where}: no setting '{row.get('path')}' in settings/default.json")
+                continue
+            if row["type"] == "toggle" and not isinstance(node, bool):
+                report.error(rel, f"{where}: '{row['path']}' is not on/off")
+            elif row["type"] == "slider":
+                if isinstance(node, bool) or not isinstance(node, (int, float)):
+                    report.error(rel, f"{where}: '{row['path']}' is not a number")
+                elif not row["min"] <= node <= row["max"]:
+                    report.error(rel, f"{where}: default {node} is outside {row['min']} to {row['max']}")
+            elif row["type"] == "choice":
+                if node not in row["choices"]:
+                    report.error(rel, f"{where}: default {node!r} is not one of the choices")
+                if "labels" in row and len(row["labels"]) != len(row["choices"]):
+                    report.error(rel, f"{where}: {len(row['labels'])} labels for {len(row['choices'])} choices")
 
 
 def _trees_for(spec: dict, classes: dict, trees: dict) -> dict:

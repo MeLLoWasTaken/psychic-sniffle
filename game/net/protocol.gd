@@ -6,14 +6,14 @@ extends RefCounted
 ## Abilities, auras and specs travel as small indexes into their sorted id lists (both sides
 ## load the same data, and the protocol version changes whenever that could differ).
 
-const VERSION: int = 7
+const VERSION: int = 8
 const CH_RELIABLE: int = 0
 const CH_UNRELIABLE: int = 1
 const CHANNELS: int = 2
 const INPUT_REDUNDANCY: int = 3  ## each input packet repeats the last N inputs to survive loss
 const NO_ID: int = 0xFFFF
 
-enum Msg { HELLO = 1, WELCOME = 2, INPUT = 3, SNAPSHOT = 4, PING = 5, PONG = 6, EVENTS = 7, REJECT = 8 }
+enum Msg { HELLO = 1, WELCOME = 2, INPUT = 3, SNAPSHOT = 4, PING = 5, PONG = 6, EVENTS = 7, REJECT = 8, PREFS = 9 }
 
 const CC_CATEGORIES: Array[String] = ["stun", "incapacitate", "disorient", "silence", "root", "disarm"]
 const FLAG_JUMP: int = 1
@@ -49,13 +49,14 @@ static func _buf() -> StreamPeerBuffer:
 
 # ------------------------------------------------------------------ handshake
 
-static func hello(player_name: String, spec_id: String, talents: String = "") -> PackedByteArray:
+static func hello(player_name: String, spec_id: String, talents: String = "", prefs: Dictionary = {}) -> PackedByteArray:
 	var b: StreamPeerBuffer = _buf()
 	b.put_u8(Msg.HELLO)
 	b.put_u16(VERSION)
 	b.put_utf8_string(player_name)
 	b.put_utf8_string(spec_id)
 	b.put_utf8_string(talents)
+	_put_prefs(b, prefs)
 	return b.data_array
 
 
@@ -202,6 +203,28 @@ static func snapshot(tick: int, ack_seq: int, units: Array, match_state: Diction
 
 # ------------------------------------------------------------------ ping and events
 
+## A player's gameplay settings for the rules (M2-13): spell queue window (ms; 0xFFFF = the
+## tuning's) and auto self-cast.
+static func prefs(p: Dictionary) -> PackedByteArray:
+	var b: StreamPeerBuffer = _buf()
+	b.put_u8(Msg.PREFS)
+	_put_prefs(b, p)
+	return b.data_array
+
+
+static func _put_prefs(b: StreamPeerBuffer, p: Dictionary) -> void:
+	b.put_u16(clampi(int(p["spell_queue_ms"]), 0, 4000) if p.has("spell_queue_ms") else 0xFFFF)
+	b.put_u8(0 if not bool(p.get("auto_self_cast", true)) else 1)
+
+
+static func _get_prefs(b: StreamPeerBuffer) -> Dictionary:
+	var q: int = b.get_u16()
+	var out: Dictionary = {"auto_self_cast": b.get_u8() != 0}
+	if q != 0xFFFF:
+		out["spell_queue_ms"] = q
+	return out
+
+
 static func ping(t_usec: int) -> PackedByteArray:
 	var b: StreamPeerBuffer = _buf()
 	b.put_u8(Msg.PING)
@@ -238,6 +261,7 @@ static func decode(data: PackedByteArray) -> Dictionary:
 			if hello_msg["version"] != VERSION:
 				return hello_msg  # the server answers with a version mismatch; the rest may differ
 			hello_msg.merge({"name": b.get_utf8_string(), "spec": b.get_utf8_string(), "talents": b.get_utf8_string()})
+			hello_msg["prefs"] = _get_prefs(b)
 			return hello_msg
 		Msg.WELCOME:
 			return {"type": t, "unit_id": b.get_u16(), "tick": b.get_u32(), "tick_rate": b.get_u8(),
@@ -314,6 +338,8 @@ static func decode(data: PackedByteArray) -> Dictionary:
 			return snap
 		Msg.PING, Msg.PONG:
 			return {"type": t, "t_usec": b.get_u64()}
+		Msg.PREFS:
+			return {"type": t, "prefs": _get_prefs(b)}
 		Msg.EVENTS:
 			return {"type": t, "events": b.get_var()}
 	return {"type": t}

@@ -2,6 +2,19 @@
 
 One entry per build-loop iteration, newest first. Format: date, backlog ID, what changed, how it was checked.
 
+## 2026-10-01 — M2-13 settings suite
+- Settings (main menu, and the pause menu in a match) has Interface, Gameplay, Graphics, Audio, Accessibility and Key bindings pages with every setting DESIGN.md lists.
+  - Each change applies at once: HUD scale and text size, aura size, combat text, tooltip position, mouse, turning, targeting, camera, field of view, render scale and FSR, quality presets, shadows, glow, ambient occlusion, fog, particle density, other players' effect opacity, window mode, vsync, frame cap, bus volumes, output device, mute in background, the crowd-control warning, color-blind team colors, larger text, reduced flashing, event text.
+  - Resolution waits for a restart.
+- Profiles: next, new, delete; reset a page or everything. Saved in the user's folder.
+- The spell queue window and auto self-cast are now each player's own server rules (hello message and a new PREFS message, protocol version 8; recorded for replays).
+- New event text (subtitles for key events) for accessibility.
+- Fixes found by the new tests: the HUD wrote into the shared settings data (it now copies it), and a HUD with no settings loaded failed on unset values.
+- Checked:
+  - 10 settings tests (profiles, presets, engine settings, HUD, controller, camera, effects, lighting, per-player rules with a replay, the screen, the pause menu, event text);
+  - all 338 Godot tests pass; a real 1v1 ran end to end on protocol 8;
+  - the Graphics page screenshot was reviewed (whole-number sliders fixed).
+
 ## 2026-10-01 — M2-12 HUD edit mode and layout profiles
 - F10 in a match or practice opens HUD edit mode.
   - Every element gets a labeled outline (hidden ones dashed).

@@ -42,6 +42,9 @@ var map: Dictionary = {}
 var gates: Array[Node3D] = []
 var gates_open: bool = false
 var pickups: Array[Node3D] = []  ## one per map pickup spot (M2-07), shown while it can be taken
+var environment: Environment = null  ## the lighting preset's environment (settings toggle parts of it)
+var _preset_shadows: Dictionary = {}  ## light name -> whether the preset gives it shadows
+var _ssao_preset: Variant = null  ## whether the preset uses ambient occlusion
 var _materials: Dictionary = {}
 var _kit: String = ""
 var _kit_scenes: Dictionary = {}
@@ -56,6 +59,7 @@ var _textures: Dictionary = {}  ## generated decal textures
 
 func _ready() -> void:
 	build()
+	Settings.bus.changed.connect(_on_setting)
 
 
 func build() -> void:
@@ -82,6 +86,9 @@ func build() -> void:
 	else:
 		_dress_with_kit()
 	_build_pickups()
+	if environment != null:
+		_ssao_preset = environment.ssao_enabled
+	apply_graphics()
 	if build_lighting and bake_gi:
 		_bake_gi()
 
@@ -911,6 +918,8 @@ func _build_lighting(preset: Dictionary) -> void:
 	we.name = "WorldEnvironment"
 	we.environment = env
 	add_child(we)
+	environment = env
+	_preset_shadows = {}
 	add_child(_light("Sun", preset["sun"]))
 	if preset.has("fill"):
 		add_child(_light("Fill", preset["fill"]))
@@ -942,7 +951,29 @@ func _light(node_name: String, cfg: Dictionary) -> DirectionalLight3D:
 	l.shadow_enabled = bool(cfg.get("shadows", false))
 	l.directional_shadow_max_distance = 70.0
 	l.light_volumetric_fog_energy = 1.0 if l.shadow_enabled else 0.0
+	_preset_shadows[node_name] = l.shadow_enabled
 	return l
+
+
+## The player's graphics settings on the lighting (M2-13): glow, ambient occlusion, fog and
+## shadows (off; low = shorter shadow distance; high = the preset's). Applied at build and live.
+func apply_graphics() -> void:
+	if environment != null:
+		environment.glow_enabled = bool(Settings.get_value("graphics.glow", true))
+		var preset_ssao: bool = bool(_ssao_preset) if _ssao_preset != null else true
+		environment.ssao_enabled = preset_ssao and bool(Settings.get_value("graphics.ssao", true))
+		environment.volumetric_fog_enabled = bool(Settings.get_value("graphics.fog", true))
+	var shadows: String = str(Settings.get_value("graphics.shadows", "high"))
+	for n: Node in get_children():
+		if n is DirectionalLight3D:
+			var l: DirectionalLight3D = n
+			l.shadow_enabled = bool(_preset_shadows.get(str(l.name), false)) and shadows != "off"
+			l.directional_shadow_max_distance = 35.0 if shadows == "low" else 70.0
+
+
+func _on_setting(p: String, _v: Variant) -> void:
+	if p.begins_with("graphics"):
+		apply_graphics()
 
 
 static func _rgb(a: Array) -> Color:

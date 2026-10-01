@@ -202,18 +202,20 @@ func test_menu_is_built_from_data_and_emits_the_chosen_action() -> void:
 	# fonts come from the data, like the HUD's
 	assert_object(m.style.display_font).is_not_same(ThemeDB.fallback_font)
 	assert_object(m.style.font).is_not_same(ThemeDB.fallback_font)
-	m.show_settings()
-	assert_bool(m.settings_panel.visible).is_true()
-	m.settings_panel.close_button.pressed.emit()
-	assert_bool(m.settings_panel.visible).is_false()
+	var ss: SettingsScreen = m.show_settings()
+	assert_object(m.settings_screen).is_not_null()
+	ss.press("done")
+	await await_idle_frame()
+	assert_object(m.settings_screen).is_null()
 
 
-func test_settings_panel_reads_the_profile_values() -> void:
-	var style: MenuStyle = MenuStyle.new("main")
-	var p: MainMenu.SettingsPanel = auto_free(MainMenu.SettingsPanel.new(style))
-	var prof: Dictionary = Data.settings["default"]
-	assert_str(p._value(prof, {"path": "camera.fov_deg", "suffix": "°"})).is_equal("%d°" % int(prof["camera"]["fov_deg"]))
-	assert_str(p._value(prof, {"path": "mouse.invert_y"})).is_equal(style.text("no") if not prof["mouse"]["invert_y"] else style.text("yes"))
+func test_settings_screen_shows_the_profile_values() -> void:
+	Settings.use_data()
+	var s: SettingsScreen = auto_free(SettingsScreen.new())
+	s.show_page("graphics")
+	for rc: Dictionary in s.row_controls:
+		if rc["row"].get("path", "") == "camera.fov_deg":
+			assert_float((rc["control"] as HSlider).value).is_equal(float(Data.settings["default"]["camera"]["fov_deg"]))
 
 
 func test_game_flow_routes_practice_and_back_to_the_menu() -> void:
@@ -241,7 +243,7 @@ func test_game_flow_routes_practice_and_back_to_the_menu() -> void:
 	assert_int(int(gf.report["menu_returns"])).is_equal(1)
 	# Settings opens the panel over the menu
 	(gf.menu.buttons["settings"] as Button).pressed.emit()
-	assert_bool(gf.menu.settings_panel.visible).is_true()
+	assert_object(gf.menu.settings_screen).is_not_null()
 	await await_idle_frame()
 	assert_int(Log.error_count - errors_before).is_equal(0)
 

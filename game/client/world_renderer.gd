@@ -140,7 +140,7 @@ func _draw_ring() -> void:
 		ring.visible = false
 		return
 	var hostile: bool = int(e["team"]) != int(view["me"]["team"])
-	(ring.material_override as StandardMaterial3D).albedo_color = RING_COLORS["enemy" if hostile else "ally"]
+	(ring.material_override as StandardMaterial3D).albedo_color = Settings.team_colors()["enemy" if hostile else "ally"]  # color-blind modes
 	var p: Vector3 = (e["root"] as Node3D).position
 	ring.position = Vector3(p.x, 0.04, p.z)  # stays on the ground under a jumping target
 	ring.visible = true

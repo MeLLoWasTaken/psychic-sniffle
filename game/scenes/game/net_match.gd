@@ -87,7 +87,9 @@ func _ready() -> void:
 		Keybinds.load_user()  # the player's own binds (the keybinding screen), else the default
 	else:
 		Keybinds.load_profile(str(options["keybinds"]))
-	_settings = Data.settings.get(str(options["settings"]), {})
+	_settings = Settings.values if str(options["settings"]) == "default" and not Settings.values.is_empty() \
+		else Data.settings.get(str(options["settings"]), {})  # the player's own settings in a normal run
+	Settings.bus.changed.connect(_on_setting)
 	var enemies: Array = comp["enemies"]
 	var allies: Array = comp["allies"]
 	flow = MatchFlow.new(float(preset["end_banner_s"]), 1 + allies.size() + enemies.size())
@@ -194,6 +196,7 @@ func _connect() -> void:
 	net.player_name = str(preset["host_name"])
 	net.spec_id = spec_id
 	net.talents = str(options["talents"])
+	net.prefs = Settings.rule_prefs()
 	net.server_silence_s = float(preset["server_silence_s"])
 	net.input_source = _next_input
 	add_child(net)
@@ -453,3 +456,26 @@ func _notification(what: int) -> void:
 func _exit_tree() -> void:
 	if not _exited:
 		_stop_network()
+
+## The player's graphics and gameplay settings on this match while it runs (M2-13).
+func _on_setting(p: String, v: Variant) -> void:
+	match p:
+		"graphics.render_scale", "graphics.fsr":
+			_apply_render_scale()
+		"gameplay.spell_queue_ms", "gameplay.auto_self_cast":
+			_send_prefs()
+
+
+func _apply_render_scale() -> void:
+	var rs: float = clampf(float(Settings.get_value("graphics.render_scale", 1.0)), 0.25, 1.0)
+	var vp: Viewport = get_viewport()
+	if vp == null or float(options.get("render_scale_override", 0.0)) > 0.0:
+		return
+	vp.scaling_3d_mode = Viewport.SCALING_3D_MODE_FSR if bool(Settings.get_value("graphics.fsr", true)) and rs < 1.0 \
+		else Viewport.SCALING_3D_MODE_BILINEAR
+	vp.scaling_3d_scale = rs
+
+
+func _send_prefs() -> void:
+	if net != null:
+		net.send_prefs(Settings.rule_prefs())

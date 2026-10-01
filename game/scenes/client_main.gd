@@ -62,6 +62,15 @@ func _ready() -> void:
 	set_anchors_preset(Control.PRESET_FULL_RECT)
 	mouse_filter = Control.MOUSE_FILTER_IGNORE  # clicks on the arena reach the player controls
 	Keybinds.load_user()  # the player's own binds, or the default; the settings panel lists the keys
+	if not ("--playback" in args or "--auto-flow" in args):
+		Settings.load_user()  # the player's settings (an automated run keeps the data profile)
+		var rs: float = float(Settings.get_value("graphics.render_scale", 1.0))
+		if _arg("--render-scale", "") == "" and rs < 1.0:  # the command line wins (reference videos)
+			get_viewport().scaling_3d_mode = Viewport.SCALING_3D_MODE_FSR if bool(Settings.get_value("graphics.fsr", true)) \
+				else Viewport.SCALING_3D_MODE_BILINEAR
+			get_viewport().scaling_3d_scale = clampf(rs, 0.25, 1.0)
+	else:
+		Settings.use_data()
 	menu = MainMenu.new()
 	menu.action_chosen.connect(_on_action)
 	add_child(menu)
@@ -387,3 +396,8 @@ func _save_shot(st: String) -> void:
 func _arg(name: String, default: String) -> String:
 	var i: int = args.find(name)
 	return args[i + 1] if i != -1 and i + 1 < args.size() else default
+
+
+func _notification(what: int) -> void:
+	if what == NOTIFICATION_APPLICATION_FOCUS_OUT or what == NOTIFICATION_APPLICATION_FOCUS_IN:
+		Settings.focus_changed(what == NOTIFICATION_APPLICATION_FOCUS_IN)  # mute when unfocused, if set

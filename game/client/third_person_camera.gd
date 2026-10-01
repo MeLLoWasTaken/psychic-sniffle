@@ -38,12 +38,17 @@ func _init(camera_settings: Dictionary = {}) -> void:
 	camera.top_level = true  # placed in world space, also before the node enters the tree (tests)
 	add_child(camera)
 	configure(camera_settings)
+	Settings.bus.changed.connect(func(path: String, _v: Variant) -> void:
+		if path.begins_with("camera"):
+			configure(Settings.get_value("camera", {}), true))
 
 
-## Apply the "camera" section of a settings profile (data/settings/<id>.json).
-func configure(s: Dictionary) -> void:
+## Apply the "camera" section of a settings profile (data/settings/<id>.json). `keep_zoom`
+## keeps the current zoom (a setting changed while playing) unless it falls outside the limits.
+func configure(s: Dictionary, keep_zoom: bool = false) -> void:
 	if s.is_empty():
 		return
+	var was: float = zoom_target
 	min_distance = float(s["min_distance_m"])
 	max_distance = float(s["max_distance_m"])
 	zoom_step_ratio = float(s["zoom_step_ratio"])
@@ -53,7 +58,7 @@ func configure(s: Dictionary) -> void:
 	pivot_height = float(s["pivot_height_m"])
 	collision_radius = float(s["collision_radius_m"])
 	camera.fov = float(s["fov_deg"])
-	zoom_target = clampf(float(s["default_distance_m"]), min_distance, max_distance)
+	zoom_target = clampf(was if keep_zoom else float(s["default_distance_m"]), min_distance, max_distance)
 	zoom_distance = zoom_target
 	distance = zoom_target
 

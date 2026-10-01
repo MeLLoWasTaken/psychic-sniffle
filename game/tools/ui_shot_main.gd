@@ -40,6 +40,11 @@ func _ready() -> void:
 			hud.editor.selected = "player_frame"
 			hud.editor._refresh()
 			screen = Control.new()
+		"settings":
+			Settings.use_data()
+			var ss: SettingsScreen = SettingsScreen.new()
+			ss.show_page(_arg(args, "--tab", "interface"))
+			screen = ss
 		"keybinds":
 			var ks: KeybindScreen = KeybindScreen.new("default", "user://ui_shot_keybinds.json")
 			Keybinds.rebind(ks.profile, "bar1_slot2", "KEY_1", [])  # show a conflict

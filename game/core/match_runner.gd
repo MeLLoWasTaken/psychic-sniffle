@@ -52,11 +52,12 @@ func _log(kind: String, payload: Variant) -> void:
 
 ## Create a unit for a spec on a team at the team's next spawn point, with a talent loadout in
 ## its shared text form (Talents.encode; "" for none). Check the text first with talent_error().
-func add_unit(spec_id: String, team: int, talents: String = "") -> Unit:
-	_log("add", [spec_id, team, talents])
+func add_unit(spec_id: String, team: int, talents: String = "", prefs: Dictionary = {}) -> Unit:
+	_log("add", [spec_id, team, talents, prefs.duplicate()])
 	var unit: Unit = Unit.new(_next_unit_id, team, spec_id)
 	_next_unit_id += 1
 	unit.loadout = loadout_from(spec_id, talents)
+	_apply_prefs(unit, prefs)
 	combat.init_unit(unit)
 	var spawns: Array = map["spawns"]["team_a" if team == 0 else "team_b"]
 	var sp: Array = spawns[int(_spawn_count[team]) % spawns.size()]
@@ -65,6 +66,21 @@ func add_unit(spec_id: String, team: int, talents: String = "") -> Unit:
 	unit.facing = -PI / 2 if team == 0 else PI / 2  # face the other team across the arena
 	sim.add_unit(unit)
 	return unit
+
+
+## A player's gameplay settings that the rules use (M2-13): {"spell_queue_ms", "auto_self_cast"}.
+## Allowed at any time; recorded for replays.
+func set_prefs(unit: Unit, prefs: Dictionary) -> void:
+	_log("prefs", [unit.id, prefs.duplicate()])
+	_apply_prefs(unit, prefs)
+
+
+func _apply_prefs(unit: Unit, prefs: Dictionary) -> void:
+	if prefs.has("spell_queue_ms"):
+		var ms: int = clampi(int(prefs["spell_queue_ms"]), 0, int(Data.tuning["pacing"]["spell_queue_window_ms"]))
+		unit.queue_window_ticks = roundi(ms / 1000.0 * sim.tick_rate)
+	if prefs.has("auto_self_cast"):
+		unit.auto_self_cast = bool(prefs["auto_self_cast"])
 
 
 ## Why a talent string cannot be used for a spec, or "" when it can.

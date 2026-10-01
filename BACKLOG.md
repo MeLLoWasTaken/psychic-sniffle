@@ -506,8 +506,9 @@ Exit gate (DESIGN.md): every combat rule has passing tests; every action is rebi
 ### M2-12 HUD edit mode `[done]`
 - [x] Toggle with labeled outlines; drag to move with grid snap; scale 50-200%; opacity; per-element options; layouts saved as named profiles (optionally per spec), exported and imported as text; checked at the five DESIGN.md resolutions.
 
-### M2-13 Settings suite `[todo]`
-- [ ] Interface, Gameplay, Graphics, Audio and Accessibility pages with every setting in DESIGN.md; each applies instantly except resolution; saved per profile.
+### M2-13 Settings suite `[done]`
+- [x] Interface, Gameplay, Graphics, Audio and Accessibility pages with every setting in DESIGN.md; each applies instantly except resolution; saved per profile.
+- Follow-ups: nameplate settings take effect when nameplates exist (M2-14); "reduce camera shake" has nothing to reduce until the camera shakes.
 
 ### M2-14 Arena HUD for 2v2 and 3v3 `[todo]`
 - [ ] Arena enemy frames with spec icon, cast bar, Break Free cooldown and a DR tracker per CC category; focus target frame and cast bar; nameplates with class color, health, cast bar and important debuffs.

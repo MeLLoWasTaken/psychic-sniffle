@@ -56,7 +56,9 @@ func _ready() -> void:
 		Keybinds.load_user()  # the player's own binds (the keybinding screen), else the default
 	else:
 		Keybinds.load_profile(str(options["keybinds"]))
-	var settings: Dictionary = Data.settings.get(str(options["settings"]), {})
+	var settings: Dictionary = Settings.values if str(options["settings"]) == "default" and not Settings.values.is_empty() \
+		else Data.settings.get(str(options["settings"]), {})
+	Settings.bus.changed.connect(_on_setting)
 	if settings.is_empty():
 		Log.error("practice: no settings profile '%s'" % options["settings"])
 	var enemies: PackedStringArray = str(options["enemies"]).split(",", false)
@@ -65,6 +67,7 @@ func _ready() -> void:
 		"%dv%d" % [allies.size() + 1, enemies.size()], float(options["prep"]), int(options["seed"]),
 		bool(options["player_bot"]), str(options["talents"]))
 	start_position = world.player.position
+	world.runner.set_prefs(world.player, Settings.rule_prefs())
 
 	var map: Dictionary = Data.maps[str(options["map"])]
 	builder = (load(map.get("scene", "res://scenes/maps/gallows_courtyard.tscn")) as PackedScene).instantiate()
@@ -232,3 +235,26 @@ func _finish() -> void:
 static func _arg(args: PackedStringArray, name: String, default: String) -> String:
 	var i: int = args.find(name)
 	return args[i + 1] if i != -1 and i + 1 < args.size() else default
+
+## The player's graphics and gameplay settings on this match while it runs (M2-13).
+func _on_setting(p: String, v: Variant) -> void:
+	match p:
+		"graphics.render_scale", "graphics.fsr":
+			_apply_render_scale()
+		"gameplay.spell_queue_ms", "gameplay.auto_self_cast":
+			_send_prefs()
+
+
+func _apply_render_scale() -> void:
+	var rs: float = clampf(float(Settings.get_value("graphics.render_scale", 1.0)), 0.25, 1.0)
+	var vp: Viewport = get_viewport()
+	if vp == null or float(options.get("render_scale_override", 0.0)) > 0.0:
+		return
+	vp.scaling_3d_mode = Viewport.SCALING_3D_MODE_FSR if bool(Settings.get_value("graphics.fsr", true)) and rs < 1.0 \
+		else Viewport.SCALING_3D_MODE_BILINEAR
+	vp.scaling_3d_scale = rs
+
+
+func _send_prefs() -> void:
+	if world != null:
+		world.runner.set_prefs(world.player, Settings.rule_prefs())

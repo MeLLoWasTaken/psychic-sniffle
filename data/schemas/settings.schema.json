@@ -5,80 +5,243 @@
   "description": "Camera, mouse, targeting and interface settings (docs/DESIGN.md, settings suite: Gameplay and Interface pages). The settings screen (M2) edits a copy of this profile; the game falls back to these defaults.",
   "type": "object",
   "additionalProperties": false,
-  "required": ["id", "name", "mouse", "movement", "camera", "targeting", "interface"],
+  "required": [
+    "accessibility",
+    "audio",
+    "camera",
+    "gameplay",
+    "graphics",
+    "id",
+    "interface",
+    "mouse",
+    "movement",
+    "name",
+    "targeting"
+  ],
   "properties": {
-    "id": {"$ref": "common.schema.json#/$defs/id"},
-    "name": {"type": "string"},
+    "id": {
+      "$ref": "common.schema.json#/$defs/id"
+    },
+    "name": {
+      "type": "string"
+    },
     "mouse": {
       "type": "object",
       "additionalProperties": false,
-      "required": ["sensitivity_deg_per_px", "invert_y", "click_max_drag_px"],
+      "required": [
+        "sensitivity_deg_per_px",
+        "invert_y",
+        "click_max_drag_px"
+      ],
       "properties": {
-        "sensitivity_deg_per_px": {"type": "number", "exclusiveMinimum": 0, "maximum": 5, "description": "Degrees the camera or character turns per pixel of mouse travel"},
-        "invert_y": {"type": "boolean"},
-        "click_max_drag_px": {"type": "number", "minimum": 0, "description": "A button press that moves less than this before release is a click (targets), not a drag"}
+        "sensitivity_deg_per_px": {
+          "type": "number",
+          "exclusiveMinimum": 0,
+          "maximum": 5,
+          "description": "Degrees the camera or character turns per pixel of mouse travel"
+        },
+        "invert_y": {
+          "type": "boolean"
+        },
+        "click_max_drag_px": {
+          "type": "number",
+          "minimum": 0,
+          "description": "A button press that moves less than this before release is a click (targets), not a drag"
+        }
       }
     },
     "movement": {
       "type": "object",
       "additionalProperties": false,
-      "required": ["keyboard_turn_deg_s"],
+      "required": [
+        "keyboard_turn_deg_s"
+      ],
       "properties": {
-        "keyboard_turn_deg_s": {"type": "number", "exclusiveMinimum": 0, "description": "Turn speed with the turn keys (A/D by default)"}
+        "keyboard_turn_deg_s": {
+          "type": "number",
+          "exclusiveMinimum": 0,
+          "description": "Turn speed with the turn keys (A/D by default)"
+        }
       }
     },
     "camera": {
       "type": "object",
       "additionalProperties": false,
-      "required": ["min_distance_m", "max_distance_m", "default_distance_m", "zoom_step_ratio", "zoom_smoothing_per_s",
-        "pitch_min_deg", "pitch_max_deg", "default_pitch_deg", "pivot_height_m", "collision_radius_m", "fov_deg"],
+      "required": [
+        "min_distance_m",
+        "max_distance_m",
+        "default_distance_m",
+        "zoom_step_ratio",
+        "zoom_smoothing_per_s",
+        "pitch_min_deg",
+        "pitch_max_deg",
+        "default_pitch_deg",
+        "pivot_height_m",
+        "collision_radius_m",
+        "fov_deg"
+      ],
       "properties": {
-        "min_distance_m": {"type": "number", "exclusiveMinimum": 0},
-        "max_distance_m": {"type": "number", "exclusiveMinimum": 0},
-        "default_distance_m": {"type": "number", "exclusiveMinimum": 0},
-        "zoom_step_ratio": {"type": "number", "exclusiveMinimum": 0, "maximum": 1, "description": "Each wheel notch changes the distance by this fraction (at least 0.5 m)"},
-        "zoom_smoothing_per_s": {"type": "number", "exclusiveMinimum": 0, "description": "Exponential approach rate of the shown distance toward the zoom target"},
-        "pitch_min_deg": {"type": "number", "minimum": -89, "maximum": 89, "description": "Lowest camera elevation above the pivot (negative = below, looking up)"},
-        "pitch_max_deg": {"type": "number", "minimum": -89, "maximum": 89},
-        "default_pitch_deg": {"type": "number", "minimum": -89, "maximum": 89},
-        "pivot_height_m": {"type": "number", "minimum": 0, "description": "Height above the character's feet the camera orbits and looks at (shoulder height)"},
-        "collision_radius_m": {"type": "number", "minimum": 0, "description": "The camera stays this far from walls, pillars and the floor"},
-        "fov_deg": {"type": "number", "minimum": 30, "maximum": 120}
+        "min_distance_m": {
+          "type": "number",
+          "exclusiveMinimum": 0
+        },
+        "max_distance_m": {
+          "type": "number",
+          "exclusiveMinimum": 0
+        },
+        "default_distance_m": {
+          "type": "number",
+          "exclusiveMinimum": 0
+        },
+        "zoom_step_ratio": {
+          "type": "number",
+          "exclusiveMinimum": 0,
+          "maximum": 1,
+          "description": "Each wheel notch changes the distance by this fraction (at least 0.5 m)"
+        },
+        "zoom_smoothing_per_s": {
+          "type": "number",
+          "exclusiveMinimum": 0,
+          "description": "Exponential approach rate of the shown distance toward the zoom target"
+        },
+        "pitch_min_deg": {
+          "type": "number",
+          "minimum": -89,
+          "maximum": 89,
+          "description": "Lowest camera elevation above the pivot (negative = below, looking up)"
+        },
+        "pitch_max_deg": {
+          "type": "number",
+          "minimum": -89,
+          "maximum": 89
+        },
+        "default_pitch_deg": {
+          "type": "number",
+          "minimum": -89,
+          "maximum": 89
+        },
+        "pivot_height_m": {
+          "type": "number",
+          "minimum": 0,
+          "description": "Height above the character's feet the camera orbits and looks at (shoulder height)"
+        },
+        "collision_radius_m": {
+          "type": "number",
+          "minimum": 0,
+          "description": "The camera stays this far from walls, pillars and the floor"
+        },
+        "fov_deg": {
+          "type": "number",
+          "minimum": 30,
+          "maximum": 120
+        }
       }
     },
     "targeting": {
       "type": "object",
       "additionalProperties": false,
-      "required": ["tab_range_m", "tab_max_angle_deg", "tab_angle_band_deg", "click_empty_clears_target", "pick_height_m", "pick_radius_m"],
+      "required": [
+        "tab_range_m",
+        "tab_max_angle_deg",
+        "tab_angle_band_deg",
+        "click_empty_clears_target",
+        "pick_height_m",
+        "pick_radius_m"
+      ],
       "properties": {
-        "tab_range_m": {"type": "number", "exclusiveMinimum": 0},
-        "tab_max_angle_deg": {"type": "number", "exclusiveMinimum": 0, "maximum": 180, "description": "Enemies within this angle of the screen centre count as in front of the camera"},
-        "tab_angle_band_deg": {"type": "number", "exclusiveMinimum": 0, "description": "Tab order: by angle from the screen centre in bands this wide, then by distance within a band"},
-        "click_empty_clears_target": {"type": "boolean", "description": "Clicking empty ground clears the target (false keeps it, the MMO convention)"},
-        "pick_height_m": {"type": "number", "exclusiveMinimum": 0, "description": "Height of the capsule a click must hit to select a unit"},
-        "pick_radius_m": {"type": "number", "exclusiveMinimum": 0}
+        "tab_range_m": {
+          "type": "number",
+          "exclusiveMinimum": 0
+        },
+        "tab_max_angle_deg": {
+          "type": "number",
+          "exclusiveMinimum": 0,
+          "maximum": 180,
+          "description": "Enemies within this angle of the screen centre count as in front of the camera"
+        },
+        "tab_angle_band_deg": {
+          "type": "number",
+          "exclusiveMinimum": 0,
+          "description": "Tab order: by angle from the screen centre in bands this wide, then by distance within a band"
+        },
+        "click_empty_clears_target": {
+          "type": "boolean",
+          "description": "Clicking empty ground clears the target (false keeps it, the MMO convention)"
+        },
+        "pick_height_m": {
+          "type": "number",
+          "exclusiveMinimum": 0,
+          "description": "Height of the capsule a click must hit to select a unit"
+        },
+        "pick_radius_m": {
+          "type": "number",
+          "exclusiveMinimum": 0
+        }
       }
     },
     "interface": {
       "type": "object",
-      "additionalProperties": false,
-      "required": ["hud_layout", "ui_scale", "min_text_px", "combat_text"],
+      "additionalProperties": true,
+      "required": [
+        "hud_layout",
+        "ui_scale",
+        "min_text_px",
+        "combat_text"
+      ],
       "properties": {
-        "hud_layout": {"$ref": "common.schema.json#/$defs/id", "description": "HUD layout profile in data/hud_layouts (backlog M1-27; the M2 edit mode saves copies)"},
-        "ui_scale": {"type": "number", "minimum": 0.5, "maximum": 2.0, "description": "Global interface scale (DESIGN.md Interface page), on top of the resolution scaling from the layout's 1920x1080 base"},
-        "min_text_px": {"type": "number", "minimum": 8, "maximum": 32, "description": "Smallest text height in screen pixels: at low resolutions the whole HUD grows until its smallest text reaches this"},
-        "combat_text": {"type": "boolean", "description": "Floating combat text on or off"}
+        "hud_layout": {
+          "$ref": "common.schema.json#/$defs/id",
+          "description": "HUD layout profile in data/hud_layouts (backlog M1-27; the M2 edit mode saves copies)"
+        },
+        "ui_scale": {
+          "type": "number",
+          "minimum": 0.5,
+          "maximum": 2.0,
+          "description": "Global interface scale (DESIGN.md Interface page), on top of the resolution scaling from the layout's 1920x1080 base"
+        },
+        "min_text_px": {
+          "type": "number",
+          "minimum": 8,
+          "maximum": 32,
+          "description": "Smallest text height in screen pixels: at low resolutions the whole HUD grows until its smallest text reaches this"
+        },
+        "combat_text": {
+          "type": "boolean",
+          "description": "Floating combat text on or off"
+        }
       }
     },
     "graphics": {
       "type": "object",
-      "additionalProperties": false,
-      "required": ["rig_modifiers", "rig_modifier_max_distance_m"],
+      "additionalProperties": true,
+      "required": [
+        "rig_modifiers",
+        "rig_modifier_max_distance_m"
+      ],
       "description": "Graphics page (DESIGN.md settings suite). Missing: the game uses these defaults",
       "properties": {
-        "rig_modifiers": {"type": "boolean", "description": "Characters turn their heads toward their target and plant their feet on the floor (backlog X-02, RigModifiers); off saves a little CPU per character"},
-        "rig_modifier_max_distance_m": {"type": "number", "exclusiveMinimum": 0, "description": "Characters farther than this from the camera skip head turning and foot grounding (level of detail)"}
+        "rig_modifiers": {
+          "type": "boolean",
+          "description": "Characters turn their heads toward their target and plant their feet on the floor (backlog X-02, RigModifiers); off saves a little CPU per character"
+        },
+        "rig_modifier_max_distance_m": {
+          "type": "number",
+          "exclusiveMinimum": 0,
+          "description": "Characters farther than this from the camera skip head turning and foot grounding (level of detail)"
+        }
       }
+    },
+    "gameplay": {
+      "type": "object",
+      "additionalProperties": true
+    },
+    "audio": {
+      "type": "object",
+      "additionalProperties": true
+    },
+    "accessibility": {
+      "type": "object",
+      "additionalProperties": true
     }
   }
 }

@@ -218,13 +218,18 @@ func _on_packet(peer: ENetPacketPeer, key: int, msg: Dictionary) -> void:
 					transport.send(peer, Protocol.CH_RELIABLE, Protocol.reject("not in the roster"), true)
 					Log.warn("server: rejected %s (not in the roster, or already joined)" % msg["name"])
 					return
-			_add_client(peer, key, msg["name"], msg["spec"], msg["talents"])
+			_add_client(peer, key, msg["name"], msg["spec"], msg["talents"], msg.get("prefs", {}))
 		Protocol.Msg.INPUT:
 			var c: Dictionary = clients.get(key, {})
 			if c.is_empty():
 				return
 			for inp: Dictionary in msg["inputs"]:
 				_queue_input(c, inp)
+		Protocol.Msg.PREFS:
+			var pc: Dictionary = clients.get(key, {})
+			var pu: Unit = sim.units.get(int(pc.get("unit_id", -1))) if not pc.is_empty() else null
+			if pu:
+				runner.set_prefs(pu, msg["prefs"])
 		Protocol.Msg.PING:
 			transport.send(peer, Protocol.CH_RELIABLE, Protocol.pong(msg["t_usec"]), true)
 
@@ -253,9 +258,10 @@ func _client_stats(c: Dictionary) -> Dictionary:
 		"lost_inputs": c["lost_inputs"]}
 
 
-func _add_client(peer: ENetPacketPeer, key: int, player_name: String, spec_id: String, talents: String = "") -> void:
+func _add_client(peer: ENetPacketPeer, key: int, player_name: String, spec_id: String, talents: String = "",
+		prefs: Dictionary = {}) -> void:
 	var team: int = int(roster.get(player_name, clients.size() % 2))
-	var unit: Unit = runner.add_unit(spec_id, team, talents)
+	var unit: Unit = runner.add_unit(spec_id, team, talents, prefs)
 	_unit_names[player_name] = unit.id
 	clients[key] = {"peer": peer, "name": player_name, "spec": spec_id, "unit_id": unit.id, "inputs": [],
 		"last_received_seq": 0, "ack_seq": 0, "snapshots": 0, "starved_ticks": 0, "lost_inputs": 0,

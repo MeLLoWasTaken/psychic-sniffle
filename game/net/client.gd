@@ -29,6 +29,7 @@ var input_source: Callable  ## returns {move, yaw, jump, tab} for this tick
 var player_name: String = "player"
 var spec_id: String = "warblade_carnage"
 var talents: String = ""  ## talent loadout in its shared text form (Talents.encode)
+var prefs: Dictionary = {}  ## gameplay settings the server's rules use (spell queue window, auto self-cast)
 var unit_id: int = -1
 var map_id: String = ""
 var geometry: ArenaGeometry
@@ -112,12 +113,19 @@ func _process(_delta: float) -> void:
 		_poll_network()
 
 
+## Send changed gameplay settings to the server (they apply at once, M2-13).
+func send_prefs(p: Dictionary) -> void:
+	prefs = p.duplicate()
+	if connected and server_peer:
+		transport.send(server_peer, Protocol.CH_RELIABLE, Protocol.prefs(prefs), true)
+
+
 func _poll_network() -> void:
 	for ev: Dictionary in transport.poll():
 		match ev["type"]:
 			"connect":
 				connected = true
-				transport.send(server_peer, Protocol.CH_RELIABLE, Protocol.hello(player_name, spec_id, talents), true)
+				transport.send(server_peer, Protocol.CH_RELIABLE, Protocol.hello(player_name, spec_id, talents, prefs), true)
 			"disconnect":
 				connected = false
 				if _match_ended_usec > 0:

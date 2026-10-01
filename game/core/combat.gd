@@ -181,8 +181,9 @@ func try_use(u: Unit, ability_id: String, target_id: int, from_queue: bool = fal
 		wait = maxi(wait, u.gcd_ready_tick - now)
 	wait = maxi(wait, int(u.cooldowns.get(ability_id, 0)) - now)
 	if wait > 0:
-		if wait <= _queue_window_ticks and not from_queue:
-			u.queued = {"ability": ability_id, "target": target_id, "expires_tick": now + _queue_window_ticks + wait}
+		var window: int = u.queue_window_ticks if u.queue_window_ticks >= 0 else _queue_window_ticks  # the player's setting
+		if wait <= window and window > 0 and not from_queue:
+			u.queued = {"ability": ability_id, "target": target_id, "expires_tick": now + window + wait}
 			return "queued"
 		return "not_ready" if not from_queue else "waiting"
 	# cost
@@ -271,8 +272,8 @@ func _resolve_target(u: Unit, ab: Dictionary, target_id: int) -> Unit:
 		"enemy":
 			return t if t and t.is_alive() and t.team != u.team else null
 		"ally":
-			# auto self-cast: no valid friendly target means the caster
-			return t if t and t.is_alive() and t.team == u.team else u
+			# auto self-cast (a player setting, on by default): no valid friendly target means the caster
+			return t if t and t.is_alive() and t.team == u.team else (u if u.auto_self_cast else null)
 		"any_unit":
 			return t if t and t.is_alive() else null
 	return null

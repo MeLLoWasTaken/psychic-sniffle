@@ -31,6 +31,7 @@ const PHYSICAL_TEXT: Color = Color(1.0, 0.95, 0.82)
 var talent_abilities: Array = []  ## abilities the player's talents grant (set_loadout)
 var talent_view: Dictionary = {"abilities": {}, "auras": {}, "stats": {}}  ## the player's talented numbers (tooltips)
 var tooltip_layer: Control  ## draws the tooltip of the button or aura under the mouse
+var event_text: EventText  ## subtitle-style event lines (accessibility setting)
 var tooltip: Dictionary = {}  ## what tooltip_layer shows: {lines, near, above}
 var layout: Dictionary = {}
 var base_layout: Dictionary = {}  ## the layout data, read only; `layout` is it with `changes` applied
@@ -60,7 +61,8 @@ var _laid_out_stretch: float = 0.0
 
 func _init(settings: Dictionary = {}, layout_id: String = "") -> void:
 	layer = 10
-	interface = settings.get("interface", {"hud_layout": "default", "ui_scale": 1.0, "min_text_px": 11, "combat_text": true})
+	# a copy: settings changes and tests write to it, never to the shared settings data
+	interface = settings.get("interface", {"hud_layout": "default", "ui_scale": 1.0, "min_text_px": 11, "combat_text": true}).duplicate(true)
 	var lid: String = layout_id if layout_id != "" else str(interface.get("hud_layout", "default"))
 	base_layout = Data.hud_layouts.get(lid, {})
 	layout = base_layout.duplicate(true)  # edit mode changes this copy, never the data
@@ -128,6 +130,11 @@ func _build() -> void:
 	# combat text sits behind the frames
 	for c: Control in _all_of_type("combat_text"):
 		root.move_child(c, 0)
+	event_text = EventText.new()
+	event_text.name = "EventText"
+	event_text.setup(style)
+	event_text.visible = bool(Settings.get_value("accessibility.event_text", false))
+	root.add_child(event_text)
 	tooltip_layer = Control.new()
 	tooltip_layer.name = "Tooltip"
 	tooltip_layer.mouse_filter = Control.MOUSE_FILTER_IGNORE
@@ -159,6 +166,11 @@ func push(v: Dictionary, events: Array = []) -> void:
 	if str(me.get("spec", "")) != spec_id:
 		_assign_bars(str(me["spec"]))
 	HudLogic.update_cooldown_starts(v, cd_starts)
+	if event_text != null and event_text.visible:
+		for ev: Dictionary in events:
+			var line: String = EventText.line_for(ev, v)
+			if line != "":
+				event_text.add(line, style.color("text"))
 	for ev: Dictionary in events:
 		_on_event(ev)
 
@@ -169,6 +181,9 @@ func update(delta: float) -> void:
 		return
 	clock += delta
 	_update_tooltip()
+	if event_text != null and event_text.visible:
+		event_text.advance(delta)
+		event_text.position = Vector2((root.size.x - event_text.size.x) * 0.5, root.size.y * 0.16)
 	if root.size != _laid_out_size or _stretch() != _laid_out_stretch:
 		relayout()
 	for ct: CombatText in _all_of_type("combat_text"):
@@ -270,6 +285,50 @@ const EDIT_GRID: float = 8.0  ## logical pixels; dragged elements snap to it
 const SCALE_RANGE: Vector2 = Vector2(0.5, 2.0)
 
 
+## Settings that change the HUD while it runs (M2-13): scale, text size, larger text, combat
+## text, aura size, tooltip position, color-blind team colors.
+func _on_setting(p: String, v: Variant) -> void:
+	if style == null or v == null:
+		return  # no settings loaded (tests, tools): the layout's own values stand
+	match p:
+		"interface.ui_scale":
+			interface["ui_scale"] = float(v)
+		"interface.min_text_px", "accessibility.larger_text":
+			pass
+		"interface.combat_text":
+			interface["combat_text"] = bool(v)
+			for ct: CombatText in _all_of_type("combat_text"):
+				ct.visible = bool(v)
+		"interface.aura_scale", "interface.tooltip_position":
+			interface[p.get_slice(".", 1)] = v
+		"accessibility.colorblind":
+			_apply_team_colors()
+		"accessibility.event_text":
+			if event_text != null:
+				event_text.visible = bool(v)
+		_:
+			return
+	var base_px: float = float(Settings.get_value("interface.min_text_px", interface.get("min_text_px", 11)))
+	interface["min_text_px"] = base_px + (4.0 if bool(Settings.get_value("accessibility.larger_text", false)) else 0.0)
+	for group: Variant in _all_of_type("unit_frame"):
+		for f: UnitFrame in (group if group is Array else [group]):
+			f.aura_scale = float(interface.get("aura_scale", 1.0))
+			f.queue_redraw()
+	relayout()
+
+
+## Friendly and hostile names in the color-blind mode's team colors.
+func _apply_team_colors() -> void:
+	var tc: Dictionary = Settings.team_colors()
+	var base_style: Dictionary = base_layout.get("style", {})
+	if str(Settings.get_value("accessibility.colorblind", "off")) == "off":
+		style.colors["friendly_name"] = Color.html(str(base_style.get("friendly_name", "#ffffff")))
+		style.colors["hostile_name"] = Color.html(str(base_style.get("hostile_name", "#ffffff")))
+	else:
+		style.colors["friendly_name"] = (tc["ally"] as Color).lightened(0.3)
+		style.colors["hostile_name"] = (tc["enemy"] as Color).lightened(0.2)
+
+
 ## Use the player's saved layouts: the spec's profile (or the active one) is applied now.
 func set_profiles(store: HudLayouts, p_spec: String) -> void:
 	layouts = store
@@ -367,6 +426,12 @@ func toggle_edit_mode() -> void:
 	root.add_child(editor)
 
 
+func _ready() -> void:
+	Settings.bus.changed.connect(_on_setting)
+	for p: String in ["interface.aura_scale", "accessibility.colorblind", "accessibility.larger_text"]:
+		_on_setting(p, Settings.get_value(p))
+
+
 func _unhandled_input(event: InputEvent) -> void:
 	if style != null and InputMap.has_action("toggle_edit_mode") and event.is_action_pressed("toggle_edit_mode"):
 		toggle_edit_mode()
@@ -436,7 +501,13 @@ func _draw_tooltip() -> void:
 	var colors: Dictionary = {"title": style.color("tooltip_title"), "accent": style.color("tooltip_accent"),
 		"text": style.color("text"), "dim": style.color("text_dim"), "warn": style.color("tooltip_warn"),
 		"bg": style.color("tooltip_bg"), "border": style.color("frame_border")}
-	Tooltip.draw(tooltip_layer, style.font, colors, tooltip["near"], tooltip["lines"], root.size, Tooltip.WIDTH, bool(tooltip["above"]))
+	var near: Rect2 = tooltip["near"]
+	var above: bool = bool(tooltip["above"])
+	if str(interface.get("tooltip_position", "beside")) == "corner":  # a fixed place above the bottom right
+		near = Rect2(Vector2(root.size.x - 16.0, root.size.y - 240.0), Vector2.ZERO)
+		above = true
+		near.position.x -= Tooltip.WIDTH * 0.5
+	Tooltip.draw(tooltip_layer, style.font, colors, near, tooltip["lines"], root.size, Tooltip.WIDTH, above)
 
 
 func _assign_bars(p_spec: String) -> void:

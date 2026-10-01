@@ -20,6 +20,7 @@ var failure: Dictionary = {}  ## cast bar failure {text, until_s}
 var clock: float = 0.0
 var break_free: Dictionary = {}  ## {ready_tick, total_ticks} for the arena frame box
 var aura_px: float = 26.0
+var aura_scale: float = 1.0  ## settings: buff and debuff size (M2-13)
 var drawn_auras: Array = []  ## the auras drawn last, in order (for tests): {id, size_px, cc}
 
 
@@ -194,7 +195,7 @@ func _draw_auras(below_y: float) -> void:
 	var gap: float = 3.0
 	var sfs: int = style.fs("small")
 	for e: Dictionary in list.slice(0, max_n):
-		var px: float = roundf(aura_px * float(e["size"]))
+		var px: float = roundf(aura_px * aura_scale * float(e["size"]))
 		if x + px > size.x:  # the row never wraps or runs past the frame
 			break
 		var y: float = -px - 5.0 if above else below_y

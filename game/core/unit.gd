@@ -34,6 +34,8 @@ var stats: Dictionary = {"power_bonus": 0.0, "haste": 0.0, "crit_chance": 0.1}
 var moved_this_tick: bool = false
 var displaced_tick: int = -1  ## last tick an ability moved this unit (charge, blink, knockback)
 var loadout: Dictionary = {}  ## talent picks (see Talents); applied by Combat.init_unit
+var queue_window_ticks: int = -1  ## the player's spell queue window (M2-13); -1 uses the tuning's
+var auto_self_cast: bool = true  ## an ally ability with no friendly target goes to the caster
 var talent_abilities: Dictionary = {}  ## ability id -> this unit's talented copy
 var talent_auras: Dictionary = {}  ## aura id -> this unit's talented copy
 

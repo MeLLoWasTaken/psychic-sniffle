@@ -63,6 +63,7 @@ func _init(settings: Dictionary = {}) -> void:
 	for a: String in MOVE_ACTIONS:
 		held[a] = false
 	targeting = Targeting.new(settings.get("targeting", {}))
+	Settings.bus.changed.connect(_on_setting)
 	if settings.is_empty():
 		return
 	var m: Dictionary = settings["mouse"]
@@ -74,6 +75,20 @@ func _init(settings: Dictionary = {}) -> void:
 	pitch_min = deg_to_rad(float(c["pitch_min_deg"]))
 	pitch_max = deg_to_rad(float(c["pitch_max_deg"]))
 	pitch = clampf(deg_to_rad(float(c["default_pitch_deg"])), pitch_min, pitch_max)
+
+
+## Mouse, turning and targeting settings change while playing (M2-13).
+func _on_setting(p: String, v: Variant) -> void:
+	match p:
+		"mouse.sensitivity_deg_per_px":
+			sensitivity = deg_to_rad(float(v))
+		"mouse.invert_y":
+			invert_y = bool(v)
+		"movement.keyboard_turn_deg_s":
+			turn_speed = deg_to_rad(float(v))
+		_:
+			if p.begins_with("targeting"):
+				targeting = Targeting.new(Settings.get_value("targeting", {}))
 
 
 ## Face a new direction with the camera behind (at spawn, or after the server moved the unit).

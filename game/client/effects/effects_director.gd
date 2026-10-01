@@ -20,6 +20,7 @@ const ANCHOR_HEIGHTS: Dictionary = {"feet": 0.03, "body": 1.0, "chest": 1.3, "ov
 ## Hand fallbacks (unit space, -Z forward) when a unit has no skeleton (capsule stand-ins).
 const HAND_OFFSETS: Dictionary = {"hand_r": Vector3(0.38, 1.2, -0.3), "hand_l": Vector3(-0.38, 1.2, -0.3)}
 
+var my_id: int = -1  ## the local player (settings: others' effect opacity)
 var renderer: WorldRenderer  ## may be null: positions then come from the views
 var view: Dictionary = {}
 var my_team: int = 0
@@ -74,6 +75,7 @@ func push_view(v: Dictionary) -> void:
 	view = v
 	tick_rate = int(v.get("tick_rate", tick_rate))
 	my_team = int(v.get("me", {}).get("team", my_team))
+	my_id = int(v.get("me", {}).get("id", my_id))
 	_prev_positions = _positions
 	_positions = {}
 	var seen: Dictionary = {}
@@ -460,8 +462,24 @@ func _hold(vfx: Vfx, t: float, out: Array[Vfx]) -> void:
 
 # ================================================================ bookkeeping
 
+## The player's graphics and accessibility settings on a new effect (M2-13): fewer particles at
+## lower density, other players' effects fainter, flashes softer when flashing is reduced.
+func _apply_settings(vfx: Vfx) -> void:
+	var density: float = clampf(float(Settings.get_value("graphics.particle_density", 1.0)), 0.1, 1.0)
+	if density < 1.0:
+		vfx.amount = 0
+		for p: GPUParticles3D in vfx.emitters:
+			p.amount = maxi(1, roundi(p.amount * density))
+			vfx.amount += p.amount
+	if vfx.source != my_id and my_id >= 0:
+		vfx.opacity *= clampf(float(Settings.get_value("graphics.others_effect_opacity", 1.0)), 0.0, 1.0)
+	if vfx.style == "flash" and bool(Settings.get_value("accessibility.reduce_flashing", false)):
+		vfx.opacity *= 0.4
+
+
 ## Add an effect if the budget allows (replacing a lower-priority one if needed).
 func _admit(vfx: Vfx) -> bool:
+	_apply_settings(vfx)
 	var max_effects: int = int(budget.get("max_effects", 200))
 	var max_particles: int = int(budget.get("max_particles", 4000))
 	while active.size() >= max_effects or particles_live + vfx.amount > max_particles:

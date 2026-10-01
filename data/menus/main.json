@@ -120,60 +120,6 @@
     "end_banner_s": 3.0,
     "gates_banner_s": 2.5
   },
-  "settings_panel": {
-    "profile": "default",
-    "rows": [
-      {
-        "label": "Mouse sensitivity",
-        "path": "mouse.sensitivity_deg_per_px",
-        "suffix": "° per pixel"
-      },
-      {
-        "label": "Invert mouse",
-        "path": "mouse.invert_y"
-      },
-      {
-        "label": "Keyboard turn speed",
-        "path": "movement.keyboard_turn_deg_s",
-        "suffix": "° per second"
-      },
-      {
-        "label": "Camera distance",
-        "path": "camera.default_distance_m",
-        "suffix": " m"
-      },
-      {
-        "label": "Field of view",
-        "path": "camera.fov_deg",
-        "suffix": "°"
-      },
-      {
-        "label": "Interface scale",
-        "path": "interface.ui_scale",
-        "suffix": "×"
-      },
-      {
-        "label": "Combat text",
-        "path": "interface.combat_text"
-      },
-      {
-        "label": "Tab target range",
-        "path": "targeting.tab_range_m",
-        "suffix": " m"
-      }
-    ],
-    "keys": [
-      "move_forward",
-      "move_back",
-      "turn_left",
-      "turn_right",
-      "strafe_left",
-      "strafe_right",
-      "target_nearest_enemy",
-      "set_focus",
-      "break_free"
-    ]
-  },
   "controls_hint": "W S move   ·   A D turn   ·   Q E strafe   ·   Right-drag steer   ·   Tab target   ·   1 – = and Shift+1 – = abilities   ·   Esc menu",
   "text": {
     "starting_server": "Starting the match server",
@@ -338,7 +284,18 @@
     "hud_party_frames": "Party",
     "hud_arena_frames": "Arena enemies",
     "hud_match_timer": "Match timer",
-    "hud_loss_of_control": "Loss of control"
+    "hud_loss_of_control": "Loss of control",
+    "settings_reset_page": "Reset page",
+    "settings_reset_all": "Reset all",
+    "settings_profile_next": "Next profile",
+    "settings_profile_new": "New profile",
+    "settings_profile_delete": "Delete profile",
+    "settings_restart": "Restart the game to change the resolution.",
+    "settings_open_keybinds": "Open key bindings",
+    "settings_on": "On",
+    "settings_off": "Off",
+    "settings_profile_label": "Profile: {name}",
+    "settings_device_default": "System default"
   },
   "scoreboard_columns": [
     {
@@ -478,5 +435,467 @@
     "server_silence_s": 10,
     "end_banner_s": 3.0,
     "gates_banner_s": 2.5
+  },
+  "settings_screen": {
+    "pages": [
+      {
+        "id": "interface",
+        "label": "Interface",
+        "rows": [
+          {
+            "label": "Edit the HUD",
+            "type": "note",
+            "text": "Press F10 during a match or practice to move and resize HUD elements."
+          },
+          {
+            "path": "interface.ui_scale",
+            "label": "Interface scale",
+            "type": "slider",
+            "min": 0.75,
+            "max": 1.5,
+            "step": 0.05,
+            "suffix": "×"
+          },
+          {
+            "path": "interface.min_text_px",
+            "label": "Smallest text",
+            "type": "slider",
+            "min": 9,
+            "max": 18,
+            "step": 1,
+            "suffix": " px"
+          },
+          {
+            "path": "interface.aura_scale",
+            "label": "Buff and debuff size",
+            "type": "slider",
+            "min": 0.6,
+            "max": 1.6,
+            "step": 0.1,
+            "suffix": "×"
+          },
+          {
+            "path": "interface.combat_text",
+            "label": "Combat text",
+            "type": "toggle"
+          },
+          {
+            "path": "interface.combat_text_heals",
+            "label": "Healing in combat text",
+            "type": "toggle"
+          },
+          {
+            "path": "interface.nameplates",
+            "label": "Nameplates",
+            "type": "toggle"
+          },
+          {
+            "path": "interface.nameplate_cast_bars",
+            "label": "Cast bars on nameplates",
+            "type": "toggle"
+          },
+          {
+            "path": "interface.nameplate_debuffs",
+            "label": "Important debuffs on nameplates",
+            "type": "toggle"
+          },
+          {
+            "path": "interface.tooltip_position",
+            "label": "Tooltip position",
+            "type": "choice",
+            "choices": [
+              "beside",
+              "corner"
+            ],
+            "labels": [
+              "Beside the button",
+              "Bottom right corner"
+            ]
+          }
+        ]
+      },
+      {
+        "id": "gameplay",
+        "label": "Gameplay",
+        "rows": [
+          {
+            "path": "gameplay.spell_queue_ms",
+            "label": "Spell queue window",
+            "type": "slider",
+            "min": 0,
+            "max": 400,
+            "step": 25,
+            "suffix": " ms"
+          },
+          {
+            "path": "gameplay.auto_self_cast",
+            "label": "Auto self-cast",
+            "type": "toggle"
+          },
+          {
+            "path": "targeting.tab_range_m",
+            "label": "Tab targeting range",
+            "type": "slider",
+            "min": 20,
+            "max": 40,
+            "step": 1,
+            "suffix": " m"
+          },
+          {
+            "path": "targeting.tab_max_angle_deg",
+            "label": "Tab targeting cone",
+            "type": "slider",
+            "min": 30,
+            "max": 90,
+            "step": 5,
+            "suffix": "°"
+          },
+          {
+            "path": "targeting.click_empty_clears_target",
+            "label": "Clicking empty ground clears the target",
+            "type": "toggle"
+          },
+          {
+            "path": "camera.default_distance_m",
+            "label": "Camera distance",
+            "type": "slider",
+            "min": 3,
+            "max": 20,
+            "step": 0.5,
+            "suffix": " m"
+          },
+          {
+            "path": "camera.max_distance_m",
+            "label": "Maximum zoom out",
+            "type": "slider",
+            "min": 10,
+            "max": 35,
+            "step": 1,
+            "suffix": " m"
+          },
+          {
+            "path": "camera.zoom_smoothing_per_s",
+            "label": "Camera speed",
+            "type": "slider",
+            "min": 4,
+            "max": 20,
+            "step": 1,
+            "suffix": ""
+          },
+          {
+            "path": "mouse.sensitivity_deg_per_px",
+            "label": "Mouse sensitivity",
+            "type": "slider",
+            "min": 0.05,
+            "max": 1.0,
+            "step": 0.05,
+            "suffix": "° per pixel"
+          },
+          {
+            "path": "mouse.invert_y",
+            "label": "Invert mouse",
+            "type": "toggle"
+          },
+          {
+            "path": "movement.keyboard_turn_deg_s",
+            "label": "Keyboard turn speed",
+            "type": "slider",
+            "min": 90,
+            "max": 360,
+            "step": 15,
+            "suffix": "° per second"
+          }
+        ]
+      },
+      {
+        "id": "graphics",
+        "label": "Graphics",
+        "rows": [
+          {
+            "path": "graphics.resolution",
+            "label": "Resolution (after a restart)",
+            "type": "choice",
+            "choices": [
+              [
+                1280,
+                720
+              ],
+              [
+                1920,
+                1080
+              ],
+              [
+                2560,
+                1440
+              ],
+              [
+                3840,
+                2160
+              ],
+              [
+                3440,
+                1440
+              ]
+            ],
+            "labels": [
+              "1280×720",
+              "1920×1080",
+              "2560×1440",
+              "3840×2160",
+              "3440×1440"
+            ]
+          },
+          {
+            "path": "graphics.window_mode",
+            "label": "Window",
+            "type": "choice",
+            "choices": [
+              "windowed",
+              "borderless",
+              "fullscreen"
+            ],
+            "labels": [
+              "Windowed",
+              "Borderless",
+              "Fullscreen"
+            ]
+          },
+          {
+            "path": "graphics.vsync",
+            "label": "Vertical sync",
+            "type": "toggle"
+          },
+          {
+            "path": "graphics.max_fps",
+            "label": "Frame cap",
+            "type": "choice",
+            "choices": [
+              0,
+              30,
+              60,
+              120,
+              144,
+              240
+            ],
+            "labels": [
+              "None",
+              "30",
+              "60",
+              "120",
+              "144",
+              "240"
+            ]
+          },
+          {
+            "path": "graphics.preset",
+            "label": "Quality",
+            "type": "choice",
+            "choices": [
+              "low",
+              "medium",
+              "high",
+              "custom"
+            ],
+            "labels": [
+              "Low",
+              "Medium",
+              "High",
+              "Custom"
+            ]
+          },
+          {
+            "path": "graphics.render_scale",
+            "label": "Render scale",
+            "type": "slider",
+            "min": 0.5,
+            "max": 1.0,
+            "step": 0.05,
+            "suffix": "×"
+          },
+          {
+            "path": "graphics.fsr",
+            "label": "FSR upscaling",
+            "type": "toggle"
+          },
+          {
+            "path": "graphics.shadows",
+            "label": "Shadows",
+            "type": "choice",
+            "choices": [
+              "off",
+              "low",
+              "high"
+            ],
+            "labels": [
+              "Off",
+              "Low",
+              "High"
+            ]
+          },
+          {
+            "path": "graphics.particle_density",
+            "label": "Particle density",
+            "type": "slider",
+            "min": 0.25,
+            "max": 1.0,
+            "step": 0.05,
+            "suffix": "×"
+          },
+          {
+            "path": "graphics.others_effect_opacity",
+            "label": "Other players' effects",
+            "type": "slider",
+            "min": 0.2,
+            "max": 1.0,
+            "step": 0.05,
+            "suffix": "×"
+          },
+          {
+            "path": "graphics.glow",
+            "label": "Glow",
+            "type": "toggle"
+          },
+          {
+            "path": "graphics.ssao",
+            "label": "Ambient occlusion",
+            "type": "toggle"
+          },
+          {
+            "path": "graphics.fog",
+            "label": "Volumetric fog",
+            "type": "toggle"
+          },
+          {
+            "path": "camera.fov_deg",
+            "label": "Field of view",
+            "type": "slider",
+            "min": 60,
+            "max": 100,
+            "step": 5,
+            "suffix": "°"
+          }
+        ]
+      },
+      {
+        "id": "audio",
+        "label": "Audio",
+        "rows": [
+          {
+            "path": "audio.master_db",
+            "label": "Master volume",
+            "type": "slider",
+            "min": -40,
+            "max": 0,
+            "step": 1,
+            "suffix": " dB"
+          },
+          {
+            "path": "audio.effects_db",
+            "label": "Effects",
+            "type": "slider",
+            "min": -40,
+            "max": 0,
+            "step": 1,
+            "suffix": " dB"
+          },
+          {
+            "path": "audio.interface_db",
+            "label": "Interface",
+            "type": "slider",
+            "min": -40,
+            "max": 0,
+            "step": 1,
+            "suffix": " dB"
+          },
+          {
+            "path": "audio.ambience_db",
+            "label": "Ambience",
+            "type": "slider",
+            "min": -40,
+            "max": 0,
+            "step": 1,
+            "suffix": " dB"
+          },
+          {
+            "path": "audio.music_db",
+            "label": "Music",
+            "type": "slider",
+            "min": -40,
+            "max": 0,
+            "step": 1,
+            "suffix": " dB"
+          },
+          {
+            "path": "audio.output_device",
+            "label": "Output device",
+            "type": "device"
+          },
+          {
+            "path": "audio.mute_unfocused",
+            "label": "Mute when the game is in the background",
+            "type": "toggle"
+          },
+          {
+            "path": "audio.cc_warning",
+            "label": "Crowd-control warning sound",
+            "type": "toggle"
+          }
+        ]
+      },
+      {
+        "id": "accessibility",
+        "label": "Accessibility",
+        "rows": [
+          {
+            "path": "accessibility.colorblind",
+            "label": "Color-blind mode",
+            "type": "choice",
+            "choices": [
+              "off",
+              "protanopia",
+              "deuteranopia",
+              "tritanopia"
+            ],
+            "labels": [
+              "Off",
+              "Protanopia",
+              "Deuteranopia",
+              "Tritanopia"
+            ]
+          },
+          {
+            "path": "accessibility.larger_text",
+            "label": "Larger text",
+            "type": "toggle"
+          },
+          {
+            "path": "accessibility.reduce_shake",
+            "label": "Reduce camera shake",
+            "type": "toggle"
+          },
+          {
+            "path": "accessibility.reduce_flashing",
+            "label": "Reduce flashing",
+            "type": "toggle"
+          },
+          {
+            "path": "accessibility.event_text",
+            "label": "Event text (subtitles for key events)",
+            "type": "toggle"
+          }
+        ]
+      },
+      {
+        "id": "keys",
+        "label": "Key bindings",
+        "rows": [
+          {
+            "label": "Key bindings",
+            "type": "keybinds",
+            "text": "Every action, both bars and the interface toggles."
+          }
+        ]
+      }
+    ]
   }
 }

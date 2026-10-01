@@ -34,10 +34,53 @@
     "hud_layout": "default",
     "ui_scale": 1.0,
     "min_text_px": 11,
-    "combat_text": true
+    "combat_text": true,
+    "aura_scale": 1.0,
+    "tooltip_position": "beside",
+    "combat_text_heals": true,
+    "nameplates": true,
+    "nameplate_cast_bars": true,
+    "nameplate_debuffs": true
   },
   "graphics": {
     "rig_modifiers": true,
-    "rig_modifier_max_distance_m": 35
+    "rig_modifier_max_distance_m": 35,
+    "resolution": [
+      1920,
+      1080
+    ],
+    "window_mode": "windowed",
+    "vsync": true,
+    "max_fps": 0,
+    "render_scale": 1.0,
+    "fsr": true,
+    "preset": "high",
+    "shadows": "high",
+    "particle_density": 1.0,
+    "others_effect_opacity": 1.0,
+    "glow": true,
+    "ssao": true,
+    "fog": true
+  },
+  "gameplay": {
+    "spell_queue_ms": 400,
+    "auto_self_cast": true
+  },
+  "audio": {
+    "master_db": 0.0,
+    "effects_db": 0.0,
+    "interface_db": 0.0,
+    "ambience_db": 0.0,
+    "music_db": 0.0,
+    "output_device": "Default",
+    "mute_unfocused": false,
+    "cc_warning": true
+  },
+  "accessibility": {
+    "colorblind": "off",
+    "larger_text": false,
+    "reduce_shake": false,
+    "reduce_flashing": false,
+    "event_text": false
   }
 }
