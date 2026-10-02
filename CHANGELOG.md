@@ -2,7 +2,14 @@
 
 One entry per build-loop iteration, newest first. Format: date, backlog ID, what changed, how it was checked.
 
-## 2026-10-02 — P-01 playtest build (in progress)
+## 2026-10-02 — P-01 playtest build published; F-18 wheel rumble
+- The playtest build is out: GitHub pre-release `playtest-20261002-3090183`, with Windows and Linux zips and the guide.
+  - Both packages pass a smoke test on CI: the packaged game runs a server and two bots that fight. The Windows one runs on a Windows machine.
+  - The Windows engine build leaves out the screen-reader, WinRT and Direct3D 12 drivers, which need SDKs the build machine lacks. The game renders with Vulkan.
+- F-18: a rolling rumble with rail thuds and chain creaks follows each crucible while the casting wheel turns.
+- F-08 groundwork: duel reports show each talent's win-rate impact, overall and against each opposing class.
+
+## 2026-10-02 — P-01 playtest build (first part)
 - A playtest build for the human's tests from Monday: Windows and Linux packages built on CI and published as a GitHub pre-release, with a guide (`docs/PLAYTEST.md`): install, what to play, controls, what to report, where logs and recordings are, known issues.
 - Matches now record themselves (the newest 20, for replaying a tester's match here). A "Show frame rate" setting adds a corner readout, and after every match the log gets the graphics card, average frame rate, 1% low and worst frame.
 - Checked: a pack exported here loads its 441 data files and runs as a server; tests for recording names and pruning, and for the frame statistics.

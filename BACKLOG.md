@@ -20,20 +20,20 @@ Acceptance criteria are written before work starts. Refine them during step 2 of
 
 Items further down keep their history; this list is the order to take them in.
 
-0. P-01 Playtest build for the human's tests from Monday 2026-10-05 (the M2 gate waits on them).
 1. F-08 1v1 balance with random talent builds (Arcanist 72%, Keen Focus favoured in its top duel builds, Oracle mirrors reaching the time limit).
 2. F-19 Gallows Courtyard kit to the level of the newer kits.
 3. X-22 Intermittent large prediction correction in the lagged 2v2 check.
 4. F-18 Burning Foundry follow-ups.
 5. M3: split the remaining classes into waves of 3 or 4 and start the first wave.
 
-### P-01 Playtest build `[doing]`
-- [ ] A Windows (and Linux) package of the game the human downloads from a GitHub release, unzips and runs: built on CI from export templates compiled from the same Godot 4.7.2 source; the Linux package smoke-tested on CI (it starts as a headless server).
-- [ ] A playtest guide in the package and on the release page: install, what to play, controls, what to report, where the logs and recordings are, known issues (`docs/PLAYTEST.md`).
-- [ ] Matches record themselves by default (the newest 20, `user://recordings`) so a tester's match can be replayed here; a frame-rate readout (Settings, Interface) and a frame-statistics line in the log after every match (adapter, average, 1% low, worst frame), the first numbers from a GPU machine (F-02).
+### P-01 Playtest build `[done]`
+- [x] A Windows (and Linux) package of the game the human downloads from a GitHub release, unzips and runs: built on CI from export templates compiled from the same Godot 4.7.2 source; the Linux package smoke-tested on CI (it starts as a headless server).
+- [x] A playtest guide in the package and on the release page: install, what to play, controls, what to report, where the logs and recordings are, known issues (`docs/PLAYTEST.md`).
+- [x] Matches record themselves by default (the newest 20, `user://recordings`) so a tester's match can be replayed here; a frame-rate readout (Settings, Interface) and a frame-statistics line in the log after every match (adapter, average, 1% low, worst frame), the first numbers from a GPU machine (F-02).
 - Follow-up: a console version of the Windows executable (the template job must also keep `godot.windows.template_release.x86_64.console.exe` as `windows_release_x86_64_console.exe`, and the preset export it); the log files cover crash reports meanwhile.
 - 2026-10-02: export presets (`game/export_presets.cfg`; the linked `data` folder and its JSON files are included, tests left out); a pack exported here loads its data and runs as a server with the editor binary. `.github/workflows/playtest.yml` builds the templates (cached), exports, smoke-tests and publishes a pre-release.
 
+- Done 2026-10-02: release `playtest-20261002-3090183` (GitHub pre-release, Windows and Linux zips, about 130 MB each). Both packages passed a smoke test on CI: a headless server and two bots from the packaged executable, the Windows one on a Windows runner. Found on the way: the Windows template needed `accesskit=no winrt=no d3d12=no` (SDKs the runner lacks; the game renders with Vulkan), a release build buffers its console output (the smoke test reads the game's log file), and the console version of the executable needs its own template file (follow-up above). An earlier release, `playtest-20261002-623135c`, holds the same game without the Windows check; the session token cannot edit or delete releases.
 ---
 
 ## M0 — Foundations
