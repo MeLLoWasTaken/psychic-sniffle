@@ -11,7 +11,7 @@
     {
       "stat": "armor",
       "op": "add",
-      "value": 0.3
+      "value": 0.12
     },
     {
       "stat": "damage_done",
