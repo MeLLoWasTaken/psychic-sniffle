@@ -249,6 +249,25 @@ func test_footsteps_follow_speed_and_armor() -> void:
 	assert_int(int(counts[7.0][1])).is_between(7, 9)
 
 
+func test_footsteps_and_landings_sound_wet_where_the_map_says_water() -> void:
+	var a: AudioDirector = _director()
+	a.surface_at = func(p: Vector3) -> String: return "water" if p.z < -5.0 else ""
+	var z: float = 0.0
+	for i: int in 180:  # 21 m: the first 5 m dry, the rest wading
+		z -= 7.0 / 60.0
+		var us: Array = _units()
+		us[0]["position"] = Vector3(0, 0, z)
+		a.push_view(_view(us))
+	assert_int(_plays(a, "footstep_plate").size()).is_between(1, 2)
+	assert_int(_plays(a, "footstep_wade").size()).is_between(5, 7)
+	for y: float in [0.6, 1.2, 0.4, 0.0, 0.0]:
+		var us: Array = _units()
+		us[0]["position"] = Vector3(0, y, z)
+		a.push_view(_view(us))
+	assert_int(_plays(a, "land_wade").size()).is_equal(1)
+	assert_int(_plays(a, "land_plate").size()).is_equal(0)
+
+
 func test_landing_plays_once_on_touchdown() -> void:
 	var a: AudioDirector = _director()
 	for y: float in [0.5, 1.2, 1.5, 0.8, 0.2, 0.0, 0.0]:

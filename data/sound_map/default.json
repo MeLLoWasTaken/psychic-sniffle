@@ -475,6 +475,12 @@
       "step_m": 2.45
     }
   },
+  "surface_footsteps": {
+    "water": {
+      "step": "footstep_wade",
+      "land": "land_wade"
+    }
+  },
   "movement": {
     "moving_min_mps": 0.5,
     "teleport_min_mps": 20.0,

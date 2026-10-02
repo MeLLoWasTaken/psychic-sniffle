@@ -158,12 +158,20 @@ func armor_of(spec_id: String) -> String:
 	return str(Data.classes.get(cls, {}).get("armor", "cloth"))
 
 
-## Footstep settings for a spec: {step, land, step_m}, following armor_fallback.
-func footsteps(spec_id: String) -> Dictionary:
+## Footstep settings for a spec: {step, land, step_m}, following armor_fallback. On a `surface`
+## with its own sounds (sound_map surface_footsteps, e.g. "water"), those replace step and land;
+## the stride stays the armor's.
+func footsteps(spec_id: String, surface: String = "") -> Dictionary:
 	var armor: String = armor_of(spec_id)
 	if not map["footsteps"].has(armor):
 		armor = str(map["armor_fallback"].get(armor, "cloth"))
-	return map["footsteps"].get(armor, {})
+	var fs: Dictionary = map["footsteps"].get(armor, {})
+	var over: Dictionary = map.get("surface_footsteps", {}).get(surface, {}) if surface != "" else {}
+	if over.is_empty():
+		return fs
+	var out: Dictionary = fs.duplicate()
+	out.merge(over, true)
+	return out
 
 
 ## The tick sound of a periodic aura, or "".

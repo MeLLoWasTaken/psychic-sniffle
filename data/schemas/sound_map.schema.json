@@ -477,6 +477,31 @@
       "additionalProperties": {
         "$ref": "#/$defs/sound"
       }
+    },
+    "surface_footsteps": {
+      "type": "object",
+      "description": "Ground surfaces that replace every armor's step and landing sounds while a unit stands on them (for example 'water': wading in a flood, M2-09). The map tells the client which surface is under a unit.",
+      "propertyNames": {
+        "enum": [
+          "water"
+        ]
+      },
+      "additionalProperties": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "step",
+          "land"
+        ],
+        "properties": {
+          "step": {
+            "$ref": "#/$defs/sound"
+          },
+          "land": {
+            "$ref": "#/$defs/sound"
+          }
+        }
+      }
     }
   }
 }

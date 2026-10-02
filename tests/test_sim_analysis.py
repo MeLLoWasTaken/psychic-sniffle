@@ -40,3 +40,14 @@ def test_build_compositions_give_every_unit_a_build_of_its_spec():
                 spec, build = unit.split("@")
                 assert build in nightly.build_names(spec, 4)
     assert nightly.build_comps(2, 30, 4, seed=3) == cs  # the same seed, the same matches
+
+
+def test_the_report_names_mirror_kill_rates(tmp_path, capsys):
+    ms = [_match("w1", "o1", 0) for _ in range(4)]
+    mirror = {"winner": -1, "end_reason": "time_limit", "seconds": 720.0, "errors": 0,
+              "units": {"1": {"spec": "oracle_grace", "build": "o1", "team": 0},
+                        "2": {"spec": "oracle_grace", "build": "o1", "team": 1}}}
+    ms += [mirror, mirror]
+    nightly.report_bracket(1, {"matches": ms, "summary": {"builds": {}}}, tmp_path)
+    line = next(ln for ln in capsys.readouterr().out.splitlines() if "mirrors::" in ln)
+    assert "kills 0/2, draws 2" in line

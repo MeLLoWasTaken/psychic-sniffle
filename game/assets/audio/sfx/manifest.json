@@ -139,6 +139,16 @@
   ],
   "category": "footstep"
  },
+ "footstep_wade": {
+  "hash": "0d2f5c5d4b5b8ef2",
+  "files": [
+   "footstep_wade_01",
+   "footstep_wade_02",
+   "footstep_wade_03",
+   "footstep_wade_04"
+  ],
+  "category": "footstep"
+ },
  "frost_cast_loop": {
   "hash": "2faaca65ac21508f",
   "files": [
@@ -413,6 +423,14 @@
   "files": [
    "land_plate_01",
    "land_plate_02"
+  ],
+  "category": "footstep"
+ },
+ "land_wade": {
+  "hash": "c8e6cdf3011488c3",
+  "files": [
+   "land_wade_01",
+   "land_wade_02"
   ],
   "category": "footstep"
  },

@@ -2,6 +2,16 @@
 
 One entry per build-loop iteration, newest first. Format: date, backlog ID, what changed, how it was checked.
 
+## 2026-10-02 — M2-07 done (1,000 duels on CI); M2-09 wading effects; CI running again
+- CI: the repository is public, so Actions runs again (X-20 done). The blocked check passed on a rerun.
+- M2-07 done: 1,000 duels on CI give Arcanist 46.5%, Oracle 50.4%, Warblade 52.9%, and every match-up within 35-65%. About half of all mirror duels reach the time limit (F-08). Balance reports now list each mirror's kills and draws.
+- M2-09: wading in the crypt flood now looks and sounds wet.
+  - Moving units leave ripple rings and splashes once a stride; units standing in the water send out faint rings.
+  - Footsteps and landings in the water use two new sounds (`footstep_wade`, `land_wade`), chosen by a new sound-map table of ground surfaces.
+  - The water got a sheen of night sky at shallow angles, stronger surface waves, and reflections of the arena from a probe captured once.
+- Found while building the wading sounds: the sound build is not reproducible across machines (X-21). Today's workspace rebuilds 51 committed sounds with different samples, so the generator code stays unchanged until a rebuild can be listened to.
+- Checked: new tests for the wet area, the ripple and splash counts and pool limits, the wet footsteps and landings, and the sound bank; screenshots from `tools/ui_shot.gd --screen map --map flooded_crypt --match-time 200 --waders` (`previews/m2_09/wading_1280.png`); spectrograms of the new sounds, and the footstep category's loudness window and spread (the first versions were too dense, then varied too much between variants).
+
 ## 2026-10-01 — M2-07 duel tuning, review pass 4
 - Duels are balanced by the three bracket auras: after nine rounds on the workspace (the CI allowance ran out), a 300-duel check on an untouched seed gives Arcanist 50%, Oracle 44%, Warblade 56%, and every match-up within 35-65%. A 1,000-duel confirmation runs on the workspace.
 - Review pass 4 (`docs/reports/review_04/review_04.md`): the duel tables, unchanged lineup, both arenas, the 20-player profile measured on the workspace (server 4.2 ms average; bot clients about twice as heavy as at review 3), and the re-ordered backlog.

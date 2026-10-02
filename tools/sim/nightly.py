@@ -142,6 +142,11 @@ def report_bracket(size: int, report: dict, out: Path) -> int:
           f"median {s['median_seconds']} s; specs " + ", ".join(f"{k} {v['win_rate']} ({v['games']})" for k, v in s["specs"].items()))
     if s["matchups"]:
         print(f"::notice title={size}v{size} matchups::" + "; ".join(f"{k}: {v['first_wins']} ({v['decided']})" for k, v in s["matchups"].items()))
+    if s.get("mirrors"):
+        # F-08: mirror matches should end by a kill over 90% of the time
+        top = sorted(s["mirrors"].items(), key=lambda kv: -kv[1]["games"])[:12]
+        print(f"::notice title={size}v{size} mirrors::" + "; ".join(
+            f"{k}: kills {v['kills']}/{v['games']}, draws {v['draws']}" for k, v in top))
     step = os.environ.get("GITHUB_STEP_SUMMARY")
     if step:
         with open(step, "a") as fh:

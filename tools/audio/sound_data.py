@@ -141,6 +141,9 @@ def check(error: Callable[[str, str], None], db: dict[str, dict], data_dir: Path
         for armor, fs in m["footsteps"].items():
             need(fs["step"], f"footsteps/{armor}/step")
             need(fs["land"], f"footsteps/{armor}/land")
+        for surface, fs in m.get("surface_footsteps", {}).items():
+            need(fs["step"], f"surface_footsteps/{surface}/step")
+            need(fs["land"], f"surface_footsteps/{surface}/land")
         for sid, s in specs.items():
             w = s["weapon"]
             key = f"{w['type']}_2h" if w.get("hands") == 2 and f"{w['type']}_2h" in m["weapons"] else w["type"]

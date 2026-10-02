@@ -189,6 +189,63 @@ func test_the_crypt_water_rises_during_the_warning() -> void:
 		assert_bool(absf(centre.z) < 12.5).override_failure_message("water over an aisle at %s" % centre).is_true()
 
 
+func test_wading_in_the_flood_splashes_and_sounds_wet() -> void:
+	var b: MapBuilder = auto_free(MapBuilder.new())
+	b.map_id = "flooded_crypt"
+	b.use_kit = false
+	b.bake_gi = false
+	b.build_lighting = false
+	b.build()
+	assert_object(b.wade).is_not_null()
+	assert_bool(b.is_wet(Vector3(0, 0, 9))).is_false()  # no water yet
+	b.set_match_time(166.0, false)  # the water has only begun to rise: still dry underfoot
+	assert_bool(b.is_wet(Vector3(0, 0, 9))).is_false()
+	b.set_match_time(200.0, false)
+	assert_bool(b.is_wet(Vector3(0, 0, 9))).is_true()
+	assert_str(b.surface_at(Vector3(0, 0, 9))).is_equal("water")
+	assert_bool(b.is_wet(Vector3(0, 0, 15))).is_false()  # the dry aisle, as on the server
+	assert_bool(b.is_wet(Vector3(0, 1.0, 9))).is_false()  # mid-jump
+	assert_str(b.surface_at(Vector3(0, 0, 15))).is_equal("")
+	# a unit running 6 m through the water splashes about once a stride; a dead one does not
+	var x: float = -3.0
+	for i: int in 60:
+		x += 0.1
+		b.update_wading([{"id": 1, "position": Vector3(x, 0, 9), "health": 100},
+			{"id": 2, "position": Vector3(x, 0, -9), "health": 0}], 1.0 / 60.0)
+	assert_int(b.wade.splashes_started).is_between(5, 7)
+	assert_int(b.wade.rings_started).is_equal(b.wade.splashes_started)
+	assert_int(b.wade.live_ripples()).is_greater(0)
+	for r: MeshInstance3D in b.wade.ripples:
+		if r.visible:
+			assert_float(r.position.y).is_greater(b.water_surface_y())
+	# standing still in the water: a faint ring now and then, no splashes
+	var splashes: int = b.wade.splashes_started
+	for i: int in 240:
+		b.update_wading([{"id": 1, "position": Vector3(x, 0, 9), "health": 100}], 1.0 / 60.0)
+	assert_int(b.wade.splashes_started).is_equal(splashes)
+	assert_int(b.wade.rings_started - splashes).is_between(2, 3)
+	# rings fade, and a crowd never grows the pool past its cap
+	for i: int in 120:
+		b.update_wading([], 1.0 / 60.0)
+	assert_int(b.wade.live_ripples()).is_equal(0)
+	for i: int in 30:
+		var crowd: Array = []
+		for id: int in 20:
+			crowd.append({"id": 10 + id, "position": Vector3(-8 + id * 0.8, 0, 6 + i * 0.12), "health": 100})
+		b.update_wading(crowd, 1.0 / 60.0)
+	assert_int(b.wade.ripples.size()).is_less_equal(WadeFx.MAX_RIPPLES)
+	assert_int(b.wade.splashes.size()).is_less_equal(WadeFx.SPLASH_POOL)
+	# a map without a flood has no wading effects
+	var g: MapBuilder = auto_free(MapBuilder.new())
+	g.map_id = "gallows_courtyard"
+	g.use_kit = false
+	g.bake_gi = false
+	g.build_lighting = false
+	g.build()
+	assert_object(g.wade).is_null()
+	assert_str(g.surface_at(Vector3.ZERO)).is_equal("")
+
+
 func test_a_match_picks_one_of_the_preset_arenas_for_its_bracket() -> void:
 	var NetMatch: GDScript = load("res://scenes/game/net_match.gd")
 	var p: Dictionary = {"map": "gallows_courtyard", "maps": ["gallows_courtyard", "flooded_crypt"], "bracket": "2v2"}

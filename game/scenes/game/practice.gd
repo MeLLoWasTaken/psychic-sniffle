@@ -81,6 +81,7 @@ func _ready() -> void:
 	renderer = WorldRenderer.new()
 	renderer.name = "World"
 	add_child(renderer)
+	renderer.audio.surface_at = builder.surface_at  # wading footsteps in a flood
 	controller = PlayerController.new(settings)
 	cam = ThirdPersonCamera.new(settings.get("camera", {}))
 	cam.name = "PlayerCamera"
@@ -177,6 +178,8 @@ func _draw_frame(delta: float, instant: bool = false) -> void:
 		builder.set_pickups(int(v["match"].get("pickups", 0)))
 		builder.set_match_time(float(int(v["tick"]) - int(v["match"].get("start_tick", 0))) / Data.tick_rate(),
 			int(v["match"]["phase"]) == ArenaMatch.Phase.PREP)
+		if builder.wade != null:
+			builder.update_wading(renderer.drawn_units(), 0.0 if paused or instant else delta)
 	if not _gates_opened and not v.is_empty() and int(v["match"]["phase"]) != ArenaMatch.Phase.PREP:
 		_gates_opened = true
 		builder.set_gates_open(true, 0.0 if instant or float(options["fast_forward"]) > 0.0 else 1.5)

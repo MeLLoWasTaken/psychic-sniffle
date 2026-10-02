@@ -60,7 +60,8 @@ func _ready() -> void:
 		"nameplates":
 			screen = _nameplate_scene()
 		"map":
-			screen = _map_scene(_arg(args, "--map", "gallows_courtyard"), float(_arg(args, "--match-time", "0")))
+			screen = _map_scene(_arg(args, "--map", "gallows_courtyard"), float(_arg(args, "--match-time", "0")),
+				"--waders" in args)
 		"keybinds":
 			var ks: KeybindScreen = KeybindScreen.new("default", "user://ui_shot_keybinds.json")
 			Keybinds.rebind(ks.profile, "bar1_slot2", "KEY_1", [])  # show a conflict
@@ -69,6 +70,8 @@ func _ready() -> void:
 			screen = ks
 	get_tree().root.add_child(screen)
 	screen.size = Vector2(1920, 1080)
+	if not _waders.is_empty():
+		await _run_waders()
 	for i: int in 4:
 		await get_tree().process_frame
 	if out != "":
@@ -148,7 +151,9 @@ func _nameplate_scene() -> Control:
 
 ## An arena with its art kit and lighting from a camera above one end, at `match_time` seconds of
 ## match time (twists, M2-16): `--screen map --match-time 305` shows the gallows' wreck.
-func _map_scene(map_id: String, match_time: float) -> Control:
+## `--waders` (a flooded map): six characters running through the water for a second, from a
+## lower camera, to show the ripples and splashes (M2-09).
+func _map_scene(map_id: String, match_time: float, waders: bool = false) -> Control:
 	var b: MapBuilder = (load(Data.maps[map_id].get("scene", "res://scenes/maps/gallows_courtyard.tscn")) as PackedScene).instantiate()
 	b.map_id = map_id
 	b.bake_gi = false
@@ -160,10 +165,51 @@ func _map_scene(map_id: String, match_time: float) -> Control:
 	cam.position = Vector3(-13, 6.5, 7)
 	get_tree().root.add_child(cam)
 	cam.look_at(Vector3(0, 0.5, 0))
+	if waders:
+		cam.position = Vector3(-8.5, 2.6, 15.5)
+		cam.look_at(Vector3(0, 0.6, 7.5))
+		var r: WorldRenderer = WorldRenderer.new()
+		get_tree().root.add_child(r)
+		var m: LocalMatch = LocalMatch.new(map_id, "warblade_carnage", ["arcanist_rime", "oracle_grace"],
+			["warblade_carnage", "arcanist_rime", "oracle_grace"], "3v3")
+		_waders = {"builder": b, "renderer": r, "view": m.view().duplicate(true),
+			"starts": [Vector3(-6, 0, 10.5), Vector3(-3, 0, 8.2), Vector3(1, 0, 10.8), Vector3(4.5, 0, 9), Vector3(-1, 0, 6.6), Vector3(6.5, 0, 11)],
+			"dirs": [Vector3(1, 0, -0.2), Vector3(0.8, 0, 0.6), Vector3(-1, 0, -0.3), Vector3(-0.6, 0, 0.8), Vector3(1, 0, 0.1), Vector3(0, 0, 0)]}
 	cam.current = true
 	var c: Control = Control.new()
 	c.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	return c
+
+
+var _waders: Dictionary = {}
+
+
+## Run the waders for 70 frames at 60 Hz (6 m/s; the last one stands still). A software-rendered
+## frame takes seconds of wall-clock time, and particles advance by it, so the engine's time scale
+## is set each frame to make one frame last 1/60 s of game time (splashes then show as in play).
+func _run_waders() -> void:
+	var b: MapBuilder = _waders["builder"]
+	var r: WorldRenderer = _waders["renderer"]
+	var v: Dictionary = _waders["view"]
+	var last: int = Time.get_ticks_usec()
+	for f: int in 74:
+		var now: int = Time.get_ticks_usec()
+		Engine.time_scale = clampf((1.0 / 60.0) / maxf(float(now - last) / 1e6, 1e-4), 0.001, 1.0)
+		last = now
+		if f >= 70:  # the capture frames: the scene holds still while particles keep their pace
+			await get_tree().process_frame
+			continue
+		var i: int = 0
+		for u: Dictionary in v["units"]:
+			var d: Vector3 = (_waders["dirs"][i] as Vector3).normalized()
+			u["position"] = (_waders["starts"][i] as Vector3) + d * 6.0 * f / 60.0
+			u["facing"] = atan2(-d.x, -d.z) if d != Vector3.ZERO else 0.0
+			i += 1
+		v["tick"] = int(v["tick"]) + 1
+		r.push_view(v.duplicate(true))
+		r.draw(1.0, 1.0 / 60.0)
+		b.update_wading(r.drawn_units(), 1.0 / 60.0)
+		await get_tree().process_frame
 
 
 static func _arg(args: PackedStringArray, name: String, default: String) -> String:

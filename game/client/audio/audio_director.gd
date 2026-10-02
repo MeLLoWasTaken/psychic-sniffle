@@ -18,7 +18,9 @@ extends Node3D
 ##   cast_start at me    an enemy cast that applies such crowd control: the incoming warning (2D)
 ##   cast_failed         for the local player, listed reasons: the interface error sound
 ##   views               footsteps every step_m of ground travel (cadence follows speed), a
-##                       landing on touchdown; the target changing: the interface target tick
+##                       landing on touchdown (the surface's sounds instead while the map says a
+##                       unit stands on one, sound_map surface_footsteps: wading, M2-09); the
+##                       target changing: the interface target tick
 ##
 ## World sounds are 3D (AudioStreamPlayer3D, inverse-distance falloff from the map's attenuation
 ## profiles) on the self, allies or enemies effects bus by who caused them; interface sounds and
@@ -43,6 +45,9 @@ var bank: SoundBank
 ## (source unit, ability) -> seconds until that unit's swing strikes, 0 for none (WorldRenderer sets
 ## it from the unit's CharacterAnimator); impact sounds of melee swings wait for it
 var strike_delay: Callable = Callable()
+## Vector3 (feet) -> the ground surface there ("water", or "" for the plain floor); the match scenes
+## set it from the map (MapBuilder.surface_at). Unset: always the plain floor.
+var surface_at: Callable = Callable()
 var _pending: Array = []  ## impacts waiting for their swing to strike: {tick, ability, source, target}
 var max_voices: int = 64
 var cc_warning_enabled: bool = true  ## DESIGN.md settings: CC warning sound on or off
@@ -377,7 +382,7 @@ func _update_unit(u: Dictionary, dt: float) -> void:
 	var mv: Dictionary = bank.map["movement"]
 	var air: bool = pos.y > float(mv["airborne_min_height_m"])
 	var e: Dictionary = units.get(id, {})
-	var fs: Dictionary = bank.footsteps(str(u["spec"]))
+	var fs: Dictionary = bank.footsteps(str(u["spec"]), str(surface_at.call(pos)) if surface_at.is_valid() else "")
 	var step_m: float = float(fs.get("step_m", 2.5))
 	if e.is_empty():
 		units[id] = {"spec": str(u["spec"]), "team": int(u["team"]), "pos": pos, "acc": step_m * 0.5,

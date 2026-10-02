@@ -194,6 +194,7 @@ func _build_arena() -> void:
 	builder.build_lighting = bool(options["lighting"])
 	add_child(builder)
 	builder.set_gates_open(false, 0.0)
+	renderer.audio.surface_at = builder.surface_at  # wading footsteps in a flood
 	cam.geometry = ArenaGeometry.from_map(map)
 	_map_built = true
 	if _playback != null:
@@ -341,6 +342,8 @@ func _process(delta: float) -> void:
 			var m: Dictionary = renderer.view["match"]
 			builder.set_match_time(float(int(renderer.view["tick"]) - int(m.get("start_tick", 0))) / Data.tick_rate(),
 				int(m["phase"]) == ArenaMatch.Phase.PREP)
+			if builder.wade != null:
+				builder.update_wading(renderer.drawn_units(), 0.0 if fast else delta)
 			if cam.geometry != null:
 				cam.geometry.removed_tags = builder.removed_tags  # the camera no longer bumps into the wreck
 		if not _gates_opened and int(renderer.view["match"]["phase"]) != ArenaMatch.Phase.PREP and builder != null:

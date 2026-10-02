@@ -57,6 +57,12 @@ func test_weapons_and_armor_resolve() -> void:
 	assert_str(bank.resolve("@weapon_hit", "arcanist_rime", "arcanist_rime")).is_equal("hit_staff_cloth")
 	assert_str(bank.footsteps("warblade_carnage")["step"]).is_equal("footstep_plate")
 	assert_str(bank.footsteps("oracle_grace")["step"]).is_equal("footstep_cloth")
+	# wading (M2-09): the surface's sounds replace the armor's, the stride stays the armor's
+	var wet: Dictionary = bank.footsteps("warblade_carnage", "water")
+	assert_str(str(wet["step"])).is_equal("footstep_wade")
+	assert_str(str(wet["land"])).is_equal("land_wade")
+	assert_float(float(wet["step_m"])).is_equal(float(bank.footsteps("warblade_carnage")["step_m"]))
+	assert_str(str(bank.footsteps("oracle_grace", "lava")["step"])).is_equal("footstep_cloth")
 	# plate footsteps are the heavier, louder ones
 	assert_float(float(bank.sounds["footstep_plate"]["peak_dbfs"])).is_greater(float(bank.sounds["footstep_cloth"]["peak_dbfs"]))
 

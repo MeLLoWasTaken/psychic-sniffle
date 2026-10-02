@@ -56,9 +56,14 @@ var removed_tags: Dictionary = {}  ## tags a twist has taken away: their nodes a
 var wrecks: Array[Node3D] = []  ## the wrecks left by collapses (tests, screenshots)
 var water: MeshInstance3D = null  ## a flood's water surface, built when the water starts to rise
 var water_level: float = 0.0  ## 0 (dry) to 1 (full): how high the flood stands (ArenaTwists.flood_level)
+var wade: WadeFx = null  ## ripples and splashes at wading feet, on maps with a flood
+var _flood_dry: Array[Rect2] = []  ## the flood's dry rectangles (the water mesh leaves them out)
+var _flood_inner: Rect2 = Rect2()  ## the floor the water can cover
 
 const WATER_LOW_Y: float = -0.08  ## the water surface just under the floor before it rises
 const WATER_FULL_Y: float = 0.24  ## and at full flood: over the ankles
+const WET_LEVEL: float = 0.35  ## from this flood level on, feet in the water splash and sound wet
+const WADE_MAX_HEIGHT: float = 0.15  ## feet higher than this above the water are not in it (jumps)
 const WATER_SHADER: Shader = preload("res://scenes/maps/water.gdshader")
 var skyline_placements: Dictionary = {}  ## skyline piece -> Array[Transform3D] (kept for tests)
 var _grime_runs: Array = []  ## [a, b, outward normal] of every facade run: wall bases for grime decals
@@ -85,6 +90,8 @@ func build() -> void:
 	wrecks.clear()
 	water = null
 	water_level = 0.0
+	wade = null
+	_flood_dry.clear()
 	_kit = str(map.get("kit", "")) if use_kit else ""
 	if _kit != "" and _kit_piece("floor_tile") == null:
 		Log.warn("map: kit %s is not built; using greybox" % _kit)
@@ -100,6 +107,9 @@ func build() -> void:
 	else:
 		_dress_with_kit()
 	_build_pickups()
+	if map.get("twists", []).any(func(tw: Dictionary) -> bool: return str(tw.get("type", "")) == "flood"):
+		wade = WadeFx.new(self)
+		add_child(wade)
 	if environment != null:
 		_ssao_preset = environment.ssao_enabled
 	apply_graphics()
@@ -162,8 +172,39 @@ func _set_flood(twist: Dictionary, level: float) -> void:
 	if water == null:
 		water = _build_water(twist)
 		add_child(water)
+		add_child(_water_probe())
 	water.visible = true
 	water.position.y = lerpf(WATER_LOW_Y, WATER_FULL_Y, level)
+
+
+## Whether `pos` (feet) stands in flood water deep enough to splash: the water has risen past
+## WET_LEVEL, the point is on the covered floor outside the dry rectangles, and the feet are not
+## above the surface (a jump). The same rectangles as the server's slow (ArenaGeometry.ground_speed).
+func is_wet(pos: Vector3) -> bool:
+	if water == null or not water.visible or water_level < WET_LEVEL:
+		return false
+	if pos.y > water.position.y + WADE_MAX_HEIGHT:
+		return false
+	var p: Vector2 = Vector2(pos.x, pos.z)
+	return _flood_inner.has_point(p) and not _flood_dry.any(func(r: Rect2) -> bool: return r.has_point(p))
+
+
+## The ground surface under `pos` for footstep sounds (sound map "surface_footsteps"): "water"
+## while wading, "" for the plain floor.
+func surface_at(pos: Vector3) -> String:
+	return "water" if is_wet(pos) else ""
+
+
+## The height of the flood's surface (WATER_LOW_Y when there is no water yet).
+func water_surface_y() -> float:
+	return water.position.y if water != null else WATER_LOW_Y
+
+
+## Ripples and splashes for the units drawn this frame (view unit dictionaries at drawn positions,
+## WorldRenderer.drawn_units); nothing on maps without a flood.
+func update_wading(units: Array, delta: float) -> void:
+	if wade != null:
+		wade.update(units, delta)
 
 
 ## The water surface: half-metre cells over the arena interior (inside the walls) that are not dry.
@@ -172,6 +213,8 @@ func _build_water(twist: Dictionary) -> MeshInstance3D:
 	for r: Array in twist.get("dry", []):
 		dry.append(Rect2(Vector2(r[0][0], r[0][1]), Vector2(r[1][0] - r[0][0], r[1][1] - r[0][1])))
 	var inner: Rect2 = _interior_rect()
+	_flood_dry = dry
+	_flood_inner = inner
 	var st: SurfaceTool = SurfaceTool.new()
 	st.begin(Mesh.PRIMITIVE_TRIANGLES)
 	st.set_normal(Vector3.UP)
@@ -195,6 +238,24 @@ func _build_water(twist: Dictionary) -> MeshInstance3D:
 	mi.material_override = mat
 	mi.cast_shadow = GeometryInstance3D.SHADOW_CASTING_SETTING_OFF
 	return mi
+
+
+## A reflection probe over the flooded floor, captured once: the water reflects the walls, tombs and
+## braziers around it (box projection keeps the reflections in place as the camera moves). Units
+## are not in it; the probe is static, like the arena.
+func _water_probe() -> ReflectionProbe:
+	var inner: Rect2 = _flood_inner
+	var probe: ReflectionProbe = ReflectionProbe.new()
+	probe.name = "WaterReflections"
+	probe.update_mode = ReflectionProbe.UPDATE_ONCE
+	probe.box_projection = true
+	probe.size = Vector3(inner.size.x + 2.0, 9.0, inner.size.y + 2.0)
+	probe.position = Vector3(inner.get_center().x, 1.6, inner.get_center().y)
+	probe.origin_offset = Vector3.ZERO
+	probe.max_distance = 60.0
+	probe.ambient_mode = ReflectionProbe.AMBIENT_DISABLED  # reflections only; the preset keeps the lighting
+	probe.intensity = 1.0
+	return probe
 
 
 ## The open floor inside the outer walls (the colliders tagged "wall"), as a ground rectangle.
