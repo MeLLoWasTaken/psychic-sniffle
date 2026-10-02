@@ -6,7 +6,6 @@ Thank you for testing. This build is the end of milestone 2: three classes, 1v1,
 
 1. Unzip the whole folder anywhere (keep `ArenaPvP.exe` and `ArenaPvP.pck` together).
 2. Run `ArenaPvP.exe`. Windows may warn that the program is unrecognised, because the build is not signed: choose **More info**, then **Run anyway**.
-3. `ArenaPvP.console.exe` starts the same game with a console window that shows the log, if something goes wrong.
 
 Linux: unzip, then run `./ArenaPvP.x86_64`.
 

@@ -31,6 +31,7 @@ Items further down keep their history; this list is the order to take them in.
 - [ ] A Windows (and Linux) package of the game the human downloads from a GitHub release, unzips and runs: built on CI from export templates compiled from the same Godot 4.7.2 source; the Linux package smoke-tested on CI (it starts as a headless server).
 - [ ] A playtest guide in the package and on the release page: install, what to play, controls, what to report, where the logs and recordings are, known issues (`docs/PLAYTEST.md`).
 - [ ] Matches record themselves by default (the newest 20, `user://recordings`) so a tester's match can be replayed here; a frame-rate readout (Settings, Interface) and a frame-statistics line in the log after every match (adapter, average, 1% low, worst frame), the first numbers from a GPU machine (F-02).
+- Follow-up: a console version of the Windows executable (the template job must also keep `godot.windows.template_release.x86_64.console.exe` as `windows_release_x86_64_console.exe`, and the preset export it); the log files cover crash reports meanwhile.
 - 2026-10-02: export presets (`game/export_presets.cfg`; the linked `data` folder and its JSON files are included, tests left out); a pack exported here loads its data and runs as a server with the editor binary. `.github/workflows/playtest.yml` builds the templates (cached), exports, smoke-tests and publishes a pre-release.
 
 ---

@@ -123,7 +123,7 @@ jobs:
           name: packages
           path: build
       - name: Smoke test the Windows package (a headless server and two bots)
-        run: python tools/sim/package_smoke.py build/windows/ArenaPvP.console.exe --out smoke-windows
+        run: python tools/sim/package_smoke.py build/windows/ArenaPvP.exe --out smoke-windows
 
   release:
     needs: [export, windows-smoke]
