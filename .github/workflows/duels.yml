@@ -11,6 +11,9 @@ on:
       random_builds:
         description: Random legal talent builds per spec besides the named ones (0 = named builds only)
         default: "0"
+      seed:
+        description: Simulation seed (a tune fitted on one seed should be confirmed on another)
+        default: "1"
 
 jobs:
   balance:
@@ -33,7 +36,7 @@ jobs:
       - name: Duels, shard ${{ matrix.shard }}
         run: |
           python3 tools/sim/nightly.py --bracket 1v1 --matches ${{ inputs.matches }} \
-            --random-builds ${{ inputs.random_builds }} --shards 8 --shard ${{ matrix.shard }} --out duels
+            --random-builds ${{ inputs.random_builds }} --seed ${{ inputs.seed || '1' }} --shards 8 --shard ${{ matrix.shard }} --out duels
       - uses: actions/upload-artifact@v4
         if: always()
         with:
