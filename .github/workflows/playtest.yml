@@ -102,27 +102,46 @@ jobs:
           ls -la build/windows build/linux
           test -s build/windows/ArenaPvP.exe && test -s build/windows/ArenaPvP.pck
           test -s build/linux/ArenaPvP.x86_64 && test -s build/linux/ArenaPvP.pck
-      - name: Smoke test the Linux package (headless server)
-        run: |
-          # a release build buffers its console output, which a timeout kill loses: read the game's
-          # own log file in the user folder instead
-          userlog="$HOME/.local/share/godot/app_userdata/Arena PvP/logs/server.log"
-          rm -f "$userlog"
-          timeout 12 build/linux/ArenaPvP.x86_64 --headless -- --server --port 25990 > smoke.log 2>&1 || true
-          cat smoke.log
-          cat "$userlog" || true
-          if ! grep -q "server: listening on port 25990" "$userlog"; then
-            { echo "console:"; tail -n 15 smoke.log; echo "user log:"; tail -n 15 "$userlog" 2>&1; ls -la "$HOME/.local/share/godot/app_userdata" 2>&1; } \
-              | tr '\n' '|' | cut -c1-3800 | sed 's/^/::error title=smoke test::/'
-            echo
-            exit 1
-          fi
+      - name: Smoke test the Linux package (a headless server and two bots)
+        run: python3 tools/sim/package_smoke.py build/linux/ArenaPvP.x86_64 --out smoke-linux
+      - uses: actions/upload-artifact@v4
+        with:
+          name: packages
+          path: build/
+
+  windows-smoke:
+    needs: export
+    runs-on: windows-latest
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+      - uses: actions/download-artifact@v4
+        with:
+          name: packages
+          path: build
+      - name: Smoke test the Windows package (a headless server and two bots)
+        run: python tools/sim/package_smoke.py build/windows/ArenaPvP.console.exe --out smoke-windows
+
+  release:
+    needs: [export, windows-smoke]
+    runs-on: ubuntu-24.04
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/download-artifact@v4
+        with:
+          name: packages
+          path: build
       - name: Package
         id: pkg
         run: |
           tag="${{ inputs.tag }}"
           if [ -z "$tag" ]; then tag="playtest-$(date -u +%Y%m%d)-${GITHUB_SHA::7}"; fi
           echo "tag=$tag" >> "$GITHUB_OUTPUT"
+          chmod +x build/linux/ArenaPvP.x86_64
           cp docs/PLAYTEST.md build/windows/README.md
           cp docs/PLAYTEST.md build/linux/README.md
           (cd build/windows && zip -qr "../ArenaPvP-$tag-windows.zip" .)
