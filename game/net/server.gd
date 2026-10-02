@@ -421,6 +421,7 @@ func _finish() -> void:
 		"match_seconds": arena.match_seconds(sim.tick) if arena else sim.time_s(),
 		"bytes_sent": transport.bytes_sent, "state_hash": sim.state_hash(), "end_states": _end_states,
 		"log_warnings": Log.warn_count, "log_errors": Log.error_count,
+		"memory_peak_mb": snappedf(OS.get_static_memory_peak_usage() / 1048576.0, 0.1),  # review pass: memory
 	}
 	if runner.input_log and input_log_path != "":
 		runner.input_log.finish(sim)

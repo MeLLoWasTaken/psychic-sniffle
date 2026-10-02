@@ -152,6 +152,17 @@ func test_haste_shortens_gcd_to_a_floor_of_0_75_s() -> void:
 	assert_int(me.gcd_ready_tick - sim.tick).is_equal(45)
 
 
+func test_energy_users_have_a_fixed_1_s_gcd_that_haste_does_not_shorten() -> void:
+	# DESIGN.md: energy specs use a fixed 1.0 s global cooldown (no energy class until M3; a test unit)
+	me.primary_resource = "energy"
+	cb.press(me, "bolt", 2)
+	assert_int(me.gcd_ready_tick - sim.tick).is_equal(60)
+	_run(61)
+	me.stats["haste"] = 1.0  # halves a normal global cooldown, not this one
+	cb.press(me, "bolt", 2)
+	assert_int(me.gcd_ready_tick - sim.tick).is_equal(60)
+
+
 # ------------------------------------------------------------ M1-03 resources
 
 func test_cannot_cast_without_resource_and_mana_regenerates() -> void:

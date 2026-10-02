@@ -528,7 +528,8 @@ func stats() -> Dictionary:
 		"simulated_jitter_ms": transport.jitter_ms, "simulated_loss": transport.loss,
 		"effect_corrections": _stats["effect_corrections"],
 		"effect_correction_max_m": _stats["effect_correction_max"], "correction_log": _stats["correction_log"],
-		"correction_worst": _stats["correction_worst"], "stuck_casts": _stuck_casts.values(), "end_view": _end_view,
+		"correction_worst": _stats["correction_worst"],
+		"memory_peak_mb": snappedf(OS.get_static_memory_peak_usage() / 1048576.0, 0.1), "stuck_casts": _stuck_casts.values(), "end_view": _end_view,
 		"log_warnings": Log.warn_count, "log_errors": Log.error_count}
 
 

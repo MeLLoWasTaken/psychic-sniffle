@@ -203,7 +203,8 @@ def main() -> int:
     (out / "report.json").write_text(json.dumps(report, indent=2))
     t = summary.get("tick_ms", {})
     print(f"server: {summary.get('ticks', 0)} ticks, tick avg {t.get('avg', 0):.3f} ms, p95 {t.get('p95', 0):.3f} ms, "
-          f"max {t.get('max', 0):.3f} ms; {summary.get('damage_events', 0)} damage events, {summary.get('kills', 0)} kills")
+          f"max {t.get('max', 0):.3f} ms; {summary.get('damage_events', 0)} damage events, {summary.get('kills', 0)} kills; "
+          f"memory peak {summary.get('memory_peak_mb', 0)} MB")
     for name, st in report["bots"].items():
         print(f"{name}: {st['snapshot_rate_hz']:.2f} snapshots/s, rtt {st['rtt_avg_ms']:.1f} ms, "
               f"corrections {st['corrections']} (avg {st['correction_avg_m']:.3f} m, max {st['correction_max_m']:.3f} m); "

@@ -194,7 +194,9 @@ def perf(out: Path) -> int:
     report = json.loads((dest / "report.json").read_text()) if (dest / "report.json").exists() else {}
     rates = [b.get("snapshot_rate_hz", 0) for b in report.get("bots", {}).values()]
     print(f"::notice title=20-player profile::server tick avg {tick.get('avg')} ms, p95 {tick.get('p95')} ms, max {tick.get('max')} ms; "
-          f"client snapshot rates {min(rates, default=0):.1f}-{max(rates, default=0):.1f} Hz on {os.cpu_count()} cores")
+          f"client snapshot rates {min(rates, default=0):.1f}-{max(rates, default=0):.1f} Hz on {os.cpu_count()} cores; "
+          f"memory peak server {summary.get('memory_peak_mb')} MB, bot clients "
+          f"{max((b.get('memory_peak_mb', 0) for b in report.get('bots', {}).values()), default=0)} MB at most")
     avg = summary.get("tick_ms", {}).get("avg")
     if avg is not None and avg > TICK_BUDGET_MS:
         print(f"server tick average {avg} ms over the {TICK_BUDGET_MS} ms budget")

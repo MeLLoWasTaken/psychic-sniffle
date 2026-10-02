@@ -139,3 +139,22 @@ func test_a_focus_cast_hits_the_focus_and_keeps_the_target() -> void:
 	assert_int(e1.health).is_equal(e1.max_health)
 	var q: Dictionary = Protocol.quantize_input({"seq": 1, "ability": "shiver_lance", "target": 3, "ability_target": 4})
 	assert_int(int(Protocol.decode(Protocol.input_packet([q]))["inputs"][0]["ability_target"])).is_equal(4)
+
+
+func test_every_action_can_be_rebound_and_the_new_key_works() -> void:
+	# M2 gate: every action is rebindable. Each action in turn takes a chord no default uses, and the
+	# input map then answers to that chord and not to the old key
+	var s: KeybindScreen = _screen()
+	var keys: Array = [KEY_F1, KEY_F2, KEY_F3, KEY_F4, KEY_F5, KEY_F6, KEY_F7, KEY_F8, KEY_F9, KEY_F10, KEY_F11, KEY_F12]
+	var i: int = 0
+	for b: Dictionary in Data.keybinds["default"]["binds"]:
+		var action: String = b["action"]
+		var old: InputEvent = Keybinds.event_for(Keybinds.bind_of(s.profile, action))
+		var ev: InputEventKey = _key(keys[i % keys.size()], i / keys.size() % 2 == 1, true, i / keys.size() >= 2)
+		i += 1
+		s.start_capture(action)
+		assert_bool(s.capture(ev)).override_failure_message("%s did not take a new key" % action).is_true()
+		Keybinds.apply(s.profile)
+		assert_bool(InputMap.action_has_event(action, ev)).override_failure_message("%s does not answer to its new key" % action).is_true()
+		if old != null and not (old is InputEventKey and (old as InputEventKey).keycode == ev.keycode):
+			assert_bool(InputMap.action_has_event(action, old)).override_failure_message("%s still answers to its old key" % action).is_false()

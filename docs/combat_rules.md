@@ -8,9 +8,9 @@ Column "Test" holds `file::test_name` (Godot tests under `game/test/`, Python te
 | --- | --- | --- | --- |
 | Pacing | The global cooldown is 1.5 s | core/test_combat.gd::test_gcd_blocks_then_releases_after_1_5_s | |
 | Pacing | Haste shortens the global cooldown to a floor of 0.75 s | core/test_combat.gd::test_haste_shortens_gcd_to_a_floor_of_0_75_s | |
-| Pacing | Energy specs use a fixed 1.0 s global cooldown | | M3 (no energy spec before the class waves) |
+| Pacing | Energy specs use a fixed 1.0 s global cooldown | core/test_combat.gd::test_energy_users_have_a_fixed_1_s_gcd_that_haste_does_not_shorten | |
 | Pacing | A press inside the 400 ms spell queue window fires when the global cooldown ends; earlier presses are rejected | core/test_combat.gd::test_press_inside_queue_window_fires_on_first_tick_after_gcd; core/test_combat.gd::test_press_500ms_before_gcd_end_is_rejected_and_100ms_is_queued | |
-| Pacing | The spell queue window is adjustable from 0 to 400 ms | | M2-13 |
+| Pacing | The spell queue window is adjustable from 0 to 400 ms | client/test_settings.gd::test_the_spell_queue_window_and_auto_self_cast_are_each_players_own | |
 | Pacing | Abilities are instant, cast or channeled, from data alone | core/test_combat.gd::test_instant_cast_and_channel_from_data_only | |
 | Pacing | Moving cancels a cast unless the ability is castable while moving | core/test_combat.gd::test_moving_cancels_a_cast_unless_castable_while_moving | |
 | Pacing | An interrupt ends the cast and locks that school for 3 to 4 s; other schools still work | core/test_combat.gd::test_interrupt_locks_the_school_and_other_schools_still_work; core/test_kits.gd::test_spellsever_locks_holy_for_4_s; test_combat_rule_data.py::test_interrupts_lock_a_school_for_3_to_4_s | |
