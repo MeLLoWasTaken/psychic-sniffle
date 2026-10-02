@@ -160,7 +160,8 @@ def main() -> int:
                 failures.append(f"{name} measured RTT {st['rtt_avg_ms']:.1f} ms vs expected {expected:.0f} ms "
                                 f"({args.lag_ms:.0f} ms simulated + {BASE_RTT_MS:.0f} ms local base)")
             if st["correction_max_m"] >= 0.5:
-                failures.append(f"{name} largest correction {st['correction_max_m']:.3f} m (limit 0.5)")
+                failures.append(f"{name} largest correction {st['correction_max_m']:.3f} m (limit 0.5): "
+                                f"{json.dumps(st.get('correction_worst', {}))}")
             if st["correction_avg_m"] >= 0.1:
                 failures.append(f"{name} average correction {st['correction_avg_m']:.3f} m (limit 0.1)")
     # M1-30: no cast stays on screen past its end, and every client's view of the ended match

@@ -67,7 +67,7 @@ var _finished: bool = false  ## set once we start shutting down; later network e
 var _last_server_pos: Vector3 = Vector3.ZERO
 var _stats: Dictionary = {"snapshots": 0, "corrections": 0, "correction_sum": 0.0, "teleports": 0,
 	"correction_max": 0.0, "rtt_ms": [], "stale_snapshots": 0, "inputs_sent": 0,
-	"effect_corrections": 0, "effect_correction_max": 0.0, "correction_log": []}
+	"effect_corrections": 0, "effect_correction_max": 0.0, "correction_log": [], "correction_worst": {}}
 var _start_usec: int = 0
 var _match_ended_usec: int = 0
 var _last_displaced_tick: int = -1
@@ -317,10 +317,17 @@ func _reconcile(snap: Dictionary) -> void:
 			return
 		_stats["corrections"] += 1
 		_stats["correction_sum"] += corr
+		var entry: Dictionary = {"tick": snap["tick"], "m": corr, "pending": _pending.size(),
+			"match_s": snapped(float(int(snap["tick"]) - _match_start_tick) / Data.tick_rate(), 0.01),
+			"predicted": [snapped(before.x, 0.01), snapped(before.y, 0.01), snapped(before.z, 0.01)],
+			"replayed": [snapped(predicted.position.x, 0.01), snapped(predicted.position.y, 0.01), snapped(predicted.position.z, 0.01)],
+			"removed": geometry.removed_tags.keys() if geometry else [],
+			"auras": own_auras.map(func(a: Dictionary) -> String: return "%s@%d" % [a["id"], a["expires_tick"]])}
+		if corr > _stats["correction_max"]:
+			_stats["correction_worst"] = entry  # the largest one, whenever it happens (CI annotations)
 		_stats["correction_max"] = maxf(_stats["correction_max"], corr)
 		if _stats["correction_log"].size() < 20:
-			_stats["correction_log"].append({"tick": snap["tick"], "m": corr, "pending": _pending.size(),
-				"auras": own_auras.map(func(a: Dictionary) -> String: return "%s@%d" % [a["id"], a["expires_tick"]])})
+			_stats["correction_log"].append(entry)
 
 
 ## True when the movement-affecting auras in a new snapshot differ from what the previous one
@@ -519,7 +526,7 @@ func stats() -> Dictionary:
 		"simulated_jitter_ms": transport.jitter_ms, "simulated_loss": transport.loss,
 		"effect_corrections": _stats["effect_corrections"],
 		"effect_correction_max_m": _stats["effect_correction_max"], "correction_log": _stats["correction_log"],
-		"stuck_casts": _stuck_casts.values(), "end_view": _end_view,
+		"correction_worst": _stats["correction_worst"], "stuck_casts": _stuck_casts.values(), "end_view": _end_view,
 		"log_warnings": Log.warn_count, "log_errors": Log.error_count}
 
 
