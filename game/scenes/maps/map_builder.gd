@@ -52,6 +52,7 @@ var _rng: RandomNumberGenerator = RandomNumberGenerator.new()
 var _dressing: Dictionary = {}  ## map data "dressing" (backlog F-05)
 var _placements: Dictionary = {}  ## kit piece -> Array[Transform3D], drawn as one multimesh each
 var _tag_nodes: Dictionary = {}  ## collider tag -> the nodes showing it (greybox and kit), for twists
+var _collider_nodes: Dictionary = {}  ## collider tag -> one node per collider (at its centre)
 var removed_tags: Dictionary = {}  ## tags a twist has taken away: their nodes are hidden, a wreck shown
 var wrecks: Array[Node3D] = []  ## the wrecks left by collapses (tests, screenshots)
 var water: MeshInstance3D = null  ## a flood's water surface, built when the water starts to rise
@@ -86,6 +87,7 @@ func build() -> void:
 	gates.clear()
 	pickups.clear()
 	_tag_nodes.clear()
+	_collider_nodes.clear()
 	removed_tags.clear()
 	wrecks.clear()
 	water = null
@@ -175,6 +177,22 @@ func _set_rotation(twist: Dictionary, angle: float) -> void:
 				n.set_meta("home", n.transform)
 			var home: Transform3D = n.get_meta("home")
 			n.transform = Transform3D(turn * home.basis, pivot + turn * (home.origin - pivot))
+
+
+## Looping sounds of turning colliders while their twist runs (rotate twists' "loop_sound", F-18):
+## [{"key", "sound", "pos"}], one per turning collider at its current place; empty before the turn.
+func moving_sounds(seconds: float) -> Array:
+	var out: Array = []
+	for t: Dictionary in map.get("twists", []):
+		if str(t.get("type", "")) != "rotate" or str(t.get("loop_sound", "")) == "" \
+				or ArenaTwists.stage(t, seconds) != ArenaTwists.Stage.DONE:
+			continue
+		for tag: String in t.get("tags", []):
+			var nodes: Array = _collider_nodes.get(tag, [])
+			for i: int in nodes.size():
+				out.append({"key": "%s:%s:%d" % [t.get("id", ""), tag, i], "sound": str(t["loop_sound"]),
+					"pos": (nodes[i] as Node3D).position + Vector3.UP * 1.0})
+	return out
 
 
 ## A flood's water at `level` (0 to 1): a surface over the arena floor outside the dry rectangles,
@@ -494,6 +512,10 @@ func _build_collider(c: Dictionary) -> void:
 	node.name = "%s_%d" % [tag.capitalize(), get_child_count()]
 	add_child(node)
 	_tag_node(str(c.get("tag", "")), node)
+	if str(c.get("tag", "")) != "":
+		if not _collider_nodes.has(c["tag"]):
+			_collider_nodes[c["tag"]] = []
+		(_collider_nodes[c["tag"]] as Array).append(node)
 	var mesh: Mesh
 	var shape: Shape3D
 	var size: Vector3

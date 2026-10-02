@@ -48,6 +48,7 @@ var strike_delay: Callable = Callable()
 ## Vector3 (feet) -> the ground surface there ("water", or "" for the plain floor); the match scenes
 ## set it from the map (MapBuilder.surface_at). Unset: always the plain floor.
 var surface_at: Callable = Callable()
+var map_loops: Dictionary = {}  ## key -> voice: looping sounds the map places (a turning crucible, F-18)
 var _pending: Array = []  ## impacts waiting for their swing to strike: {tick, ability, source, target}
 var max_voices: int = 64
 var cc_warning_enabled: bool = true  ## DESIGN.md settings: CC warning sound on or off
@@ -319,6 +320,37 @@ func _start_loop(src: int, ab: String) -> void:
 		v["follow"] = true
 		v["ability"] = ab
 		units[src]["loop"] = v
+
+
+## A looping sound the map places at `pos` under `key` (the casting wheel's crucibles, F-18): starts
+## it, moves it, or with `pos` null fades it out. On the world bus; restarted if its voice was taken.
+func set_map_loop(key: String, id: String, pos: Variant) -> void:
+	var v: Dictionary = map_loops.get(key, {})
+	if pos == null or id == "":
+		if not v.is_empty():
+			map_loops.erase(key)
+			_fade_out(v)
+		return
+	if v.is_empty() or _index_of(v) == -1:
+		v = play(id, -1, -1, false, pos)
+		if v.is_empty():
+			return
+		(v["player"] as Node).set("bus", str(bank.map["buses"]["world"]))
+		map_loops[key] = v
+	elif (v["player"] as Node3D).is_inside_tree():
+		(v["player"] as Node3D).global_position = pos
+	else:
+		(v["player"] as Node3D).position = pos
+
+
+func _fade_out(v: Dictionary) -> void:
+	v["follow"] = false
+	v["ends"] = minf(float(v["ends"]), clock + STOP_FADE_S)
+	var p: Node = v["player"]
+	if p.is_inside_tree():
+		var tw: Tween = p.create_tween()
+		tw.tween_property(p, "volume_db", -60.0, STOP_FADE_S)
+		v["tween"] = tw
 
 
 ## Fade out the unit's cast loop (only if it belongs to `ab`, when given).

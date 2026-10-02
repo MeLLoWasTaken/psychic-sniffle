@@ -172,6 +172,10 @@
               -1
             ],
             "description": "rotate: 1 counter-clockwise seen from above (Vector2(x, z).rotated), -1 clockwise."
+          },
+          "loop_sound": {
+            "type": "string",
+            "description": "rotate: a looping sound (data/sounds) at each turning collider while the twist runs."
           }
         }
       }

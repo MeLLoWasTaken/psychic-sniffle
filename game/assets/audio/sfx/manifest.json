@@ -163,6 +163,13 @@
   ],
   "category": "impact"
  },
+ "foundry_wheel_loop": {
+  "hash": "f9657a3ff084c100",
+  "files": [
+   "foundry_wheel_loop"
+  ],
+  "category": "loop"
+ },
  "frost_cast_loop": {
   "hash": "2faaca65ac21508f",
   "files": [

@@ -1,0 +1,119 @@
+{
+  "id": "foundry_wheel_loop",
+  "description": "A crucible rolling on the casting wheel's rail (M2-10, F-18): a low grinding rumble, iron wheels thudding over the rail joints, and the chain creaking overhead; loops, and follows each crucible while the wheel turns.",
+  "category": "loop",
+  "peak_dbfs": -14.0,
+  "loops": true,
+  "duration_s": 4.0,
+  "layers": [
+    {
+      "type": "noise",
+      "band": [
+        45,
+        260
+      ],
+      "am": [
+        0.5,
+        0.35
+      ],
+      "env": {
+        "hold": [
+          0,
+          0
+        ]
+      },
+      "gain": 1.0
+    },
+    {
+      "type": "noise",
+      "band": [
+        300,
+        1400
+      ],
+      "am": [
+        6.5,
+        0.45
+      ],
+      "env": {
+        "hold": [
+          0,
+          0
+        ]
+      },
+      "gain": 0.8
+    },
+    {
+      "type": "noise",
+      "band": [
+        120,
+        900
+      ],
+      "env": {
+        "attack_s": 0.015,
+        "decay_s": 0.09
+      },
+      "repeat": {
+        "times": [
+          0.25,
+          0.45,
+          1.25,
+          1.45,
+          2.25,
+          2.45,
+          3.25
+        ],
+        "gain_jitter": 0.25
+      },
+      "gain": 0.35
+    },
+    {
+      "type": "resonant",
+      "base": 900,
+      "jitter": 0.1,
+      "partials": [
+        [
+          1,
+          10,
+          1.0,
+          0.25
+        ],
+        [
+          1.6,
+          12,
+          0.4,
+          0.2
+        ]
+      ],
+      "glide": [
+        0.9,
+        0.5
+      ],
+      "scrape": [
+        0.6,
+        0.3
+      ],
+      "highpass": 500,
+      "env": {
+        "attack_s": 0.08,
+        "decay_s": 0.25
+      },
+      "repeat": {
+        "times": [
+          0.9,
+          2.6
+        ],
+        "gain_jitter": 0.4
+      },
+      "gain": 0.2
+    }
+  ],
+  "post": {
+    "reverb": {
+      "length_s": 0.9,
+      "mix": 0.2,
+      "brightness": 4000
+    },
+    "loop_fade_s": 0.8,
+    "saturate": 1.5
+  }
+}

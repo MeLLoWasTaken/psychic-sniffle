@@ -372,3 +372,18 @@ func test_animator_reports_the_strike_of_its_next_swing() -> void:
 	for clip: String in ["attack_1", "attack_2", "attack_3"]:
 		assert_float(CharacterAnimator.strike_time_s(clip)).is_between(0.3, 0.6)
 	assert_float(CharacterAnimator.strike_time_s("idle")).is_equal(0.0)
+
+
+func test_map_loops_start_follow_and_fade_out() -> void:
+	# F-18: a turning crucible's rumble, placed by the map on the world bus
+	var a: AudioDirector = _director()
+	a.set_map_loop("wheel:0", "foundry_wheel_loop", Vector3(0, 1, 9))
+	assert_int(_plays(a, "foundry_wheel_loop").size()).is_equal(1)
+	var v: Dictionary = a.map_loops["wheel:0"]
+	assert_str(String((v["player"] as Node).get("bus"))).is_equal(str(a.bank.map["buses"]["world"]))
+	a.set_map_loop("wheel:0", "foundry_wheel_loop", Vector3(-3, 1, 8))  # moved, not restarted
+	assert_int(_plays(a, "foundry_wheel_loop").size()).is_equal(1)
+	assert_vector((v["player"] as Node3D).global_position).is_equal(Vector3(-3, 1, 8))
+	a.set_map_loop("wheel:0", "", null)
+	assert_bool(a.map_loops.has("wheel:0")).is_false()
+	assert_float(float(v["ends"])).is_less_equal(a.clock + AudioDirector.STOP_FADE_S)

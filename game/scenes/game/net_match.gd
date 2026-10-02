@@ -350,6 +350,7 @@ func _process(delta: float) -> void:
 			builder.set_match_time(match_s, preparing)
 			if builder.wade != null:
 				builder.update_wading(renderer.drawn_units(), 0.0 if fast else delta)
+			_update_map_sounds(match_s, preparing)
 			if cam.geometry != null and not preparing:
 				# the camera no longer bumps into a wreck, and follows turning colliders
 				cam.geometry.apply_twists(Data.maps.get(str(preset["map"]), {}).get("twists", []), match_s)
@@ -459,6 +460,23 @@ func _on_server_exited() -> void:
 ## Leave the match now (the in-match menu's Leave): back to the menu.
 func leave() -> void:
 	flow.leave()
+
+
+var _map_sound_keys: Dictionary = {}  ## map loop keys playing (to stop the ones that end)
+
+
+## The map's moving loops (a turning crucible's rumble) follow their colliders; they stop when the
+## twist is not running (preparation, a replay rewound).
+func _update_map_sounds(match_s: float, preparing: bool) -> void:
+	var now: Dictionary = {}
+	if not preparing:
+		for s: Dictionary in builder.moving_sounds(match_s):
+			now[s["key"]] = true
+			renderer.audio.set_map_loop(s["key"], s["sound"], s["pos"])
+	for k: String in _map_sound_keys:
+		if not now.has(k):
+			renderer.audio.set_map_loop(k, "", null)
+	_map_sound_keys = now
 
 
 const RECORDINGS_DIR: String = "user://recordings"

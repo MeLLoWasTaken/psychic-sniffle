@@ -120,3 +120,21 @@ func test_bots_stop_pathing_around_the_crucibles_once_they_move() -> void:
 	assert_str(nav.state_key()).is_equal(before)
 	geo.apply_twists(Data.maps["burning_foundry"]["twists"], 151.0)
 	assert_str(nav.state_key()).is_not_equal(before)  # one rebuild when the wheel starts, not one per tick
+
+
+func test_the_map_places_a_rumble_at_each_crucible_while_the_wheel_turns() -> void:
+	var b: MapBuilder = auto_free(MapBuilder.new())
+	b.map_id = "burning_foundry"
+	b.use_kit = false
+	b.bake_gi = false
+	b.build_lighting = false
+	b.build()
+	b.set_match_time(149.0, false)
+	assert_array(b.moving_sounds(149.0)).is_empty()
+	var s: float = 150.0 + 2.0 + PI / 2.0 / W
+	b.set_match_time(s, false)
+	var sounds: Array = b.moving_sounds(s)
+	assert_int(sounds.size()).is_equal(2)
+	var at: Array = sounds.map(func(x: Dictionary) -> Vector3: return (x["pos"] as Vector3).snapped(Vector3.ONE * 0.001))
+	assert_array(at).contains_exactly_in_any_order([Vector3(-9, 1, 0), Vector3(9, 1, 0)])
+	assert_str(str(sounds[0]["sound"])).is_equal("foundry_wheel_loop")

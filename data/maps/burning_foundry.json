@@ -32,7 +32,8 @@
       "warn_text": "The casting wheel shudders...",
       "text": "The casting wheel turns! The crucibles are moving.",
       "warn_sound": "foundry_gears",
-      "sound": "foundry_wheel"
+      "sound": "foundry_wheel",
+      "loop_sound": "foundry_wheel_loop"
     }
   ],
   "spawns": {

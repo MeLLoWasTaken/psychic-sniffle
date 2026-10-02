@@ -452,7 +452,8 @@ The human asked to incorporate any readily available offering that improves the 
 - [ ] Side by side with Flooded Crypt and Burning Foundry (`docs/reports/review_05/arenas_side_by_side.png`) the first arena is the plainest: smooth, lightly worn pillars, a gallows block that reads as a wooden crate, little dressing on the floor. Rebuild its pillars and gallows with the crypt and foundry kits' wear, trim and silhouette detail, and beat the old version on the same screenshot.
 
 ### F-18 Burning Foundry follow-ups (from M2-10) `[todo]`
-- [ ] No sound while the wheel turns (a low rolling rumble and chain creak that follows the crucibles) and none when a crucible pushes a player.
+- [x] No sound while the wheel turns: now a looping rumble with rail thuds and chain creaks follows each crucible while the wheel turns (`foundry_wheel_loop`, twist `loop_sound`; AudioDirector map loops on the world bus).
+- [ ] No sound when a crucible pushes a player (needs a server event for the push).
 - [ ] An acoustics file for the foundry (and the crypt): both use the default room.
 - [ ] Bots do not anticipate a crucible coming at them; they are pushed and steer away afterwards. Most bot matches end before 2:30, so the turning phase is rarely played.
 - [ ] The floor still reads busy at a distance (brick herringbone and riveted plates); try larger plates or fewer joints.

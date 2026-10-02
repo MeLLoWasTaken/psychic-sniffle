@@ -43,12 +43,19 @@ jobs:
           extra=""
           if [ "${{ matrix.platform }}" = windows ]; then
             # Godot needs MinGW's POSIX threads variant
-            sudo update-alternatives --set x86_64-w64-mingw32-gcc /usr/bin/x86_64-w64-mingw32-gcc-posix
-            sudo update-alternatives --set x86_64-w64-mingw32-g++ /usr/bin/x86_64-w64-mingw32-g++-posix
+            sudo update-alternatives --set x86_64-w64-mingw32-gcc /usr/bin/x86_64-w64-mingw32-gcc-posix \
+              || echo "::warning title=mingw::could not select the POSIX gcc ($(ls /usr/bin/x86_64-w64-mingw32-gcc* | tr '\n' ' '))"
+            sudo update-alternatives --set x86_64-w64-mingw32-g++ /usr/bin/x86_64-w64-mingw32-g++-posix \
+              || echo "::warning title=mingw::could not select the POSIX g++"
+            x86_64-w64-mingw32-gcc --version | head -1
             extra="use_mingw=yes"
           fi
-          scons platform=${{ matrix.platform }} target=template_release arch=x86_64 production=yes lto=none \
-            $extra -j"$(nproc)"
+          # CI job logs may not be reachable: on failure the end of the build output becomes annotations
+          if ! scons platform=${{ matrix.platform }} target=template_release arch=x86_64 production=yes lto=none \
+              $extra -j"$(nproc)" > ../build.log 2>&1; then
+            tail -n 40 ../build.log | while IFS= read -r line; do echo "::error title=template build::${line:0:300}"; done
+            exit 1
+          fi
           mkdir -p ../tpl
           cp bin/${{ matrix.built }} ../tpl/${{ matrix.name }}
       - uses: actions/upload-artifact@v4
