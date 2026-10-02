@@ -2,6 +2,15 @@
 
 One entry per build-loop iteration, newest first. Format: date, backlog ID, what changed, how it was checked.
 
+## 2026-10-02 — M2-10 Burning Foundry; M2-04 done
+- A third arena, Burning Foundry: a sooty foundry yard with a furnace in the middle, two crucibles of molten iron on a casting wheel, and casting moulds near the walls.
+  - Twist (new type `rotate`): at 2:30 the casting wheel starts turning, so the crucibles circle the furnace once every 50 seconds. Cover moves, and anyone in the way is pushed aside. It is exact on the server, in the client's prediction and in replays.
+  - Art kit `foundry`: 19 Blender-built pieces (furnace, crucibles, crane arm, rail ring, moulds, walls, gate, gatehouse, props, skyline), plus two glow effects, two sounds and a lighting preset. The crane arm and the crucibles' glow turn with the wheel.
+  - The arena joins the match rotation.
+- Fixed: the client predicted twists one tick ahead of the server.
+- M2-04 done: the 3,000-match nightly finds no talent favoured by the top builds, and at least 3 viable builds per class in 2v2 and 3v3. 1v1 balance with random builds is still off (F-08).
+- Checked: tests for the wheel's angle, pushing, moving cover, the server with a replay, client prediction, the map visuals and bot navigation; a validator rule (and its test) for clearance along the path; 16 local bot matches (all ended by a kill); screenshots reviewed (`previews/m2_10/`).
+
 ## 2026-10-02 — M2-04b: random builds aim like players; the node check asks what top builds favour
 - Random talent builds for the simulations now aim for a random capstone along one route, then fill the rest; capstones are in 9-22% of builds instead of 0-4%.
 - The node check flags a talent only when the top builds take it more often than chance would, given how often all builds take it. Talents nearly every build takes are listed as "common" instead (DECISIONS.md).

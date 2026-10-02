@@ -1,0 +1,646 @@
+{
+  "id": "burning_foundry",
+  "name": "Burning Foundry",
+  "description": "A sooty foundry yard under a smoke-choked dusk: a great furnace in the middle, two crucibles of molten iron on a casting wheel around it, and stacked casting moulds near the walls.",
+  "mode": "arena",
+  "brackets": [
+    "1v1",
+    "2v2",
+    "3v3"
+  ],
+  "size_m": 40,
+  "bounds_half_m": 28.5,
+  "scene": "res://scenes/maps/burning_foundry.tscn",
+  "lighting_preset": "forge_glow",
+  "twist": "At 2:30 the casting wheel starts to turn: the two crucibles circle the furnace once every 50 seconds, so the cover moves and anyone in their way is pushed aside.",
+  "twists": [
+    {
+      "id": "casting_wheel",
+      "type": "rotate",
+      "at_s": 150,
+      "warn_s": 10,
+      "tags": [
+        "crucible"
+      ],
+      "center": [
+        0,
+        0
+      ],
+      "period_s": 50,
+      "spin_up_s": 4,
+      "direction": 1,
+      "warn_text": "The casting wheel shudders...",
+      "text": "The casting wheel turns! The crucibles are moving.",
+      "warn_sound": "foundry_gears",
+      "sound": "foundry_wheel"
+    }
+  ],
+  "spawns": {
+    "team_a": [
+      [
+        -23.5,
+        0,
+        -2
+      ],
+      [
+        -23.5,
+        0,
+        2
+      ],
+      [
+        -23.5,
+        0,
+        0
+      ]
+    ],
+    "team_b": [
+      [
+        23.5,
+        0,
+        -2
+      ],
+      [
+        23.5,
+        0,
+        2
+      ],
+      [
+        23.5,
+        0,
+        0
+      ]
+    ]
+  },
+  "colliders": [
+    {
+      "type": "circle",
+      "center": [
+        0,
+        0
+      ],
+      "radius": 2.6,
+      "height": 7,
+      "blocks_los": true,
+      "tag": "furnace"
+    },
+    {
+      "type": "circle",
+      "center": [
+        0,
+        9
+      ],
+      "radius": 1.5,
+      "height": 2.6,
+      "blocks_los": true,
+      "tag": "crucible"
+    },
+    {
+      "type": "circle",
+      "center": [
+        0,
+        -9
+      ],
+      "radius": 1.5,
+      "height": 2.6,
+      "blocks_los": true,
+      "tag": "crucible"
+    },
+    {
+      "type": "box",
+      "min": [
+        -12.0,
+        8.5
+      ],
+      "max": [
+        -10.0,
+        12.5
+      ],
+      "height": 2.4,
+      "blocks_los": true,
+      "tag": "mold"
+    },
+    {
+      "type": "box",
+      "min": [
+        10.0,
+        -12.5
+      ],
+      "max": [
+        12.0,
+        -8.5
+      ],
+      "height": 2.4,
+      "blocks_los": true,
+      "tag": "mold"
+    },
+    {
+      "type": "box",
+      "min": [
+        -19.5,
+        18
+      ],
+      "max": [
+        19.5,
+        28.5
+      ],
+      "height": 6,
+      "blocks_los": true,
+      "tag": "wall"
+    },
+    {
+      "type": "box",
+      "min": [
+        -19.5,
+        -28.5
+      ],
+      "max": [
+        19.5,
+        -18
+      ],
+      "height": 6,
+      "blocks_los": true,
+      "tag": "wall"
+    },
+    {
+      "type": "box",
+      "min": [
+        -28.5,
+        -28.5
+      ],
+      "max": [
+        -19.5,
+        -4
+      ],
+      "height": 6,
+      "blocks_los": true,
+      "tag": "wall"
+    },
+    {
+      "type": "box",
+      "min": [
+        -28.5,
+        4
+      ],
+      "max": [
+        -19.5,
+        28.5
+      ],
+      "height": 6,
+      "blocks_los": true,
+      "tag": "wall"
+    },
+    {
+      "type": "box",
+      "min": [
+        -20.5,
+        -4
+      ],
+      "max": [
+        -19.5,
+        4
+      ],
+      "height": 5,
+      "blocks_los": true,
+      "gate": true,
+      "tag": "gate"
+    },
+    {
+      "type": "box",
+      "min": [
+        19.5,
+        -28.5
+      ],
+      "max": [
+        28.5,
+        -4
+      ],
+      "height": 6,
+      "blocks_los": true,
+      "tag": "wall"
+    },
+    {
+      "type": "box",
+      "min": [
+        19.5,
+        4
+      ],
+      "max": [
+        28.5,
+        28.5
+      ],
+      "height": 6,
+      "blocks_los": true,
+      "tag": "wall"
+    },
+    {
+      "type": "box",
+      "min": [
+        19.5,
+        -4
+      ],
+      "max": [
+        20.5,
+        4
+      ],
+      "height": 5,
+      "blocks_los": true,
+      "gate": true,
+      "tag": "gate"
+    }
+  ],
+  "status": "draft",
+  "pickups": [
+    [
+      0,
+      0,
+      15
+    ],
+    [
+      0,
+      0,
+      -15
+    ]
+  ],
+  "kit": "foundry",
+  "decor": [
+    {
+      "piece": "rail_ring",
+      "pos": [
+        0,
+        0
+      ]
+    },
+    {
+      "piece": "crane_arm",
+      "pos": [
+        0,
+        0
+      ],
+      "y": 6.3,
+      "tag": "crucible"
+    },
+    {
+      "piece": "crucible",
+      "pos": [
+        0,
+        9
+      ],
+      "effect": "molten_glow",
+      "effect_only": true,
+      "tag": "crucible"
+    },
+    {
+      "piece": "crucible",
+      "pos": [
+        0,
+        -9
+      ],
+      "effect": "molten_glow",
+      "effect_only": true,
+      "tag": "crucible"
+    },
+    {
+      "piece": "furnace",
+      "pos": [
+        2.7689999999999997,
+        2.7689999999999997
+      ],
+      "effect": "furnace_glow",
+      "effect_only": true
+    },
+    {
+      "piece": "furnace",
+      "pos": [
+        -2.7689999999999997,
+        2.7689999999999997
+      ],
+      "effect": "furnace_glow",
+      "effect_only": true
+    },
+    {
+      "piece": "furnace",
+      "pos": [
+        2.7689999999999997,
+        -2.7689999999999997
+      ],
+      "effect": "furnace_glow",
+      "effect_only": true
+    },
+    {
+      "piece": "furnace",
+      "pos": [
+        -2.7689999999999997,
+        -2.7689999999999997
+      ],
+      "effect": "furnace_glow",
+      "effect_only": true
+    },
+    {
+      "piece": "brazier",
+      "pos": [
+        -18.8,
+        -17.3
+      ],
+      "effect": "brazier_fire"
+    },
+    {
+      "piece": "brazier",
+      "pos": [
+        18.8,
+        -17.3
+      ],
+      "effect": "brazier_fire"
+    },
+    {
+      "piece": "brazier",
+      "pos": [
+        -18.8,
+        17.3
+      ],
+      "effect": "brazier_fire"
+    },
+    {
+      "piece": "brazier",
+      "pos": [
+        18.8,
+        17.3
+      ],
+      "effect": "brazier_fire"
+    },
+    {
+      "piece": "brazier",
+      "pos": [
+        -27.8,
+        -3.3
+      ],
+      "effect": "brazier_fire"
+    },
+    {
+      "piece": "brazier",
+      "pos": [
+        27.8,
+        -3.3
+      ],
+      "effect": "brazier_fire"
+    },
+    {
+      "piece": "ingot_stack",
+      "pos": [
+        -6.5,
+        17.0
+      ],
+      "yaw_deg": 10
+    },
+    {
+      "piece": "ingot_stack",
+      "pos": [
+        7.0,
+        -17.0
+      ],
+      "yaw_deg": 190
+    },
+    {
+      "piece": "ingot_stack",
+      "pos": [
+        -18.4,
+        -9.5
+      ],
+      "yaw_deg": 80
+    },
+    {
+      "piece": "coal_heap",
+      "pos": [
+        14.5,
+        16.6
+      ],
+      "yaw_deg": 20
+    },
+    {
+      "piece": "coal_heap",
+      "pos": [
+        -15.0,
+        -16.6
+      ],
+      "yaw_deg": 200
+    },
+    {
+      "piece": "coal_heap",
+      "pos": [
+        18.2,
+        9.0
+      ],
+      "yaw_deg": -70
+    },
+    {
+      "piece": "tool_rack",
+      "pos": [
+        3.0,
+        18.0
+      ],
+      "yaw_deg": 180
+    },
+    {
+      "piece": "tool_rack",
+      "pos": [
+        -3.5,
+        -18.0
+      ]
+    },
+    {
+      "piece": "tool_rack",
+      "pos": [
+        -19.5,
+        13.0
+      ],
+      "yaw_deg": 90
+    },
+    {
+      "piece": "tool_rack",
+      "pos": [
+        19.5,
+        -13.5
+      ],
+      "yaw_deg": -90
+    }
+  ],
+  "dressing": {
+    "wall_top": {
+      "outer_facades": true
+    },
+    "gatehouse": {
+      "piece": "gatehouse",
+      "front_m": 1.7,
+      "gate_width_m": 8.0
+    },
+    "variants": {
+      "wall": {
+        "wall": 3,
+        "wall_vents": 2
+      },
+      "floor_tile": {
+        "floor_tile": 5,
+        "floor_tile_worn": 1
+      }
+    },
+    "floor": {
+      "grime": {
+        "color": [
+          0.025,
+          0.02,
+          0.018
+        ],
+        "alpha": 0.8,
+        "width_m": [
+          2.0,
+          3.4
+        ]
+      },
+      "stains": [
+        {
+          "pos": [
+            0,
+            0
+          ],
+          "size_m": [
+            9,
+            9
+          ],
+          "seed": 11,
+          "alpha": 0.6
+        },
+        {
+          "pos": [
+            -12,
+            -4
+          ],
+          "size_m": [
+            6,
+            4
+          ],
+          "yaw_deg": 30,
+          "seed": 12
+        },
+        {
+          "pos": [
+            12,
+            4
+          ],
+          "size_m": [
+            6,
+            4
+          ],
+          "yaw_deg": -25,
+          "seed": 13
+        },
+        {
+          "pos": [
+            -11,
+            10.5
+          ],
+          "size_m": [
+            5,
+            4
+          ],
+          "seed": 14
+        },
+        {
+          "pos": [
+            11,
+            -10.5
+          ],
+          "size_m": [
+            5,
+            4
+          ],
+          "seed": 15
+        }
+      ],
+      "stain_color": [
+        0.03,
+        0.022,
+        0.018
+      ],
+      "puddles": []
+    },
+    "skyline": {
+      "ground": {
+        "color": [
+          0.035,
+          0.028,
+          0.024
+        ],
+        "size_m": 260,
+        "y": -0.3
+      },
+      "pieces": [
+        {
+          "piece": "skyline_stacks",
+          "pos": [
+            0.0,
+            47.0
+          ],
+          "yaw_deg": 180
+        },
+        {
+          "piece": "skyline_works",
+          "pos": [
+            -30.0,
+            -48.0
+          ],
+          "scale": 1.1
+        },
+        {
+          "piece": "skyline_stacks",
+          "pos": [
+            -48.0,
+            24.0
+          ],
+          "yaw_deg": 90
+        },
+        {
+          "piece": "skyline_works",
+          "pos": [
+            48.0,
+            -26.0
+          ],
+          "yaw_deg": -90
+        },
+        {
+          "piece": "skyline_works",
+          "pos": [
+            36.0,
+            42.0
+          ],
+          "yaw_deg": 20
+        },
+        {
+          "piece": "skyline_stacks",
+          "pos": [
+            22.0,
+            -56.0
+          ],
+          "yaw_deg": 40,
+          "scale": 0.9
+        },
+        {
+          "piece": "skyline_works",
+          "pos": [
+            -40.0,
+            40.0
+          ],
+          "yaw_deg": -30,
+          "scale": 0.95
+        },
+        {
+          "piece": "skyline_stacks",
+          "pos": [
+            58.0,
+            10.0
+          ],
+          "yaw_deg": 5,
+          "scale": 1.15
+        }
+      ]
+    }
+  }
+}

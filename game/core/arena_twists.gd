@@ -11,6 +11,9 @@ extends RefCounted
 ##   flood      at_s, rise_s, slow, dry: water rises over the rise_s before at_s (during the
 ##              warning) and from at_s on slows everyone on the ground outside the `dry`
 ##              rectangles ([[min_x, min_z], [max_x, max_z]]) to `slow` of their speed (M2-09).
+##   rotate     at_s, tags, center [x, z], period_s, spin_up_s, direction (1 or -1): from at_s the
+##              circle colliders with those tags turn about `center`, speeding up over spin_up_s
+##              to one turn per period_s; whatever they run into is pushed aside (M2-10).
 ##
 ##   {"id": "gallows_collapse", "type": "collapse", "at_s": 300, "warn_s": 10, "tags": ["gallows"],
 ##    "warn_text": "The gallows groan...", "text": "The gallows collapse!"}
@@ -67,4 +70,24 @@ static func active_flood(twists: Array, seconds: float) -> Dictionary:
 				dry.append(Rect2(Vector2(r[0][0], r[0][1]), Vector2(r[1][0] - r[0][0], r[1][1] - r[0][1])))
 			return {"slow": float(t.get("slow", 0.7)), "dry": dry}
 	return {}
+
+
+## How far a rotate twist has turned at `seconds`, in radians (counter-clockwise on the ground
+## plane, Vector2(x, z).rotated): 0 before at_s, then the angular speed rises evenly over spin_up_s
+## to one turn per period_s.
+static func rotation(twist: Dictionary, seconds: float) -> float:
+	var t: float = seconds - float(twist.get("at_s", INF))
+	if t <= 0.0:
+		return 0.0
+	var w: float = TAU / maxf(float(twist.get("period_s", 60.0)), 0.001)
+	var up: float = maxf(float(twist.get("spin_up_s", 0.0)), 0.0)
+	var a: float = w * t * t / (2.0 * up) if t < up else w * (t - up * 0.5)
+	return a * signf(float(twist.get("direction", 1.0)))
+
+
+## Where a point of a rotate twist's colliders is at `seconds`: `home` (its map position) turned
+## about the twist's center.
+static func rotated(twist: Dictionary, home: Vector2, seconds: float) -> Vector2:
+	var c: Vector2 = Vector2(twist["center"][0], twist["center"][1])
+	return c + (home - c).rotated(rotation(twist, seconds))
 

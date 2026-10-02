@@ -385,7 +385,9 @@ func _apply_twists(tick: int) -> void:
 ## effects that expire partway through the replay stop affecting it on time (the server moves a
 ## unit on the tick an aura expires, then removes the aura).
 func _predict_move(inp: Dictionary, tick: int) -> void:
-	_apply_twists(tick)  # a collapse at this tick changes what blocks us, as on the server
+	# the server moves units before its arena updates the twists for the tick, so a move at `tick`
+	# meets the arena as it stood after tick - 1 (a collapse, the casting wheel's turn)
+	_apply_twists(tick - 1)
 	var active: Array = own_auras.filter(func(a: Dictionary) -> bool:
 		return int(a["expires_tick"]) == 0 or tick <= int(a["expires_tick"]))
 	var mult: float = Combat.speed_multiplier_from(active, Data.auras)

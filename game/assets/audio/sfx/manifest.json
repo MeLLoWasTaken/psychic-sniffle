@@ -149,6 +149,20 @@
   ],
   "category": "footstep"
  },
+ "foundry_gears": {
+  "hash": "13f627a2ab3f95b9",
+  "files": [
+   "foundry_gears"
+  ],
+  "category": "impact"
+ },
+ "foundry_wheel": {
+  "hash": "013d5ccc15063cf3",
+  "files": [
+   "foundry_wheel"
+  ],
+  "category": "impact"
+ },
  "frost_cast_loop": {
   "hash": "2faaca65ac21508f",
   "files": [

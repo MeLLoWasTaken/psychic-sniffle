@@ -1,0 +1,41 @@
+{
+  "id": "foundry_crucible",
+  "kind": "environment_kit",
+  "builder": "build_kit_foundry.py",
+  "seed": 139,
+  "tri_budget": {
+    "min": 1500,
+    "max": 6000
+  },
+  "texture_size": 1024,
+  "palette": {
+    "brick": "#54423a",
+    "brick_dark": "#2e2522",
+    "mortar": "#1a1614",
+    "paver": "#5a4a40",
+    "iron": "#2f3133",
+    "rust": "#6a3a22",
+    "heat": "#3d2b36",
+    "scorch": "#6e3219",
+    "slag": "#3a3530",
+    "molten": "#ff5a0c",
+    "ember": "#c2410c",
+    "coal": "#141210",
+    "ash": "#77706a",
+    "sand": "#3f352d",
+    "pig_iron": "#4a4744",
+    "wood": "#66503a",
+    "void": "#0c0a09",
+    "far_brick": "#3b302b",
+    "far_roof": "#2c2f33"
+  },
+  "params": {
+    "radius_m": 1.5,
+    "height_m": 2.6,
+    "gauge_m": 0.8,
+    "lug_x": 1.05,
+    "piece": "crucible"
+  },
+  "out": "game/assets/kits/foundry/foundry_crucible.glb",
+  "status": "draft"
+}

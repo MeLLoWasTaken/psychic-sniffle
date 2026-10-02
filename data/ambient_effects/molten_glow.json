@@ -1,0 +1,37 @@
+{
+  "id": "molten_glow",
+  "description": "Molten iron in a crucible (M2-10): no flame, a few sparks and a shimmer of heat rising off the surface and a strong low orange light that lights the crucible's rim and the ground around it; it turns with the casting wheel.",
+  "offset": [0, 2.55, 0],
+  "embers": {
+    "count": 10,
+    "lifetime_s": 1.3,
+    "radius_m": 0.7,
+    "rise_mps": [0.6, 1.4],
+    "spread_deg": 20,
+    "buoyancy": 0.35,
+    "damping": 0.4,
+    "size_m": 0.04,
+    "color": [1.0, 0.55, 0.18, 1.0]
+  },
+  "smoke": {
+    "count": 6,
+    "lifetime_s": 2.4,
+    "radius_m": 0.6,
+    "rise_mps": [0.5, 0.9],
+    "spread_deg": 10,
+    "buoyancy": 0.2,
+    "damping": 0.1,
+    "size_m": 0.9,
+    "grow": 2.0,
+    "color": [0.16, 0.12, 0.1, 0.2]
+  },
+  "light": {
+    "color": [1.0, 0.48, 0.16],
+    "energy": 2.6,
+    "range_m": 8.0,
+    "attenuation": 1.5,
+    "fog_energy": 0.9,
+    "y_m": 0.5,
+    "flicker": {"amount": 0.08, "speed_hz": 1.5}
+  }
+}

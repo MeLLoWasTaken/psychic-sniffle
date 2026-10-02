@@ -149,6 +149,8 @@ func set_match_time(seconds: float, preparing: bool) -> void:
 	for t: Dictionary in map.get("twists", []):
 		if str(t.get("type", "")) == "flood":
 			_set_flood(t, ArenaTwists.flood_level(t, seconds))
+		elif str(t.get("type", "")) == "rotate":
+			_set_rotation(t, ArenaTwists.rotation(t, seconds))
 	var gone: Dictionary = ArenaTwists.removed_tags(map.get("twists", []), seconds)
 	for tag: String in gone:
 		if removed_tags.has(tag):
@@ -159,6 +161,20 @@ func set_match_time(seconds: float, preparing: bool) -> void:
 			for body: Node in n.find_children("*", "StaticBody3D", true, false):
 				(body as StaticBody3D).collision_layer = 0  # the camera and spells pass through now
 		_add_wreck(tag)
+
+
+## Turn everything shown with a rotate twist's tags (colliders, kit pieces, tagged decor and their
+## effects) to `angle` about its center, from the pose each node was built in. The same angle as
+## the server's colliders (Vector2(x, z).rotated(angle) is a turn of -angle about Godot's +Y).
+func _set_rotation(twist: Dictionary, angle: float) -> void:
+	var pivot: Vector3 = Vector3(twist["center"][0], 0.0, twist["center"][1])
+	var turn: Basis = Basis(Vector3.UP, -angle)
+	for tag: String in twist.get("tags", []):
+		for n: Node3D in _tag_nodes.get(tag, []):
+			if not n.has_meta("home"):
+				n.set_meta("home", n.transform)
+			var home: Transform3D = n.get_meta("home")
+			n.transform = Transform3D(turn * home.basis, pivot + turn * (home.origin - pivot))
 
 
 ## A flood's water at `level` (0 to 1): a surface over the arena floor outside the dry rectangles,
@@ -638,11 +654,24 @@ func _dress_with_kit() -> void:
 			_tag_node(tag, _kit_place(kit_root, "tomb", _box_centre(c), 0.0 if sz.x >= sz.y else PI / 2, Vector3(
 				maxf(sz.x, sz.y) / _kit_param("tomb", "length_m", 6.4), float(c.get("height", th)) / th,
 				minf(sz.x, sz.y) / _kit_param("tomb", "width_m", 2.8))))
+		elif c["type"] == "box" and tag not in ["wall", "gate", ""] and _kit_has(tag):
+			# a kit piece named after the tag (foundry moulds, M2-10), built length_m along x, like tombs
+			var bsz: Vector2 = _box_size(c)
+			var bh: float = _kit_param(tag, "height_m", 3.0)
+			_tag_node(tag, _kit_place(kit_root, tag, _box_centre(c), 0.0 if bsz.x >= bsz.y else PI / 2, Vector3(
+				maxf(bsz.x, bsz.y) / _kit_param(tag, "length_m", 4.0), float(c.get("height", bh)) / bh,
+				minf(bsz.x, bsz.y) / _kit_param(tag, "width_m", 2.0))))
 		elif c["type"] == "circle":
-			# each kit's pillar is built for its spec's radius_m and height_m (gallows 1.2 m, crypt 1.0 m)
-			var r: float = float(c["radius"]) / _kit_param("pillar", "radius_m", KIT_PILLAR_RADIUS_M)
-			_kit_place(kit_root, "pillar", Vector3(c["center"][0], 0, c["center"][1]), _rng.randf() * TAU,
-				Vector3(r, float(c.get("height", 6.0)) / _kit_param("pillar", "height_m", KIT_PILLAR_HEIGHT_M), r))
+			# each kit's pillar is built for its spec's radius_m and height_m (gallows 1.2 m, crypt 1.0 m);
+			# a circle whose tag names a kit piece gets that piece instead (the foundry's furnace and
+			# crucibles), unturned, so a rotate twist can turn it from a known pose
+			var piece: String = tag if tag != "" and tag != "pillar" and _kit_has(tag) else "pillar"
+			var r: float = float(c["radius"]) / _kit_param(piece, "radius_m", KIT_PILLAR_RADIUS_M)
+			var placed: Node3D = _kit_place(kit_root, piece, Vector3(c["center"][0], 0, c["center"][1]),
+				_rng.randf() * TAU if piece == "pillar" else 0.0,
+				Vector3(r, float(c.get("height", 6.0)) / _kit_param(piece, "height_m", KIT_PILLAR_HEIGHT_M), r))
+			if tag != "":
+				_tag_node(tag, placed)
 	_kit_bounds_walls()
 	if bool(_wall_top().get("outer_facades", false)):
 		_kit_outer_walls()
@@ -848,13 +877,23 @@ func _kit_decor(kit_root: Node3D) -> void:
 		var pos: Vector3 = Vector3(d["pos"][0], float(d.get("y", 0.0)), d["pos"][1])
 		var basis: Basis = Basis(Vector3.UP, deg_to_rad(float(d.get("yaw_deg", 0.0)))).scaled(Vector3.ONE * float(d.get("scale", 1.0)))
 		var xf: Transform3D = Transform3D(basis, pos)
-		if _kit_piece(piece) != null:
-			_place(piece, xf, false)
+		var tag: String = str(d.get("tag", ""))  # decor that moves or goes with a collider tag's twist
+		if not bool(d.get("effect_only", false)) and _kit_piece(piece) != null:
+			if tag == "":
+				_place(piece, xf, false)
+			else:
+				var inst: Node3D = _kit_instance(piece)
+				inst.name = "Decor%d_%s" % [i, piece]
+				inst.transform = xf
+				kit_root.add_child(inst)
+				_tag_node(tag, inst)
 		if d.has("effect") or d.get("light", false):
 			var anchor: Node3D = Node3D.new()
-			anchor.name = "Decor%d_%s" % [i, piece]
+			anchor.name = "Decor%d_%s_fx" % [i, piece]
 			anchor.transform = xf
 			kit_root.add_child(anchor)
+			if tag != "":
+				_tag_node(tag, anchor)
 			if d.has("effect"):
 				var fx: AmbientFx = AmbientFx.create(str(d["effect"]), hash(map_id) + i)
 				if fx:
@@ -1075,6 +1114,11 @@ func _kit_piece(piece: String) -> PackedScene:
 		if _kit_scenes[piece] == null:
 			Log.warn("map: missing kit piece %s" % path)
 	return _kit_scenes[piece]
+
+
+## True when the map's kit has a piece of that name (no warning when it has not).
+func _kit_has(piece: String) -> bool:
+	return _kit != "" and ResourceLoader.exists("res://assets/kits/%s/%s_%s.glb" % [_kit, _kit, piece])
 
 
 func _kit_instance(piece: String) -> Node3D:

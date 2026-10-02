@@ -81,9 +81,10 @@
           "type": {
             "enum": [
               "collapse",
-              "flood"
+              "flood",
+              "rotate"
             ],
-            "description": "collapse: the colliders with `tags` are gone from at_s on (movement, line of sight, camera), and a wreck lies where they stood. flood: water rises over rise_s before at_s, then slows everyone on the ground outside the dry rectangles to `slow` of their speed."
+            "description": "collapse: the colliders with `tags` are gone from at_s on (movement, line of sight, camera), and a wreck lies where they stood. flood: water rises over rise_s before at_s, then slows everyone on the ground outside the dry rectangles to `slow` of their speed. rotate: from at_s the circle colliders with `tags` turn about `center`, speeding up over spin_up_s to one turn per period_s, pushing aside whatever they run into."
           },
           "at_s": {
             "type": "number",
@@ -101,7 +102,7 @@
               "type": "string"
             },
             "minItems": 1,
-            "description": "collapse: collider tags taken away."
+            "description": "collapse: collider tags taken away. rotate: circle colliders that turn."
           },
           "warn_text": {
             "type": "string"
@@ -145,6 +146,32 @@
               "maxItems": 2
             },
             "description": "flood: dry rectangles [[min_x, min_z], [max_x, max_z]]."
+          },
+          "center": {
+            "type": "array",
+            "items": {
+              "type": "number"
+            },
+            "minItems": 2,
+            "maxItems": 2,
+            "description": "rotate: the pivot [x, z]."
+          },
+          "period_s": {
+            "type": "number",
+            "exclusiveMinimum": 0,
+            "description": "rotate: seconds per full turn once up to speed."
+          },
+          "spin_up_s": {
+            "type": "number",
+            "minimum": 0,
+            "description": "rotate: seconds to reach full speed."
+          },
+          "direction": {
+            "enum": [
+              1,
+              -1
+            ],
+            "description": "rotate: 1 counter-clockwise seen from above (Vector2(x, z).rotated), -1 clockwise."
           }
         }
       }
@@ -243,8 +270,11 @@
               "wall",
               "gate",
               "gallows",
-                "tomb",
-              "prop"
+              "tomb",
+              "prop",
+              "furnace",
+              "crucible",
+              "mold"
             ],
             "description": "What the blocker is, so the map builder picks the right greybox or art-kit piece."
           }
@@ -335,6 +365,15 @@
             "type": "number",
             "exclusiveMinimum": 0,
             "default": 1
+          },
+          "tag": {
+            "type": "string",
+            "description": "A collider tag whose twist this piece follows: it turns with a rotate twist (the foundry's crane arm and crucible glow) or disappears with a collapse."
+          },
+          "effect_only": {
+            "type": "boolean",
+            "default": false,
+            "description": "Only the effect (and light), no kit mesh: for glows on pieces placed by colliders (the foundry's crucibles and furnace mouths). `piece` then just names the anchor."
           }
         }
       }

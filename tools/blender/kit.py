@@ -28,7 +28,9 @@ def kit_material(name: str, hex_color: str, roughness: float = 0.85, metallic: f
                  mottle_scale: float = 0.45, emission: float = 0.0, height_grad: float = 0.0,
                  height_m: float = 2.0, moss: float = 0.0, moss_color: str = "#4b5a33",
                  moss_scale: float = 1.4, damp: float = 0.0, damp_m: float = 1.5,
-                 streaks: float = 0.0) -> bpy.types.Material:
+                 streaks: float = 0.0, soot: float = 0.0, soot_m: float = 4.0,
+                 heat: float = 0.0, heat_color: str = "#3d2b36", heat_m: float = 0.0,
+                 heat_scale: float = 1.2) -> bpy.types.Material:
     """Painted-look material. Every channel is broad and soft (no fine noise):
     - base color times the per-part tint attribute
     - mottle: very low-frequency brightness variation (mottle_scale is in 1/m)
@@ -41,6 +43,11 @@ def kit_material(name: str, hex_color: str, roughness: float = 0.85, metallic: f
     - moss: broad patches of moss_color on upward-facing surfaces and in crevices
     - damp: darker, greener stone below a wavy line about damp_m above the piece's floor
     - streaks: long vertical wet stains running down the faces
+    Weathering for hot, smoky places (all 0 by default, so other kits are unchanged):
+    - soot: smoke-blackening that thickens toward soot_m above the piece's floor, on undersides
+      and in long vertical streaks and broad blotches
+    - heat: heat-tempered metal or scorched brick: broad patches of heat_color, everywhere or
+      (heat_m > 0) rising to full strength at heat_m above the floor (a crucible's rim)
     """
     mat = bpy.data.materials.new(name)
     mat.use_nodes = True
@@ -100,6 +107,10 @@ def kit_material(name: str, hex_color: str, roughness: float = 0.85, metallic: f
         lit, low = _weathering(nt, lit, tex, damp, damp_m, streaks)
     if moss > 0:
         lit = _moss(nt, lit, tex, sep, moss, moss_color, moss_scale, low)
+    if soot > 0:
+        lit = _soot(nt, lit, tex, sep, soot, soot_m)
+    if heat > 0:
+        lit = _heat(nt, lit, tex, heat, heat_color, heat_m, heat_scale)
 
     # worn edges
     bevel = n.new("ShaderNodeBevel")
@@ -246,6 +257,38 @@ def _moss(nt, color, tex, normal_xyz, amount: float, moss_hex: str, scale: float
     patches = _map(nt, _noise(nt, tex.outputs["Object"], scale, 2.0), 0.4, 0.56, 0.0, 1.0)
     mask = _math(nt, "MULTIPLY", _math(nt, "MULTIPLY", where, patches), amount)
     return _mix(nt, "MIX", color, common.hex_to_linear(moss_hex), mask)
+
+
+def _soot(nt, color, tex, normal_xyz, amount: float, soot_m: float):
+    """Smoke-blackening: thicker higher up (a wavy line rising to soot_m), under overhangs, in
+    long vertical streaks and in broad blotches. Multiplies toward a warm near-black."""
+    pos = nt.nodes.new("ShaderNodeSeparateXYZ")
+    nt.links.new(tex.outputs["Object"], pos.inputs["Vector"])
+    wobble = _map(nt, _noise(nt, tex.outputs["Object"], 0.5), 0.3, 0.7, -0.3 * soot_m, 0.3 * soot_m)
+    rise = _map(nt, _math(nt, "ADD", pos.outputs["Z"], wobble), soot_m * 0.25, soot_m, 0.0, 0.85)
+    under = _map(nt, normal_xyz.outputs["Z"], -0.9, -0.2, 1.0, 0.0)
+    stretch = nt.nodes.new("ShaderNodeVectorMath")
+    stretch.operation = "MULTIPLY"
+    stretch.inputs[1].default_value = (2.6, 2.6, 0.18)
+    nt.links.new(tex.outputs["Object"], stretch.inputs[0])
+    streak = _map(nt, _noise(nt, stretch.outputs["Vector"], 1.0), 0.48, 0.62, 0.0, 1.0)
+    blotch = _map(nt, _noise(nt, tex.outputs["Object"], 0.9, 2.0), 0.45, 0.62, 0.0, 0.7)
+    mask = _math(nt, "MAXIMUM", _math(nt, "MAXIMUM", rise, under), _math(nt, "MAXIMUM", streak, blotch))
+    mask = _math(nt, "MINIMUM", _math(nt, "MULTIPLY", mask, amount), 1.0)
+    return _mix(nt, "MULTIPLY", color, (0.3, 0.26, 0.23, 1.0), mask)
+
+
+def _heat(nt, color, tex, amount: float, heat_hex: str, heat_m: float, scale: float):
+    """Heat-tempered metal or scorched brick: broad patches of heat_hex, everywhere or rising to
+    full strength at heat_m above the floor."""
+    patches = _map(nt, _noise(nt, tex.outputs["Object"], scale, 2.0), 0.38, 0.6, 0.25, 1.0)
+    if heat_m > 0:
+        pos = nt.nodes.new("ShaderNodeSeparateXYZ")
+        nt.links.new(tex.outputs["Object"], pos.inputs["Vector"])
+        high = _map(nt, pos.outputs["Z"], heat_m * 0.75, heat_m, 0.0, 1.0)
+        patches = _math(nt, "MULTIPLY", patches, high)
+    mask = _math(nt, "MULTIPLY", patches, amount)
+    return _mix(nt, "MIX", color, common.hex_to_linear(heat_hex), mask)
 
 
 # ----------------------------------------------------------------------------- geometry
@@ -613,13 +656,14 @@ def _find_socket(nt, mat):
 
 def finish_piece(parts: list[bpy.types.Object], name: str, spec: dict, previews: Path | None,
                  emissive_parts: list[bpy.types.Object] | None = None, center: bool = True,
-                 preset: str = "dusk_grim") -> list[bpy.types.Object]:
+                 preset: str = "dusk_grim", drop_to_floor: bool = True) -> list[bpy.types.Object]:
     """Join, put the origin at the feet, bake, export and render the contact sheet (lit by the
-    lighting preset `preset`, the one the kit's arena uses)."""
+    lighting preset `preset`, the one the kit's arena uses). With center False and drop_to_floor
+    False the geometry keeps the origin it was built around (a piece hung from a pivot)."""
     obj = common.join_objects(parts, name)
     if center:
         common.origin_to_feet(obj)
-    else:
+    elif drop_to_floor:
         zs = [v.co.z for v in obj.data.vertices]
         for v in obj.data.vertices:
             v.co.z -= min(zs)
@@ -641,11 +685,17 @@ def finish_piece(parts: list[bpy.types.Object], name: str, spec: dict, previews:
 
 
 def build_spec(spec: dict, previews: Path | None, pieces: dict, back_on_y0: set, materials,
-               preset: str = "dusk_grim") -> None:
+               preset: str = "dusk_grim", keep_xy: set | None = None,
+               keep_origin: set | None = None) -> None:
     """Build one kit piece from its asset spec: `pieces[params.piece](params, mats, rng)` returns
     the parts (or (parts, emissive parts)); `materials(palette)` makes the kit's materials. Pieces
     in `back_on_y0` keep y as built (mounting face on y = 0) and are centred on x; all others are
-    centred on x and y. Either way the lowest point goes to z = 0."""
+    centred on x and y. Either way the lowest point goes to z = 0.
+    Optional (both empty by default): pieces in `keep_xy` keep the x and y they were built around
+    (a round collider's axis, so asymmetric details cannot shift it) and only drop to z = 0;
+    pieces in `keep_origin` are not moved at all (a piece hung from a pivot reaches below it)."""
+    keep_xy = keep_xy or set()
+    keep_origin = keep_origin or set()
     common.reset_scene()
     rng = common.seeded_random(spec["seed"])
     params = spec.get("params", {})
@@ -658,7 +708,12 @@ def build_spec(spec: dict, previews: Path | None, pieces: dict, back_on_y0: set,
     off = Vector(((min(v.x for v in allv) + max(v.x for v in allv)) / 2,
                   0.0 if piece in back_on_y0 else (min(v.y for v in allv) + max(v.y for v in allv)) / 2,
                   min(v.z for v in allv)))
+    if piece in keep_xy:
+        off.x = off.y = 0.0
+    if piece in keep_origin:
+        off = Vector((0.0, 0.0, 0.0))
     for o in parts + glow:
         for v in o.data.vertices:
             v.co -= off
-    finish_piece(parts, spec["id"], spec, previews, glow, center=False, preset=preset)
+    finish_piece(parts, spec["id"], spec, previews, glow, center=False, preset=preset,
+                 drop_to_floor=piece not in keep_origin)

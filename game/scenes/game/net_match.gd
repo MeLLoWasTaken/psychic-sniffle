@@ -340,12 +340,14 @@ func _process(delta: float) -> void:
 		if builder != null:
 			builder.set_pickups(int(renderer.view["match"].get("pickups", 0)))
 			var m: Dictionary = renderer.view["match"]
-			builder.set_match_time(float(int(renderer.view["tick"]) - int(m.get("start_tick", 0))) / Data.tick_rate(),
-				int(m["phase"]) == ArenaMatch.Phase.PREP)
+			var match_s: float = float(int(renderer.view["tick"]) - int(m.get("start_tick", 0))) / Data.tick_rate()
+			var preparing: bool = int(m["phase"]) == ArenaMatch.Phase.PREP
+			builder.set_match_time(match_s, preparing)
 			if builder.wade != null:
 				builder.update_wading(renderer.drawn_units(), 0.0 if fast else delta)
-			if cam.geometry != null:
-				cam.geometry.removed_tags = builder.removed_tags  # the camera no longer bumps into the wreck
+			if cam.geometry != null and not preparing:
+				# the camera no longer bumps into a wreck, and follows turning colliders
+				cam.geometry.apply_twists(Data.maps.get(str(preset["map"]), {}).get("twists", []), match_s)
 		if not _gates_opened and int(renderer.view["match"]["phase"]) != ArenaMatch.Phase.PREP and builder != null:
 			_gates_opened = true
 			builder.set_gates_open(true, 0.0 if fast else 1.5)

@@ -40,7 +40,8 @@ func rebuild() -> void:
 
 ## A key for what the grid was last built from (gates, twists); bots rebuild when it changes.
 func state_key() -> String:
-	return "%s|%s|%s" % [geometry.gates_open, geometry.removed_tags.keys(), not geometry.flood.is_empty()]
+	return "%s|%s|%s|%s" % [geometry.gates_open, geometry.removed_tags.keys(), not geometry.flood.is_empty(),
+		geometry.circles.any(func(c: Dictionary) -> bool: return c.get("moving", false))]
 
 
 func _blocked_at(p: Vector3) -> bool:
@@ -50,7 +51,7 @@ func _blocked_at(p: Vector3) -> bool:
 		return true
 	var q: Vector2 = Vector2(p.x, p.z)
 	for c: Dictionary in geometry.circles:
-		if geometry.stands(c) and q.distance_to(c["center"]) < float(c["radius"]) + r:
+		if geometry.stands(c) and not c.get("moving", false) and q.distance_to(c["center"]) < float(c["radius"]) + r:
 			return true
 	for b: Dictionary in geometry.boxes:
 		if not geometry.stands(b):
@@ -106,7 +107,7 @@ func walkable(a: Vector3, b: Vector3) -> bool:
 	var pa: Vector2 = Vector2(a.x, a.z)
 	var pb: Vector2 = Vector2(b.x, b.z)
 	for c: Dictionary in geometry.circles:
-		if geometry.stands(c) and ArenaGeometry._segment_hits_circle(pa, pb, c["center"], float(c["radius"]) + grow):
+		if geometry.stands(c) and not c.get("moving", false) and ArenaGeometry._segment_hits_circle(pa, pb, c["center"], float(c["radius"]) + grow):
 			return false
 	for bx: Dictionary in geometry.boxes:
 		if not geometry.stands(bx):

@@ -76,3 +76,18 @@ def test_a_twist_must_take_away_colliders_that_exist_and_never_the_walls(tmp_pat
     errors = validate(data)
     assert any("the arena would open to its outside" in e for e in errors), errors
     assert any("sound 'no_such_sound' is not in data/sounds" in e for e in errors), errors
+
+
+def test_a_turning_collider_keeps_room_along_its_whole_path(tmp_path: Path):
+    """M2-10: a rotate twist turns circles only, and its path keeps 1 m from everything else."""
+    data = _copy(tmp_path)
+    path = data / "maps" / "burning_foundry.json"
+    m = json.loads(path.read_text())
+    assert not [e for e in validate(data) if "casting_wheel" in e and "passes" in e]
+    m["colliders"][1]["center"] = [0, 4.5]  # a crucible ring that grazes the furnace
+    path.write_text(json.dumps(m))
+    assert any("passes" in e and "furnace" in e for e in validate(data))
+    m["colliders"][1]["center"] = [0, 9]
+    m["twists"][0]["tags"] = ["crucible", "mold"]
+    path.write_text(json.dumps(m))
+    assert any("only circle colliders can turn" in e for e in validate(data))

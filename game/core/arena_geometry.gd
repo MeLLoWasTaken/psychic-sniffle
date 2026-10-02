@@ -7,7 +7,7 @@ extends RefCounted
 const UNIT_RADIUS: float = 0.45  ## collision radius of a player
 
 var bounds_half: float = 20.0
-var circles: Array[Dictionary] = []  ## {center: Vector2, radius: float, height: float, los: bool}
+var circles: Array[Dictionary] = []  ## {center: Vector2, home: Vector2, radius, height, los, tag, moving}
 var boxes: Array[Dictionary] = []  ## {min: Vector2, max: Vector2, height: float, los: bool, gate: bool}
 var gates_open: bool = true  ## gate boxes block only while closed (arena preparation phase)
 var removed_tags: Dictionary = {}  ## collider tags a twist has taken away (ArenaTwists); they block nothing
@@ -16,10 +16,20 @@ var flood: Dictionary = {}  ## a flood twist in effect: {"slow", "dry": Array[Re
 const WADE_HEIGHT: float = 0.3  ## a unit higher than this (mid-jump) is above the water
 
 
-## The map's twists as of `seconds` of match time: what collapses took away, and any flood.
+## The map's twists as of `seconds` of match time: what collapses took away, any flood, and where
+## rotating colliders have turned to (they are "moving" once their twist has started).
 func apply_twists(twists: Array, seconds: float) -> void:
 	removed_tags = ArenaTwists.removed_tags(twists, seconds)
 	flood = ArenaTwists.active_flood(twists, seconds)
+	for t: Dictionary in twists:
+		if str(t.get("type", "")) != "rotate":
+			continue
+		var tags: Array = t.get("tags", [])
+		var moving: bool = ArenaTwists.stage(t, seconds) == ArenaTwists.Stage.DONE
+		for c: Dictionary in circles:
+			if c["tag"] in tags:
+				c["center"] = ArenaTwists.rotated(t, c["home"], seconds)
+				c["moving"] = moving
 
 
 ## Movement speed multiplier of the ground at `pos`: a flood's slow in the water, else 1.
@@ -40,8 +50,9 @@ static func from_map(map: Dictionary) -> ArenaGeometry:
 		var h: float = float(c.get("height", 4.0))
 		var los: bool = bool(c.get("blocks_los", true))
 		if c["type"] == "circle":
-			g.circles.append({"center": Vector2(c["center"][0], c["center"][1]),
-				"radius": float(c["radius"]), "height": h, "los": los, "tag": str(c.get("tag", ""))})
+			var at: Vector2 = Vector2(c["center"][0], c["center"][1])
+			g.circles.append({"center": at, "home": at, "radius": float(c["radius"]), "height": h, "los": los,
+				"tag": str(c.get("tag", "")), "moving": false})
 		else:
 			g.boxes.append({"min": Vector2(c["min"][0], c["min"][1]),
 				"max": Vector2(c["max"][0], c["max"][1]), "height": h, "los": los,

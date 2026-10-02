@@ -498,6 +498,9 @@ def validate(data_dir: Path) -> list[str]:
                     report.error(rel, f"twist '{t['id']}' {k} '{t[k]}' is not in data/sounds")
             if t.get("warn_s", 0) > 0 and not t.get("warn_text"):
                 report.error(rel, f"twist '{t['id']}' warns {t['warn_s']} s ahead but has no warn_text")
+            if t["type"] == "rotate":
+                for e in _rotate_problems(m, t):
+                    report.error(rel, f"twist '{t['id']}': {e}")
 
     # ---- bracket auras (M2-07): each names a real aura and a real role or spec -------------
     for b, rules in (tuning or {}).get("arena", {}).get("bracket_auras", {}).items():
@@ -1139,6 +1142,52 @@ def _check_tree(report: Report, rel: str, t: dict, abilities: dict, auras: dict,
 
 
 UNIT_RADIUS = 0.45  # matches ArenaGeometry.UNIT_RADIUS in game/core/arena_geometry.gd
+
+
+ROTATE_CLEARANCE_M = 1.0  # a unit (0.45 m radius) fits between a turning collider and anything else
+
+
+def _rotate_problems(m: dict, t: dict) -> list[str]:
+    """M2-10: a rotate twist turns circle colliders only (needs center, period_s), and along their
+    whole path they keep ROTATE_CLEARANCE_M from every other collider and the bounds, so nobody
+    can be pinned and nothing passes through a wall."""
+    import math
+    out = []
+    for k in ("center", "period_s"):
+        if k not in t:
+            out.append(f"a rotate twist needs '{k}'")
+    if out:
+        return out
+    turning = [c for c in m["colliders"] if c.get("tag", "") in t.get("tags", [])]
+    if any(c["type"] != "circle" for c in turning):
+        out.append("only circle colliders can turn")
+    cx, cz = t["center"]
+    others = [c for c in m["colliders"] if c.get("tag", "") not in t.get("tags", [])]
+    half = float(m.get("bounds_half_m", 20.0))
+    for c in (c for c in turning if c["type"] == "circle"):
+        r0 = math.hypot(c["center"][0] - cx, c["center"][1] - cz)
+        a0 = math.atan2(c["center"][1] - cz, c["center"][0] - cx)
+        worst = (math.inf, "")
+        for i in range(720):
+            a = a0 + i * math.tau / 720
+            px, pz = cx + r0 * math.cos(a), cz + r0 * math.sin(a)
+            for o in others:
+                if o["type"] == "circle":
+                    d = math.hypot(px - o["center"][0], pz - o["center"][1]) - o["radius"]
+                else:
+                    dx = max(o["min"][0] - px, 0.0, px - o["max"][0])
+                    dz = max(o["min"][1] - pz, 0.0, pz - o["max"][1])
+                    d = math.hypot(dx, dz)
+                d -= c["radius"]
+                if d < worst[0]:
+                    worst = (d, f"the {o.get('tag', o['type'])} collider")
+            d = min(half - abs(px), half - abs(pz)) - c["radius"]
+            if d < worst[0]:
+                worst = (d, "the bounds")
+        if worst[0] < ROTATE_CLEARANCE_M:
+            out.append(f"the '{c.get('tag')}' circle at {c['center']} passes {max(worst[0], 0):.2f} m from {worst[1]} "
+                       f"(at least {ROTATE_CLEARANCE_M} m, so nobody is pinned)")
+    return out
 
 
 def _spawn_blocked(m: dict, x: float, z: float) -> str:
