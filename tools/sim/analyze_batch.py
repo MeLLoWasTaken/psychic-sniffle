@@ -131,7 +131,19 @@ def builds(report: dict) -> dict:
         high = {n: v for n, v in shares.items() if v > TOP_SHARE and len(top) >= 3}
         favoured = {n: v for n, v in high.items()
                     if binomial_tail(round(v * len(top)), len(top), every[n] / len(ranked)) < TOP_SIGNIFICANCE}
+        # what each node is worth (F-08): the games won by builds taking it against builds without
+        # it, both sides with at least 2 builds; the strongest effects first
+        impact = {}
+        for n in every:
+            with_n = [k for k in ranked if n in {node_id(x) for x in nodes.get(k, [])}]
+            without = [k for k in ranked if k not in with_n]
+            if len(with_n) < 2 or len(without) < 2:
+                continue
+            rate = lambda ks: sum(tally[k][0] for k in ks) / max(1, sum(tally[k][1] for k in ks))
+            impact[n] = round(rate(with_n) - rate(without), 3)
+        out_impact = dict(sorted(impact.items(), key=lambda kv: -abs(kv[1]))[:8])
         out[sp] = {"builds": dict(sorted(bs.items(), key=lambda kv: -kv[1]["win_rate"])),
+                   "impact": out_impact,
                    "viable": sum(v["viable"] for v in bs.values()), "top": top,
                    "over_share": favoured,
                    "common": {n: v for n, v in high.items() if n not in favoured},

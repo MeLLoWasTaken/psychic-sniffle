@@ -44,6 +44,7 @@ def test_a_node_only_the_top_builds_take_is_favoured():
     report = {"matches": ms, "summary": {"builds": {k: {"nodes": v} for k, v in nodes.items()}}}
     b = analyze_batch.summarise(report)["builds"]["warblade_carnage"]
     assert b["over_share"] == {"edge": 1.0}  # 6 of 6 against a 50% share: 1.6% by chance
+    assert next(iter(b["impact"])) == "edge" and b["impact"]["edge"] > 0.15  # the best builds all take it
     assert b["common"] == {"base": 1.0}
 
 
