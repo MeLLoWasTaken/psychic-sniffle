@@ -123,9 +123,13 @@ static func check(loadout: Dictionary, trees: Dictionary) -> String:
 	return ""
 
 
-## A random legal loadout (balance simulations, M2-04): each tree's points go one rank at a
-## time to a random node that can take it (a choice node takes a random option), until none can;
-## then random PvP talents fill the slots. The same seed always gives the same loadout.
+## A random legal loadout (balance simulations, M2-04), built the way players build: each tree
+## aims for a random node behind its last gate (and half the time one behind an earlier gate),
+## spends toward it first (the deepest open node on its route there), then places the rest of its
+## points one rank at a time on random open nodes (a choice node takes a random option); then
+## random PvP talents fill the slots. The same seed always gives the same loadout.
+## A uniform random walk instead (M2-04b) spread the points over the open first rows: the roots
+## were in every build and the capstones in almost none, unlike any player.
 static func random_build(trees: Dictionary, seed_value: int) -> Dictionary:
 	var rng: RandomNumberGenerator = RandomNumberGenerator.new()
 	rng.seed = seed_value
@@ -133,33 +137,64 @@ static func random_build(trees: Dictionary, seed_value: int) -> Dictionary:
 	for layer: String in ["class", "spec"]:
 		var tree: Dictionary = trees.get(layer, {})
 		var picks: Dictionary = lo[layer]
-		while true:
-			var options: Array = []
+		var want: Dictionary = _random_goal(tree, rng)
+		var points: int = int(tree.get("points", 0))
+		while spent(tree, picks) < points:
+			var open: Array = []  # [id, value]
 			for n: Dictionary in tree.get("nodes", []):
 				var v: int = int(picks.get(n["id"], 0))
-				if n["type"] == "choice":
-					if v == 0:
-						options.append([n["id"], rng.randi_range(1, n["choices"].size())])
-				elif v < max_rank(n):
-					options.append([n["id"], v + 1])
-			var placed: bool = false
-			while not options.is_empty():
-				var o: Array = options.pop_at(rng.randi() % options.size())
-				var before: Variant = picks.get(o[0])
-				picks[o[0]] = o[1]
-				if check(lo, trees) == "":
-					placed = true
-					break
-				if before == null:
-					picks.erase(o[0])
-				else:
-					picks[o[0]] = before
-			if not placed:
+				if v >= max_rank(n) or not unlocked(tree, picks, n):
+					continue
+				open.append([n["id"], rng.randi_range(1, n["choices"].size()) if n["type"] == "choice" else v + 1])
+			if open.is_empty():
 				break
+			var aim: Array = open.filter(func(o: Array) -> bool: return want.has(o[0]))
+			if not aim.is_empty():
+				var deepest: int = -1
+				for o: Array in aim:
+					deepest = maxi(deepest, int(node_of(tree, o[0])["pos"][1]))
+				aim = aim.filter(func(o: Array) -> bool: return int(node_of(tree, o[0])["pos"][1]) == deepest)
+			var pool_: Array = aim if not aim.is_empty() else open
+			var o: Array = pool_[rng.randi() % pool_.size()]
+			picks[o[0]] = o[1]
 	var pool: Array = trees.get("pvp", {}).get("nodes", []).map(func(n: Dictionary) -> String: return n["id"])
 	for i: int in mini(int(trees.get("pvp", {}).get("points", 0)), pool.size()):
 		lo["pvp"].append(pool.pop_at(rng.randi() % pool.size()))
 	return lo
+
+
+## A random build's goals in `tree` and one route up to each (id -> true): one random node behind
+## the last gate, and half the time one behind an earlier gate.
+static func _random_goal(tree: Dictionary, rng: RandomNumberGenerator) -> Dictionary:
+	var gates: Array = tree.get("gates", [])
+	var last: int = 0
+	for g: Variant in gates:
+		last = maxi(last, int(g))
+	var deep: Array = []
+	var mid: Array = []
+	for n: Dictionary in tree.get("nodes", []):
+		var g: int = int(n.get("gate", 0))
+		if last > 0 and g == last:
+			deep.append(n["id"])
+		elif g > 0:
+			mid.append(n["id"])
+	var goals: Array = []
+	if not deep.is_empty():
+		goals.append(deep[rng.randi() % deep.size()])
+	if not mid.is_empty() and rng.randf() < 0.5:
+		goals.append(mid[rng.randi() % mid.size()])
+	# one way up from each goal, through a random parent at each step, as a player picks a route
+	# (every node above a goal counted instead, and the hubs most routes can pass were in nearly
+	# every build)
+	var want: Dictionary = {}
+	for goal: String in goals:
+		var id: String = goal
+		while id != "":
+			want[id] = true
+			var parents: Array = node_of(tree, id).get("requires_any", []).filter(
+				func(r: String) -> bool: return not node_of(tree, r).is_empty())
+			id = parents[rng.randi() % parents.size()] if not parents.is_empty() else ""
+	return want
 
 
 ## The node ids a loadout takes, with ranks ("id" or "id:2"; a choice as "id/option"), sorted.

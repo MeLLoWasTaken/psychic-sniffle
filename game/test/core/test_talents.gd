@@ -301,3 +301,21 @@ func test_random_builds_are_legal_spend_the_points_and_repeat_by_seed() -> void:
 	var named: Dictionary = BotBrain.build_talents("warblade_carnage", "random4")
 	assert_str(str(named["name"])).is_equal("random4")
 	assert_str(str(named["talents"])).is_equal(str(BotBrain.build_talents("warblade_carnage", "random4")["talents"]))
+
+
+func test_random_builds_aim_deep_like_players() -> void:
+	# M2-04b: a uniform random walk put the roots in every build and capstones in almost none
+	for spec_id: String in Data.specs:
+		var t: Dictionary = Talents.trees_for(spec_id, Data.specs, Data.classes, Data.talents)
+		for layer: String in ["class", "spec"]:
+			var last: int = 0
+			for g: Variant in t[layer].get("gates", []):
+				last = maxi(last, int(g))
+			var deep: int = 0
+			for s: int in 30:
+				var lo: Dictionary = Talents.random_build(t, 500 + s)
+				for id: String in lo[layer]:
+					if int(Talents.node_of(t[layer], id).get("gate", 0)) == last:
+						deep += 1
+						break
+			assert_int(deep).override_failure_message("%s %s: %d of 30 builds reach the last gate" % [spec_id, layer, deep]).is_greater_equal(24)

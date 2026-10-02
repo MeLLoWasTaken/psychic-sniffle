@@ -2,6 +2,14 @@
 
 One entry per build-loop iteration, newest first. Format: date, backlog ID, what changed, how it was checked.
 
+## 2026-10-02 — M2-04b: random builds aim like players; the node check asks what top builds favour
+- Random talent builds for the simulations now aim for a random capstone along one route, then fill the rest; capstones are in 9-22% of builds instead of 0-4%.
+- The node check flags a talent only when the top builds take it more often than chance would, given how often all builds take it. Talents nearly every build takes are listed as "common" instead (DECISIONS.md).
+- The nightly runs 3,000 matches per bracket with 24 builds per spec; a plan job sizes the shards (52 jobs).
+- `tools/sim/tree_shape.py` shows each talent's share of random legal builds for any tree in seconds.
+- Fixed: leaving a match could fail to tell the server. The client asked ENet to disconnect once its reliable packets were acknowledged, then closed at once. With a packet still in flight, the disconnect never went out, and the server was stopped without recording "host_left". That made a network-match test fail twice under load. Closing now disconnects every pending peer immediately; a new transport test fails without the fix.
+- Checked: talent tests (builds legal, repeatable, and 80%+ reach the last gate); analysis tests for favoured and common nodes; the plan job's matrix (8, 19 and 25 shards).
+
 ## 2026-10-02 — M2-08 done; nightly results; talent trees need more choice (M2-04b)
 - A full nightly run on CI (1,000 matches per bracket, random talent builds) finished in about 40 minutes.
   - 3v3 specs are within 40-60% (Arcanist 48%, Oracle 52%, Warblade 53%), and two-healer teams no longer dominate (60%, down from 74-78%). M2-08 is done.

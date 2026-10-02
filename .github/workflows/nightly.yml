@@ -1,46 +1,51 @@
-# Nightly balance simulations (1,000 bot matches per bracket, every unit on a random talent build,
+# Nightly balance simulations (3,000 bot matches per bracket, every unit on a random talent build,
 # every arena hosting the bracket in turn) and the 20-player performance profile (backlog X-06,
-# M2-04). One runner cannot finish 1,000 2v2 or 3v3 matches in its 4 hours, so each bracket is
-# split into shards that run as parallel jobs; the report job merges them, shows the balance and
+# M2-04). One runner cannot finish a bracket in its 4 hours, so each bracket is split into shards
+# that run as parallel jobs (the plan job sizes them); the report job merges them, shows the balance and
 # build tables in the run summary and warns about anything outside the targets.
 name: nightly
 
 on:
-  # No schedule: on this private repository a full run costs many runner-hours of the account's
-  # Actions allowance (it was used up on 2026-10-01). Start it by hand when wanted.
+  # No schedule: a full run takes dozens of runner jobs; start it by hand when a balance question
+  # needs one (the repository is public, so the minutes are free; DECISIONS.md 2026-10-02).
   workflow_dispatch:
     inputs:
       matches:
         description: Matches per bracket
-        default: "1000"
+        default: "3000"
       random_builds:
         description: Random legal talent builds per spec besides the named ones (M2-04)
-        default: "9"
+        default: "21"
 
 jobs:
+  # Each bracket is split into shards that each finish well inside a runner's limit (about 40
+  # minutes for 400 duels, 160 2v2 or 120 3v3 matches on 4 cores).
+  plan:
+    runs-on: ubuntu-24.04
+    outputs:
+      matrix: ${{ steps.m.outputs.matrix }}
+    steps:
+      - id: m
+        env:
+          MATCHES: ${{ inputs.matches || '3000' }}
+        run: |
+          python3 - <<'EOF' >> "$GITHUB_OUTPUT"
+          import json, math, os
+          n = int(os.environ["MATCHES"])
+          inc = []
+          for bracket, per in (("1v1", 400), ("2v2", 160), ("3v3", 120)):
+              shards = max(1, math.ceil(n / per))
+              inc += [{"bracket": bracket, "shards": shards, "shard": i} for i in range(shards)]
+          print("matrix=" + json.dumps({"include": inc}))
+          EOF
+
   balance:
+    needs: plan
     runs-on: ubuntu-24.04
     timeout-minutes: 240
     strategy:
       fail-fast: false
-      matrix:
-        include:
-          - {bracket: "1v1", shards: 2, shard: 0}
-          - {bracket: "1v1", shards: 2, shard: 1}
-          - {bracket: "2v2", shards: 6, shard: 0}
-          - {bracket: "2v2", shards: 6, shard: 1}
-          - {bracket: "2v2", shards: 6, shard: 2}
-          - {bracket: "2v2", shards: 6, shard: 3}
-          - {bracket: "2v2", shards: 6, shard: 4}
-          - {bracket: "2v2", shards: 6, shard: 5}
-          - {bracket: "3v3", shards: 8, shard: 0}
-          - {bracket: "3v3", shards: 8, shard: 1}
-          - {bracket: "3v3", shards: 8, shard: 2}
-          - {bracket: "3v3", shards: 8, shard: 3}
-          - {bracket: "3v3", shards: 8, shard: 4}
-          - {bracket: "3v3", shards: 8, shard: 5}
-          - {bracket: "3v3", shards: 8, shard: 6}
-          - {bracket: "3v3", shards: 8, shard: 7}
+      matrix: ${{ fromJSON(needs.plan.outputs.matrix) }}
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-python@v5
@@ -54,8 +59,8 @@ jobs:
       - name: Simulate ${{ matrix.bracket }} shard ${{ matrix.shard }}
         run: |
           nproc
-          python3 tools/sim/nightly.py --bracket ${{ matrix.bracket }} --matches ${{ inputs.matches || '1000' }} \
-            --random-builds ${{ inputs.random_builds || '9' }} --shards ${{ matrix.shards }} --shard ${{ matrix.shard }} \
+          python3 tools/sim/nightly.py --bracket ${{ matrix.bracket }} --matches ${{ inputs.matches || '3000' }} \
+            --random-builds ${{ inputs.random_builds || '21' }} --shards ${{ matrix.shards }} --shard ${{ matrix.shard }} \
             --out nightly
       - uses: actions/upload-artifact@v4
         if: always()

@@ -27,9 +27,24 @@ def test_build_win_rates_viability_and_the_shared_node_check():
     assert b["viable"] == 3
     assert b["builds"]["warblade_carnage@w4"]["win_rate"] == 0.0
     assert set(b["top"]) == {"warblade_carnage@w1", "warblade_carnage@w2", "warblade_carnage@w3"}
-    assert b["over_share"] == {"core": 1.0}  # every top build takes it, whatever the rank; PvP talents count apart
+    # every top build takes "core" (whatever the rank; PvP talents count apart), but so do three of
+    # the four builds: three of three by chance is likely, so it is common, not favoured
+    assert b["over_share"] == {}
+    assert b["common"] == {"core": 1.0}
     assert b["top_node_share"] == 1.0
-    assert b["all_share"]["core"] == 0.75  # three of the four builds take it
+    assert b["all_share"]["core"] == 0.75
+
+
+def test_a_node_only_the_top_builds_take_is_favoured():
+    ms, nodes = [], {"oracle_grace@o1": ["x"]}
+    for i in range(12):  # twelve builds; the six best take "edge", all take "base"
+        wins = 20 - i
+        ms += [_match(f"w{i}", "o1", 0) for _ in range(wins)] + [_match(f"w{i}", "o1", 1) for _ in range(31 - wins)]
+        nodes[f"warblade_carnage@w{i}"] = ["base"] + (["edge"] if i < 6 else [])
+    report = {"matches": ms, "summary": {"builds": {k: {"nodes": v} for k, v in nodes.items()}}}
+    b = analyze_batch.summarise(report)["builds"]["warblade_carnage"]
+    assert b["over_share"] == {"edge": 1.0}  # 6 of 6 against a 50% share: 1.6% by chance
+    assert b["common"] == {"base": 1.0}
 
 
 def test_build_compositions_give_every_unit_a_build_of_its_spec():

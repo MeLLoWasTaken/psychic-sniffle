@@ -5,8 +5,9 @@ simulations' "no node in over 90% of the top builds" (DESIGN.md) cannot pass for
 The rules mirror game/core/talents.gd: a tree has `points`; a node is open when the points spent on
 nodes behind lower gates reach its gate, and it is a root, hangs off an ability (a requires_any
 name that is not a node of the tree) or a node it requires is fully ranked; a choice node costs 1.
-Random builds are drawn like Talents.random_build: one rank at a time to a random open node until
-no point can be placed (statistically the same, not the same numbers: Python's generator).
+Random builds are drawn like Talents.random_build: aim for a random node behind the last gate (half
+the time also one behind an earlier gate), spend toward it, then place the rest on random open
+nodes (statistically the same, not the same numbers: Python's generator).
 
     python3 tools/sim/tree_shape.py [--builds 400] [--over 0.8] [tree ids...]
 
@@ -49,21 +50,43 @@ def unlocked(nodes: dict, picks: dict, n: dict) -> bool:
     return False
 
 
-def random_build(tree: dict, rng: random.Random) -> dict:
+def goal(tree: dict, rng: random.Random) -> set:
+    """A random build's goals and one route up to each: one random node behind the last gate,
+    and half the time one behind an earlier gate (Talents._random_goal)."""
     nodes = {n["id"]: n for n in tree["nodes"]}
+    last = max([int(g) for g in tree.get("gates", [])] or [0])
+    deep = [n["id"] for n in tree["nodes"] if last > 0 and int(n.get("gate", 0)) == last]
+    mid = [n["id"] for n in tree["nodes"] if 0 < int(n.get("gate", 0)) != last]
+    goals = [rng.choice(deep)] if deep else []
+    if mid and rng.random() < 0.5:
+        goals.append(rng.choice(mid))
+    want: set = set()
+    for i in goals:  # one route up from each goal, through a random parent at each step
+        while i is not None:
+            want.add(i)
+            parents = [r for r in nodes[i].get("requires_any", []) if r in nodes]
+            i = rng.choice(parents) if parents else None
+    return want
+
+
+def random_build(tree: dict, rng: random.Random) -> dict:
+    """Like Talents.random_build: spend toward the goals first (the deepest open node on a way
+    there), then one rank at a time on random open nodes, until no point can be placed."""
+    nodes = {n["id"]: n for n in tree["nodes"]}
+    want = goal(tree, rng)
     picks: dict = {}
     points = int(tree["points"])
-    while True:
-        spent = sum(cost(nodes[i], v) for i, v in picks.items())
-        options = []
-        for n in tree["nodes"]:
-            v = picks.get(n["id"], 0)
-            if v < max_rank(n) and spent + 1 <= points and unlocked(nodes, picks, n):  # every step costs 1
-                options.append(n["id"])
+    while sum(cost(nodes[i], v) for i, v in picks.items()) < points:
+        options = [n["id"] for n in tree["nodes"] if picks.get(n["id"], 0) < max_rank(n) and unlocked(nodes, picks, n)]
         if not options:
-            return picks
-        i = rng.choice(options)
+            break
+        aim = [o for o in options if o in want]
+        if aim:
+            deepest = max(nodes[o]["pos"][1] for o in aim)
+            aim = [o for o in aim if nodes[o]["pos"][1] == deepest]
+        i = rng.choice(aim or options)
         picks[i] = picks.get(i, 0) + 1
+    return picks
 
 
 def shares(tree: dict, builds: int, seed: int = 1) -> dict[str, float]:

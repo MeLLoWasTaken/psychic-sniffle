@@ -73,6 +73,13 @@ def summarise(report: dict) -> dict:
 
 
 TOP_SHARE = 0.9  # M2-04: no talent node in more than 90% of the top builds
+TOP_SIGNIFICANCE = 0.05  # ... unless that many would take it by chance (its share of all builds)
+
+
+def binomial_tail(k: int, n: int, p: float) -> float:
+    """P(X >= k) for X ~ Binomial(n, p)."""
+    from math import comb
+    return sum(comb(n, i) * p ** i * (1 - p) ** (n - i) for i in range(k, n + 1))
 
 
 def node_id(entry: str) -> str:
@@ -86,7 +93,10 @@ def builds(report: dict) -> dict:
     """Talent builds (M2-04): each spec@build's win rate over non-mirror compositions (counted like
     specs), which builds are viable (40-60% with at least MIN_GAMES games), and, among each
     spec's top half of builds by win rate (at least 3), the share of builds taking each node; a
-    node in more than TOP_SHARE of them means the trees push every good build the same way."""
+    node in more than TOP_SHARE of them means the trees push every good build the same way, when
+    the top builds take it more than chance would (binomial test against its share of all the
+    spec's builds, TOP_SIGNIFICANCE). A node most legal builds take is in the top builds whatever
+    its strength; those are listed apart as "common" (DECISIONS.md 2026-10-02)."""
     ms = report["matches"]
     nodes = {k: v.get("nodes", []) for k, v in report.get("summary", {}).get("builds", {}).items()}
     tally = defaultdict(lambda: [0, 0])
@@ -117,10 +127,15 @@ def builds(report: dict) -> dict:
         for k in ranked:
             for n in {node_id(x) for x in nodes.get(k, [])}:
                 every[n] += 1
+        all_share = {n: round(every[n] / len(ranked), 3) for n in shares if ranked}
+        high = {n: v for n, v in shares.items() if v > TOP_SHARE and len(top) >= 3}
+        favoured = {n: v for n, v in high.items()
+                    if binomial_tail(round(v * len(top)), len(top), every[n] / len(ranked)) < TOP_SIGNIFICANCE}
         out[sp] = {"builds": dict(sorted(bs.items(), key=lambda kv: -kv[1]["win_rate"])),
                    "viable": sum(v["viable"] for v in bs.values()), "top": top,
-                   "over_share": {n: v for n, v in shares.items() if v > TOP_SHARE and len(top) >= 3},
-                   "all_share": {n: round(every[n] / len(ranked), 3) for n in shares if ranked},
+                   "over_share": favoured,
+                   "common": {n: v for n, v in high.items() if n not in favoured},
+                   "all_share": all_share,
                    "top_node_share": next(iter(shares.values()), None)}
     return out
 

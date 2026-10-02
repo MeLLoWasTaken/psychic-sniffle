@@ -146,7 +146,11 @@ func close() -> void:
 		return
 	_open = false
 	for peer: ENetPacketPeer in host.get_peers():
-		if peer.get_state() == ENetPacketPeer.STATE_CONNECTED:
+		# a peer asked to disconnect later (after its queued reliable packets) is still waiting for
+		# acknowledgements that will never be serviced once the host is gone: tell it now, or the
+		# other side only notices the silence (the server then misses "host_left")
+		var st: int = peer.get_state()
+		if st != ENetPacketPeer.STATE_DISCONNECTED and st != ENetPacketPeer.STATE_ZOMBIE:
 			peer.peer_disconnect_now()
 	host.flush()
 	host.destroy()
