@@ -186,7 +186,8 @@
         "hud_layout",
         "ui_scale",
         "min_text_px",
-        "combat_text"
+        "combat_text",
+        "show_fps"
       ],
       "properties": {
         "hud_layout": {
@@ -208,6 +209,10 @@
         "combat_text": {
           "type": "boolean",
           "description": "Floating combat text on or off"
+        },
+        "show_fps": {
+          "type": "boolean",
+          "description": "A frame-rate readout in the corner (playtests on real hardware)."
         }
       }
     },
@@ -233,7 +238,13 @@
     },
     "gameplay": {
       "type": "object",
-      "additionalProperties": true
+      "additionalProperties": true,
+      "properties": {
+        "record_matches": {
+          "type": "boolean",
+          "description": "Keep a recording of each match (user://recordings, the last 20) to send back after a playtest; replays draw exactly what happened."
+        }
+      }
     },
     "audio": {
       "type": "object",

@@ -1,0 +1,114 @@
+# Playtest builds (backlog P-01): Windows and Linux packages of the game, published as a GitHub
+# release a tester downloads, unzips and runs. The export templates (the engine a package runs on)
+# are compiled from the same Godot 4.7.2 source as the editor, so the versions match exactly; they
+# are cached, so only the first run pays for the compile.
+name: playtest
+
+on:
+  workflow_dispatch:
+    inputs:
+      tag:
+        description: Release tag (default playtest-<date>-<short sha>)
+        default: ""
+
+permissions:
+  contents: write
+
+jobs:
+  templates:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 180
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - {platform: windows, built: godot.windows.template_release.x86_64.exe, name: windows_release_x86_64.exe}
+          - {platform: linuxbsd, built: godot.linuxbsd.template_release.x86_64, name: linux_release.x86_64}
+    steps:
+      - uses: actions/cache@v4
+        id: cache
+        with:
+          path: tpl
+          key: godot-4.7.2-stable-template-${{ matrix.platform }}-v1
+      - name: Build the ${{ matrix.platform }} template
+        if: steps.cache.outputs.cache-hit != 'true'
+        run: |
+          sudo apt-get update -qq
+          sudo apt-get install -y -qq build-essential pkg-config scons \
+            libx11-dev libxcursor-dev libxinerama-dev libxi-dev libxrandr-dev \
+            libgl1-mesa-dev libglu1-mesa-dev libasound2-dev libpulse-dev libudev-dev libfontconfig-dev \
+            mingw-w64 >/dev/null
+          git clone -q --depth 1 --branch 4.7.2-stable https://github.com/godotengine/godot.git godot-src
+          cd godot-src
+          extra=""
+          if [ "${{ matrix.platform }}" = windows ]; then
+            # Godot needs MinGW's POSIX threads variant
+            sudo update-alternatives --set x86_64-w64-mingw32-gcc /usr/bin/x86_64-w64-mingw32-gcc-posix
+            sudo update-alternatives --set x86_64-w64-mingw32-g++ /usr/bin/x86_64-w64-mingw32-g++-posix
+            extra="use_mingw=yes"
+          fi
+          scons platform=${{ matrix.platform }} target=template_release arch=x86_64 production=yes lto=none \
+            $extra -j"$(nproc)"
+          mkdir -p ../tpl
+          cp bin/${{ matrix.built }} ../tpl/${{ matrix.name }}
+      - uses: actions/upload-artifact@v4
+        with:
+          name: template-${{ matrix.platform }}
+          path: tpl/
+
+  export:
+    needs: templates
+    runs-on: ubuntu-24.04
+    timeout-minutes: 60
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+          cache: pip
+          cache-dependency-path: tools/env/requirements.txt
+      - uses: ./.github/actions/setup
+      - uses: actions/download-artifact@v4
+        with:
+          pattern: template-*
+          merge-multiple: true
+          path: tpl
+      - name: Install the templates
+        run: |
+          dest="$HOME/.local/share/godot/export_templates/4.7.2.stable"
+          mkdir -p "$dest"
+          cp tpl/* "$dest/"
+          chmod +x "$dest"/*
+          ls -la "$dest"
+      - name: Import the project
+        run: godot --headless --path game --import > /dev/null 2>&1 || true
+      - name: Export
+        run: |
+          mkdir -p build/windows build/linux
+          godot --headless --path game --export-release "Windows Desktop" ../build/windows/ArenaPvP.exe
+          godot --headless --path game --export-release "Linux" ../build/linux/ArenaPvP.x86_64
+          ls -la build/windows build/linux
+          test -s build/windows/ArenaPvP.exe && test -s build/windows/ArenaPvP.pck
+          test -s build/linux/ArenaPvP.x86_64 && test -s build/linux/ArenaPvP.pck
+      - name: Smoke test the Linux package (headless server)
+        run: |
+          timeout 12 build/linux/ArenaPvP.x86_64 --headless -- --server --port 25990 > smoke.log 2>&1 || true
+          cat smoke.log
+          grep -q "server: listening on port 25990" smoke.log
+      - name: Package
+        id: pkg
+        run: |
+          tag="${{ inputs.tag }}"
+          if [ -z "$tag" ]; then tag="playtest-$(date -u +%Y%m%d)-${GITHUB_SHA::7}"; fi
+          echo "tag=$tag" >> "$GITHUB_OUTPUT"
+          cp docs/PLAYTEST.md build/windows/README.md
+          cp docs/PLAYTEST.md build/linux/README.md
+          (cd build/windows && zip -qr "../ArenaPvP-$tag-windows.zip" .)
+          (cd build/linux && zip -qr "../ArenaPvP-$tag-linux.zip" .)
+          ls -la build/*.zip
+      - name: Publish the release
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          gh release create "${{ steps.pkg.outputs.tag }}" build/*.zip --prerelease \
+            --title "Playtest build ${{ steps.pkg.outputs.tag }}" --notes-file docs/PLAYTEST.md

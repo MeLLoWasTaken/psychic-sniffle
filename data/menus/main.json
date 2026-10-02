@@ -71,7 +71,11 @@
   },
   "play_bots": {
     "map": "gallows_courtyard",
-    "maps": ["gallows_courtyard", "flooded_crypt", "burning_foundry"],
+    "maps": [
+      "gallows_courtyard",
+      "flooded_crypt",
+      "burning_foundry"
+    ],
     "bracket": "2v2",
     "host_name": "player",
     "port_range": [
@@ -345,7 +349,11 @@
   },
   "play_1v1": {
     "map": "gallows_courtyard",
-    "maps": ["gallows_courtyard", "flooded_crypt", "burning_foundry"],
+    "maps": [
+      "gallows_courtyard",
+      "flooded_crypt",
+      "burning_foundry"
+    ],
     "bracket": "1v1",
     "host_name": "player",
     "port_range": [
@@ -385,7 +393,11 @@
   },
   "play_3v3": {
     "map": "gallows_courtyard",
-    "maps": ["gallows_courtyard", "flooded_crypt", "burning_foundry"],
+    "maps": [
+      "gallows_courtyard",
+      "flooded_crypt",
+      "burning_foundry"
+    ],
     "bracket": "3v3",
     "host_name": "player",
     "port_range": [
@@ -518,6 +530,11 @@
               "Beside the button",
               "Bottom right corner"
             ]
+          },
+          {
+            "path": "interface.show_fps",
+            "label": "Show frame rate",
+            "type": "toggle"
           }
         ]
       },
@@ -537,6 +554,11 @@
           {
             "path": "gameplay.auto_self_cast",
             "label": "Auto self-cast",
+            "type": "toggle"
+          },
+          {
+            "path": "gameplay.record_matches",
+            "label": "Record matches (for playtest feedback)",
             "type": "toggle"
           },
           {

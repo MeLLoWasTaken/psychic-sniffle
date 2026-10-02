@@ -40,7 +40,8 @@
     "combat_text_heals": true,
     "nameplates": true,
     "nameplate_cast_bars": true,
-    "nameplate_debuffs": true
+    "nameplate_debuffs": true,
+    "show_fps": false
   },
   "graphics": {
     "rig_modifiers": true,
@@ -64,7 +65,8 @@
   },
   "gameplay": {
     "spell_queue_ms": 400,
-    "auto_self_cast": true
+    "auto_self_cast": true,
+    "record_matches": true
   },
   "audio": {
     "master_db": 0.0,

@@ -2,6 +2,11 @@
 
 One entry per build-loop iteration, newest first. Format: date, backlog ID, what changed, how it was checked.
 
+## 2026-10-02 — P-01 playtest build (in progress)
+- A playtest build for the human's tests from Monday: Windows and Linux packages built on CI and published as a GitHub pre-release, with a guide (`docs/PLAYTEST.md`): install, what to play, controls, what to report, where logs and recordings are, known issues.
+- Matches now record themselves (the newest 20, for replaying a tester's match here). A "Show frame rate" setting adds a corner readout, and after every match the log gets the graphics card, average frame rate, 1% low and worst frame.
+- Checked: a pack exported here loads its 441 data files and runs as a server; tests for recording names and pruning, and for the frame statistics.
+
 ## 2026-10-02 — M2-15 review pass 5; M2 gate checked
 - M2 gate (DESIGN.md: every combat rule tested, every action rebindable, layouts save and load): all three pass with tests. Two tests are new: energy users' fixed 1.0 s global cooldown, and rebinding every action in turn with the input map checked. The gate waits on the human's sign-off.
 - Review 5 (`docs/reports/review_05/review_05.md`):

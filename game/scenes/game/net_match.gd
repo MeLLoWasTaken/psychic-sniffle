@@ -46,6 +46,7 @@ var local_server: LocalServer
 var net: NetClient
 var builder: MapBuilder
 var renderer: WorldRenderer
+var frame_stats: FrameStats  ## frame times on the player's hardware (playtests), logged when the match ends
 var cam: ThirdPersonCamera
 var controller: PlayerController
 var hud: Hud
@@ -100,6 +101,8 @@ func _ready() -> void:
 	renderer = WorldRenderer.new()
 	renderer.name = "World"
 	add_child(renderer)
+	frame_stats = FrameStats.new()
+	add_child(frame_stats)
 	controller = PlayerController.new(_settings)
 	cam = ThirdPersonCamera.new(_settings.get("camera", {}))
 	cam.name = "PlayerCamera"
@@ -143,6 +146,8 @@ func _ready() -> void:
 		Log.info("match: playing back %s" % options["playback"])
 		_build_arena.call_deferred()
 		return
+	if str(options["record"]) == "" and bool(Settings.get_value("gameplay.record_matches", true)):
+		options["record"] = auto_record_path(str(preset["map"]), str(preset["bracket"]))
 	if str(options["record"]) != "":
 		_record = FileAccess.open_compressed(str(options["record"]), FileAccess.WRITE, FileAccess.COMPRESSION_ZSTD)
 		if _record != null:
@@ -456,6 +461,22 @@ func leave() -> void:
 	flow.leave()
 
 
+const RECORDINGS_DIR: String = "user://recordings"
+const RECORDINGS_KEPT: int = 20
+
+
+## Where a match is recorded when the "Record matches" setting is on (playtest feedback): a
+## timestamped file in user://recordings; older recordings beyond the newest RECORDINGS_KEPT go.
+static func auto_record_path(map_id: String, bracket: String, dir: String = RECORDINGS_DIR) -> String:
+	DirAccess.make_dir_recursive_absolute(dir)
+	var files: Array = Array(DirAccess.get_files_at(dir)).filter(func(f: String) -> bool: return f.ends_with(".bin"))
+	files.sort()  # timestamped names sort oldest first
+	while files.size() >= RECORDINGS_KEPT:
+		DirAccess.remove_absolute(dir.path_join(files.pop_front()))
+	var stamp: String = Time.get_datetime_string_from_system(false, true).replace(":", "-").replace(" ", "_")
+	return dir.path_join("%s_%s_%s.bin" % [stamp, map_id, bracket])
+
+
 func _release_controls() -> void:
 	if pilot != null:
 		var evs: Array[InputEvent] = []
@@ -493,6 +514,8 @@ func _finish() -> void:
 	result["scene"] = stats.duplicate()
 	result["pilot"] = {"presses": pilot.presses, "unmapped": pilot.unmapped, "tabs": pilot.tabs,
 		"frame_clicks": pilot.frame_clicks} if pilot != null else {}
+	result["frames"] = frame_stats.summary()
+	Log.info(frame_stats.log_line())
 	Log.info("match: back to the menu (%s)" % ", ".join(flow.history))
 	exited.emit(result)
 

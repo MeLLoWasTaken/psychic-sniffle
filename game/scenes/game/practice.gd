@@ -34,6 +34,7 @@ var options: Dictionary = {}
 var world: LocalMatch
 var builder: MapBuilder
 var renderer: WorldRenderer
+var frame_stats: FrameStats  ## frame times on the player's hardware (playtests), logged on leaving
 var cam: ThirdPersonCamera
 var controller: PlayerController
 var scripted: ScriptedInput
@@ -81,6 +82,8 @@ func _ready() -> void:
 	renderer = WorldRenderer.new()
 	renderer.name = "World"
 	add_child(renderer)
+	frame_stats = FrameStats.new()
+	add_child(frame_stats)
 	renderer.audio.surface_at = builder.surface_at  # wading footsteps in a flood
 	controller = PlayerController.new(settings)
 	cam = ThirdPersonCamera.new(settings.get("camera", {}))
@@ -245,6 +248,11 @@ func change_talents(text: String) -> String:
 func player_travel() -> float:
 	var p: Vector3 = world.player.position
 	return Vector2(p.x - start_position.x, p.z - start_position.z).length()
+
+
+func _exit_tree() -> void:
+	if frame_stats != null:
+		Log.info(frame_stats.log_line())
 
 
 func _finish() -> void:

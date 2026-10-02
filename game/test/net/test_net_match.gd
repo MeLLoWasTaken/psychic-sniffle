@@ -151,3 +151,19 @@ func test_free_port_probe_skips_a_port_in_use() -> void:
 	assert_int(LocalServer.find_free_port(25480, 25481)).is_equal(25481)
 	busy.close()
 	assert_int(LocalServer.find_free_port(25480, 25481)).is_equal(25480)
+
+
+func test_matches_are_recorded_for_playtest_feedback_keeping_the_newest_20() -> void:
+	var NetMatch: GDScript = load("res://scenes/game/net_match.gd")
+	var dir: String = "user://test_recordings"
+	DirAccess.make_dir_recursive_absolute(dir)
+	for f: String in DirAccess.get_files_at(dir):
+		DirAccess.remove_absolute(dir.path_join(f))
+	for i: int in 25:  # older recordings, oldest first by name
+		FileAccess.open(dir.path_join("2026-01-01_00-00-%02d_x_2v2.bin" % i), FileAccess.WRITE).store_8(1)
+	var path: String = NetMatch.auto_record_path("burning_foundry", "3v3", dir)
+	assert_str(path.get_file()).ends_with("_burning_foundry_3v3.bin")
+	var left: PackedStringArray = DirAccess.get_files_at(dir)
+	assert_int(left.size()).is_equal(19)  # room for the new one: 20 with it
+	assert_bool(left.has("2026-01-01_00-00-00_x_2v2.bin")).is_false()  # the oldest went
+	assert_bool(left.has("2026-01-01_00-00-24_x_2v2.bin")).is_true()
