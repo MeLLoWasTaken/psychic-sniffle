@@ -16,7 +16,7 @@
     {
       "stat": "damage_done",
       "op": "multiply",
-      "value": 0.92
+      "value": 0.89
     }
   ],
   "hud_priority": "normal",
