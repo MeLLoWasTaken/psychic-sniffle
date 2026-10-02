@@ -104,10 +104,16 @@ jobs:
           test -s build/linux/ArenaPvP.x86_64 && test -s build/linux/ArenaPvP.pck
       - name: Smoke test the Linux package (headless server)
         run: |
+          # a release build buffers its console output, which a timeout kill loses: read the game's
+          # own log file in the user folder instead
+          userlog="$HOME/.local/share/godot/app_userdata/Arena PvP/logs/server.log"
+          rm -f "$userlog"
           timeout 12 build/linux/ArenaPvP.x86_64 --headless -- --server --port 25990 > smoke.log 2>&1 || true
           cat smoke.log
-          if ! grep -q "server: listening on port 25990" smoke.log; then
-            tail -n 30 smoke.log | tr '\n' '|' | cut -c1-3800 | sed 's/^/::error title=smoke test::/'
+          cat "$userlog" || true
+          if ! grep -q "server: listening on port 25990" "$userlog"; then
+            { echo "console:"; tail -n 15 smoke.log; echo "user log:"; tail -n 15 "$userlog" 2>&1; ls -la "$HOME/.local/share/godot/app_userdata" 2>&1; } \
+              | tr '\n' '|' | cut -c1-3800 | sed 's/^/::error title=smoke test::/'
             echo
             exit 1
           fi
