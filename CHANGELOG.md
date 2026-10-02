@@ -2,6 +2,12 @@
 
 One entry per build-loop iteration, newest first. Format: date, backlog ID, what changed, how it was checked.
 
+## 2026-10-02 — F-19 Gallows Courtyard pillars and gallows rebuilt
+- The courtyard's four pillars are now octagonal stone piers: individual stones with chips and sunken faces, a band course, corbels under a pointed cap with a ball on top, iron shackles on one face and a notice board on the other.
+- The central gallows is now a stone plinth carrying a timber stage with cross braces, a deck with a trapdoor and railing, a ladder, and a taller braced frame with three nooses, a hanging iron cage and a lantern. The frame now faces both gates side-on.
+- Weathered stone and timber materials (rain streaks, a little damp at the base) for these pieces only; the rest of the kit is unchanged.
+- Checked: asset validation (triangle budgets, no holes), map, kit and twist tests, and the same screenshot as review 5 before and after (`docs/reports/review_05/f19_courtyard_before_after.png`); the collapse at 5:00 still leaves its wreck.
+
 ## 2026-10-02 — F-08 duel balance
 - Duels are balanced across every named build and across random builds, confirmed on fresh seeds.
   - Bots' builds (2,000 duels): Arcanist 51%, Oracle 53.5%, Warblade 45%.

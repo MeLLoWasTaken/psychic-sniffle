@@ -24,5 +24,6 @@
     "piece": "pillar"
   },
   "out": "game/assets/kits/gallows/gallows_pillar.glb",
-  "status": "draft"
+  "status": "draft",
+  "pivot": "axis"
 }

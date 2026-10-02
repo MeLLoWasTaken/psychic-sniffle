@@ -24,5 +24,6 @@
     "piece": "gallows"
   },
   "out": "game/assets/kits/gallows/gallows_gallows.glb",
-  "status": "draft"
+  "status": "draft",
+  "pivot": "axis"
 }

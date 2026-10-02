@@ -21,10 +21,9 @@ Acceptance criteria are written before work starts. Refine them during step 2 of
 Items further down keep their history; this list is the order to take them in.
 
 1. F-08: duel balance done (specs 45-54%, match-ups 41-56% on fresh seeds, named and random builds); left: Oracle mirrors reaching the time limit (a dampening proposal waits on the human).
-2. F-19 Gallows Courtyard kit to the level of the newer kits.
-3. X-22 Intermittent large prediction correction in the lagged 2v2 check.
-4. F-18 Burning Foundry follow-ups.
-5. M3: split the remaining classes into waves of 3 or 4 and start the first wave.
+2. X-22 Intermittent large prediction correction in the lagged 2v2 check.
+3. F-18 Burning Foundry follow-ups.
+4. M3: split the remaining classes into waves of 3 or 4 and start the first wave.
 
 ### P-01 Playtest build `[done]`
 - [x] A Windows (and Linux) package of the game the human downloads from a GitHub release, unzips and runs: built on CI from export templates compiled from the same Godot 4.7.2 source; the Linux package smoke-tested on CI (it starts as a headless server).
@@ -449,8 +448,10 @@ The human asked to incorporate any readily available offering that improves the 
 - [ ] Props have no collision (players walk through crates at the walls): add low colliders deliberately if it reads badly in play.
 - [ ] A brazier crackle sound.
 
-### F-19 Gallows Courtyard kit to the level of the newer kits (review 5) `[todo]`
-- [ ] Side by side with Flooded Crypt and Burning Foundry (`docs/reports/review_05/arenas_side_by_side.png`) the first arena is the plainest: smooth, lightly worn pillars, a gallows block that reads as a wooden crate, little dressing on the floor. Rebuild its pillars and gallows with the crypt and foundry kits' wear, trim and silhouette detail, and beat the old version on the same screenshot.
+### F-19 Gallows Courtyard kit to the level of the newer kits (review 5) `[done]`
+- [x] Side by side with Flooded Crypt and Burning Foundry (`docs/reports/review_05/arenas_side_by_side.png`) the first arena is the plainest: smooth, lightly worn pillars, a gallows block that reads as a wooden crate, little dressing on the floor. Rebuild its pillars and gallows with the crypt and foundry kits' wear, trim and silhouette detail, and beat the old version on the same screenshot.
+- Done 2026-10-02: the pillar is an octagonal pier of individual stones (some split, chipped or spalled) on a stepped plinth, with a band course, three corbel courses, a cornice, a pyramid cap with a ball finial, iron shackles on chains, a notice board and chips at its foot (4,598 triangles, budget 5,000). The gallows is a stone plinth with quoins and a chamfered cap under a timber stage (posts, cross-braced bays with iron straps, boards set back with one missing, joist ends), a plank deck with a trapdoor and a rail, a ladder, and a taller frame with raking struts, knee braces and iron straps, three nooses over the trap, a hanging iron cage and a lantern (14,250 triangles, budget 16,000). The frame now runs along the arena's z axis, side-on to both gates. Same camera before and after: `docs/reports/review_05/f19_courtyard_before_after.png`; the collapse wreck still reads (`previews/f_19/courtyard_wreck.png`). New asset pivot `axis` (DECISIONS 2026-10-02).
+- Follow-up (not in this item): the floor still has little dressing, and the walls are the kit's first, plainest pieces; review 6 compares the three arenas again.
 
 ### F-18 Burning Foundry follow-ups (from M2-10) `[todo]`
 - [x] No sound while the wheel turns: now a looping rumble with rail thuds and chain creaks follows each crucible while the wheel turns (`foundry_wheel_loop`, twist `loop_sound`; AudioDirector map loops on the world bus).
