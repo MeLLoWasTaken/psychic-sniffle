@@ -16,7 +16,7 @@
     {
       "stat": "move_speed",
       "op": "multiply",
-      "value": 1.1
+      "value": 1.12
     }
   ],
   "hud_priority": "normal",
