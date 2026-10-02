@@ -169,9 +169,13 @@ def report_bracket(size: int, report: dict, out: Path) -> int:
         for n, v in b["over_share"].items():
             print(f"::warning title={size}v{size} builds::{sp}: {n} is in {v:.0%} of the top builds "
                   f"({b.get('all_share', {}).get(n, 0):.0%} of all its simulated builds)")
-        if b.get("impact"):
-            print(f"::notice title={size}v{size} node impact::{sp}: win rate with minus without: " + ", ".join(
-                f"{n} {v:+.0%}" for n, v in b["impact"].items()))
+        if b.get("impact") or b.get("impact_vs"):
+            # one notice per spec (a step shows at most 10): overall, then against each opponent in duels
+            parts = ["all: " + ", ".join(f"{n} {v:+.0%}" for n, v in b.get("impact", {}).items())]
+            if size == 1:
+                parts += [f"vs {opp}: " + ", ".join(f"{n} {v:+.0%}" for n, v in imp.items())
+                          for opp, imp in b.get("impact_vs", {}).items() if imp]
+            print(f"::notice title={size}v{size} node impact::{sp} (win rate with minus without) " + "; ".join(parts)[:3800])
         if b.get("common"):
             print(f"::notice title={size}v{size} common nodes::{sp}: in over 90% of the top builds but no more than "
                   "chance given their share of all builds: " + ", ".join(

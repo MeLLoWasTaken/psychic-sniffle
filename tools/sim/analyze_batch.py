@@ -100,6 +100,7 @@ def builds(report: dict) -> dict:
     ms = report["matches"]
     nodes = {k: v.get("nodes", []) for k, v in report.get("summary", {}).get("builds", {}).items()}
     tally = defaultdict(lambda: [0, 0])
+    vs = defaultdict(lambda: [0, 0])  # (spec@build, opposing composition) -> [wins, games]
     for m in ms:
         a, b = comp_of(m, 0), comp_of(m, 1)
         if a == b:
@@ -108,6 +109,9 @@ def builds(report: dict) -> dict:
             k = f"{u['spec']}@{u.get('build', 'none')}"
             tally[k][1] += 1
             tally[k][0] += m["winner"] == u["team"]
+            opp = b if u["team"] == 0 else a
+            vs[(k, opp)][1] += 1
+            vs[(k, opp)][0] += m["winner"] == u["team"]
     per_spec = defaultdict(dict)
     for k, (w, g) in tally.items():
         sp = k.split("@")[0]
@@ -142,8 +146,21 @@ def builds(report: dict) -> dict:
             rate = lambda ks: sum(tally[k][0] for k in ks) / max(1, sum(tally[k][1] for k in ks))
             impact[n] = round(rate(with_n) - rate(without), 3)
         out_impact = dict(sorted(impact.items(), key=lambda kv: -abs(kv[1]))[:8])
+        # the same against each opposing composition (duels: each opposing spec), all builds counted
+        impact_vs = {}
+        for opp in sorted({o for (k, o) in vs if k.startswith(sp + "@")}):
+            per = {}
+            keys = [k for k in bs if vs[(k, opp)][1] > 0]
+            for n in every:
+                w = [k for k in keys if n in {node_id(x) for x in nodes.get(k, [])}]
+                wo = [k for k in keys if k not in w]
+                if len(w) < 2 or len(wo) < 2:
+                    continue
+                r = lambda ks: sum(vs[(k, opp)][0] for k in ks) / max(1, sum(vs[(k, opp)][1] for k in ks))
+                per[n] = round(r(w) - r(wo), 3)
+            impact_vs[opp] = dict(sorted(per.items(), key=lambda kv: -abs(kv[1]))[:6])
         out[sp] = {"builds": dict(sorted(bs.items(), key=lambda kv: -kv[1]["win_rate"])),
-                   "impact": out_impact,
+                   "impact": out_impact, "impact_vs": impact_vs,
                    "viable": sum(v["viable"] for v in bs.values()), "top": top,
                    "over_share": favoured,
                    "common": {n: v for n, v in high.items() if n not in favoured},
