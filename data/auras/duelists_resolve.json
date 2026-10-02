@@ -21,7 +21,7 @@
     {
       "stat": "armor",
       "op": "add",
-      "value": 0.16
+      "value": 0.22
     }
   ],
   "hud_priority": "normal",
