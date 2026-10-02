@@ -686,11 +686,14 @@ func _dress_with_kit() -> void:
 		elif c["type"] == "circle":
 			# each kit's pillar is built for its spec's radius_m and height_m (gallows 1.2 m, crypt 1.0 m);
 			# a circle whose tag names a kit piece gets that piece instead (the foundry's furnace and
-			# crucibles), unturned, so a rotate twist can turn it from a known pose
+			# crucibles), unturned, so a rotate twist can turn it from a known pose; a piece whose spec
+			# says faces_pivot is first turned so its front (+z) faces the centre of the twist that
+			# turns it (the crucibles' pouring lips toward the furnace, F-18)
 			var piece: String = tag if tag != "" and tag != "pillar" and _kit_has(tag) else "pillar"
 			var r: float = float(c["radius"]) / _kit_param(piece, "radius_m", KIT_PILLAR_RADIUS_M)
-			var placed: Node3D = _kit_place(kit_root, piece, Vector3(c["center"][0], 0, c["center"][1]),
-				_rng.randf() * TAU if piece == "pillar" else 0.0,
+			var at: Vector3 = Vector3(c["center"][0], 0, c["center"][1])
+			var placed: Node3D = _kit_place(kit_root, piece, at,
+				_rng.randf() * TAU if piece == "pillar" else _pivot_yaw(piece, tag, at),
 				Vector3(r, float(c.get("height", 6.0)) / _kit_param(piece, "height_m", KIT_PILLAR_HEIGHT_M), r))
 			if tag != "":
 				_tag_node(tag, placed)
@@ -1120,6 +1123,18 @@ func _kit_place(parent: Node3D, piece: String, pos: Vector3, yaw: float, scl: Ve
 	node.scale = scl
 	parent.add_child(node)
 	return node
+
+
+## The yaw that turns a kit piece's front (+z) toward the centre of the rotate twist moving `tag`,
+## when the piece's spec asks for it (params.faces_pivot); 0 otherwise.
+func _pivot_yaw(piece: String, tag: String, at: Vector3) -> float:
+	if _kit_param(piece, "faces_pivot", 0.0) == 0.0:
+		return 0.0
+	for t: Dictionary in map.get("twists", []):
+		if str(t.get("type", "")) == "rotate" and tag in t.get("tags", []):
+			var to: Vector2 = Vector2(t["center"][0] - at.x, t["center"][1] - at.z)
+			return atan2(to.x, to.y) if to.length() > 1e-3 else 0.0
+	return 0.0
 
 
 ## A number from a kit piece's asset spec params (data/assets/<kit>_<piece>.json), e.g. the pillar's

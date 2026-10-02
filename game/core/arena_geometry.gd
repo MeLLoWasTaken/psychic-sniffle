@@ -65,6 +65,19 @@ func stands(c: Dictionary) -> bool:
 	return not removed_tags.has(c.get("tag", "")) and not (bool(c.get("gate", false)) and gates_open)
 
 
+## The tag of a turning collider that has moved into a unit standing at `pos` (it will push the
+## unit out on its next move), or "" when none overlaps it by more than 1 cm.
+func moving_overlap(pos: Vector3) -> String:
+	var p: Vector2 = Vector2(pos.x, pos.z)
+	for c: Dictionary in circles:
+		if not bool(c["moving"]) or pos.y >= c["height"] or removed_tags.has(c["tag"]):
+			continue
+		var min_dist: float = c["radius"] + UNIT_RADIUS - 0.01
+		if (p - c["center"]).length_squared() < min_dist * min_dist:
+			return str(c["tag"])
+	return ""
+
+
 ## Push a unit position out of every blocker and back inside the bounds.
 func resolve(pos: Vector3) -> Vector3:
 	var p: Vector2 = Vector2(pos.x, pos.z)

@@ -493,7 +493,7 @@ def validate(data_dir: Path) -> list[str]:
                     report.error(rel, f"twist '{t['id']}' takes away '{tag}', which no collider has")
                 elif tag in ("wall", "gate"):
                     report.error(rel, f"twist '{t['id']}' takes away '{tag}' colliders; the arena would open to its outside")
-            for k in ("warn_sound", "sound", "loop_sound"):
+            for k in ("warn_sound", "sound", "loop_sound", "push_sound"):
                 if t.get(k) and t[k] not in db.get("sounds", {}):
                     report.error(rel, f"twist '{t['id']}' {k} '{t[k]}' is not in data/sounds")
             if t.get("warn_s", 0) > 0 and not t.get("warn_text"):

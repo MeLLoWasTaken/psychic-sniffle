@@ -2,6 +2,12 @@
 
 One entry per build-loop iteration, newest first. Format: date, backlog ID, what changed, how it was checked.
 
+## 2026-10-02 — F-18 foundry follow-ups: shove sound, arena reverbs, crucible lips
+- A crucible shoving a player now makes a sound at that player: a dull iron bump, a clank and a boot scuff, at most every 0.6 s while they are carried along. The server sends it as a new event, so it also plays in replays.
+- The Flooded Crypt and the Burning Foundry have their own reverb: the crypt darker and a little longer than the courtyard, the foundry shorter and drier. Before, both used the default small room.
+- Both crucibles now pour toward the furnace; before, the north one faced away.
+- Checked: new tests for the shove events and the crucible facing (the facing test fails without the fix), every sound still quieter than the CC warning through both reverbs, data validation, a foundry screenshot.
+
 ## 2026-10-02 — F-19 Gallows Courtyard pillars and gallows rebuilt
 - The courtyard's four pillars are now octagonal stone piers: individual stones with chips and sunken faces, a band course, corbels under a pointed cap with a ball on top, iron shackles on one face and a notice board on the other.
 - The central gallows is now a stone plinth carrying a timber stage with cross braces, a deck with a trapdoor and railing, a ladder, and a taller braced frame with three nooses, a hanging iron cage and a lantern. The frame now faces both gates side-on.

@@ -1,0 +1,85 @@
+{
+  "id": "foundry_shove",
+  "description": "A turning crucible shoves a player aside: a dull heavy bump of iron against a body, a short clank of the crucible's hoops and boots scuffing across gritty brick (Burning Foundry, F-18).",
+  "category": "impact",
+  "peak_dbfs": -8.0,
+  "variants": 2,
+  "duration_s": 0.7,
+  "layers": [
+    {
+      "type": "sub",
+      "from_hz": 95,
+      "to_hz": 45,
+      "curve": 5,
+      "env": {
+        "attack_s": 0.003,
+        "decay_s": 0.12
+      },
+      "gain": 1.1
+    },
+    {
+      "type": "noise",
+      "band": [
+        70,
+        450
+      ],
+      "env": {
+        "attack_s": 0.004,
+        "decay_s": 0.09
+      },
+      "gain": 0.8
+    },
+    {
+      "type": "resonant",
+      "base": 340,
+      "jitter": 0.12,
+      "partials": [
+        [
+          1,
+          16,
+          1.0,
+          0.07
+        ],
+        [
+          2.62,
+          20,
+          0.55,
+          0.05
+        ],
+        [
+          4.13,
+          24,
+          0.3,
+          0.035
+        ]
+      ],
+      "highpass": 250,
+      "gain": 0.45
+    },
+    {
+      "type": "noise",
+      "band": [
+        600,
+        3500
+      ],
+      "start_s": 0.04,
+      "env": {
+        "attack_s": 0.05,
+        "decay_s": 0.08
+      },
+      "am": [
+        28,
+        0.5
+      ],
+      "gain": 0.32
+    }
+  ],
+  "post": {
+    "saturate": 1.6,
+    "reverb": {
+      "length_s": 0.6,
+      "mix": 0.12,
+      "brightness": 3500
+    }
+  }
+}

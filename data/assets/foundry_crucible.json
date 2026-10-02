@@ -34,7 +34,8 @@
     "height_m": 2.6,
     "gauge_m": 0.8,
     "lug_x": 1.05,
-    "piece": "crucible"
+    "piece": "crucible",
+    "faces_pivot": 1
   },
   "out": "game/assets/kits/foundry/foundry_crucible.glb",
   "status": "draft"

@@ -455,11 +455,11 @@ The human asked to incorporate any readily available offering that improves the 
 
 ### F-18 Burning Foundry follow-ups (from M2-10) `[todo]`
 - [x] No sound while the wheel turns: now a looping rumble with rail thuds and chain creaks follows each crucible while the wheel turns (`foundry_wheel_loop`, twist `loop_sound`; AudioDirector map loops on the world bus).
-- [ ] No sound when a crucible pushes a player (needs a server event for the push).
-- [ ] An acoustics file for the foundry (and the crypt): both use the default room.
+- [x] No sound when a crucible pushes a player (needs a server event for the push). Done 2026-10-02: the arena emits a `twist_push` event when a turning collider moves into a living player (at most every 0.6 s per player), carrying the twist's new `push_sound`; the foundry's is `foundry_shove` (a dull iron bump, a short clank and a boot scuff). Test: `test_a_shoved_player_hears_it_now_and_then_not_every_tick`.
+- [x] An acoustics file for the foundry (and the crypt): both use the default room. Done 2026-10-02: `data/acoustics/flooded_crypt.json` (darker and a little longer than the courtyard, niches scattering the echo) and `burning_foundry.json` (shorter and drier, clutter breaking up reflections), measured on a sword hit with the offline model of Godot's reverb; every world sound stays quieter than the CC warning through both (tests/test_audio.py).
 - [ ] Bots do not anticipate a crucible coming at them; they are pushed and steer away afterwards. Most bot matches end before 2:30, so the turning phase is rarely played.
 - [ ] The floor still reads busy at a distance (brick herringbone and riveted plates); try larger plates or fewer joints.
-- [ ] The two crucibles are placed unturned, so one pouring lip faces the furnace and the other faces away.
+- [x] The two crucibles are placed unturned, so one pouring lip faces the furnace and the other faces away. Done 2026-10-02: an asset spec param `faces_pivot` turns a piece so its front faces the centre of the rotate twist that moves it; the crucible sets it. Test: `test_both_crucibles_pour_toward_the_furnace_as_they_turn` (fails without the flag).
 
 ### F-06 Two-handed grip, melee clean-up and stronger releases `[todo]`
 - [ ] Melee windups are long for instant abilities (strikes at 0.41-0.49 s): shorten them so the blade lands sooner after the press; impact sounds and visuals follow the strike automatically (DECISIONS 2026-10-01).

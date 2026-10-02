@@ -176,6 +176,10 @@
           "loop_sound": {
             "type": "string",
             "description": "rotate: a looping sound (data/sounds) at each turning collider while the twist runs."
+          },
+          "push_sound": {
+            "type": "string",
+            "description": "rotate: a sound (data/sounds) at a player a turning collider shoves aside (server event twist_push, at most every 0.6 s per player)."
           }
         }
       }

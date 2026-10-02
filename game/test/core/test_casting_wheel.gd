@@ -78,6 +78,33 @@ func test_the_wheel_turns_on_the_server_and_the_match_replays() -> void:
 	assert_bool(r["ok"]).override_failure_message(str(r)).is_true()
 
 
+func test_a_shoved_player_hears_it_now_and_then_not_every_tick() -> void:
+	var runner: MatchRunner = MatchRunner.new(Data.maps["burning_foundry"], "arena", "2v2", 1.0, 5)
+	var pushed: Unit = runner.add_unit("warblade_carnage", 0)
+	var away: Unit = runner.add_unit("arcanist_rime", 1)
+	runner.sim.add_system(runner.system_combat_and_rules)
+	var start: int = runner.arena.start_tick
+	var events: Array = []
+	while runner.sim.tick <= start + 170 * TR:
+		if runner.sim.tick == start + 149 * TR:
+			# on the ring just ahead of the north crucible, and a player well clear of it
+			var at: Vector2 = Vector2(0, 9).rotated(0.4)
+			pushed.position = Vector3(at.x, 0, at.y)
+			away.position = Vector3(-18, 0, -14)
+		runner.sim.step()
+		events.append_array(runner.arena.events.filter(func(e: Dictionary) -> bool: return e["type"] == "twist_push"))
+		runner.arena.events.clear()
+	assert_int(events.size()).override_failure_message(str(events)).is_greater_equal(2)
+	var last: int = -1000
+	for e: Dictionary in events:
+		assert_int(int(e["target"])).is_equal(pushed.id)
+		assert_str(str(e["sound"])).is_equal("foundry_shove")
+		assert_str(str(e["twist"])).is_equal("casting_wheel")
+		assert_int(int(e["tick"]) - start).is_greater_equal(150 * TR)  # not before the wheel turns
+		assert_int(int(e["tick"]) - last).is_greater_equal(ArenaMatch.PUSH_EVENT_TICKS)
+		last = int(e["tick"])
+
+
 func test_the_client_predicts_against_the_turned_crucibles() -> void:
 	var c: NetClient = auto_free(NetClient.new())
 	c.map_id = "burning_foundry"
@@ -110,6 +137,23 @@ func test_the_map_turns_the_crucibles_with_the_wheel() -> void:
 	b.set_match_time(100.0, false)
 	assert_array(nodes.map(func(n: Node3D) -> Vector3: return n.position.snapped(Vector3.ONE * 0.001))).contains_exactly_in_any_order(
 		[Vector3(0, 0, 9), Vector3(0, 0, -9)])
+
+
+func test_both_crucibles_pour_toward_the_furnace_as_they_turn() -> void:
+	var b: MapBuilder = auto_free(MapBuilder.new())
+	b.map_id = "burning_foundry"
+	b.bake_gi = false
+	b.build_lighting = false
+	b.build()
+	var kit: Array = b._tag_nodes.get("crucible", []).filter(func(n: Node3D) -> bool: return n.scene_file_path.ends_with("foundry_crucible.glb"))
+	assert_int(kit.size()).override_failure_message(str(b._tag_nodes.get("crucible", []))).is_equal(2)
+	for s: float in [100.0, 150.0 + 2.0 + PI / 2.0 / W, 171.3]:
+		b.set_match_time(s, false)
+		for n: Node3D in kit:
+			# the pouring lip is the piece's front (+z): it points at the furnace in the middle
+			var front: Vector3 = n.transform.basis.z.normalized()
+			var inward: Vector3 = (Vector3.ZERO - n.position).normalized()
+			assert_float(front.dot(inward)).override_failure_message("lip off the furnace at %.1f s: %s" % [s, front]).is_greater(0.999)
 
 
 func test_bots_stop_pathing_around_the_crucibles_once_they_move() -> void:

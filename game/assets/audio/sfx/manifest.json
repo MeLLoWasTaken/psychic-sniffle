@@ -156,6 +156,14 @@
   ],
   "category": "impact"
  },
+ "foundry_shove": {
+  "hash": "19c15b2c1c2f6f72",
+  "files": [
+   "foundry_shove_01",
+   "foundry_shove_02"
+  ],
+  "category": "impact"
+ },
  "foundry_wheel": {
   "hash": "013d5ccc15063cf3",
   "files": [

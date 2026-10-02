@@ -28,6 +28,9 @@ var _pickups_spawned: bool = false
 var _taken: Array[Dictionary] = []  ## {"unit", "pickup"} since the last take_pickups()
 var twists: Array = []  ## the map's twists (ArenaTwists), happening on match time
 var twist_stages: Array[int] = []  ## each twist's last announced stage (ArenaTwists.Stage)
+var _last_push: Dictionary = {}  ## unit id -> tick of its last twist_push event
+
+const PUSH_EVENT_TICKS: int = 36  ## a unit's push sound plays at most this often (0.6 s at 60 Hz)
 
 
 func _init(tuning: Dictionary, p_bracket: String, p_tick_rate: int, p_geometry: ArenaGeometry,
@@ -107,6 +110,7 @@ func update(tick: int, units: Dictionary) -> void:
 			if phase == Phase.ACTIVE:
 				_update_pickups(tick, units)
 				_update_twists(tick)
+				_push_events(tick, units)
 
 
 func _update_pickups(tick: int, units: Dictionary) -> void:
@@ -155,6 +159,26 @@ func _update_twists(tick: int) -> void:
 				"text": str(t.get("warn_text" if warned else "text", "")), "sound": str(t.get("warn_sound" if warned else "sound", ""))})
 	if geometry:
 		geometry.apply_twists(twists, s)
+
+
+## A "twist_push" event, with the twist's push_sound, for each living unit a turning collider has
+## moved into this tick (the foundry's crucibles shoving a player aside); one per unit at most
+## every PUSH_EVENT_TICKS, so a unit carried along makes a sound now and then, not every tick.
+func _push_events(tick: int, units: Dictionary) -> void:
+	if geometry == null:
+		return
+	for i: int in twists.size():
+		var t: Dictionary = twists[i]
+		if str(t.get("push_sound", "")) == "" or twist_stages[i] < ArenaTwists.Stage.DONE:
+			continue
+		var tags: Array = t.get("tags", [])
+		for u: Unit in units.values():
+			if not u.is_alive() or tick - int(_last_push.get(u.id, -PUSH_EVENT_TICKS)) < PUSH_EVENT_TICKS:
+				continue
+			if geometry.moving_overlap(u.position) in tags:
+				_last_push[u.id] = tick
+				events.append({"tick": tick, "type": "twist_push", "twist": str(t.get("id", i)), "target": u.id,
+					"sound": str(t["push_sound"])})
 
 
 ## Pickups taken since the last call, [{"unit", "pickup"}]; the caller applies pickup_effects.
