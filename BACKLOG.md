@@ -16,6 +16,18 @@ Acceptance criteria are written before work starts. Refine them during step 2 of
 
 ---
 
+## Next up (set by review 5, 2026-10-02)
+
+Items further down keep their history; this list is the order to take them in.
+
+1. F-08 1v1 balance with random talent builds (Arcanist 72%, Keen Focus favoured in its top duel builds, Oracle mirrors reaching the time limit).
+2. F-19 Gallows Courtyard kit to the level of the newer kits.
+3. X-22 Intermittent large prediction correction in the lagged 2v2 check.
+4. F-18 Burning Foundry follow-ups.
+5. M3: split the remaining classes into waves of 3 or 4 and start the first wave.
+
+---
+
 ## M0 — Foundations
 
 Exit gate: two bots join a server, move, target and auto-attack for 5 minutes with no errors.
@@ -376,11 +388,12 @@ The human asked to incorporate any readily available offering that improves the 
 - [ ] 1v1 (1,000 duels, random builds): Warblade 62%, Oracle 8%, Arcanist 78%; the Arcanist has 1 viable build; two Arcanist nodes are in every top build (turning_hours, gliding_ice). 2v2 and 3v3 hit the 4-hour job limit (now split into 6 and 8 parallel shards); the 20-player profile failed without saying why (it now reports the end of its output as errors). Feed into M2-07 (1v1 tuning) and M2-04 (trees).
 - Done 2026-10-02: the second full run (sharded, all 20 jobs passed in about 40 minutes) is recorded under M2-04, M2-08, F-08 and X-19.
 
-### X-19 20-player profile on CI `[todo]`
-- [ ] The nightly 20-player profile fails: on a 4-core runner the 20 bot clients receive 5 to 6 snapshots a second (expected 60). Review 3 measured 57.6 per second on the 2-core workspace, so either the clients got much heavier since (talents, settings, twists) or the runner is starved; profile one bot client and compare with review 3.
+### X-19 20-player profile on CI `[done]`
+- [x] The nightly 20-player profile fails: on a 4-core runner the 20 bot clients receive 5 to 6 snapshots a second (expected 60). Review 3 measured 57.6 per second on the 2-core workspace, so either the clients got much heavier since (talents, settings, twists) or the runner is starved; profile one bot client and compare with review 3.
 - 2026-10-01: measured on the workspace, 20 bots for 30 s: the review 3 commit gives clients 17-25 snapshots a second, today's 7-14 (server tick 2.9 ms against 3.7 ms on average). So bot clients are about twice as heavy as at review 3, and even then 21 Godot processes starve each other. Capping client frames at 60 changed nothing (the cost is per physics tick). The profile now records client rates without failing on them (`run_match.py --profile`) and guards the server's tick budget. Left: find what doubled the bot client's cost (F-14).
 - 2026-10-02, nightly on a 4-core runner: server tick 3.4 ms average, 23 ms 95th percentile, 44 ms max; bot clients 13-17 snapshots a second.
 
+- Done 2026-10-02 (review 5): the profile passes on CI and records server tick time, client snapshot rates and now peak memory; what doubled the bot client's cost since review 3 stays with F-14.
 ### X-20 GitHub Actions allowance used up `[done]`
 - [x] 2026-10-01 ~15:50 UTC: every Actions job fails to start ("recent account payments have failed or your spending limit needs to be increased"). The repository is private, so minutes count against the account; the two hand-started balance runs (about 10 runner-hours, then 16 parallel shards) plus a check per push used it up. The nightly schedule is removed (the workflows stay, started by hand only); balance runs move back to the workspace. Waiting on the human: raise the limit, wait for the monthly reset, or make the repository public.
 - Done 2026-10-02: the human made the repository public, which gives it free standard runners. The blocked check of 1f770a6 passed on a rerun, and the 1,000-duel run finished in 22 minutes on 8 shards. The nightly schedule stays off (16 runners for hours each run); full runs are started by hand when a balance question needs one.
@@ -389,10 +402,11 @@ The human asked to incorporate any readily available offering that improves the 
 - [ ] Found 2026-10-02 (M2-09): with the same code, recipes and package versions (numpy 1.26.4, scipy 1.17.1), today's workspace builds 51 of the 85 committed sounds with different samples, from 72 dB below peak down to 16 dB below (shiver_lance_release); the build is deterministic on one machine. Likely floating-point differences between CPUs, amplified by high-Q resonators, distortion and gating. Any change to the generator code changes every recipe's hash and asks for a full rebuild, which would replace sounds the human has listened to. Options: keep a rebuild that leaves a file alone when its new samples are within a tolerance; or build sounds only on CI's fixed runner image. Until then, generator changes wait for a rebuild the human listens to.
 - [ ] Resonant layers ignore "lowpass" (`crypt_seep` sets it); the fix is two lines in `tools/audio/layers.py` but changes the generator hash, so it waits for the item above. The validator could reject the key until then.
 
-### X-06 Continuous integration on GitHub Actions `[doing]`
-- [ ] Run tools/check_all on every push, and a nightly job on a multi-core runner for the balance simulations and the 20-player performance profile (the workspace has 2 cores, which skews those numbers).
+### X-06 Continuous integration on GitHub Actions `[done]`
+- [x] Run tools/check_all on every push, and a nightly job on a multi-core runner for the balance simulations and the 20-player performance profile (the workspace has 2 cores, which skews those numbers).
 - 2026-10-01: the nightly schedule (03:17 UTC) has not fired on two nights (no scheduled runs in the history); the workflow was started by hand with workflow_dispatch. The balance jobs now run one simulation process per core and simulate random talent builds (M2-04).
 
+- Done 2026-10-02 (review 5): every push runs `tools/check_all` on CI; the nightly (balance on 57 jobs, 20-player profile on a 4-core runner) runs by hand rather than on a schedule (DECISIONS.md), and its tables come back as annotations.
 ### X-09 Follow-ups from X-03 and X-04 `[todo]`
 - [x] Listening pass on the approved sounds: the human preferred every processed version; the slash still did not read as a slash (redone as v3) and the mace should be lower (impact_low).
 - [ ] Human listening pass on slash v3 and the lowered mace (`impact_slash`, `hit_greatsword_plate`, `hit_greatsword_cloth`, `hit_mace_plate`, `impact_blunt`), then the rest of the processed sounds (start with `cc_warning`, `hit_mace_plate`, `hit_greatsword_plate`, `break_free`, `rime_bolt_release`, `frost_cast_start`, `red_mist`, `holy_heal`, then a practice fight in Gallows Courtyard for the room and the duck), and a choice for the three approved sounds kept unprocessed: approved original or processed alternative (`previews/audio/x04/listening_ab/`).
@@ -427,6 +441,9 @@ The human asked to incorporate any readily available offering that improves the 
 - [ ] Props have no collision (players walk through crates at the walls): add low colliders deliberately if it reads badly in play.
 - [ ] A brazier crackle sound.
 
+### F-19 Gallows Courtyard kit to the level of the newer kits (review 5) `[todo]`
+- [ ] Side by side with Flooded Crypt and Burning Foundry (`docs/reports/review_05/arenas_side_by_side.png`) the first arena is the plainest: smooth, lightly worn pillars, a gallows block that reads as a wooden crate, little dressing on the floor. Rebuild its pillars and gallows with the crypt and foundry kits' wear, trim and silhouette detail, and beat the old version on the same screenshot.
+
 ### F-18 Burning Foundry follow-ups (from M2-10) `[todo]`
 - [ ] No sound while the wheel turns (a low rolling rumble and chain creak that follows the crucibles) and none when a crucible pushes a player.
 - [ ] An acoustics file for the foundry (and the crypt): both use the default room.
@@ -450,6 +467,7 @@ The human asked to incorporate any readily available offering that improves the 
 - [ ] Mirrors now end by a kill (they timed out 98% of the time before the hiding fix); keep that above 90%.
 - 2026-10-02, nightly with random talent builds (1v1 bracket auras in place): Arcanist 79%, Oracle 33%, Warblade 37%; Arcanist beats Warblade 99% and Oracle 60%, Oracle beats Warblade 27%. The named builds are balanced (M2-07), so the bracket auras were tuned to them: random Warblade and Oracle builds lose far more than random Arcanist builds. Look again after M2-04b, since duels then have real build choices to balance.
 - 2026-10-02, 2v2 and 3v3 with random builds: 2v2 specs Arcanist 51%, Oracle 43%, Warblade 57%; two Warblades 63%, two Oracles 20%. 3v3: Oracle-Warblade-Warblade 61%, three Oracles 24%, three Arcanists 36%.
+- 2026-10-02, review 5 nightly (3,000 duels, 24 builds per spec, all arenas): Arcanist 72%, Oracle 35%, Warblade 43%; 229 of 500 Oracle mirrors reach the 12-minute limit; the Arcanist's top duel builds take Keen Focus 92% of the time against 58% of all its builds (the first favoured node). Next: re-tune the duel auras against random builds (the named builds were balanced) and look at Keen Focus.
 - 2026-10-02, from the M2-07 1,000-duel run: about half of all 1v1 mirror duels reach the 12-minute limit (249 draws in 497 mirrors); Oracle mirrors always do (dampening from 1:00 at 1% per 10 s reaches only 66% by 12:00). Options: faster dampening in 1v1 only (data, tuning), or a stronger healer-mirror pressure tool. The duel report now names each mirror's kills and draws.
 
 ### F-09 Controls and targeting polish (found in M1-23) `[todo]`
@@ -601,8 +619,9 @@ Exit gate (DESIGN.md): every combat rule has passing tests; every action is rebi
 ### M2-14b Nameplate clicks and mouseover `[done]`
 - [x] A click on a nameplate targets its unit and the pointer over a plate counts as mouseover, like unit frames; tests with the plate rectangles. Done 2026-10-01 (the nearest plate wins where plates overlap; hidden plates catch nothing).
 
-### M2-15 Review pass and M2 gate `[todo]`
-- [ ] Full review pass; the M2 gate checked and written to CHANGELOG.md.
+### M2-15 Review pass and M2 gate `[done]`
+- [x] Full review pass; the M2 gate checked and written to CHANGELOG.md.
+- Done 2026-10-02 (`docs/reports/review_05/review_05.md`): the three gate conditions pass with tests (every combat rule, every action rebound, layouts saved and reloaded); balance, arenas and performance reviewed; the backlog re-ordered ("Next up" at the top). Waiting on the human's sign-off of the gate.
 
 ## Later milestones (split into items when the milestone starts)
 

@@ -2,6 +2,15 @@
 
 One entry per build-loop iteration, newest first. Format: date, backlog ID, what changed, how it was checked.
 
+## 2026-10-02 — M2-15 review pass 5; M2 gate checked
+- M2 gate (DESIGN.md: every combat rule tested, every action rebindable, layouts save and load): all three pass with tests. Two tests are new: energy users' fixed 1.0 s global cooldown, and rebinding every action in turn with the input map checked. The gate waits on the human's sign-off.
+- Review 5 (`docs/reports/review_05/review_05.md`):
+  - Balance from a 3,000-match nightly with every arena: 2v2 and 3v3 classes are within 40-60%; 1v1 with random builds is not (Arcanist 72%). The first talent the top builds favour is the Arcanist's Keen Focus in duels.
+  - The three arenas side by side: the first one is now the plainest (new item F-19).
+  - 20-player profile: server tick 3.2 ms average on CI. Peak memory is now recorded: 87 MB for the server, at most 85 MB per bot client.
+- The backlog now opens with a "Next up" list: F-08, F-19, X-22, F-18, then M3.
+- X-06 and X-19 done.
+
 ## 2026-10-02 — M2-10 Burning Foundry; M2-04 done
 - A third arena, Burning Foundry: a sooty foundry yard with a furnace in the middle, two crucibles of molten iron on a casting wheel, and casting moulds near the walls.
   - Twist (new type `rotate`): at 2:30 the casting wheel starts turning, so the crucibles circle the furnace once every 50 seconds. Cover moves, and anyone in the way is pushed aside. It is exact on the server, in the client's prediction and in replays.
