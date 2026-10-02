@@ -2,6 +2,16 @@
 
 One entry per build-loop iteration, newest first. Format: date, backlog ID, what changed, how it was checked.
 
+## 2026-10-02 — F-08 duel balance
+- Duels are balanced across every named build and across random builds, confirmed on fresh seeds.
+  - Bots' builds (2,000 duels): Arcanist 51%, Oracle 53.5%, Warblade 45%.
+  - Random builds (4,000 duels): Arcanist 46%, Oracle 49%, Warblade 54%.
+  - Every matchup is within 41-56%; before, the Arcanist beat the Warblade 90-96%.
+- The changes are all in the duel-only auras: less armor and damage for the Arcanist, more damage and speed for the Warblade, more armor for healers.
+- A traced duel showed the Warblade losing to crowd control and shields, not to kiting distance.
+- Still open: Oracle mirrors reach the 12-minute limit about a third of the time. Faster 1v1 dampening would fix it, but it changes a DESIGN.md rule, so it is proposed, not applied.
+- Duel runs now take a seed.
+
 ## 2026-10-02 — P-01 playtest build published; F-18 wheel rumble
 - The playtest build is out: GitHub pre-release `playtest-20261002-3090183`, with Windows and Linux zips and the guide.
   - Both packages pass a smoke test on CI: the packaged game runs a server and two bots that fight. The Windows one runs on a Windows machine.

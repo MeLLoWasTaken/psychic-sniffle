@@ -20,7 +20,7 @@ Acceptance criteria are written before work starts. Refine them during step 2 of
 
 Items further down keep their history; this list is the order to take them in.
 
-1. F-08 1v1 balance with random talent builds (Arcanist 72%, Keen Focus favoured in its top duel builds, Oracle mirrors reaching the time limit).
+1. F-08: duel balance done (specs 45-54%, match-ups 41-56% on fresh seeds, named and random builds); left: Oracle mirrors reaching the time limit (a dampening proposal waits on the human).
 2. F-19 Gallows Courtyard kit to the level of the newer kits.
 3. X-22 Intermittent large prediction correction in the lagged 2v2 check.
 4. F-18 Burning Foundry follow-ups.
@@ -471,9 +471,10 @@ The human asked to incorporate any readily available offering that improves the 
 - [x] Arcanist and Oracle robe skirts stay closed at the front: below the waist, skirt weights fold calf into thigh, give part of the leg weight to the pelvis (most near the waist) and let the middle follow both thighs halfway (`soften_skirt`).
 - [x] Pose test shows no dark gap at the robe front; the clipping check still passes.
 
-### F-08 1v1 balance (for M2, when 1v1 becomes a supported bracket) `[todo]`
-- [ ] Review pass 2 (1,000 simulated duels): Arcanist beats Warblade 66% and Oracle 100%; Oracle beats Warblade 2%. In 3v3 (M2) the Oracle wins 61% overall because two-healer teams win 74-78%; bring 3v3 specs within 40-60%. Healers may lose duels more often than not, but not almost always: give the Oracle a way to win a long duel (damage over time, a stronger Castigate under dampening, or mana-free pressure) and bring every duel match-up within 35-65%.
+### F-08 1v1 balance (for M2, when 1v1 becomes a supported bracket) `[doing]`
+- [x] Review pass 2 (1,000 simulated duels): Arcanist beats Warblade 66% and Oracle 100%; Oracle beats Warblade 2%. In 3v3 (M2) the Oracle wins 61% overall because two-healer teams win 74-78%; bring 3v3 specs within 40-60%. Healers may lose duels more often than not, but not almost always: give the Oracle a way to win a long duel (damage over time, a stronger Castigate under dampening, or mana-free pressure) and bring every duel match-up within 35-65%.
 - [ ] Mirrors now end by a kill (they timed out 98% of the time before the hiding fix); keep that above 90%.
+- 2026-10-02, tuned (five rounds on CI, duel auras only): Steady Footing (Arcanist) armor +0.30 -> +0.04 and damage x0.92 -> x0.89; Measured Blade (Warblade) damage x0.96 -> x1.04 plus x1.12 movement speed; Duelist's Resolve (healers) armor +0.015 -> +0.22. A traced duel showed the Warblade out-controlled rather than out-run (three Glacier Shields, stuns, encasings, roots), so damage moved Arcanist-Warblade where speed and the Arcanist's damage did not. Confirmed on seeds the rounds did not use: all named builds, seed 11 (2,000 duels): Arcanist 51%, Oracle 53.5%, Warblade 45%; Arcanist-Oracle 49%, Arcanist-Warblade 53%, Oracle-Warblade 56% (Oracle's share). Random builds (24 per spec), seed 5 (4,000 duels): Arcanist 46%, Oracle 49%, Warblade 54%; match-ups 43%, 50%, 41%; every spec has at least 3 viable builds and no node is favoured. The first criterion is met. Left: the mirror criterion (Oracle mirrors end by a kill about 63% of the time).
 - Proposal for the human (changes a DESIGN.md rule): Oracle mirrors still reach the 12-minute limit about 40% of the time, because dampening in 1v1 removes only 1% of healing every 10 s (66% by 12:00). A faster 1v1 step, 2% every 10 s, would end healing by 9:20 and cost a typical 100-second duel a few percent more healing. Not applied: DESIGN.md sets 1% for every bracket.
 - 2026-10-02, nightly with random talent builds (1v1 bracket auras in place): Arcanist 79%, Oracle 33%, Warblade 37%; Arcanist beats Warblade 99% and Oracle 60%, Oracle beats Warblade 27%. The named builds are balanced (M2-07), so the bracket auras were tuned to them: random Warblade and Oracle builds lose far more than random Arcanist builds. Look again after M2-04b, since duels then have real build choices to balance.
 - 2026-10-02, 2v2 and 3v3 with random builds: 2v2 specs Arcanist 51%, Oracle 43%, Warblade 57%; two Warblades 63%, two Oracles 20%. 3v3: Oracle-Warblade-Warblade 61%, three Oracles 24%, three Arcanists 36%.
