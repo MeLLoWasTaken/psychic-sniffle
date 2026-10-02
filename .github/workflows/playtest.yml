@@ -48,12 +48,16 @@ jobs:
             sudo update-alternatives --set x86_64-w64-mingw32-g++ /usr/bin/x86_64-w64-mingw32-g++-posix \
               || echo "::warning title=mingw::could not select the POSIX g++"
             x86_64-w64-mingw32-gcc --version | head -1
-            extra="use_mingw=yes"
+            # no screen reader (AccessKit) or WinRT drivers: they need SDKs the runner lacks
+            extra="use_mingw=yes accesskit=no winrt=no"
           fi
           # CI job logs may not be reachable: on failure the end of the build output becomes annotations
           if ! scons platform=${{ matrix.platform }} target=template_release arch=x86_64 production=yes lto=none \
               $extra -j"$(nproc)" > ../build.log 2>&1; then
-            tail -n 40 ../build.log | while IFS= read -r line; do echo "::error title=template build::${line:0:300}"; done
+            # one annotation (a step shows at most 10): the last lines joined, errors first
+            { grep -iE "error|fatal" ../build.log | tail -n 15; echo "-- end of log:"; tail -n 15 ../build.log; } \
+              | tr '\n' '|' | cut -c1-3800 | sed 's/^/::error title=template build::/'
+            echo
             exit 1
           fi
           mkdir -p ../tpl

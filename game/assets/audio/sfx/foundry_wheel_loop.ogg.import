@@ -2,6 +2,13 @@
 
 importer="oggvorbisstr"
 type="AudioStreamOggVorbis"
+uid="uid://c66jix736x43t"
+path="res://.godot/imported/foundry_wheel_loop.ogg-f2d74a543fb38115c7f614b9cefe5af7.oggvorbisstr"
+
+[deps]
+
+source_file="res://assets/audio/sfx/foundry_wheel_loop.ogg"
+dest_files=["res://.godot/imported/foundry_wheel_loop.ogg-f2d74a543fb38115c7f614b9cefe5af7.oggvorbisstr"]
 
 [params]
 
