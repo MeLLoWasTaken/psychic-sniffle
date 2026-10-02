@@ -1,7 +1,7 @@
 {
   "id": "measured_blade",
   "name": "Measured Blade",
-  "description": "Duels only: the Carnage Warblade's burst is tempered against a lone opponent, and it closes distance faster.",
+  "description": "Duels only: the Carnage Warblade hits a little harder and closes distance faster against a lone opponent.",
   "kind": "buff",
   "duration_s": 0,
   "refresh": "refresh",
@@ -11,7 +11,7 @@
     {
       "stat": "damage_done",
       "op": "multiply",
-      "value": 0.96
+      "value": 1.04
     },
     {
       "stat": "move_speed",
