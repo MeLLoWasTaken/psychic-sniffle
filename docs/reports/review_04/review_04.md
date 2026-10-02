@@ -45,3 +45,21 @@ mirrors always reach the 12-minute limit: dampening from 1:00 at 1% per 10 s rea
 
 - New: M2-16 (twists, done), X-18 (nightly results), X-19 (bot client cost), X-20 (Actions allowance), F-16 (done), F-17 (mix headroom).
 - Next, in order: finish M2-07 duel tuning; 2v2 and 3v3 balance with talents on the workspace (M2-04, M2-08); M2-09 leftovers; M2-10 (third arena); M2-15 (M2 gate).
+
+## Update, 2026-10-02
+
+The repository is public, so CI runs again (X-20).
+
+- 1,000-duel confirmation (CI, named builds): Arcanist 46.5%, Oracle 50.4%, Warblade 52.9%. Match-ups: Arcanist-Oracle 43%, Arcanist-Warblade 48%, Oracle-Warblade 45%. M2-07 is done. 249 of 1,000 duels were draws, nearly all mirrors (F-08).
+- Nightly with random talent builds (CI, 1,000 per bracket):
+
+| Bracket | Arcanist | Oracle | Warblade | Teams outside 40-60% |
+| --- | --- | --- | --- | --- |
+| 1v1 | 79% | 33% | 37% | Arcanist beats Warblade 99% |
+| 2v2 | 51% | 43% | 57% | two Warblades 63%, two Oracles 20% |
+| 3v3 | 48% | 52% | 53% | Oracle-Warblade-Warblade 61%, three Oracles 24%, three Arcanists 36% |
+
+- Two-healer 3v3 teams are down from 74-78% (review 2) to 60%. M2-08 is done.
+- Talent trees: 18-21 talents per spec are in at least 85% of random legal builds, so "no node in over 90% of top builds" cannot pass until the trees offer more paths (M2-04b).
+- Performance on a 4-core runner: server tick 3.4 ms average; bot clients 13-17 snapshots a second (X-19).
+- Flooded Crypt now shows ripples and splashes and plays wading footsteps in the flood (`previews/m2_09/wading_1280.png`). M2-09 is done.

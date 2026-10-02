@@ -2,6 +2,15 @@
 
 One entry per build-loop iteration, newest first. Format: date, backlog ID, what changed, how it was checked.
 
+## 2026-10-02 — M2-08 done; nightly results; talent trees need more choice (M2-04b)
+- A full nightly run on CI (1,000 matches per bracket, random talent builds) finished in about 40 minutes.
+  - 3v3 specs are within 40-60% (Arcanist 48%, Oracle 52%, Warblade 53%), and two-healer teams no longer dominate (60%, down from 74-78%). M2-08 is done.
+  - 2v2 specs are within 40-60%.
+  - 1v1 with random builds is far off (Arcanist 79%): the duel auras were tuned on the named builds (F-08).
+- Talent trees: 18-21 talents per spec are in at least 85% of random legal builds, and 7 in every one. That is why "a node in every top build" kept firing. The trees need alternative paths (new item M2-04b).
+- Reports now print each flagged talent's share of all simulated builds next to its share of the top builds.
+- Checked: analysis unit test; base rates measured over 80 random builds per spec; two alternative samplers tried and reverted (same rates).
+
 ## 2026-10-02 — M2-07 done (1,000 duels on CI); M2-09 wading effects; CI running again
 - CI: the repository is public, so Actions runs again (X-20 done). The blocked check passed on a rerun.
 - M2-07 done: 1,000 duels on CI give Arcanist 46.5%, Oracle 50.4%, Warblade 52.9%, and every match-up within 35-65%. About half of all mirror duels reach the time limit (F-08). Balance reports now list each mirror's kills and draws.

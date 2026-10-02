@@ -111,9 +111,16 @@ def builds(report: dict) -> dict:
             for n in {node_id(x) for x in nodes.get(k, [])}:  # a node counts once whatever its rank
                 share[n] += 1
         shares = {n: round(c / len(top), 3) for n, c in sorted(share.items(), key=lambda kv: -kv[1])} if top else {}
+        # the same share over every simulated build of the spec: a node most legal builds take
+        # (the tree's shape) is in the top builds whatever its strength
+        every = defaultdict(int)
+        for k in ranked:
+            for n in {node_id(x) for x in nodes.get(k, [])}:
+                every[n] += 1
         out[sp] = {"builds": dict(sorted(bs.items(), key=lambda kv: -kv[1]["win_rate"])),
                    "viable": sum(v["viable"] for v in bs.values()), "top": top,
                    "over_share": {n: v for n, v in shares.items() if v > TOP_SHARE and len(top) >= 3},
+                   "all_share": {n: round(every[n] / len(ranked), 3) for n in shares if ranked},
                    "top_node_share": next(iter(shares.values()), None)}
     return out
 

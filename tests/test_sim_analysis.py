@@ -29,6 +29,7 @@ def test_build_win_rates_viability_and_the_shared_node_check():
     assert set(b["top"]) == {"warblade_carnage@w1", "warblade_carnage@w2", "warblade_carnage@w3"}
     assert b["over_share"] == {"core": 1.0}  # every top build takes it, whatever the rank; PvP talents count apart
     assert b["top_node_share"] == 1.0
+    assert b["all_share"]["core"] == 0.75  # three of the four builds take it
 
 
 def test_build_compositions_give_every_unit_a_build_of_its_spec():

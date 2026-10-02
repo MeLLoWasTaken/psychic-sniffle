@@ -167,7 +167,8 @@ def report_bracket(size: int, report: dict, out: Path) -> int:
         if b["viable"] < 3:
             print(f"::warning title={size}v{size} builds::{sp} has {b['viable']} viable builds (M2-04 wants 3)")
         for n, v in b["over_share"].items():
-            print(f"::warning title={size}v{size} builds::{sp}: {n} is in {v:.0%} of the top builds")
+            print(f"::warning title={size}v{size} builds::{sp}: {n} is in {v:.0%} of the top builds "
+                  f"({b.get('all_share', {}).get(n, 0):.0%} of all its simulated builds)")
     return 1 if s["errors"] else 0
 
 
