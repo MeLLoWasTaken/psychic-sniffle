@@ -79,5 +79,19 @@ def main() -> int:
     return 0
 
 
+def run() -> int:
+    """main(), with any exception turned into an annotation (CI logs may not be reachable)."""
+    import traceback
+    try:
+        return main()
+    except Exception:  # noqa: BLE001
+        tb = " | ".join(traceback.format_exc().splitlines()[-8:])
+        print(f"::error title=package smoke crashed::{tb[:3500]}")
+        exe = Path(sys.argv[1]) if len(sys.argv) > 1 else Path(".")
+        folder = exe.parent if exe.parent.exists() else Path(".")
+        print(f"::error title=package smoke files::{folder}: {sorted(p.name for p in folder.iterdir())[:40]}")
+        return 1
+
+
 if __name__ == "__main__":
-    sys.exit(main())
+    sys.exit(run())
