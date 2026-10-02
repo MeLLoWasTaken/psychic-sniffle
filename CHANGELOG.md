@@ -8,6 +8,7 @@ One entry per build-loop iteration, newest first. Format: date, backlog ID, what
   - The Windows engine build leaves out the screen-reader, WinRT and Direct3D 12 drivers, which need SDKs the build machine lacks. The game renders with Vulkan.
 - F-18: a rolling rumble with rail thuds and chain creaks follows each crucible while the casting wheel turns.
 - F-08 groundwork: duel reports show each talent's win-rate impact, overall and against each opposing class.
+- Correction: the M2-07 duel balance measured only each class's first named build. The other named Warblade builds lose every duel to the Arcanist. Duel runs with random builds off now rotate through every named build; F-08 picks the tuning up from there.
 
 ## 2026-10-02 — P-01 playtest build (first part)
 - A playtest build for the human's tests from Monday: Windows and Linux packages built on CI and published as a GitHub pre-release, with a guide (`docs/PLAYTEST.md`): install, what to play, controls, what to report, where logs and recordings are, known issues.

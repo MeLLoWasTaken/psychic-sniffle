@@ -97,7 +97,9 @@ def bracket(size: int, matches: int, out: Path, seed: int, randoms: int = 0, job
     """Simulate this shard's part of `matches` (all of them with one shard) and, with one shard,
     report it. With several, each writes sim_<b>_shard<i>.json and `--merge` reports them together
     (the CI runs shards as parallel jobs: one runner cannot finish 1,000 2v2 matches in its 4 hours)."""
-    comp_list = build_comps(size, matches, randoms, seed) if randoms > 0 else comps(size)
+    # every unit on one of its spec's builds: the named ones (all of them; a bare spec would play
+    # only the first, which is what the M2-07 duel tuning measured) plus `randoms` random legal ones
+    comp_list = build_comps(size, matches, randoms, seed)
     if shards > 1:
         comp_list = comp_list[shard::shards] if randoms > 0 else comp_list
         n = matches // shards + (1 if shard < matches % shards else 0)

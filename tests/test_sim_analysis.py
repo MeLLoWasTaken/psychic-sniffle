@@ -68,3 +68,10 @@ def test_the_report_names_mirror_kill_rates(tmp_path, capsys):
     nightly.report_bracket(1, {"matches": ms, "summary": {"builds": {}}}, tmp_path)
     line = next(ln for ln in capsys.readouterr().out.splitlines() if "mirrors::" in ln)
     assert "kills 0/2, draws 2" in line
+
+
+def test_named_builds_only_still_rotates_through_every_named_build():
+    cs = nightly.build_comps(1, 90, 0, seed=5)
+    used = {u for c in cs for side in c.split(":") for u in side.split("+")}
+    for spec in nightly.specs():
+        assert {u for u in used if u.startswith(spec + "@")} == {f"{spec}@{n}" for n in nightly.build_names(spec, 0)}
