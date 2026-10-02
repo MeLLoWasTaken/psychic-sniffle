@@ -48,8 +48,9 @@ jobs:
             sudo update-alternatives --set x86_64-w64-mingw32-g++ /usr/bin/x86_64-w64-mingw32-g++-posix \
               || echo "::warning title=mingw::could not select the POSIX g++"
             x86_64-w64-mingw32-gcc --version | head -1
-            # no screen reader (AccessKit) or WinRT drivers: they need SDKs the runner lacks
-            extra="use_mingw=yes accesskit=no winrt=no"
+            # no screen reader (AccessKit), WinRT or Direct3D 12 drivers: they need SDKs the runner
+            # lacks, and the game renders with Vulkan
+            extra="use_mingw=yes accesskit=no winrt=no d3d12=no"
           fi
           # CI job logs may not be reachable: on failure the end of the build output becomes annotations
           if ! scons platform=${{ matrix.platform }} target=template_release arch=x86_64 production=yes lto=none \
