@@ -1,0 +1,23 @@
+{
+  "id": "sated_thirst",
+  "name": "Sated Thirst",
+  "description": "Duels only: the Bloodbound, with no team to protect, deals less damage and so drinks less from it.",
+  "kind": "buff",
+  "duration_s": 0,
+  "refresh": "refresh",
+  "dispel_type": "none",
+  "cc_category": "none",
+  "modifiers": [
+    {
+      "stat": "damage_done",
+      "op": "multiply",
+      "value": 0.85
+    }
+  ],
+  "hud_priority": "normal",
+  "icon": {
+    "symbol": "sated_thirst",
+    "school": "blood",
+    "image": "delapouite/vampire-dracula"
+  }
+}

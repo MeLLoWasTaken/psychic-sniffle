@@ -1,7 +1,7 @@
 {
   "id": "crimson_reaping",
   "name": "Crimson Reaping",
-  "description": "A draining blow for 4,600; you heal for 60% of the damage dealt.",
+  "description": "A draining blow for 4,900; you heal for 60% of the damage dealt.",
   "owner": "deathsworn_bloodbound",
   "kit_slot": "core",
   "school": "shadow",
@@ -14,7 +14,7 @@
   "effects": [
     {
       "type": "damage",
-      "base": 4600,
+      "base": 4900,
       "leech_pct": 60
     }
   ],

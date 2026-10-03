@@ -11,12 +11,12 @@
     {
       "stat": "healing_done",
       "op": "multiply",
-      "value": 1.6
+      "value": 1.75
     },
     {
       "stat": "damage_taken",
       "op": "multiply",
-      "value": 0.85
+      "value": 0.82
     }
   ],
   "hud_priority": "normal",
