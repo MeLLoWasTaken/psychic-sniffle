@@ -1,0 +1,85 @@
+{
+  "id": "glacial_tomb_impact",
+  "description": "Glacial Tomb lands: ice cracks shut around the target, a sharp glassy snap over a dull thump, splinters ringing out.",
+  "category": "impact",
+  "peak_dbfs": -4.0,
+  "duration_s": 1.1,
+  "layers": [
+    {
+      "type": "sub",
+      "from_hz": 120,
+      "to_hz": 45,
+      "curve": 6,
+      "env": {
+        "attack_s": 0.002,
+        "decay_s": 0.14
+      },
+      "gain": 1.1
+    },
+    {
+      "type": "noise",
+      "highpass": 2500,
+      "env": {
+        "attack_s": 0.0003,
+        "decay_s": 0.012
+      },
+      "gain": 1.0
+    },
+    {
+      "type": "noise",
+      "band": [
+        1500,
+        6000
+      ],
+      "env": {
+        "attack_s": 0.001,
+        "decay_s": 0.12
+      },
+      "gain": 0.7,
+      "repeat": {
+        "times": [
+          0.04,
+          0.09,
+          0.15,
+          0.22
+        ],
+        "jitter_s": 0.01,
+        "gain_jitter": 0.5
+      }
+    },
+    {
+      "type": "resonant",
+      "base": 1900,
+      "jitter": 0.15,
+      "partials": [
+        [
+          1,
+          30,
+          0.8,
+          0.05
+        ],
+        [
+          1.62,
+          34,
+          0.6,
+          0.04
+        ],
+        [
+          2.47,
+          38,
+          0.4,
+          0.03
+        ]
+      ],
+      "highpass": 1200,
+      "gain": 0.45
+    }
+  ],
+  "post": {
+    "reverb": {
+      "length_s": 0.9,
+      "mix": 0.2,
+      "brightness": 7000
+    }
+  }
+}

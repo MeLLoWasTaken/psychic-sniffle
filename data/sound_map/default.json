@@ -546,7 +546,7 @@
       "impact": "charge_impact"
     },
     "grave_tether": {
-      "release": "charge_rush",
+      "release": "grave_tether_release",
       "impact": "charge_impact"
     },
     "oathsever": {
@@ -557,7 +557,7 @@
       "release": "sanctum"
     },
     "gravecloak_ab": {
-      "release": "sanctum"
+      "release": "gravecloak"
     },
     "sepulchral_howl_ab": {
       "release": "chains_of_awe_release",
@@ -589,13 +589,13 @@
     },
     "glacial_tomb": {
       "release": "shiver_lance_release",
-      "impact": "frost_effigy_impact"
+      "impact": "glacial_tomb_impact"
     },
     "grave_winter_ab": {
-      "release": "noonblaze"
+      "release": "grave_winter"
     },
     "hoarfrost_surge_ab": {
-      "release": "heartfreeze_release"
+      "release": "hoarfrost_surge"
     },
     "rime_carapace_ab": {
       "release": "sanctum"

@@ -258,10 +258,38 @@
   ],
   "category": "impact"
  },
+ "glacial_tomb_impact": {
+  "hash": "9801adb26cfd88bd",
+  "files": [
+   "glacial_tomb_impact"
+  ],
+  "category": "impact"
+ },
  "glacier_shield": {
   "hash": "2aeb8991de33421f",
   "files": [
    "glacier_shield"
+  ],
+  "category": "buff"
+ },
+ "grave_tether_release": {
+  "hash": "33157b4ffed78e7e",
+  "files": [
+   "grave_tether_release"
+  ],
+  "category": "release"
+ },
+ "grave_winter": {
+  "hash": "b40a7849ea76a519",
+  "files": [
+   "grave_winter"
+  ],
+  "category": "buff"
+ },
+ "gravecloak": {
+  "hash": "8dc60bbc5b816b29",
+  "files": [
+   "gravecloak"
   ],
   "category": "buff"
  },
@@ -383,6 +411,13 @@
    "hit_staff_plate_03"
   ],
   "category": "impact"
+ },
+ "hoarfrost_surge": {
+  "hash": "b46e8432a49e580a",
+  "files": [
+   "hoarfrost_surge"
+  ],
+  "category": "buff"
  },
  "holy_cast_loop": {
   "hash": "5a62f4bb60ee1d30",

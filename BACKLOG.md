@@ -22,7 +22,7 @@ Items further down keep their history; this list is the order to take them in. R
 
 1. M3-04 Templar balance. Team brackets are inside 40-60% for every spec; 1v1 is not (Vanguard 67%, Radiance 60%, Warblade 24%). Waiting on the human: should 1v1 balance cover tanks and healers (review 6 asks; recommendation: measure 1v1 among damage specs, report tanks and healers separately)? The criterion stands as written until then.
 2. Frostgrave balance: done by the nightly at cac5431 (1v1 43%, 2v2 44%, 3v3 46%).
-3. M3-11 Frostgrave sounds and effects (M3-10 done).
+3. Wave 1 continues: Deathsworn Bloodbound (tank, the pull) and Plague (minions; `summon` needs its engine work).
 4. F-08 leftover: Oracle mirrors reaching the time limit (a dampening proposal waits on the human).
 
 ### P-01 Playtest build `[done]`
@@ -724,8 +724,9 @@ The other 10 classes, and the 6 remaining specs of the first three classes, in t
 - Done 2026-10-03: `deathsworn_plate` (tools/blender/armor.py): dark blue-grey iron with bone trim; bone ribs across the breastplate; angular pauldrons with three glowing frost shards rising from each; a narrow tattered loincloth with a glowing diamond mark; a long tattered cape from the shoulder blades to mid-calf that flares out behind the legs; a narrow skull-faced helm with glowing eye slits, a jaw grille and a crown of five jagged ice spikes (0.40 m in the middle); a high collar. A new `weapon_runeblade` (1.74 m, 1,334 triangles): a blade widening to a clipped tip, saw teeth along its back, glowing runes on both faces, bone prongs round a skull boss, a ring pommel. Character 23,908 triangles, pivot `axis` (the cape moves the bounding box 9 cm back).
 - Art checklist: asset validation passes; contact sheet and close-ups (`previews/m3_10/`); lineup in idle, cast and attack poses with the six other characters (`previews/m3_10/lineup/`); in the arena (`previews/m3_10/arena_lineup.png`). Silhouette overlap with the Warblade 0.82 standing, 0.80 casting, 0.79 attacking (0.85 before the crown was raised and the cape widened), with the Templars 0.66 to 0.79, with the cloth classes 0.55 to 0.61. In colour it is the only dark figure with cold light on it.
 
-### M3-11 Frostgrave sounds and effects `[todo]`
-- [ ] Frostgrave's strong effects (Grave Winter, Hoarfrost Surge, Glacial Tomb, Grave Tether, Gravecloak) get their own sounds instead of the Arcanist's and the Templar's; every ability's effect reads on enemy frames.
+### M3-11 Frostgrave sounds and effects `[done]`
+- [x] Frostgrave's strong effects (Grave Winter, Hoarfrost Surge, Glacial Tomb, Grave Tether, Gravecloak) get their own sounds instead of the Arcanist's and the Templar's; every ability's effect reads on enemy frames.
+- Done 2026-10-03: five new sounds. Grave Winter (a low cold drone sinking under a rising frost hiss, 3.2 s), Hoarfrost Surge (a crackling rush rising into glassy chimes), Glacial Tomb's impact (a glassy snap over a thump, splinters ringing out), Grave Tether's throw (a chain whipping out, rattling links), Gravecloak (a hollow ghostly breath). All pass the audio rules; spectrograms in `previews/m3_11/`. Every Frostgrave ability already had an effect file, and every aura a visual (data validation checks both). The other abilities keep the Arcanist's frost sounds, which suit them; the human should listen at the next review.
 
 Then, in order (split into items like M3-01 to M3-04 as each starts): Bloodbound (tank) and Plague (minions); Stormcaller Tempest, Tidesinger (healer, totems) and Primal (wolves); Warblade Berserker; Arcanist Pyre and Aether; wave 1 gate.
 

@@ -2,6 +2,10 @@
 
 One entry per build-loop iteration, newest first. Format: date, backlog ID, what changed, how it was checked.
 
+## 2026-10-03 — M3-11 Frostgrave sounds
+- Frostgrave's strongest moments have sounds of their own: Grave Winter, Hoarfrost Surge, Glacial Tomb, Grave Tether and Gravecloak.
+- Checked: audio rule tests, spectrograms.
+
 ## 2026-10-03 — M3-10 Deathsworn character
 - The Deathsworn has a character: dark iron and bone, a crown of glowing ice spikes on a skull-faced helm with burning eye slits, frost shards rising from its shoulders, bone ribs across the chest and a long tattered cape. It carries a new runeblade with saw teeth and glowing runes. At a distance the crown and the cape set it apart from the horned Warblade and the winged Templar.
 - Checked: asset validation, contact sheet and close-ups, lineups in three poses with all seven characters, the character in the arena.
