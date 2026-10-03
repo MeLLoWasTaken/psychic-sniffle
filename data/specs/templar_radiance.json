@@ -1,0 +1,38 @@
+{
+  "id": "templar_radiance",
+  "name": "Radiance",
+  "class": "templar",
+  "description": "Strong single-target heals, a short full immunity, can fight in melee.",
+  "role": "healer",
+  "icon": {
+    "image": "lorc/sun"
+  },
+  "range": "melee",
+  "primary_resource": "mana",
+  "abilities": [
+    "dawnmend",
+    "sunlit_word",
+    "hallowed_strike",
+    "radiant_pulse",
+    "dawnbolt",
+    "noonblaze_ab",
+    "final_mercy",
+    "binding_gavel",
+    "dazzling_halo",
+    "iron_reproach",
+    "sanctum_ab",
+    "ironbound_prayer_ab",
+    "aegis_of_kin_ab",
+    "dawnstep",
+    "purifying_touch"
+  ],
+  "spec_tree": "templar_radiance",
+  "pvp_talents": "templar_radiance_pvp",
+  "kit_status": "complete",
+  "asset": "test_crate",
+  "weapon": {
+    "type": "mace",
+    "hands": 1
+  },
+  "stats": {}
+}

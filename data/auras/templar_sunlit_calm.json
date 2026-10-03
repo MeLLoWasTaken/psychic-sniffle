@@ -1,0 +1,24 @@
+{
+  "id": "templar_sunlit_calm",
+  "name": "Sunlit Calm",
+  "description": "Talent: restores 300 mana every 3 s.",
+  "kind": "buff",
+  "duration_s": 0,
+  "refresh": "refresh",
+  "dispel_type": "none",
+  "cc_category": "none",
+  "hud_priority": "hidden",
+  "icon": {
+    "symbol": "sunlit_calm",
+    "school": "holy",
+    "image": "delapouite/star-altar"
+  },
+  "periodic": {
+    "interval_s": 3,
+    "effect": {
+      "type": "resource",
+      "resource": "mana",
+      "amount": 300
+    }
+  }
+}

@@ -1,0 +1,16 @@
+{
+  "id": "binding_gavel",
+  "projectile": {
+    "style": "orb"
+  },
+  "impact": {
+    "style": "spark",
+    "at": "target",
+    "size": 1.2
+  },
+  "auras": {
+    "gavel_bound": {
+      "style": "stun"
+    }
+  }
+}

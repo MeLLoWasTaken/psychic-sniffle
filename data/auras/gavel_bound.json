@@ -1,0 +1,15 @@
+{
+  "id": "gavel_bound",
+  "name": "Gavel Bound",
+  "description": "Stunned.",
+  "kind": "debuff",
+  "duration_s": 3,
+  "dispel_type": "none",
+  "cc_category": "stun",
+  "hud_priority": "cc",
+  "icon": {
+    "symbol": "gavel",
+    "school": "physical",
+    "image": "lorc/gavel"
+  }
+}

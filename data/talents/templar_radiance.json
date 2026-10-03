@@ -1,0 +1,1122 @@
+{
+  "tree_id": "templar_radiance",
+  "kind": "spec",
+  "owner": "templar_radiance",
+  "points": 30,
+  "gates": [
+    8,
+    20
+  ],
+  "status": "complete",
+  "nodes": [
+    {
+      "id": "purging_strike",
+      "name": "Purging Strike",
+      "type": "passive",
+      "ranks": 1,
+      "pos": [
+        6,
+        6
+      ],
+      "requires_any": [
+        "sure_gavel"
+      ],
+      "gate": 20,
+      "description": "Hallowed Strike also strips one magic effect from the enemy.",
+      "icon": {
+        "image": "delapouite/armor-punch",
+        "school": "physical"
+      },
+      "effects": [
+        {
+          "modify": "hallowed_strike.effects",
+          "set": [
+            {
+              "type": "damage",
+              "base": 4000
+            },
+            {
+              "type": "heal",
+              "base": 2500,
+              "affects": "self"
+            },
+            {
+              "type": "dispel",
+              "dispel_types": [
+                "magic"
+              ],
+              "dispel_count": 1
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "brighter_dawn",
+      "name": "Brighter Dawn",
+      "type": "passive",
+      "ranks": 2,
+      "pos": [
+        0,
+        0
+      ],
+      "requires_any": [
+        "dawnmend"
+      ],
+      "description": "Dawnmend heals 500 more per rank.",
+      "icon": {
+        "image": "delapouite/sun-cloud",
+        "school": "holy"
+      },
+      "effects": [
+        {
+          "modify": "dawnmend.effects.0.base",
+          "per_rank": 500
+        }
+      ]
+    },
+    {
+      "id": "quick_word",
+      "name": "Quick Word",
+      "type": "passive",
+      "ranks": 2,
+      "pos": [
+        2,
+        0
+      ],
+      "requires_any": [
+        "sunlit_word"
+      ],
+      "description": "Sunlit Word's cooldown is 1 s shorter per rank.",
+      "icon": {
+        "image": "delapouite/sunflower",
+        "school": "holy"
+      },
+      "effects": [
+        {
+          "modify": "sunlit_word.cooldown_s",
+          "per_rank": -1
+        }
+      ]
+    },
+    {
+      "id": "pulse_swell",
+      "name": "Swelling Pulse",
+      "type": "passive",
+      "ranks": 2,
+      "pos": [
+        3,
+        0
+      ],
+      "requires_any": [
+        "radiant_pulse"
+      ],
+      "description": "Radiant Pulse heals 300 more per rank.",
+      "icon": {
+        "image": "delapouite/encirclement",
+        "school": "holy"
+      },
+      "effects": [
+        {
+          "modify": "radiant_pulse.effects.0.base",
+          "per_rank": 300
+        }
+      ]
+    },
+    {
+      "id": "hammer_weight",
+      "name": "Weight of the Hammer",
+      "type": "passive",
+      "ranks": 2,
+      "pos": [
+        4,
+        0
+      ],
+      "requires_any": [
+        "hallowed_strike"
+      ],
+      "description": "Hallowed Strike deals 400 more damage per rank.",
+      "icon": {
+        "image": "delapouite/3d-hammer",
+        "school": "physical"
+      },
+      "effects": [
+        {
+          "modify": "hallowed_strike.effects.0.base",
+          "per_rank": 400
+        }
+      ]
+    },
+    {
+      "id": "halo_cadence",
+      "name": "Halo Cadence",
+      "type": "passive",
+      "ranks": 2,
+      "pos": [
+        5,
+        0
+      ],
+      "requires_any": [
+        "dazzling_halo"
+      ],
+      "description": "Dazzling Halo's cooldown is 5 s shorter per rank.",
+      "icon": {
+        "image": "delapouite/seven-pointed-star",
+        "school": "holy"
+      },
+      "effects": [
+        {
+          "modify": "dazzling_halo.cooldown_s",
+          "per_rank": -5
+        }
+      ]
+    },
+    {
+      "id": "ready_touch",
+      "name": "Ready Touch",
+      "type": "passive",
+      "ranks": 2,
+      "pos": [
+        6,
+        0
+      ],
+      "requires_any": [
+        "purifying_touch"
+      ],
+      "description": "Purifying Touch's cooldown is 2 s shorter per rank.",
+      "icon": {
+        "image": "delapouite/peace-dove",
+        "school": "holy"
+      },
+      "effects": [
+        {
+          "modify": "purifying_touch.cooldown_s",
+          "per_rank": -2
+        }
+      ]
+    },
+    {
+      "id": "frugal_dawn",
+      "name": "Frugal Dawn",
+      "type": "passive",
+      "ranks": 2,
+      "pos": [
+        0,
+        1
+      ],
+      "requires_any": [
+        "brighter_dawn"
+      ],
+      "description": "Dawnmend costs 150 less mana per rank.",
+      "icon": {
+        "image": "delapouite/gold-nuggets",
+        "school": "holy"
+      },
+      "effects": [
+        {
+          "modify": "dawnmend.cost.amount",
+          "per_rank": -150
+        }
+      ]
+    },
+    {
+      "id": "practiced_prayer",
+      "name": "Practiced Prayer",
+      "type": "passive",
+      "ranks": 2,
+      "pos": [
+        1,
+        1
+      ],
+      "requires_any": [
+        "brighter_dawn",
+        "quick_word"
+      ],
+      "description": "Dawnmend casts 0.1 s faster per rank.",
+      "icon": {
+        "image": "delapouite/book-pile",
+        "school": "holy"
+      },
+      "effects": [
+        {
+          "modify": "dawnmend.cast_time_s",
+          "per_rank": -0.1
+        }
+      ]
+    },
+    {
+      "id": "thrifty_word",
+      "name": "Thrifty Word",
+      "type": "passive",
+      "ranks": 2,
+      "pos": [
+        2,
+        1
+      ],
+      "requires_any": [
+        "quick_word"
+      ],
+      "description": "Sunlit Word costs 200 less mana per rank.",
+      "icon": {
+        "image": "delapouite/gold-stack",
+        "school": "holy"
+      },
+      "effects": [
+        {
+          "modify": "sunlit_word.cost.amount",
+          "per_rank": -200
+        }
+      ]
+    },
+    {
+      "id": "pulse_reach",
+      "name": "Reaching Pulse",
+      "type": "passive",
+      "ranks": 1,
+      "pos": [
+        3,
+        1
+      ],
+      "requires_any": [
+        "pulse_swell"
+      ],
+      "description": "Radiant Pulse reaches 3 m further.",
+      "icon": {
+        "image": "delapouite/plain-circle",
+        "school": "holy"
+      },
+      "effects": [
+        {
+          "modify": "radiant_pulse.effects.0.radius_m",
+          "per_rank": 3
+        }
+      ]
+    },
+    {
+      "id": "mending_blow",
+      "name": "Mending Blow",
+      "type": "passive",
+      "ranks": 1,
+      "pos": [
+        4,
+        1
+      ],
+      "requires_any": [
+        "hammer_weight"
+      ],
+      "description": "Hallowed Strike heals you for 800 more.",
+      "icon": {
+        "image": "delapouite/stake-hammer",
+        "school": "physical"
+      },
+      "effects": [
+        {
+          "modify": "hallowed_strike.effects.1.base",
+          "per_rank": 800
+        }
+      ]
+    },
+    {
+      "id": "lingering_glare",
+      "name": "Lingering Glare",
+      "type": "passive",
+      "ranks": 1,
+      "pos": [
+        5,
+        1
+      ],
+      "requires_any": [
+        "halo_cadence"
+      ],
+      "description": "Dazzling Halo disorients for 1 s longer.",
+      "icon": {
+        "image": "delapouite/star-struck",
+        "school": "holy"
+      },
+      "effects": [
+        {
+          "modify": "dazzled.duration_s",
+          "per_rank": 1
+        }
+      ]
+    },
+    {
+      "id": "touch_choice",
+      "name": "Gift of the Touch",
+      "type": "choice",
+      "pos": [
+        6,
+        1
+      ],
+      "requires_any": [
+        "ready_touch"
+      ],
+      "description": "Choose how Purifying Touch improves.",
+      "icon": {
+        "image": "delapouite/flower-emblem",
+        "school": "holy"
+      },
+      "choices": [
+        {
+          "id": "thorough_touch",
+          "name": "Thorough Touch",
+          "description": "Purifying Touch removes one more effect.",
+          "icon": {
+            "image": "delapouite/waterfall",
+            "school": "holy"
+          },
+          "effects": [
+            {
+              "modify": "purifying_touch.effects.0.dispel_count",
+              "per_rank": 1
+            }
+          ]
+        },
+        {
+          "id": "soothing_touch",
+          "name": "Soothing Touch",
+          "description": "Purifying Touch also heals the ally for 3,000.",
+          "icon": {
+            "image": "delapouite/lily-pads",
+            "school": "holy"
+          },
+          "effects": [
+            {
+              "modify": "purifying_touch.effects",
+              "set": [
+                {
+                  "type": "dispel",
+                  "dispel_types": [
+                    "magic",
+                    "poison",
+                    "disease"
+                  ],
+                  "dispel_count": 1
+                },
+                {
+                  "type": "heal",
+                  "base": 3000
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "tithe_of_iron",
+      "name": "Tithe of Iron",
+      "type": "passive",
+      "ranks": 1,
+      "pos": [
+        0,
+        2
+      ],
+      "requires_any": [
+        "frugal_dawn",
+        "practiced_prayer"
+      ],
+      "description": "Hallowed Strike restores 1,000 mana.",
+      "icon": {
+        "image": "delapouite/gold-mine",
+        "school": "holy"
+      },
+      "effects": [
+        {
+          "modify": "hallowed_strike.generates",
+          "set": {
+            "resource": "mana",
+            "amount": 1000
+          }
+        }
+      ]
+    },
+    {
+      "id": "earnest_word",
+      "name": "Earnest Word",
+      "type": "passive",
+      "ranks": 2,
+      "pos": [
+        2,
+        2
+      ],
+      "requires_any": [
+        "thrifty_word",
+        "practiced_prayer"
+      ],
+      "description": "Sunlit Word heals 400 more per rank.",
+      "icon": {
+        "image": "delapouite/round-star",
+        "school": "holy"
+      },
+      "effects": [
+        {
+          "modify": "sunlit_word.effects.0.base",
+          "per_rank": 400
+        }
+      ]
+    },
+    {
+      "id": "frugal_pulse",
+      "name": "Frugal Pulse",
+      "type": "passive",
+      "ranks": 2,
+      "pos": [
+        3,
+        2
+      ],
+      "requires_any": [
+        "pulse_reach"
+      ],
+      "description": "Radiant Pulse costs 200 less mana per rank.",
+      "icon": {
+        "image": "delapouite/power-ring",
+        "school": "holy"
+      },
+      "effects": [
+        {
+          "modify": "radiant_pulse.cost.amount",
+          "per_rank": -200
+        }
+      ]
+    },
+    {
+      "id": "relentless_hammer",
+      "name": "Relentless Hammer",
+      "type": "passive",
+      "ranks": 2,
+      "pos": [
+        4,
+        2
+      ],
+      "requires_any": [
+        "mending_blow"
+      ],
+      "description": "Hallowed Strike's cooldown is 0.5 s shorter per rank.",
+      "icon": {
+        "image": "delapouite/thor-hammer",
+        "school": "physical"
+      },
+      "effects": [
+        {
+          "modify": "hallowed_strike.cooldown_s",
+          "per_rank": -0.5
+        }
+      ]
+    },
+    {
+      "id": "severing_reproach",
+      "name": "Severing Reproach",
+      "type": "passive",
+      "ranks": 1,
+      "pos": [
+        5,
+        2
+      ],
+      "requires_any": [
+        "lingering_glare"
+      ],
+      "description": "Iron Reproach locks the school for 1 s longer.",
+      "icon": {
+        "image": "delapouite/bolt-cutter",
+        "school": "physical"
+      },
+      "effects": [
+        {
+          "modify": "iron_reproach.effects.0.school_lock_s",
+          "per_rank": 1
+        }
+      ]
+    },
+    {
+      "id": "ready_gavel",
+      "name": "Ready Gavel",
+      "type": "passive",
+      "ranks": 2,
+      "pos": [
+        6,
+        2
+      ],
+      "requires_any": [
+        "touch_choice"
+      ],
+      "description": "Binding Gavel costs 300 less mana per rank.",
+      "icon": {
+        "image": "delapouite/stars-stack",
+        "school": "physical"
+      },
+      "effects": [
+        {
+          "modify": "binding_gavel.cost.amount",
+          "per_rank": -300
+        }
+      ]
+    },
+    {
+      "id": "high_noon",
+      "name": "High Noon",
+      "type": "passive",
+      "ranks": 2,
+      "pos": [
+        0,
+        3
+      ],
+      "requires_any": [
+        "tithe_of_iron"
+      ],
+      "gate": 8,
+      "description": "Noonblaze's cooldown is 15 s shorter per rank.",
+      "icon": {
+        "image": "delapouite/fire-shrine",
+        "school": "holy"
+      },
+      "effects": [
+        {
+          "modify": "noonblaze_ab.cooldown_s",
+          "per_rank": -15
+        }
+      ]
+    },
+    {
+      "id": "kindred_light",
+      "name": "Kindred Light",
+      "type": "active",
+      "pos": [
+        1,
+        3
+      ],
+      "requires_any": [
+        "tithe_of_iron",
+        "earnest_word"
+      ],
+      "gate": 8,
+      "description": "Grants Kindred Light: heal an ally for 7,000 and yourself for 3,500. Costs 2,800 mana, 1.5 s cast.",
+      "icon": {
+        "image": "delapouite/opposite-hearts",
+        "school": "holy"
+      },
+      "grants_ability": "kindred_light_ab"
+    },
+    {
+      "id": "blazing_noon",
+      "name": "Blazing Noon",
+      "type": "passive",
+      "ranks": 1,
+      "pos": [
+        2,
+        3
+      ],
+      "requires_any": [
+        "earnest_word"
+      ],
+      "gate": 8,
+      "description": "Noonblaze increases healing by a further 10%.",
+      "icon": {
+        "image": "delapouite/fire-iris",
+        "school": "holy"
+      },
+      "effects": [
+        {
+          "modify": "noonblaze.modifiers.0.value",
+          "per_rank": 0.1
+        }
+      ]
+    },
+    {
+      "id": "daybreak",
+      "name": "Daybreak",
+      "type": "active",
+      "pos": [
+        3,
+        3
+      ],
+      "requires_any": [
+        "frugal_pulse",
+        "relentless_hammer"
+      ],
+      "gate": 8,
+      "description": "Grants Daybreak: you and every ally within 30 m heal 1,500 every 2 s for 10 s. Costs 3,500 mana, 60 s cooldown.",
+      "icon": {
+        "image": "delapouite/lighthouse",
+        "school": "holy"
+      },
+      "grants_ability": "daybreak_ab"
+    },
+    {
+      "id": "steadfast_aegis",
+      "name": "Steadfast Aegis",
+      "type": "passive",
+      "ranks": 2,
+      "pos": [
+        4,
+        3
+      ],
+      "requires_any": [
+        "relentless_hammer"
+      ],
+      "gate": 8,
+      "description": "Aegis of Kin's cooldown is 20 s shorter per rank.",
+      "icon": {
+        "image": "delapouite/cross-shield",
+        "school": "holy"
+      },
+      "effects": [
+        {
+          "modify": "aegis_of_kin_ab.cooldown_s",
+          "per_rank": -20
+        }
+      ]
+    },
+    {
+      "id": "vesper_slumber",
+      "name": "Vesper Slumber",
+      "type": "active",
+      "pos": [
+        5,
+        3
+      ],
+      "requires_any": [
+        "severing_reproach",
+        "ready_gavel"
+      ],
+      "gate": 8,
+      "description": "Grants Vesper Slumber: an enemy sleeps for 5 s; any damage wakes it. Costs 1,500 mana, 1.5 s cast, 45 s cooldown.",
+      "icon": {
+        "image": "delapouite/night-sleep",
+        "school": "holy"
+      },
+      "grants_ability": "vesper_slumber_ab"
+    },
+    {
+      "id": "sure_gavel",
+      "name": "Sure Gavel",
+      "type": "passive",
+      "ranks": 1,
+      "pos": [
+        6,
+        3
+      ],
+      "requires_any": [
+        "ready_gavel"
+      ],
+      "gate": 8,
+      "description": "Binding Gavel reaches 10 m further.",
+      "icon": {
+        "image": "delapouite/hunter-eyes",
+        "school": "physical"
+      },
+      "effects": [
+        {
+          "modify": "binding_gavel.range_m",
+          "per_rank": 10
+        }
+      ]
+    },
+    {
+      "id": "noon_wellspring",
+      "name": "Noon Wellspring",
+      "type": "passive",
+      "ranks": 1,
+      "pos": [
+        0,
+        4
+      ],
+      "requires_any": [
+        "high_noon"
+      ],
+      "gate": 8,
+      "description": "Noonblaze restores 5,000 mana.",
+      "icon": {
+        "image": "delapouite/bamboo-fountain",
+        "school": "holy"
+      },
+      "effects": [
+        {
+          "modify": "noonblaze_ab.generates",
+          "set": {
+            "resource": "mana",
+            "amount": 5000
+          }
+        }
+      ]
+    },
+    {
+      "id": "frugal_kinship",
+      "name": "Frugal Kinship",
+      "type": "passive",
+      "ranks": 2,
+      "pos": [
+        1,
+        4
+      ],
+      "requires_any": [
+        "kindred_light"
+      ],
+      "gate": 8,
+      "description": "Kindred Light costs 200 less mana per rank.",
+      "icon": {
+        "image": "delapouite/heart-necklace",
+        "school": "holy"
+      },
+      "effects": [
+        {
+          "modify": "kindred_light_ab.cost.amount",
+          "per_rank": -200
+        }
+      ]
+    },
+    {
+      "id": "long_noon",
+      "name": "Long Noon",
+      "type": "passive",
+      "ranks": 1,
+      "pos": [
+        2,
+        4
+      ],
+      "requires_any": [
+        "blazing_noon"
+      ],
+      "gate": 8,
+      "description": "Noonblaze lasts 3 s longer.",
+      "icon": {
+        "image": "delapouite/fire-flower",
+        "school": "holy"
+      },
+      "effects": [
+        {
+          "modify": "noonblaze.duration_s",
+          "per_rank": 3
+        }
+      ]
+    },
+    {
+      "id": "bright_daybreak",
+      "name": "Bright Daybreak",
+      "type": "passive",
+      "ranks": 2,
+      "pos": [
+        3,
+        4
+      ],
+      "requires_any": [
+        "daybreak"
+      ],
+      "gate": 8,
+      "description": "Daybreak heals 200 more every 2 s per rank.",
+      "icon": {
+        "image": "delapouite/wall-light",
+        "school": "holy"
+      },
+      "effects": [
+        {
+          "modify": "daybreak_glow.periodic.effect.base",
+          "per_rank": 200
+        }
+      ]
+    },
+    {
+      "id": "enduring_aegis",
+      "name": "Enduring Aegis",
+      "type": "passive",
+      "ranks": 1,
+      "pos": [
+        4,
+        4
+      ],
+      "requires_any": [
+        "steadfast_aegis"
+      ],
+      "gate": 8,
+      "description": "Aegis of Kin lasts 2 s longer.",
+      "icon": {
+        "image": "delapouite/ribbon-shield",
+        "school": "holy"
+      },
+      "effects": [
+        {
+          "modify": "aegis_of_kin.duration_s",
+          "per_rank": 2
+        }
+      ]
+    },
+    {
+      "id": "deep_slumber",
+      "name": "Deep Slumber",
+      "type": "passive",
+      "ranks": 2,
+      "pos": [
+        5,
+        4
+      ],
+      "requires_any": [
+        "vesper_slumber"
+      ],
+      "gate": 8,
+      "description": "Vesper Slumber lasts 1 s longer per rank.",
+      "icon": {
+        "image": "delapouite/dream-catcher",
+        "school": "holy"
+      },
+      "effects": [
+        {
+          "modify": "vesper_slumbered.duration_s",
+          "per_rank": 1
+        }
+      ]
+    },
+    {
+      "id": "kinship_unbounded",
+      "name": "Kinship Unbounded",
+      "type": "passive",
+      "ranks": 1,
+      "pos": [
+        1,
+        5
+      ],
+      "requires_any": [
+        "frugal_kinship"
+      ],
+      "gate": 8,
+      "description": "Kindred Light heals the ally for 2,000 more.",
+      "icon": {
+        "image": "delapouite/centaur-heart",
+        "school": "holy"
+      },
+      "effects": [
+        {
+          "modify": "kindred_light_ab.effects.0.base",
+          "per_rank": 2000
+        }
+      ]
+    },
+    {
+      "id": "devout_hands",
+      "name": "Devout Hands",
+      "type": "passive",
+      "ranks": 2,
+      "pos": [
+        2,
+        5
+      ],
+      "requires_any": [
+        "long_noon",
+        "bright_daybreak"
+      ],
+      "gate": 8,
+      "description": "Your healing is increased by 2% per rank.",
+      "icon": {
+        "image": "delapouite/glass-ball",
+        "school": "holy"
+      },
+      "effects": [
+        {
+          "modify": "radiance_devout_hands.modifiers.0.value",
+          "per_rank": 0.02
+        }
+      ],
+      "grants_aura": "radiance_devout_hands"
+    },
+    {
+      "id": "wide_daybreak",
+      "name": "Wide Daybreak",
+      "type": "passive",
+      "ranks": 1,
+      "pos": [
+        3,
+        5
+      ],
+      "requires_any": [
+        "bright_daybreak"
+      ],
+      "gate": 8,
+      "description": "Daybreak reaches 10 m further.",
+      "icon": {
+        "image": "delapouite/globe-ring",
+        "school": "holy"
+      },
+      "effects": [
+        {
+          "modify": "daybreak_ab.effects.0.radius_m",
+          "per_rank": 10
+        }
+      ]
+    },
+    {
+      "id": "swift_slumber",
+      "name": "Swift Slumber",
+      "type": "passive",
+      "ranks": 1,
+      "pos": [
+        5,
+        5
+      ],
+      "requires_any": [
+        "deep_slumber"
+      ],
+      "gate": 8,
+      "description": "Vesper Slumber casts 0.5 s faster.",
+      "icon": {
+        "image": "delapouite/falcon-moon",
+        "school": "holy"
+      },
+      "effects": [
+        {
+          "modify": "vesper_slumber_ab.cast_time_s",
+          "per_rank": -0.5
+        }
+      ]
+    },
+    {
+      "id": "clear_sight",
+      "name": "Clear Sight",
+      "type": "passive",
+      "ranks": 2,
+      "pos": [
+        0,
+        6
+      ],
+      "requires_any": [
+        "noon_wellspring"
+      ],
+      "gate": 20,
+      "description": "Your critical strike chance is 3% higher per rank.",
+      "icon": {
+        "image": "delapouite/diamond-ring",
+        "school": "holy"
+      },
+      "effects": [
+        {
+          "modify": "self.stats.crit_chance",
+          "per_rank": 0.03
+        }
+      ]
+    },
+    {
+      "id": "dawns_embrace",
+      "name": "Dawn's Embrace",
+      "type": "capstone",
+      "pos": [
+        1,
+        6
+      ],
+      "requires_any": [
+        "kinship_unbounded"
+      ],
+      "gate": 20,
+      "description": "Dawnmend heals 1,000 more, Sunlit Word 800 more and Kindred Light 1,000 more.",
+      "icon": {
+        "image": "delapouite/flower-star",
+        "school": "holy"
+      },
+      "effects": [
+        {
+          "modify": "dawnmend.effects.0.base",
+          "per_rank": 1000
+        },
+        {
+          "modify": "sunlit_word.effects.0.base",
+          "per_rank": 800
+        },
+        {
+          "modify": "kindred_light_ab.effects.0.base",
+          "per_rank": 1000
+        }
+      ]
+    },
+    {
+      "id": "eternal_morning",
+      "name": "Eternal Morning",
+      "type": "capstone",
+      "pos": [
+        3,
+        6
+      ],
+      "requires_any": [
+        "wide_daybreak"
+      ],
+      "gate": 20,
+      "description": "Daybreak heals 200 more every 2 s and Radiant Pulse heals 800 more.",
+      "icon": {
+        "image": "delapouite/tree-growth",
+        "school": "holy"
+      },
+      "effects": [
+        {
+          "modify": "daybreak_glow.periodic.effect.base",
+          "per_rank": 200
+        },
+        {
+          "modify": "radiant_pulse.effects.0.base",
+          "per_rank": 800
+        }
+      ]
+    },
+    {
+      "id": "iron_dominion",
+      "name": "Iron Dominion",
+      "type": "capstone",
+      "pos": [
+        5,
+        6
+      ],
+      "requires_any": [
+        "swift_slumber"
+      ],
+      "gate": 20,
+      "description": "Binding Gavel stuns for 0.5 s longer, Dazzling Halo's cooldown is 10 s shorter and Vesper Slumber lasts 1 s longer.",
+      "icon": {
+        "image": "delapouite/hedjet-white-crown",
+        "school": "holy"
+      },
+      "effects": [
+        {
+          "modify": "gavel_bound.duration_s",
+          "per_rank": 0.5
+        },
+        {
+          "modify": "dazzling_halo.cooldown_s",
+          "per_rank": -10
+        },
+        {
+          "modify": "vesper_slumbered.duration_s",
+          "per_rank": 1
+        }
+      ]
+    },
+    {
+      "id": "sheltering_aegis",
+      "name": "Sheltering Aegis",
+      "type": "passive",
+      "ranks": 1,
+      "pos": [
+        4,
+        6
+      ],
+      "requires_any": [
+        "enduring_aegis"
+      ],
+      "gate": 20,
+      "description": "Aegis of Kin also heals the ally for 6,000.",
+      "icon": {
+        "image": "delapouite/tribal-shield",
+        "school": "holy"
+      },
+      "effects": [
+        {
+          "modify": "aegis_of_kin_ab.effects",
+          "set": [
+            {
+              "type": "apply_aura",
+              "aura": "aegis_of_kin"
+            },
+            {
+              "type": "heal",
+              "base": 6000
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

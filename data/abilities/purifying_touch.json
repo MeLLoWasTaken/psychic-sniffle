@@ -1,0 +1,34 @@
+{
+  "id": "purifying_touch",
+  "name": "Purifying Touch",
+  "description": "Remove one magic, poison or disease effect from an ally.",
+  "owner": "templar_radiance",
+  "kit_slot": "utility",
+  "school": "holy",
+  "cast_type": "instant",
+  "cooldown_s": 8,
+  "triggers_gcd": true,
+  "range_m": 40,
+  "requires_los": true,
+  "target": "ally",
+  "effects": [
+    {
+      "type": "dispel",
+      "dispel_types": [
+        "magic",
+        "poison",
+        "disease"
+      ],
+      "dispel_count": 1
+    }
+  ],
+  "icon": {
+    "symbol": "dove",
+    "school": "holy",
+    "image": "lorc/dove"
+  },
+  "cost": {
+    "resource": "mana",
+    "amount": 1000
+  }
+}

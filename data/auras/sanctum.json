@@ -1,0 +1,26 @@
+{
+  "id": "sanctum",
+  "name": "Sanctum",
+  "description": "Immune to damage and crowd control; healing halved.",
+  "kind": "buff",
+  "duration_s": 6,
+  "dispel_type": "none",
+  "cc_category": "none",
+  "hud_priority": "major_defensive",
+  "icon": {
+    "symbol": "halo_aura",
+    "school": "holy",
+    "image": "lorc/aura"
+  },
+  "immune": [
+    "damage",
+    "cc"
+  ],
+  "modifiers": [
+    {
+      "stat": "healing_done",
+      "op": "multiply",
+      "value": 0.5
+    }
+  ]
+}

@@ -1,0 +1,11 @@
+{
+  "id": "dawnstep",
+  "displacement": {
+    "style": "dust"
+  },
+  "auras": {
+    "dawnstep_haste": {
+      "style": "speed"
+    }
+  }
+}

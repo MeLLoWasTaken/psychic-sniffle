@@ -1,0 +1,21 @@
+{
+  "id": "dawnbolt",
+  "cast": {
+    "style": "hand_glow",
+    "hands": "right"
+  },
+  "projectile": {
+    "style": "bolt"
+  },
+  "impact": {
+    "style": "flash",
+    "at": "target",
+    "size": 1.0
+  },
+  "auras": {
+    "radiance_sundered": {
+      "style": "dot",
+      "size": 0.8
+    }
+  }
+}

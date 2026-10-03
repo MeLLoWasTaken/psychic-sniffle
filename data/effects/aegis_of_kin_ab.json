@@ -1,0 +1,14 @@
+{
+  "id": "aegis_of_kin_ab",
+  "impact": {
+    "style": "ring",
+    "at": "target",
+    "size": 1.0
+  },
+  "auras": {
+    "aegis_of_kin": {
+      "style": "shield",
+      "size": 1.0
+    }
+  }
+}

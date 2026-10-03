@@ -1,0 +1,23 @@
+{
+  "id": "templar_steadfast_heart",
+  "name": "Steadfast Heart",
+  "description": "Talent: damage taken down.",
+  "kind": "buff",
+  "duration_s": 0,
+  "refresh": "refresh",
+  "dispel_type": "none",
+  "cc_category": "none",
+  "hud_priority": "hidden",
+  "icon": {
+    "symbol": "steadfast_heart",
+    "school": "holy",
+    "image": "lorc/ball-heart"
+  },
+  "modifiers": [
+    {
+      "stat": "damage_taken",
+      "op": "multiply",
+      "value": 1.0
+    }
+  ]
+}

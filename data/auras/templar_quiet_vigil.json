@@ -1,0 +1,24 @@
+{
+  "id": "templar_quiet_vigil",
+  "name": "Quiet Vigil",
+  "description": "Talent: restores mana every 3 s.",
+  "kind": "buff",
+  "duration_s": 0,
+  "refresh": "refresh",
+  "dispel_type": "none",
+  "cc_category": "none",
+  "hud_priority": "hidden",
+  "icon": {
+    "symbol": "quiet_vigil",
+    "school": "holy",
+    "image": "delapouite/candles"
+  },
+  "periodic": {
+    "interval_s": 3,
+    "effect": {
+      "type": "resource",
+      "resource": "mana",
+      "amount": 0
+    }
+  }
+}

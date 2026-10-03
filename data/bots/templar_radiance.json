@@ -1,0 +1,331 @@
+{
+  "id": "templar_radiance",
+  "behavior": {
+    "preferred_range_m": [
+      4,
+      15
+    ],
+    "target_priority": "lowest_health",
+    "reaction_ms": [
+      300,
+      700
+    ],
+    "kite_melee": false,
+    "stay_near_allies_m": 22,
+    "break_los_below_pct": 30,
+    "take_pickup_below_pct": 80
+  },
+  "priorities": [
+    {
+      "ability": "iron_reproach",
+      "on": "enemy_caster",
+      "when": {
+        "target_casting": true
+      }
+    },
+    {
+      "ability": "break_free",
+      "on": "self",
+      "when": {
+        "self_hard_cc": true,
+        "self_health_below_pct": 80
+      }
+    },
+    {
+      "ability": "sanctum_ab",
+      "on": "self",
+      "when": {
+        "self_health_below_pct": 25
+      }
+    },
+    {
+      "ability": "final_mercy",
+      "on": "lowest_ally",
+      "when": {
+        "ally_health_below_pct": 30
+      }
+    },
+    {
+      "ability": "aegis_of_kin_ab",
+      "on": "lowest_ally",
+      "when": {
+        "ally_health_below_pct": 40
+      }
+    },
+    {
+      "ability": "ironbound_prayer_ab",
+      "on": "self",
+      "when": {
+        "self_health_below_pct": 50
+      }
+    },
+    {
+      "ability": "purifying_touch",
+      "on": "cc_ally",
+      "when": {
+        "ally_hard_cc": true
+      }
+    },
+    {
+      "ability": "binding_gavel",
+      "on": "ally_attacker",
+      "when": {
+        "ally_health_below_pct": 45,
+        "target_not_cc": true
+      }
+    },
+    {
+      "ability": "vesper_slumber_ab",
+      "on": "ally_attacker",
+      "when": {
+        "ally_health_below_pct": 55,
+        "target_not_cc": true,
+        "no_free_melee_within_m": 6
+      }
+    },
+    {
+      "ability": "dazzling_halo",
+      "on": "self",
+      "when": {
+        "enemies_within_m": [
+          8,
+          1
+        ]
+      }
+    },
+    {
+      "ability": "shackle_of_dawn_ab",
+      "on": "ally_attacker",
+      "when": {
+        "ally_health_below_pct": 60,
+        "target_not_cc": true
+      }
+    },
+    {
+      "ability": "brand_of_contrition_ab",
+      "on": "ally_attacker",
+      "when": {
+        "ally_health_below_pct": 70,
+        "target_not_has_aura": "contrition"
+      }
+    },
+    {
+      "ability": "noonblaze_ab",
+      "on": "self",
+      "when": {
+        "ally_health_below_pct": 45
+      }
+    },
+    {
+      "ability": "daybreak_ab",
+      "on": "self",
+      "when": {
+        "ally_health_below_pct": 60
+      }
+    },
+    {
+      "ability": "dawnstep",
+      "on": "lowest_ally",
+      "when": {
+        "ally_health_below_pct": 50,
+        "target_distance_above_m": 12
+      }
+    },
+    {
+      "ability": "kindred_light_ab",
+      "on": "lowest_ally",
+      "when": {
+        "ally_health_below_pct": 70,
+        "no_free_melee_within_m": 6
+      }
+    },
+    {
+      "ability": "sunlit_word",
+      "on": "lowest_ally",
+      "when": {
+        "ally_health_below_pct": 75
+      }
+    },
+    {
+      "ability": "radiant_pulse",
+      "on": "self",
+      "when": {
+        "ally_health_below_pct": 85
+      }
+    },
+    {
+      "ability": "dawnmend",
+      "on": "lowest_ally",
+      "when": {
+        "ally_health_below_pct": 80,
+        "no_free_melee_within_m": 6
+      }
+    },
+    {
+      "ability": "hallowed_strike",
+      "when": {
+        "target_distance_below_m": 5
+      }
+    },
+    {
+      "ability": "dawnbolt",
+      "when": {
+        "no_free_melee_within_m": 6
+      }
+    }
+  ],
+  "builds": [
+    {
+      "name": "dawn_mender",
+      "description": "Big single-target heals: stronger, cheaper Dawnmend and Sunlit Word, Kindred Light, long Noonblazes that refill mana; throughput and mana in the class tree.",
+      "class": {
+        "deep_reserves": 2,
+        "quiet_vigil": 2,
+        "keen_eye": 2,
+        "zealous_pace": 2,
+        "path_choice": 1,
+        "conviction": 2,
+        "swift_litany": 2,
+        "brimming_faith": 2,
+        "sure_stride": 2,
+        "swift_dawnstep": 2,
+        "unbowed_oath": 2,
+        "unchained_choice": 1,
+        "patient_oath": 2,
+        "sunlit_calm": 1,
+        "crown_choice": 1,
+        "plated_vigor": 2,
+        "steadfast_heart": 2
+      },
+      "spec": {
+        "brighter_dawn": 2,
+        "quick_word": 2,
+        "frugal_dawn": 2,
+        "practiced_prayer": 2,
+        "thrifty_word": 2,
+        "tithe_of_iron": 1,
+        "earnest_word": 2,
+        "high_noon": 2,
+        "kindred_light": 1,
+        "blazing_noon": 1,
+        "noon_wellspring": 1,
+        "frugal_kinship": 2,
+        "long_noon": 1,
+        "kinship_unbounded": 1,
+        "clear_sight": 2,
+        "dawns_embrace": 1,
+        "hammer_weight": 2,
+        "mending_blow": 1,
+        "pulse_swell": 2
+      },
+      "pvp": [
+        "steadfast_dawnmend",
+        "unshaken_light",
+        "mercy_held"
+      ]
+    },
+    {
+      "name": "iron_vigil",
+      "description": "A sturdy healer in the thick of the fight: Hallowed Strike that heals, Radiant Pulse and Daybreak for the group, a longer Aegis that heals; plate, Ironbound Prayer and Brand of Contrition in the class tree.",
+      "class": {
+        "plated_vigor": 2,
+        "tempered_plate": 2,
+        "steadfast_heart": 2,
+        "welcoming_light": 2,
+        "hearthglow": 1,
+        "oathbound": 2,
+        "prayer_of_iron": 2,
+        "deeper_devotion": 1,
+        "brand_of_contrition": 1,
+        "swift_brand": 2,
+        "contrition_choice": 1,
+        "lasting_brand": 1,
+        "deep_reserves": 2,
+        "unyielding": 1,
+        "dawnforged_mantle": 1,
+        "unbroken_oath": 1,
+        "quiet_vigil": 2,
+        "keen_eye": 2,
+        "zealous_pace": 2
+      },
+      "spec": {
+        "hammer_weight": 2,
+        "mending_blow": 1,
+        "relentless_hammer": 2,
+        "pulse_swell": 2,
+        "pulse_reach": 1,
+        "frugal_pulse": 2,
+        "daybreak": 1,
+        "steadfast_aegis": 2,
+        "bright_daybreak": 2,
+        "enduring_aegis": 1,
+        "wide_daybreak": 1,
+        "brighter_dawn": 2,
+        "frugal_dawn": 2,
+        "tithe_of_iron": 1,
+        "sheltering_aegis": 1,
+        "eternal_morning": 1,
+        "quick_word": 2,
+        "practiced_prayer": 2,
+        "earnest_word": 2
+      },
+      "pvp": [
+        "vow_of_iron",
+        "swift_aegis",
+        "sundering_dawn"
+      ]
+    },
+    {
+      "name": "dawn_warden",
+      "description": "Control: frequent Dazzling Halo, Vesper Slumber, a longer reaching Binding Gavel, Hallowed Strike that strips magic; Shackle of Dawn, Iron Reproach and a wider Halo in the class tree.",
+      "class": {
+        "sure_stride": 2,
+        "swift_dawnstep": 2,
+        "unbowed_oath": 2,
+        "lingering_dawnstep": 1,
+        "unchained_choice": 1,
+        "wide_halo": 1,
+        "patient_oath": 2,
+        "shackle_of_dawn": 1,
+        "heavy_gavel": 1,
+        "long_shackle": 2,
+        "firm_shackle": 1,
+        "swift_reproach": 2,
+        "shackle_choice": 2,
+        "stunning_weight": 1,
+        "plated_vigor": 2,
+        "steadfast_heart": 2,
+        "searing_shackle": 1,
+        "soul_choice": 1,
+        "tempered_plate": 2,
+        "welcoming_light": 2
+      },
+      "spec": {
+        "halo_cadence": 2,
+        "lingering_glare": 1,
+        "severing_reproach": 1,
+        "ready_touch": 2,
+        "touch_choice": 1,
+        "ready_gavel": 2,
+        "vesper_slumber": 1,
+        "sure_gavel": 1,
+        "deep_slumber": 2,
+        "swift_slumber": 1,
+        "brighter_dawn": 2,
+        "quick_word": 2,
+        "practiced_prayer": 2,
+        "thrifty_word": 2,
+        "iron_dominion": 1,
+        "purging_strike": 1,
+        "earnest_word": 2,
+        "frugal_dawn": 2,
+        "hammer_weight": 2
+      },
+      "pvp": [
+        "relentless_halo",
+        "echoing_gavel",
+        "quick_reproach"
+      ]
+    }
+  ]
+}

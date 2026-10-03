@@ -1,0 +1,23 @@
+{
+  "id": "templar_path_of_dawn",
+  "name": "Path of Dawn",
+  "description": "Talent: healing done up 4%.",
+  "kind": "buff",
+  "duration_s": 0,
+  "refresh": "refresh",
+  "dispel_type": "none",
+  "cc_category": "none",
+  "hud_priority": "hidden",
+  "icon": {
+    "symbol": "path_of_dawn",
+    "school": "holy",
+    "image": "delapouite/polar-star"
+  },
+  "modifiers": [
+    {
+      "stat": "healing_done",
+      "op": "multiply",
+      "value": 1.04
+    }
+  ]
+}

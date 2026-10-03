@@ -1,0 +1,31 @@
+{
+  "id": "dazzling_halo",
+  "name": "Dazzling Halo",
+  "description": "Enemies within 8 m are disoriented for 5 s. Heavy damage breaks it.",
+  "owner": "templar_radiance",
+  "kit_slot": "cc",
+  "school": "holy",
+  "cast_type": "instant",
+  "cooldown_s": 60,
+  "triggers_gcd": true,
+  "range_m": 0,
+  "requires_los": false,
+  "target": "self",
+  "effects": [
+    {
+      "type": "apply_aura",
+      "aura": "dazzled",
+      "affects": "enemies_in_radius",
+      "radius_m": 8
+    }
+  ],
+  "icon": {
+    "symbol": "burst_rays",
+    "school": "holy",
+    "image": "lorc/explosion-rays"
+  },
+  "cost": {
+    "resource": "mana",
+    "amount": 1200
+  }
+}

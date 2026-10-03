@@ -1,0 +1,17 @@
+{
+  "id": "dazzled",
+  "name": "Dazzled",
+  "description": "Disoriented by blinding light. Heavy damage breaks it.",
+  "kind": "debuff",
+  "duration_s": 5,
+  "dispel_type": "magic",
+  "cc_category": "disorient",
+  "hud_priority": "cc",
+  "icon": {
+    "symbol": "burst_rays",
+    "school": "holy",
+    "image": "lorc/explosion-rays"
+  },
+  "breaks_on_damage": "threshold",
+  "damage_threshold_pct": 10
+}

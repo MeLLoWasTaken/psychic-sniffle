@@ -1,0 +1,25 @@
+{
+  "id": "noonblaze_ab",
+  "name": "Noonblaze",
+  "description": "For 12 s, heal 25% more and land 20% more critical heals.",
+  "owner": "templar_radiance",
+  "kit_slot": "burst",
+  "school": "holy",
+  "cast_type": "instant",
+  "cooldown_s": 120,
+  "triggers_gcd": false,
+  "range_m": 0,
+  "requires_los": false,
+  "target": "self",
+  "effects": [
+    {
+      "type": "apply_aura",
+      "aura": "noonblaze"
+    }
+  ],
+  "icon": {
+    "symbol": "noon_sun",
+    "school": "holy",
+    "image": "lorc/sun"
+  }
+}

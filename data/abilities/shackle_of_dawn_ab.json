@@ -1,0 +1,29 @@
+{
+  "id": "shackle_of_dawn_ab",
+  "name": "Shackle of Dawn",
+  "description": "Root an enemy for 3 s. Heavy damage breaks it.",
+  "owner": "templar",
+  "kit_slot": "cc",
+  "school": "holy",
+  "cast_type": "instant",
+  "cooldown_s": 30,
+  "triggers_gcd": true,
+  "range_m": 25,
+  "requires_los": true,
+  "target": "enemy",
+  "effects": [
+    {
+      "type": "apply_aura",
+      "aura": "dawn_shackled"
+    }
+  ],
+  "icon": {
+    "symbol": "shackle",
+    "school": "holy",
+    "image": "delapouite/dial-padlock"
+  },
+  "cost": {
+    "resource": "mana",
+    "amount": 1000
+  }
+}

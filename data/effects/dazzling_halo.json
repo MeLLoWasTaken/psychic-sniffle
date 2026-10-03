@@ -1,0 +1,13 @@
+{
+  "id": "dazzling_halo",
+  "ground": {
+    "style": "nova",
+    "center": "caster",
+    "lifetime_s": 0.7
+  },
+  "auras": {
+    "dazzled": {
+      "style": "disorient"
+    }
+  }
+}

@@ -1,0 +1,9 @@
+{
+  "id": "ironbound_prayer_ab",
+  "auras": {
+    "ironbound_prayer": {
+      "style": "shield",
+      "size": 0.9
+    }
+  }
+}

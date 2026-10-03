@@ -1,0 +1,31 @@
+{
+  "id": "daybreak_ab",
+  "name": "Daybreak",
+  "description": "You and every ally within 30 m heal 1,500 every 2 s for 10 s.",
+  "owner": "templar_radiance",
+  "kit_slot": "core",
+  "school": "holy",
+  "cast_type": "instant",
+  "cooldown_s": 60,
+  "triggers_gcd": true,
+  "range_m": 0,
+  "requires_los": false,
+  "target": "self",
+  "effects": [
+    {
+      "type": "apply_aura",
+      "aura": "daybreak_glow",
+      "affects": "allies_in_radius",
+      "radius_m": 30
+    }
+  ],
+  "icon": {
+    "symbol": "lighthouse",
+    "school": "holy",
+    "image": "delapouite/lighthouse"
+  },
+  "cost": {
+    "resource": "mana",
+    "amount": 3500
+  }
+}

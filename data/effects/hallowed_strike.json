@@ -1,0 +1,11 @@
+{
+  "id": "hallowed_strike",
+  "melee": {
+    "style": "overhead"
+  },
+  "impact": {
+    "style": "flash",
+    "at": "target",
+    "size": 1.1
+  }
+}

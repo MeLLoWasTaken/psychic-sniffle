@@ -1,0 +1,22 @@
+{
+  "id": "templar_unchained_stride",
+  "name": "Unchained Stride",
+  "description": "Movement up 30%.",
+  "kind": "buff",
+  "duration_s": 3,
+  "dispel_type": "magic",
+  "cc_category": "none",
+  "hud_priority": "normal",
+  "modifiers": [
+    {
+      "stat": "move_speed",
+      "op": "multiply",
+      "value": 1.3
+    }
+  ],
+  "icon": {
+    "symbol": "winged_scepter",
+    "school": "holy",
+    "image": "delapouite/winged-scepter"
+  }
+}

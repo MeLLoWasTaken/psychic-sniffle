@@ -1,0 +1,30 @@
+{
+  "id": "dawnmend",
+  "name": "Dawnmend",
+  "description": "A strong heal for 12,500.",
+  "owner": "templar_radiance",
+  "kit_slot": "core",
+  "school": "holy",
+  "cast_type": "cast",
+  "cooldown_s": 0,
+  "triggers_gcd": true,
+  "range_m": 40,
+  "requires_los": true,
+  "target": "ally",
+  "effects": [
+    {
+      "type": "heal",
+      "base": 12500
+    }
+  ],
+  "icon": {
+    "symbol": "rising_sun",
+    "school": "holy",
+    "image": "delapouite/striped-sun"
+  },
+  "cast_time_s": 1.8,
+  "cost": {
+    "resource": "mana",
+    "amount": 2600
+  }
+}

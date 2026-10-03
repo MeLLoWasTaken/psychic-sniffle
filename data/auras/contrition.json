@@ -1,0 +1,22 @@
+{
+  "id": "contrition",
+  "name": "Contrition",
+  "description": "Damage done down 20%.",
+  "kind": "debuff",
+  "duration_s": 8,
+  "dispel_type": "magic",
+  "cc_category": "none",
+  "hud_priority": "normal",
+  "modifiers": [
+    {
+      "stat": "damage_done",
+      "op": "multiply",
+      "value": 0.8
+    }
+  ],
+  "icon": {
+    "symbol": "brand",
+    "school": "holy",
+    "image": "lorc/burning-embers"
+  }
+}

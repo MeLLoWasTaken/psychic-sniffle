@@ -1,0 +1,23 @@
+{
+  "id": "templar_sure_stride",
+  "name": "Sure Stride",
+  "description": "Talent: movement speed increased.",
+  "kind": "buff",
+  "duration_s": 0,
+  "refresh": "refresh",
+  "dispel_type": "none",
+  "cc_category": "none",
+  "hud_priority": "hidden",
+  "icon": {
+    "symbol": "sure_stride",
+    "school": "holy",
+    "image": "delapouite/metal-boot"
+  },
+  "modifiers": [
+    {
+      "stat": "move_speed",
+      "op": "multiply",
+      "value": 1.0
+    }
+  ]
+}

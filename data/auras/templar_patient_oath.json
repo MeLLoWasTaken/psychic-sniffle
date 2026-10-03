@@ -1,0 +1,23 @@
+{
+  "id": "templar_patient_oath",
+  "name": "Patient Oath",
+  "description": "Talent: cooldowns recover faster.",
+  "kind": "buff",
+  "duration_s": 0,
+  "refresh": "refresh",
+  "dispel_type": "none",
+  "cc_category": "none",
+  "hud_priority": "hidden",
+  "icon": {
+    "symbol": "patient_oath",
+    "school": "holy",
+    "image": "delapouite/clockwise-rotation"
+  },
+  "modifiers": [
+    {
+      "stat": "cooldown_rate",
+      "op": "multiply",
+      "value": 1.0
+    }
+  ]
+}

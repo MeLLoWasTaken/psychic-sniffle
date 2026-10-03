@@ -1,0 +1,1179 @@
+{
+  "tree_id": "templar_class",
+  "kind": "class",
+  "owner": "templar",
+  "points": 30,
+  "gates": [
+    8,
+    20
+  ],
+  "status": "complete",
+  "nodes": [
+    {
+      "id": "plated_vigor",
+      "name": "Plated Vigor",
+      "type": "passive",
+      "ranks": 2,
+      "pos": [
+        1,
+        0
+      ],
+      "description": "Your maximum health is 1,200 higher per rank.",
+      "icon": {
+        "image": "delapouite/chest-armor",
+        "school": "holy"
+      },
+      "effects": [
+        {
+          "modify": "self.max_health",
+          "per_rank": 1200
+        }
+      ]
+    },
+    {
+      "id": "tempered_plate",
+      "name": "Tempered Plate",
+      "type": "passive",
+      "ranks": 2,
+      "pos": [
+        0,
+        1
+      ],
+      "requires_any": [
+        "plated_vigor"
+      ],
+      "description": "Your armor turns aside 3% more physical damage per rank.",
+      "icon": {
+        "image": "delapouite/metal-plate",
+        "school": "holy"
+      },
+      "effects": [
+        {
+          "modify": "templar_tempered_plate.modifiers.0.value",
+          "per_rank": 0.03
+        }
+      ],
+      "grants_aura": "templar_tempered_plate"
+    },
+    {
+      "id": "steadfast_heart",
+      "name": "Steadfast Heart",
+      "type": "passive",
+      "ranks": 2,
+      "pos": [
+        2,
+        1
+      ],
+      "requires_any": [
+        "plated_vigor"
+      ],
+      "description": "You take 2% less damage per rank.",
+      "icon": {
+        "image": "lorc/ball-heart",
+        "school": "holy"
+      },
+      "effects": [
+        {
+          "modify": "templar_steadfast_heart.modifiers.0.value",
+          "per_rank": -0.02
+        }
+      ],
+      "grants_aura": "templar_steadfast_heart"
+    },
+    {
+      "id": "hearthglow",
+      "name": "Hearthglow",
+      "type": "passive",
+      "ranks": 1,
+      "pos": [
+        0,
+        2
+      ],
+      "requires_any": [
+        "tempered_plate"
+      ],
+      "description": "You heal yourself for 300 every 5 s.",
+      "icon": {
+        "image": "lorc/candle-flame",
+        "school": "holy"
+      },
+      "grants_aura": "templar_hearthglow"
+    },
+    {
+      "id": "welcoming_light",
+      "name": "Welcoming Light",
+      "type": "passive",
+      "ranks": 2,
+      "pos": [
+        1,
+        2
+      ],
+      "requires_any": [
+        "tempered_plate",
+        "steadfast_heart"
+      ],
+      "description": "Healing you receive is increased by 3% per rank.",
+      "icon": {
+        "image": "delapouite/old-lantern",
+        "school": "holy"
+      },
+      "effects": [
+        {
+          "modify": "templar_welcoming_light.modifiers.0.value",
+          "per_rank": 0.03
+        }
+      ],
+      "grants_aura": "templar_welcoming_light"
+    },
+    {
+      "id": "prayer_of_iron",
+      "name": "Prayer of Iron",
+      "type": "passive",
+      "ranks": 2,
+      "pos": [
+        2,
+        2
+      ],
+      "requires_any": [
+        "steadfast_heart"
+      ],
+      "description": "Ironbound Prayer's cooldown is 5 s shorter per rank.",
+      "icon": {
+        "image": "delapouite/vibrating-shield",
+        "school": "holy"
+      },
+      "effects": [
+        {
+          "modify": "ironbound_prayer_ab.cooldown_s",
+          "per_rank": -5
+        }
+      ]
+    },
+    {
+      "id": "oathbound",
+      "name": "Oathbound",
+      "type": "passive",
+      "ranks": 2,
+      "pos": [
+        0,
+        3
+      ],
+      "requires_any": [
+        "hearthglow",
+        "welcoming_light"
+      ],
+      "description": "Your maximum health is 1,500 higher per rank.",
+      "icon": {
+        "image": "delapouite/shoulder-armor",
+        "school": "holy"
+      },
+      "effects": [
+        {
+          "modify": "self.max_health",
+          "per_rank": 1500
+        }
+      ]
+    },
+    {
+      "id": "deeper_devotion",
+      "name": "Deeper Devotion",
+      "type": "passive",
+      "ranks": 1,
+      "pos": [
+        2,
+        3
+      ],
+      "requires_any": [
+        "prayer_of_iron"
+      ],
+      "description": "Ironbound Prayer makes you take a further 5% less damage.",
+      "icon": {
+        "image": "delapouite/temporary-shield",
+        "school": "holy"
+      },
+      "effects": [
+        {
+          "modify": "ironbound_prayer.modifiers.0.value",
+          "per_rank": -0.05
+        }
+      ]
+    },
+    {
+      "id": "brand_of_contrition",
+      "name": "Brand of Contrition",
+      "type": "active",
+      "pos": [
+        1,
+        4
+      ],
+      "requires_any": [
+        "oathbound",
+        "deeper_devotion"
+      ],
+      "gate": 8,
+      "description": "Learn Brand of Contrition: an enemy deals 20% less damage for 8 s (45 s cooldown).",
+      "icon": {
+        "image": "lorc/burning-embers",
+        "school": "holy"
+      },
+      "grants_ability": "brand_of_contrition_ab"
+    },
+    {
+      "id": "contrition_choice",
+      "name": "Weight of Contrition",
+      "type": "choice",
+      "pos": [
+        1,
+        5
+      ],
+      "requires_any": [
+        "brand_of_contrition"
+      ],
+      "gate": 8,
+      "description": "Choose what else Brand of Contrition does.",
+      "icon": {
+        "image": "lorc/burning-embers",
+        "school": "holy"
+      },
+      "choices": [
+        {
+          "id": "searing_brand",
+          "name": "Searing Brand",
+          "description": "Brand of Contrition also sears the enemy for 3,000.",
+          "icon": {
+            "image": "carl-olsen/flame",
+            "school": "holy"
+          },
+          "effects": [
+            {
+              "modify": "brand_of_contrition_ab.effects",
+              "set": [
+                {
+                  "type": "apply_aura",
+                  "aura": "contrition"
+                },
+                {
+                  "type": "damage",
+                  "base": 3000
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "id": "humbling_brand",
+          "name": "Humbling Brand",
+          "description": "Brand of Contrition also slows the enemy by 30%.",
+          "icon": {
+            "image": "delapouite/unbalanced",
+            "school": "holy"
+          },
+          "effects": [
+            {
+              "modify": "contrition.modifiers",
+              "set": [
+                {
+                  "stat": "damage_done",
+                  "op": "multiply",
+                  "value": 0.8
+                },
+                {
+                  "stat": "move_speed",
+                  "op": "multiply",
+                  "value": 0.7
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "swift_brand",
+      "name": "Swift Brand",
+      "type": "passive",
+      "ranks": 2,
+      "pos": [
+        0,
+        5
+      ],
+      "requires_any": [
+        "brand_of_contrition"
+      ],
+      "gate": 8,
+      "description": "Brand of Contrition's cooldown is 5 s shorter per rank.",
+      "icon": {
+        "image": "lorc/burning-embers",
+        "school": "holy"
+      },
+      "effects": [
+        {
+          "modify": "brand_of_contrition_ab.cooldown_s",
+          "per_rank": -5
+        }
+      ]
+    },
+    {
+      "id": "lasting_brand",
+      "name": "Lasting Brand",
+      "type": "passive",
+      "ranks": 1,
+      "pos": [
+        2,
+        5
+      ],
+      "requires_any": [
+        "brand_of_contrition"
+      ],
+      "gate": 8,
+      "description": "Brand of Contrition lasts 2 s longer.",
+      "icon": {
+        "image": "delapouite/flint-spark",
+        "school": "holy"
+      },
+      "effects": [
+        {
+          "modify": "contrition.duration_s",
+          "per_rank": 2
+        }
+      ]
+    },
+    {
+      "id": "unbroken_oath",
+      "name": "Unbroken Oath",
+      "type": "passive",
+      "ranks": 1,
+      "pos": [
+        0,
+        7
+      ],
+      "requires_any": [
+        "swift_brand"
+      ],
+      "gate": 20,
+      "description": "Break Free's cooldown is 8 s shorter.",
+      "icon": {
+        "image": "delapouite/padlock-open",
+        "school": "holy"
+      },
+      "effects": [
+        {
+          "modify": "break_free.cooldown_s",
+          "per_rank": -8
+        }
+      ]
+    },
+    {
+      "id": "unyielding",
+      "name": "Unyielding",
+      "type": "passive",
+      "ranks": 1,
+      "pos": [
+        1,
+        7
+      ],
+      "requires_any": [
+        "contrition_choice"
+      ],
+      "gate": 20,
+      "description": "You take 4% less damage.",
+      "icon": {
+        "image": "delapouite/spartan-helmet",
+        "school": "holy"
+      },
+      "grants_aura": "templar_unyielding"
+    },
+    {
+      "id": "dawnforged_mantle",
+      "name": "Dawnforged Mantle",
+      "type": "passive",
+      "ranks": 1,
+      "pos": [
+        2,
+        7
+      ],
+      "requires_any": [
+        "lasting_brand"
+      ],
+      "gate": 20,
+      "description": "Your armor turns aside 4% more physical damage and healing you receive is increased by 3%.",
+      "icon": {
+        "image": "delapouite/light-helm",
+        "school": "holy"
+      },
+      "grants_aura": "templar_dawnforged_mantle"
+    },
+    {
+      "id": "deep_reserves",
+      "name": "Deep Reserves",
+      "type": "passive",
+      "ranks": 2,
+      "pos": [
+        3,
+        0
+      ],
+      "description": "Your maximum mana is 2,500 higher per rank.",
+      "icon": {
+        "image": "delapouite/water-flask",
+        "school": "holy"
+      },
+      "effects": [
+        {
+          "modify": "self.resource_max.mana",
+          "per_rank": 2500
+        }
+      ]
+    },
+    {
+      "id": "quiet_vigil",
+      "name": "Quiet Vigil",
+      "type": "passive",
+      "ranks": 2,
+      "pos": [
+        3,
+        1
+      ],
+      "requires_any": [
+        "deep_reserves"
+      ],
+      "description": "You restore 100 mana every 3 s per rank.",
+      "icon": {
+        "image": "delapouite/candles",
+        "school": "holy"
+      },
+      "effects": [
+        {
+          "modify": "templar_quiet_vigil.periodic.effect.amount",
+          "per_rank": 100
+        }
+      ],
+      "grants_aura": "templar_quiet_vigil"
+    },
+    {
+      "id": "keen_eye",
+      "name": "Keen Eye",
+      "type": "passive",
+      "ranks": 2,
+      "pos": [
+        4,
+        1
+      ],
+      "requires_any": [
+        "deep_reserves"
+      ],
+      "description": "Your critical strike chance is 2% higher per rank.",
+      "icon": {
+        "image": "delapouite/all-seeing-eye",
+        "school": "holy"
+      },
+      "effects": [
+        {
+          "modify": "self.stats.crit_chance",
+          "per_rank": 0.02
+        }
+      ]
+    },
+    {
+      "id": "zealous_pace",
+      "name": "Zealous Pace",
+      "type": "passive",
+      "ranks": 2,
+      "pos": [
+        3,
+        2
+      ],
+      "requires_any": [
+        "quiet_vigil",
+        "keen_eye"
+      ],
+      "description": "Your haste is 2% higher per rank.",
+      "icon": {
+        "image": "delapouite/running-shoe",
+        "school": "holy"
+      },
+      "effects": [
+        {
+          "modify": "self.stats.haste",
+          "per_rank": 0.02
+        }
+      ]
+    },
+    {
+      "id": "path_choice",
+      "name": "Dawn or Hammer",
+      "type": "choice",
+      "pos": [
+        3,
+        3
+      ],
+      "requires_any": [
+        "zealous_pace"
+      ],
+      "description": "Choose to heal more or to strike harder.",
+      "icon": {
+        "image": "caro-asercion/tarot-17-the-star",
+        "school": "holy"
+      },
+      "choices": [
+        {
+          "id": "path_of_dawn",
+          "name": "Path of Dawn",
+          "description": "Your healing is increased by 4%.",
+          "icon": {
+            "image": "delapouite/polar-star",
+            "school": "holy"
+          },
+          "grants_aura": "templar_path_of_dawn"
+        },
+        {
+          "id": "path_of_the_hammer",
+          "name": "Path of the Hammer",
+          "description": "Your damage is increased by 4%.",
+          "icon": {
+            "image": "lorc/anvil",
+            "school": "holy"
+          },
+          "grants_aura": "templar_path_of_the_hammer"
+        }
+      ]
+    },
+    {
+      "id": "conviction",
+      "name": "Conviction",
+      "type": "passive",
+      "ranks": 2,
+      "pos": [
+        4,
+        3
+      ],
+      "requires_any": [
+        "zealous_pace"
+      ],
+      "description": "Your damage and healing are 2% stronger per rank.",
+      "icon": {
+        "image": "delapouite/star-medal",
+        "school": "holy"
+      },
+      "effects": [
+        {
+          "modify": "self.stats.power_bonus",
+          "per_rank": 0.02
+        }
+      ]
+    },
+    {
+      "id": "swift_litany",
+      "name": "Swift Litany",
+      "type": "passive",
+      "ranks": 2,
+      "pos": [
+        3,
+        4
+      ],
+      "requires_any": [
+        "path_choice",
+        "conviction"
+      ],
+      "gate": 8,
+      "description": "You cast 2% faster per rank.",
+      "icon": {
+        "image": "delapouite/rule-book",
+        "school": "holy"
+      },
+      "effects": [
+        {
+          "modify": "templar_swift_litany.modifiers.0.value",
+          "per_rank": 0.02
+        }
+      ],
+      "grants_aura": "templar_swift_litany"
+    },
+    {
+      "id": "brimming_faith",
+      "name": "Brimming Faith",
+      "type": "passive",
+      "ranks": 2,
+      "pos": [
+        3,
+        5
+      ],
+      "requires_any": [
+        "swift_litany"
+      ],
+      "gate": 8,
+      "description": "Your maximum mana is 2,500 higher per rank.",
+      "icon": {
+        "image": "delapouite/waterskin",
+        "school": "holy"
+      },
+      "effects": [
+        {
+          "modify": "self.resource_max.mana",
+          "per_rank": 2500
+        }
+      ]
+    },
+    {
+      "id": "sunlit_calm",
+      "name": "Sunlit Calm",
+      "type": "passive",
+      "ranks": 1,
+      "pos": [
+        3,
+        7
+      ],
+      "requires_any": [
+        "brimming_faith"
+      ],
+      "gate": 20,
+      "description": "You restore 300 mana every 3 s.",
+      "icon": {
+        "image": "delapouite/star-altar",
+        "school": "holy"
+      },
+      "grants_aura": "templar_sunlit_calm"
+    },
+    {
+      "id": "crown_choice",
+      "name": "Crown of Dawn",
+      "type": "choice",
+      "pos": [
+        4,
+        7
+      ],
+      "requires_any": [
+        "brimming_faith",
+        "firm_shackle"
+      ],
+      "gate": 20,
+      "description": "Choose a lasting edge.",
+      "icon": {
+        "image": "delapouite/crenel-crown",
+        "school": "holy"
+      },
+      "choices": [
+        {
+          "id": "blazing_crown",
+          "name": "Blazing Crown",
+          "description": "Your critical strike chance is 4% higher.",
+          "icon": {
+            "image": "delapouite/jewel-crown",
+            "school": "holy"
+          },
+          "effects": [
+            {
+              "modify": "self.stats.crit_chance",
+              "per_rank": 0.04
+            }
+          ]
+        },
+        {
+          "id": "tireless_crown",
+          "name": "Tireless Crown",
+          "description": "Your haste is 4% higher.",
+          "icon": {
+            "image": "delapouite/imperial-crown",
+            "school": "holy"
+          },
+          "effects": [
+            {
+              "modify": "self.stats.haste",
+              "per_rank": 0.04
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "sure_stride",
+      "name": "Sure Stride",
+      "type": "passive",
+      "ranks": 2,
+      "pos": [
+        5,
+        0
+      ],
+      "description": "You move 4% faster per rank.",
+      "icon": {
+        "image": "delapouite/metal-boot",
+        "school": "holy"
+      },
+      "effects": [
+        {
+          "modify": "templar_sure_stride.modifiers.0.value",
+          "per_rank": 0.04
+        }
+      ],
+      "grants_aura": "templar_sure_stride"
+    },
+    {
+      "id": "swift_dawnstep",
+      "name": "Swift Dawnstep",
+      "type": "passive",
+      "ranks": 2,
+      "pos": [
+        5,
+        1
+      ],
+      "requires_any": [
+        "sure_stride"
+      ],
+      "description": "Dawnstep's cooldown is 3 s shorter per rank.",
+      "icon": {
+        "image": "delapouite/hand-wing",
+        "school": "holy"
+      },
+      "effects": [
+        {
+          "modify": "dawnstep.cooldown_s",
+          "per_rank": -3
+        }
+      ]
+    },
+    {
+      "id": "unbowed_oath",
+      "name": "Unbowed Oath",
+      "type": "passive",
+      "ranks": 2,
+      "pos": [
+        6,
+        1
+      ],
+      "requires_any": [
+        "sure_stride"
+      ],
+      "description": "Break Free's cooldown is 6 s shorter per rank.",
+      "icon": {
+        "image": "delapouite/key-lock",
+        "school": "holy"
+      },
+      "effects": [
+        {
+          "modify": "break_free.cooldown_s",
+          "per_rank": -6
+        }
+      ]
+    },
+    {
+      "id": "lingering_dawnstep",
+      "name": "Lingering Dawnstep",
+      "type": "passive",
+      "ranks": 1,
+      "pos": [
+        5,
+        2
+      ],
+      "requires_any": [
+        "swift_dawnstep"
+      ],
+      "description": "Dawnstep's speed lasts 2 s longer.",
+      "icon": {
+        "image": "delapouite/spiky-wing",
+        "school": "holy"
+      },
+      "effects": [
+        {
+          "modify": "dawnstep_haste.duration_s",
+          "per_rank": 2
+        }
+      ]
+    },
+    {
+      "id": "unchained_choice",
+      "name": "Unchained",
+      "type": "choice",
+      "pos": [
+        6,
+        2
+      ],
+      "requires_any": [
+        "unbowed_oath"
+      ],
+      "description": "Choose what Break Free also does.",
+      "icon": {
+        "image": "delapouite/millenium-key",
+        "school": "holy"
+      },
+      "choices": [
+        {
+          "id": "unchained_stride",
+          "name": "Unchained Stride",
+          "description": "Break Free also makes you move 30% faster for 3 s.",
+          "icon": {
+            "image": "delapouite/winged-scepter",
+            "school": "holy"
+          },
+          "effects": [
+            {
+              "modify": "break_free.effects",
+              "set": [
+                {
+                  "type": "remove_cc"
+                },
+                {
+                  "type": "apply_aura",
+                  "aura": "templar_unchained_stride"
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "id": "unchained_mercy",
+          "name": "Unchained Mercy",
+          "description": "Break Free also heals you for 4,000.",
+          "icon": {
+            "image": "delapouite/heart-key",
+            "school": "holy"
+          },
+          "effects": [
+            {
+              "modify": "break_free.effects",
+              "set": [
+                {
+                  "type": "remove_cc"
+                },
+                {
+                  "type": "heal",
+                  "base": 4000,
+                  "can_crit": false,
+                  "school": "holy"
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "wide_halo",
+      "name": "Wide Halo",
+      "type": "passive",
+      "ranks": 1,
+      "pos": [
+        5,
+        3
+      ],
+      "requires_any": [
+        "lingering_dawnstep",
+        "unchained_choice"
+      ],
+      "description": "Dazzling Halo reaches 2 m further.",
+      "icon": {
+        "image": "lorc/explosion-rays",
+        "school": "holy"
+      },
+      "effects": [
+        {
+          "modify": "dazzling_halo.effects.0.radius_m",
+          "per_rank": 2
+        }
+      ]
+    },
+    {
+      "id": "patient_oath",
+      "name": "Patient Oath",
+      "type": "passive",
+      "ranks": 2,
+      "pos": [
+        6,
+        3
+      ],
+      "requires_any": [
+        "unchained_choice"
+      ],
+      "description": "Your cooldowns recover 3% faster per rank.",
+      "icon": {
+        "image": "delapouite/clockwise-rotation",
+        "school": "holy"
+      },
+      "effects": [
+        {
+          "modify": "templar_patient_oath.modifiers.0.value",
+          "per_rank": 0.03
+        }
+      ],
+      "grants_aura": "templar_patient_oath"
+    },
+    {
+      "id": "shackle_of_dawn",
+      "name": "Shackle of Dawn",
+      "type": "active",
+      "pos": [
+        5,
+        4
+      ],
+      "requires_any": [
+        "wide_halo",
+        "patient_oath"
+      ],
+      "gate": 8,
+      "description": "Learn Shackle of Dawn: root an enemy for 3 s; heavy damage breaks it (30 s cooldown).",
+      "icon": {
+        "image": "delapouite/dial-padlock",
+        "school": "holy"
+      },
+      "grants_ability": "shackle_of_dawn_ab"
+    },
+    {
+      "id": "heavy_gavel",
+      "name": "Heavy Gavel",
+      "type": "passive",
+      "ranks": 1,
+      "pos": [
+        6,
+        4
+      ],
+      "requires_any": [
+        "patient_oath"
+      ],
+      "gate": 8,
+      "description": "Binding Gavel's cooldown is 10 s shorter.",
+      "icon": {
+        "image": "lorc/gavel",
+        "school": "holy"
+      },
+      "effects": [
+        {
+          "modify": "binding_gavel.cooldown_s",
+          "per_rank": -10
+        }
+      ]
+    },
+    {
+      "id": "searing_shackle",
+      "name": "Searing Shackle",
+      "type": "passive",
+      "ranks": 1,
+      "pos": [
+        5,
+        7
+      ],
+      "requires_any": [
+        "shackle_choice"
+      ],
+      "gate": 20,
+      "description": "Shackle of Dawn also sears the enemy for 2,000.",
+      "icon": {
+        "image": "delapouite/dial-padlock",
+        "school": "holy"
+      },
+      "effects": [
+        {
+          "modify": "shackle_of_dawn_ab.effects",
+          "set": [
+            {
+              "type": "apply_aura",
+              "aura": "dawn_shackled"
+            },
+            {
+              "type": "damage",
+              "base": 2000
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "long_shackle",
+      "name": "Long Shackle",
+      "type": "passive",
+      "ranks": 2,
+      "pos": [
+        5,
+        5
+      ],
+      "requires_any": [
+        "shackle_of_dawn"
+      ],
+      "gate": 8,
+      "description": "Shackle of Dawn lasts 0.5 s longer per rank.",
+      "icon": {
+        "image": "delapouite/plain-padlock",
+        "school": "holy"
+      },
+      "effects": [
+        {
+          "modify": "dawn_shackled.duration_s",
+          "per_rank": 0.5
+        }
+      ]
+    },
+    {
+      "id": "firm_shackle",
+      "name": "Firm Shackle",
+      "type": "passive",
+      "ranks": 1,
+      "pos": [
+        4,
+        5
+      ],
+      "requires_any": [
+        "shackle_of_dawn"
+      ],
+      "gate": 8,
+      "description": "Damage no longer breaks Shackle of Dawn.",
+      "icon": {
+        "image": "delapouite/locked-door",
+        "school": "holy"
+      },
+      "effects": [
+        {
+          "modify": "dawn_shackled.breaks_on_damage",
+          "set": "never"
+        }
+      ]
+    },
+    {
+      "id": "swift_reproach",
+      "name": "Swift Reproach",
+      "type": "passive",
+      "ranks": 2,
+      "pos": [
+        6,
+        5
+      ],
+      "requires_any": [
+        "heavy_gavel"
+      ],
+      "gate": 8,
+      "description": "Iron Reproach's cooldown is 3 s shorter per rank.",
+      "icon": {
+        "image": "delapouite/shield-opposition",
+        "school": "physical"
+      },
+      "effects": [
+        {
+          "modify": "iron_reproach.cooldown_s",
+          "per_rank": -3
+        }
+      ]
+    },
+    {
+      "id": "shackle_choice",
+      "name": "Reach of the Shackle",
+      "type": "choice",
+      "pos": [
+        5,
+        6
+      ],
+      "requires_any": [
+        "long_shackle"
+      ],
+      "gate": 8,
+      "description": "Choose how Shackle of Dawn improves.",
+      "icon": {
+        "image": "delapouite/dial-padlock",
+        "school": "holy"
+      },
+      "choices": [
+        {
+          "id": "far_shackle",
+          "name": "Far Shackle",
+          "description": "Shackle of Dawn reaches 10 m further.",
+          "icon": {
+            "image": "delapouite/eye-target",
+            "school": "holy"
+          },
+          "effects": [
+            {
+              "modify": "shackle_of_dawn_ab.range_m",
+              "per_rank": 10
+            }
+          ]
+        },
+        {
+          "id": "swift_shackle",
+          "name": "Swift Shackle",
+          "description": "Shackle of Dawn's cooldown is 6 s shorter.",
+          "icon": {
+            "image": "delapouite/spring",
+            "school": "holy"
+          },
+          "effects": [
+            {
+              "modify": "shackle_of_dawn_ab.cooldown_s",
+              "per_rank": -6
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "stunning_weight",
+      "name": "Stunning Weight",
+      "type": "passive",
+      "ranks": 1,
+      "pos": [
+        6,
+        6
+      ],
+      "requires_any": [
+        "swift_reproach"
+      ],
+      "gate": 8,
+      "description": "Binding Gavel stuns for 0.5 s longer.",
+      "icon": {
+        "image": "delapouite/stone-pile",
+        "school": "physical"
+      },
+      "effects": [
+        {
+          "modify": "gavel_bound.duration_s",
+          "per_rank": 0.5
+        }
+      ]
+    },
+    {
+      "id": "soul_choice",
+      "name": "Soul of the Dawn",
+      "type": "choice",
+      "pos": [
+        6,
+        7
+      ],
+      "requires_any": [
+        "stunning_weight",
+        "shackle_choice"
+      ],
+      "gate": 20,
+      "description": "Choose a lasting strength.",
+      "icon": {
+        "image": "delapouite/glowing-artifact",
+        "school": "holy"
+      },
+      "choices": [
+        {
+          "id": "dawn_soul",
+          "name": "Dawn Soul",
+          "description": "Your damage and healing are 4% stronger.",
+          "icon": {
+            "image": "delapouite/fire-gem",
+            "school": "holy"
+          },
+          "effects": [
+            {
+              "modify": "self.stats.power_bonus",
+              "per_rank": 0.04
+            }
+          ]
+        },
+        {
+          "id": "iron_soul",
+          "name": "Iron Soul",
+          "description": "Your maximum health is 3,000 higher.",
+          "icon": {
+            "image": "delapouite/heart-battery",
+            "school": "holy"
+          },
+          "effects": [
+            {
+              "modify": "self.max_health",
+              "per_rank": 3000
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

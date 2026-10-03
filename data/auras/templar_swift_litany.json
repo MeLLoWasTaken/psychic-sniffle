@@ -1,0 +1,23 @@
+{
+  "id": "templar_swift_litany",
+  "name": "Swift Litany",
+  "description": "Talent: casting speed increased.",
+  "kind": "buff",
+  "duration_s": 0,
+  "refresh": "refresh",
+  "dispel_type": "none",
+  "cc_category": "none",
+  "hud_priority": "hidden",
+  "icon": {
+    "symbol": "swift_litany",
+    "school": "holy",
+    "image": "delapouite/rule-book"
+  },
+  "modifiers": [
+    {
+      "stat": "cast_speed",
+      "op": "multiply",
+      "value": 1.0
+    }
+  ]
+}

@@ -1,0 +1,8 @@
+{
+  "id": "purifying_touch",
+  "impact": {
+    "style": "rays",
+    "at": "target",
+    "size": 0.7
+  }
+}

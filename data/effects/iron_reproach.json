@@ -1,0 +1,11 @@
+{
+  "id": "iron_reproach",
+  "melee": {
+    "style": "thrust"
+  },
+  "impact": {
+    "style": "spark",
+    "at": "target",
+    "size": 1.0
+  }
+}

@@ -1,0 +1,13 @@
+{
+  "id": "radiant_pulse",
+  "ground": {
+    "style": "nova",
+    "center": "caster",
+    "lifetime_s": 0.8
+  },
+  "impact": {
+    "style": "rays",
+    "at": "hits",
+    "size": 0.7
+  }
+}

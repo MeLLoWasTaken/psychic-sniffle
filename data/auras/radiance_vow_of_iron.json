@@ -1,0 +1,23 @@
+{
+  "id": "radiance_vow_of_iron",
+  "name": "Vow of Iron",
+  "description": "Talent: damage taken down 8%.",
+  "kind": "buff",
+  "duration_s": 0,
+  "refresh": "refresh",
+  "dispel_type": "none",
+  "cc_category": "none",
+  "hud_priority": "hidden",
+  "modifiers": [
+    {
+      "stat": "damage_taken",
+      "op": "multiply",
+      "value": 0.92
+    }
+  ],
+  "icon": {
+    "symbol": "vow",
+    "school": "holy",
+    "image": "delapouite/viking-shield"
+  }
+}

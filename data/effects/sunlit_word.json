@@ -1,0 +1,8 @@
+{
+  "id": "sunlit_word",
+  "impact": {
+    "style": "rays",
+    "at": "target",
+    "size": 0.9
+  }
+}

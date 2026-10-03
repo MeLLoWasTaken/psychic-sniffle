@@ -1,0 +1,25 @@
+{
+  "id": "iron_reproach",
+  "name": "Iron Reproach",
+  "description": "Interrupt a cast and lock that school for 3 s.",
+  "owner": "templar_radiance",
+  "kit_slot": "interrupt",
+  "school": "physical",
+  "cast_type": "instant",
+  "cooldown_s": 40,
+  "triggers_gcd": false,
+  "range_m": 5,
+  "requires_los": true,
+  "target": "enemy",
+  "effects": [
+    {
+      "type": "interrupt",
+      "school_lock_s": 3
+    }
+  ],
+  "icon": {
+    "symbol": "shield_push",
+    "school": "physical",
+    "image": "delapouite/shield-opposition"
+  }
+}

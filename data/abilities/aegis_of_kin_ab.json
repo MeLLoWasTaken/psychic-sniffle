@@ -1,0 +1,25 @@
+{
+  "id": "aegis_of_kin_ab",
+  "name": "Aegis of Kin",
+  "description": "An ally is immune to physical damage for 6 s.",
+  "owner": "templar_radiance",
+  "kit_slot": "defensive",
+  "school": "holy",
+  "cast_type": "instant",
+  "cooldown_s": 180,
+  "triggers_gcd": false,
+  "range_m": 40,
+  "requires_los": true,
+  "target": "ally",
+  "effects": [
+    {
+      "type": "apply_aura",
+      "aura": "aegis_of_kin"
+    }
+  ],
+  "icon": {
+    "symbol": "griffin_shield",
+    "school": "holy",
+    "image": "delapouite/griffin-shield"
+  }
+}

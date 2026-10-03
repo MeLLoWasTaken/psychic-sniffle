@@ -1,0 +1,29 @@
+{
+  "id": "dawnstep",
+  "name": "Dawnstep",
+  "description": "Rush to an ally 8 to 40 m away; they move 30% faster for 4 s.",
+  "owner": "templar_radiance",
+  "kit_slot": "mobility",
+  "school": "holy",
+  "cast_type": "instant",
+  "cooldown_s": 25,
+  "triggers_gcd": false,
+  "range_m": 40,
+  "requires_los": true,
+  "target": "ally",
+  "effects": [
+    {
+      "type": "charge"
+    },
+    {
+      "type": "apply_aura",
+      "aura": "dawnstep_haste"
+    }
+  ],
+  "icon": {
+    "symbol": "winged_hand",
+    "school": "holy",
+    "image": "delapouite/hand-wing"
+  },
+  "min_range_m": 8
+}

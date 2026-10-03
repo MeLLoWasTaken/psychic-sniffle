@@ -1,0 +1,264 @@
+{
+  "tree_id": "templar_radiance_pvp",
+  "kind": "pvp",
+  "owner": "templar_radiance",
+  "points": 3,
+  "status": "complete",
+  "nodes": [
+    {
+      "id": "steadfast_dawnmend",
+      "name": "Steadfast Dawnmend",
+      "type": "passive",
+      "ranks": 1,
+      "description": "Interrupts no longer stop Dawnmend, but its cast takes 0.5 s longer.",
+      "icon": {
+        "image": "delapouite/notebook",
+        "school": "holy"
+      },
+      "effects": [
+        {
+          "modify": "dawnmend.interruptible",
+          "set": false
+        },
+        {
+          "modify": "dawnmend.cast_time_s",
+          "per_rank": 0.5
+        }
+      ]
+    },
+    {
+      "id": "walking_prayer",
+      "name": "Walking Prayer",
+      "type": "passive",
+      "ranks": 1,
+      "description": "You can cast Dawnmend while moving, but it costs 600 more mana.",
+      "icon": {
+        "image": "delapouite/stone-path",
+        "school": "holy"
+      },
+      "effects": [
+        {
+          "modify": "dawnmend.castable_while_moving",
+          "set": true
+        },
+        {
+          "modify": "dawnmend.cost.amount",
+          "per_rank": 600
+        }
+      ]
+    },
+    {
+      "id": "touch_in_chains",
+      "name": "Touch in Chains",
+      "type": "passive",
+      "ranks": 1,
+      "description": "You can cast Purifying Touch while stunned, incapacitated or disoriented.",
+      "icon": {
+        "image": "delapouite/hand-grip",
+        "school": "holy"
+      },
+      "effects": [
+        {
+          "modify": "purifying_touch.usable_while_cc",
+          "set": [
+            "stun",
+            "incapacitate",
+            "disorient"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "unshaken_light",
+      "name": "Unshaken Light",
+      "type": "passive",
+      "ranks": 1,
+      "description": "Enemy dispels can no longer remove your Noonblaze or Aegis of Kin.",
+      "icon": {
+        "image": "delapouite/dragon-shield",
+        "school": "holy"
+      },
+      "effects": [
+        {
+          "modify": "noonblaze.dispel_type",
+          "set": "none"
+        },
+        {
+          "modify": "aegis_of_kin.dispel_type",
+          "set": "none"
+        }
+      ]
+    },
+    {
+      "id": "sundering_dawn",
+      "name": "Sundering Dawn",
+      "type": "passive",
+      "ranks": 1,
+      "description": "Dawnbolt also reduces the healing its target receives by 25% for 6 s.",
+      "icon": {
+        "image": "delapouite/heart-stake",
+        "school": "holy"
+      },
+      "effects": [
+        {
+          "modify": "dawnbolt.effects",
+          "set": [
+            {
+              "type": "damage",
+              "base": 3400
+            },
+            {
+              "type": "apply_aura",
+              "aura": "radiance_sundered"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "relentless_halo",
+      "name": "Relentless Halo",
+      "type": "passive",
+      "ranks": 1,
+      "description": "Dazzling Halo disorients for 3 s, but damage no longer breaks it.",
+      "icon": {
+        "image": "delapouite/light-projector",
+        "school": "holy"
+      },
+      "effects": [
+        {
+          "modify": "dazzled.breaks_on_damage",
+          "set": "never"
+        },
+        {
+          "modify": "dazzled.duration_s",
+          "per_rank": -2
+        }
+      ]
+    },
+    {
+      "id": "swift_aegis",
+      "name": "Swift Aegis",
+      "type": "passive",
+      "ranks": 1,
+      "description": "Aegis of Kin's cooldown is 60 s shorter, but it lasts 2 s less.",
+      "icon": {
+        "image": "delapouite/roman-shield",
+        "school": "holy"
+      },
+      "effects": [
+        {
+          "modify": "aegis_of_kin_ab.cooldown_s",
+          "per_rank": -60
+        },
+        {
+          "modify": "aegis_of_kin.duration_s",
+          "per_rank": -2
+        }
+      ]
+    },
+    {
+      "id": "prayer_unbound",
+      "name": "Prayer Unbound",
+      "type": "passive",
+      "ranks": 1,
+      "description": "You can use Ironbound Prayer while stunned, incapacitated, disoriented or silenced.",
+      "icon": {
+        "image": "delapouite/star-key",
+        "school": "holy"
+      },
+      "effects": [
+        {
+          "modify": "ironbound_prayer_ab.usable_while_cc",
+          "set": [
+            "stun",
+            "incapacitate",
+            "disorient",
+            "silence"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "vow_of_iron",
+      "name": "Vow of Iron",
+      "type": "passive",
+      "ranks": 1,
+      "description": "You take 8% less damage, but Break Free's cooldown is 45 s longer.",
+      "icon": {
+        "image": "delapouite/viking-shield",
+        "school": "holy"
+      },
+      "effects": [
+        {
+          "modify": "break_free.cooldown_s",
+          "per_rank": 45
+        }
+      ],
+      "grants_aura": "radiance_vow_of_iron"
+    },
+    {
+      "id": "quick_reproach",
+      "name": "Quick Reproach",
+      "type": "passive",
+      "ranks": 1,
+      "description": "Iron Reproach's cooldown is 15 s shorter, but it locks the school for 1 s less.",
+      "icon": {
+        "image": "delapouite/tire-iron",
+        "school": "physical"
+      },
+      "effects": [
+        {
+          "modify": "iron_reproach.cooldown_s",
+          "per_rank": -15
+        },
+        {
+          "modify": "iron_reproach.effects.0.school_lock_s",
+          "per_rank": -1
+        }
+      ]
+    },
+    {
+      "id": "mercy_held",
+      "name": "Mercy Held Close",
+      "type": "passive",
+      "ranks": 1,
+      "description": "Final Mercy's cooldown is 60 s shorter, but it heals 6,000 less.",
+      "icon": {
+        "image": "delapouite/health-capsule",
+        "school": "holy"
+      },
+      "effects": [
+        {
+          "modify": "final_mercy.cooldown_s",
+          "per_rank": -60
+        },
+        {
+          "modify": "final_mercy.effects.0.base",
+          "per_rank": -6000
+        }
+      ]
+    },
+    {
+      "id": "echoing_gavel",
+      "name": "Echoing Gavel",
+      "type": "passive",
+      "ranks": 1,
+      "description": "Binding Gavel's cooldown is 15 s shorter, but it stuns for 1 s less.",
+      "icon": {
+        "image": "delapouite/hammer-break",
+        "school": "physical"
+      },
+      "effects": [
+        {
+          "modify": "binding_gavel.cooldown_s",
+          "per_rank": -15
+        },
+        {
+          "modify": "gavel_bound.duration_s",
+          "per_rank": -1
+        }
+      ]
+    }
+  ]
+}

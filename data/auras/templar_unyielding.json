@@ -1,0 +1,23 @@
+{
+  "id": "templar_unyielding",
+  "name": "Unyielding",
+  "description": "Talent: damage taken down 4%.",
+  "kind": "buff",
+  "duration_s": 0,
+  "refresh": "refresh",
+  "dispel_type": "none",
+  "cc_category": "none",
+  "hud_priority": "hidden",
+  "icon": {
+    "symbol": "unyielding",
+    "school": "holy",
+    "image": "delapouite/spartan-helmet"
+  },
+  "modifiers": [
+    {
+      "stat": "damage_taken",
+      "op": "multiply",
+      "value": 0.96
+    }
+  ]
+}

@@ -1,0 +1,13 @@
+{
+  "id": "brand_of_contrition_ab",
+  "impact": {
+    "style": "burst",
+    "at": "target",
+    "size": 0.9
+  },
+  "auras": {
+    "contrition": {
+      "style": "dot"
+    }
+  }
+}

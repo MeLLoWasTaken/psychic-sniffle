@@ -1,0 +1,17 @@
+{
+  "id": "dawn_shackled",
+  "name": "Shackle of Dawn",
+  "description": "Rooted in place.",
+  "kind": "debuff",
+  "duration_s": 3,
+  "dispel_type": "magic",
+  "cc_category": "root",
+  "hud_priority": "cc",
+  "breaks_on_damage": "threshold",
+  "damage_threshold_pct": 15,
+  "icon": {
+    "symbol": "shackle",
+    "school": "holy",
+    "image": "delapouite/dial-padlock"
+  }
+}

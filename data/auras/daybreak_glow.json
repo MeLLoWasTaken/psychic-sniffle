@@ -1,0 +1,23 @@
+{
+  "id": "daybreak_glow",
+  "name": "Daybreak",
+  "description": "Healing 1,500 every 2 s.",
+  "kind": "buff",
+  "duration_s": 10,
+  "dispel_type": "magic",
+  "cc_category": "none",
+  "hud_priority": "normal",
+  "periodic": {
+    "interval_s": 2,
+    "effect": {
+      "type": "heal",
+      "base": 1500,
+      "school": "holy"
+    }
+  },
+  "icon": {
+    "symbol": "lighthouse",
+    "school": "holy",
+    "image": "delapouite/lighthouse"
+  }
+}

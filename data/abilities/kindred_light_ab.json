@@ -1,0 +1,35 @@
+{
+  "id": "kindred_light_ab",
+  "name": "Kindred Light",
+  "description": "Heal an ally for 7,000 and yourself for 3,500.",
+  "owner": "templar_radiance",
+  "kit_slot": "core",
+  "school": "holy",
+  "cast_type": "cast",
+  "cast_time_s": 1.5,
+  "cooldown_s": 0,
+  "triggers_gcd": true,
+  "range_m": 40,
+  "requires_los": true,
+  "target": "ally",
+  "effects": [
+    {
+      "type": "heal",
+      "base": 7000
+    },
+    {
+      "type": "heal",
+      "base": 3500,
+      "affects": "self"
+    }
+  ],
+  "icon": {
+    "symbol": "two_hearts",
+    "school": "holy",
+    "image": "delapouite/opposite-hearts"
+  },
+  "cost": {
+    "resource": "mana",
+    "amount": 2800
+  }
+}

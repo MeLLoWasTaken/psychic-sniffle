@@ -1,0 +1,22 @@
+{
+  "id": "ironbound_prayer",
+  "name": "Ironbound Prayer",
+  "description": "Damage taken down 30%.",
+  "kind": "buff",
+  "duration_s": 8,
+  "dispel_type": "none",
+  "cc_category": "none",
+  "hud_priority": "major_defensive",
+  "icon": {
+    "symbol": "trembling_shield",
+    "school": "holy",
+    "image": "delapouite/vibrating-shield"
+  },
+  "modifiers": [
+    {
+      "stat": "damage_taken",
+      "op": "multiply",
+      "value": 0.7
+    }
+  ]
+}

@@ -1,0 +1,29 @@
+{
+  "id": "binding_gavel",
+  "name": "Binding Gavel",
+  "description": "Hurl a hammer that stuns an enemy for 3 s.",
+  "owner": "templar_radiance",
+  "kit_slot": "cc",
+  "school": "physical",
+  "cast_type": "instant",
+  "cooldown_s": 45,
+  "triggers_gcd": true,
+  "range_m": 20,
+  "requires_los": true,
+  "target": "enemy",
+  "effects": [
+    {
+      "type": "apply_aura",
+      "aura": "gavel_bound"
+    }
+  ],
+  "icon": {
+    "symbol": "gavel",
+    "school": "physical",
+    "image": "lorc/gavel"
+  },
+  "cost": {
+    "resource": "mana",
+    "amount": 800
+  }
+}

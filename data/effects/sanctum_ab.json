@@ -1,0 +1,9 @@
+{
+  "id": "sanctum_ab",
+  "auras": {
+    "sanctum": {
+      "style": "shield",
+      "size": 1.15
+    }
+  }
+}

@@ -8,106 +8,213 @@ unmodified; the game renders them with its own colors, outline, shading and fram
 | Icon | Author | Licence | Used by |
 | --- | --- | --- | --- |
 | brutal-helm | Carl Olsen | CC BY 3.0 | aura:last_to_fall, talent:last_to_fall |
+| flame | Carl Olsen | CC BY 3.0 | talent:searing_brand |
 | clock-tower | Caro Asercion | CC BY 3.0 | aura:turning_hours_passive, talent:turning_hours |
 | heraldic-sun | Caro Asercion | CC BY 3.0 | talent:tithe_of_light |
 | round-potion | Caro Asercion | CC BY 3.0 | aura:oracle_open_vessel, talent:open_vessel |
 | tarot-01-the-magician | Caro Asercion | CC BY 3.0 | talent:perfected_study |
+| tarot-17-the-star | Caro Asercion | CC BY 3.0 | talent:path_choice |
+| 3d-hammer | Delapouite | CC BY 3.0 | talent:hammer_weight |
 | achilles-heel | Delapouite | CC BY 3.0 | ability:crippling_slash, aura:crippled |
 | alarm-clock | Delapouite | CC BY 3.0 | talent:waking_hour |
+| all-seeing-eye | Delapouite | CC BY 3.0 | talent:keen_eye |
 | angry-eyes | Delapouite | CC BY 3.0 | talent:battle_fever |
 | anticlockwise-rotation | Delapouite | CC BY 3.0 | talent:stretched_hour |
+| armor-punch | Delapouite | CC BY 3.0 | talent:purging_strike |
 | arrow-wings | Delapouite | CC BY 3.0 | talent:pilgrims_benediction |
 | axe-sword | Delapouite | CC BY 3.0 | spec:warblade_carnage |
+| aztec-calendar-sun | Delapouite | CC BY 3.0 | ability:sunlit_word |
 | backward-time | Delapouite | CC BY 3.0 | talent:lasting_grace |
+| bamboo-fountain | Delapouite | CC BY 3.0 | talent:noon_wellspring |
 | body-balance | Delapouite | CC BY 3.0 | aura:steady_footing |
+| bolt-cutter | Delapouite | CC BY 3.0 | talent:severing_reproach |
+| book-pile | Delapouite | CC BY 3.0 | talent:practiced_prayer |
 | brass-knuckles | Delapouite | CC BY 3.0 | talent:hard_knuckles |
+| candles | Delapouite | CC BY 3.0 | aura:templar_quiet_vigil, talent:quiet_vigil |
 | cape-armor | Delapouite | CC BY 3.0 | aura:padded_lining_passive, talent:padded_lining |
+| centaur-heart | Delapouite | CC BY 3.0 | talent:kinship_unbounded |
 | charging-bull | Delapouite | CC BY 3.0 | ability:warpath_charge, aura:charge_dazed |
+| chest-armor | Delapouite | CC BY 3.0 | talent:plated_vigor |
 | cleaver | Delapouite | CC BY 3.0 | ability:bonecleaver, talent:bonecleaver_choice |
+| clockwise-rotation | Delapouite | CC BY 3.0 | aura:templar_patient_oath, talent:patient_oath |
+| crenel-crown | Delapouite | CC BY 3.0 | talent:crown_choice |
+| cross-shield | Delapouite | CC BY 3.0 | talent:steadfast_aegis |
 | crystal-shrine | Delapouite | CC BY 3.0 | talent:clinging_effigy |
 | cuckoo-clock | Delapouite | CC BY 3.0 | talent:heavy_hour |
+| dial-padlock | Delapouite | CC BY 3.0 | ability:shackle_of_dawn_ab, aura:dawn_shackled, talent:shackle_of_dawn, talent:searing_shackle, talent:shackle_choice |
+| diamond-ring | Delapouite | CC BY 3.0 | talent:clear_sight |
+| dragon-shield | Delapouite | CC BY 3.0 | talent:unshaken_light |
+| dream-catcher | Delapouite | CC BY 3.0 | talent:deep_slumber |
+| encirclement | Delapouite | CC BY 3.0 | talent:pulse_swell |
 | enrage | Delapouite | CC BY 3.0 | talent:deep_reserves |
 | executioner-hood | Delapouite | CC BY 3.0 | ability:headsmans_verdict |
 | extra-time | Delapouite | CC BY 3.0 | talent:peal_swiftness |
+| eye-target | Delapouite | CC BY 3.0 | talent:far_shackle |
+| falcon-moon | Delapouite | CC BY 3.0 | talent:swift_slumber |
 | falling-star | Delapouite | CC BY 3.0 | talent:swift_plea |
 | fencer | Delapouite | CC BY 3.0 | aura:measured_blade |
+| fire-flower | Delapouite | CC BY 3.0 | talent:long_noon |
+| fire-gem | Delapouite | CC BY 3.0 | talent:dawn_soul |
+| fire-iris | Delapouite | CC BY 3.0 | talent:blazing_noon |
+| fire-shrine | Delapouite | CC BY 3.0 | talent:high_noon |
+| flint-spark | Delapouite | CC BY 3.0 | talent:lasting_brand |
+| flower-emblem | Delapouite | CC BY 3.0 | talent:touch_choice |
+| flower-star | Delapouite | CC BY 3.0 | talent:dawns_embrace |
 | frozen-body | Delapouite | CC BY 3.0 | ability:frost_effigy, aura:effigy_encased |
 | frozen-ring | Delapouite | CC BY 3.0 | ability:hoarfrost_snare, aura:hoarfrost_snared, talent:hoarfrost_snare_talent |
 | fur-boot | Delapouite | CC BY 3.0 | aura:long_stride_passive, talent:long_stride |
+| glass-ball | Delapouite | CC BY 3.0 | aura:radiance_devout_hands, talent:devout_hands |
+| globe-ring | Delapouite | CC BY 3.0 | talent:wide_daybreak |
+| glowing-artifact | Delapouite | CC BY 3.0 | talent:soul_choice |
+| gold-mine | Delapouite | CC BY 3.0 | talent:tithe_of_iron |
+| gold-nuggets | Delapouite | CC BY 3.0 | talent:frugal_dawn |
+| gold-stack | Delapouite | CC BY 3.0 | talent:thrifty_word |
+| griffin-shield | Delapouite | CC BY 3.0 | ability:aegis_of_kin_ab, aura:aegis_of_kin |
+| hammer-break | Delapouite | CC BY 3.0 | talent:echoing_gavel |
 | hand-bandage | Delapouite | CC BY 3.0 | ability:bloody_resolve, talent:stanch_the_flow |
+| hand-grip | Delapouite | CC BY 3.0 | talent:touch_in_chains |
 | hand-of-god | Delapouite | CC BY 3.0 | ability:absolve, talent:absolution_in_chains |
+| hand-wing | Delapouite | CC BY 3.0 | ability:dawnstep, aura:dawnstep_haste, talent:swift_dawnstep |
 | handcuffed | Delapouite | CC BY 3.0 | talent:deep_snare |
 | handheld-fan | Delapouite | CC BY 3.0 | talent:keen_fan |
 | harp | Delapouite | CC BY 3.0 | ability:chorus_of_mending |
 | hatchet | Delapouite | CC BY 3.0 | ability:grim_hack |
 | healing | Delapouite | CC BY 3.0 | aura:oracle_path_of_mercy, talent:mercy_or_judgment, talent:path_of_mercy |
 | healing-shield | Delapouite | CC BY 3.0 | aura:warded_lining_passive, talent:warded_lining, talent:oath_of_mending |
+| health-capsule | Delapouite | CC BY 3.0 | talent:mercy_held |
 | health-potion | Delapouite | CC BY 3.0 | talent:cleansing_mercy |
 | heart-armor | Delapouite | CC BY 3.0 | talent:stout_reserve, talent:old_scars |
+| heart-battery | Delapouite | CC BY 3.0 | talent:iron_soul |
 | heart-beats | Delapouite | CC BY 3.0 | talent:quick_stillness |
+| heart-key | Delapouite | CC BY 3.0 | talent:unchained_mercy |
+| heart-necklace | Delapouite | CC BY 3.0 | talent:frugal_kinship |
 | heart-shield | Delapouite | CC BY 3.0 | talent:steadfast_vow |
+| heart-stake | Delapouite | CC BY 3.0 | aura:radiance_sundered, talent:sundering_strike |
 | heart-wings | Delapouite | CC BY 3.0 | ability:plea_of_mercy_ab, talent:plea_of_mercy |
 | heavy-collar | Delapouite | CC BY 3.0 | ability:burden_of_penance_ab, aura:penance_burdened, talent:burden_of_penance |
+| hedjet-white-crown | Delapouite | CC BY 3.0 | talent:iron_dominion |
 | high-punch | Delapouite | CC BY 3.0 | talent:sucker_blow |
 | holy-water | Delapouite | CC BY 3.0 | talent:ready_absolution |
+| hunter-eyes | Delapouite | CC BY 3.0 | talent:sure_gavel |
 | ice-cubes | Delapouite | CC BY 3.0 | talent:lingering_hail |
 | ice-golem | Delapouite | CC BY 3.0 | talent:quick_sculpting |
 | ice-iris | Delapouite | CC BY 3.0 | ability:deep_winter_ab, aura:deep_winter |
 | ice-skate | Delapouite | CC BY 3.0 | talent:gliding_ice |
 | ice-spell-cast | Delapouite | CC BY 3.0 | spec:arcanist_rime |
 | iceberg | Delapouite | CC BY 3.0 | ability:calving_ice, talent:calving_ice_talent |
+| imperial-crown | Delapouite | CC BY 3.0 | talent:tireless_crown |
+| jewel-crown | Delapouite | CC BY 3.0 | talent:blazing_crown |
 | jump-across | Delapouite | CC BY 3.0 | ability:hurtling_bound, talent:hurtling_bound_talent |
+| key-lock | Delapouite | CC BY 3.0 | talent:unbowed_oath |
 | kneeling | Delapouite | CC BY 3.0 | ability:hallowed_stillness_ab, aura:stilled_in_reverence, talent:hallowed_stillness |
 | knight-banner | Delapouite | CC BY 3.0 | ability:iron_oath_ab, aura:iron_oath, talent:iron_oath |
 | knocked-out-stars | Delapouite | CC BY 3.0 | aura:pommel_cracked |
 | liberty-wing | Delapouite | CC BY 3.0 | talent:unbroken_will |
+| light-helm | Delapouite | CC BY 3.0 | aura:templar_dawnforged_mantle, talent:dawnforged_mantle |
+| light-projector | Delapouite | CC BY 3.0 | talent:relentless_halo |
+| lighthouse | Delapouite | CC BY 3.0 | ability:daybreak_ab, aura:daybreak_glow, talent:daybreak |
+| lily-pads | Delapouite | CC BY 3.0 | talent:soothing_touch |
+| locked-door | Delapouite | CC BY 3.0 | talent:firm_shackle |
 | locked-heart | Delapouite | CC BY 3.0 | aura:oracle_vow_of_endurance, talent:vow_of_endurance |
 | magic-potion | Delapouite | CC BY 3.0 | talent:deep_reserves |
 | melting-ice-cube | Delapouite | CC BY 3.0 | talent:quick_calving |
+| metal-boot | Delapouite | CC BY 3.0 | aura:templar_sure_stride, talent:sure_stride |
+| metal-plate | Delapouite | CC BY 3.0 | aura:templar_tempered_plate, talent:tempered_plate |
 | mighty-horn | Delapouite | CC BY 3.0 | talent:fearsome_bellow |
+| millenium-key | Delapouite | CC BY 3.0 | talent:unchained_choice |
 | musical-notes | Delapouite | CC BY 3.0 | talent:dread_cadence |
 | musical-score | Delapouite | CC BY 3.0 | talent:chorus_reach |
 | mute | Delapouite | CC BY 3.0 | talent:spellsever_drill |
 | nested-hearts | Delapouite | CC BY 3.0 | talent:mercy_unbounded |
+| night-sleep | Delapouite | CC BY 3.0 | ability:vesper_slumber_ab, aura:vesper_slumbered, talent:vesper_slumber |
+| notebook | Delapouite | CC BY 3.0 | talent:steadfast_dawnmend |
+| old-lantern | Delapouite | CC BY 3.0 | aura:templar_welcoming_light, talent:welcoming_light |
+| opposite-hearts | Delapouite | CC BY 3.0 | ability:kindred_light_ab, talent:kindred_light |
+| padlock-open | Delapouite | CC BY 3.0 | talent:unbroken_oath |
+| peace-dove | Delapouite | CC BY 3.0 | talent:ready_touch |
 | pendulum-swing | Delapouite | CC BY 3.0 | talent:hours_weight |
+| plain-circle | Delapouite | CC BY 3.0 | talent:pulse_reach |
+| plain-padlock | Delapouite | CC BY 3.0 | talent:long_shackle |
+| polar-star | Delapouite | CC BY 3.0 | aura:templar_path_of_dawn, talent:path_of_dawn |
+| power-ring | Delapouite | CC BY 3.0 | talent:frugal_pulse |
 | prayer-beads | Delapouite | CC BY 3.0 | talent:fleet_devotion |
 | prisoner | Delapouite | CC BY 3.0 | talent:iron_jailer |
+| ribbon-shield | Delapouite | CC BY 3.0 | talent:enduring_aegis |
+| roman-shield | Delapouite | CC BY 3.0 | talent:swift_aegis |
+| round-star | Delapouite | CC BY 3.0 | talent:earnest_word |
+| rule-book | Delapouite | CC BY 3.0 | aura:templar_swift_litany, talent:swift_litany |
+| running-shoe | Delapouite | CC BY 3.0 | talent:zealous_pace |
 | sandal | Delapouite | CC BY 3.0 | aura:oracle_light_step, talent:light_step |
 | scroll-quill | Delapouite | CC BY 3.0 | talent:scholars_bent |
 | secret-book | Delapouite | CC BY 3.0 | talent:glacier_lore |
+| seven-pointed-star | Delapouite | CC BY 3.0 | talent:halo_cadence |
 | sharp-axe | Delapouite | CC BY 3.0 | talent:bitter_edge |
 | shattered-heart | Delapouite | CC BY 3.0 | talent:bitter_frostbite |
 | shield-bash | Delapouite | CC BY 3.0 | talent:battering_charge |
 | shield-impact | Delapouite | CC BY 3.0 | talent:bowling_charge |
+| shield-opposition | Delapouite | CC BY 3.0 | ability:iron_reproach, talent:swift_reproach |
+| shoulder-armor | Delapouite | CC BY 3.0 | talent:oathbound |
 | silenced | Delapouite | CC BY 3.0 | aura:windpipe_crushed |
 | solar-time | Delapouite | CC BY 3.0 | talent:swift_penance |
 | soul | Delapouite | CC BY 3.0 | talent:radiant_soul, talent:radiant_soul_power |
 | soul-vessel | Delapouite | CC BY 3.0 | talent:vessel_of_life |
 | sparkles | Delapouite | CC BY 3.0 | ability:lingering_grace_ab, aura:lingering_grace |
+| spartan-helmet | Delapouite | CC BY 3.0 | aura:templar_unyielding, talent:unyielding |
 | spell-book | Delapouite | CC BY 3.0 | aura:measured_casting_passive, talent:measured_casting |
 | spiked-shoulder-armor | Delapouite | CC BY 3.0 | talent:pit_hardened |
+| spiky-wing | Delapouite | CC BY 3.0 | talent:lingering_dawnstep |
+| spring | Delapouite | CC BY 3.0 | talent:swift_shackle |
+| stake-hammer | Delapouite | CC BY 3.0 | talent:mending_blow |
+| star-altar | Delapouite | CC BY 3.0 | aura:templar_sunlit_calm, talent:sunlit_calm |
+| star-key | Delapouite | CC BY 3.0 | talent:prayer_unbound |
+| star-medal | Delapouite | CC BY 3.0 | talent:conviction |
+| star-struck | Delapouite | CC BY 3.0 | talent:lingering_glare |
+| stars-stack | Delapouite | CC BY 3.0 | talent:ready_gavel |
 | sticky-boot | Delapouite | CC BY 3.0 | talent:ready_snare |
+| stone-path | Delapouite | CC BY 3.0 | talent:walking_prayer |
+| stone-pile | Delapouite | CC BY 3.0 | talent:stunning_weight |
+| striped-sun | Delapouite | CC BY 3.0 | ability:dawnmend |
+| sun-cloud | Delapouite | CC BY 3.0 | talent:brighter_dawn |
 | sun-priest | Delapouite | CC BY 3.0 | talent:zenith_of_mercy |
 | sun-spear | Delapouite | CC BY 3.0 | ability:castigate |
+| sunflower | Delapouite | CC BY 3.0 | talent:quick_word |
 | sunrise | Delapouite | CC BY 3.0 | talent:resounding_canticle |
 | sunset | Delapouite | CC BY 3.0 | ability:waning_light_ab, aura:waning_light, talent:waning_resolve |
 | sword-brandish | Delapouite | CC BY 3.0 | aura:pressing_posture, talent:fighting_posture, talent:pressing_posture |
 | templar-shield | Delapouite | CC BY 3.0 | talent:oath_terms, talent:stern_oath |
+| temporary-shield | Delapouite | CC BY 3.0 | talent:deeper_devotion |
 | thermometer-cold | Delapouite | CC BY 3.0 | aura:chilled |
+| thor-hammer | Delapouite | CC BY 3.0 | talent:relentless_hammer |
+| tire-iron | Delapouite | CC BY 3.0 | talent:quick_reproach |
+| tree-growth | Delapouite | CC BY 3.0 | talent:eternal_morning |
+| tribal-shield | Delapouite | CC BY 3.0 | talent:sheltering_aegis |
 | two-handed-sword | Delapouite | CC BY 3.0 | talent:heavy_swings |
+| unbalanced | Delapouite | CC BY 3.0 | talent:humbling_brand |
 | vertical-banner | Delapouite | CC BY 3.0 | talent:oath_unbroken |
+| vibrating-shield | Delapouite | CC BY 3.0 | ability:ironbound_prayer_ab, aura:ironbound_prayer, talent:prayer_of_iron |
+| viking-shield | Delapouite | CC BY 3.0 | aura:radiance_vow_of_iron, talent:vow_of_iron |
+| wall-light | Delapouite | CC BY 3.0 | talent:bright_daybreak |
 | war-axe | Delapouite | CC BY 3.0 | talent:heavy_verdict |
+| warhammer | Delapouite | CC BY 3.0 | ability:hallowed_strike |
+| water-flask | Delapouite | CC BY 3.0 | talent:deep_reserves |
 | water-fountain | Delapouite | CC BY 3.0 | talent:wellspring |
+| waterfall | Delapouite | CC BY 3.0 | talent:thorough_touch |
+| waterskin | Delapouite | CC BY 3.0 | talent:brimming_faith |
 | weight-scale | Delapouite | CC BY 3.0 | talent:wages_of_penance |
+| winged-scepter | Delapouite | CC BY 3.0 | aura:templar_unchained_stride, talent:unchained_stride |
 | andromeda-chain | Lorc | CC BY 3.0 | talent:hasty_binding |
 | angel-outfit | Lorc | CC BY 3.0 | aura:oracle_sanctified_vestments, talent:sanctified_vestments |
 | angel-wings | Lorc | CC BY 3.0 | ability:seraphic_surge_ab, aura:seraphic_surge, talent:seraphic_fervor |
+| anvil | Lorc | CC BY 3.0 | aura:templar_path_of_the_hammer, talent:path_of_the_hammer |
 | anvil-impact | Lorc | CC BY 3.0 | aura:bound_dazed, talent:landing, talent:shaking_landing |
+| aura | Lorc | CC BY 3.0 | ability:sanctum_ab, aura:sanctum |
 | axe-in-stump | Lorc | CC BY 3.0 | talent:ravenous_edge |
 | axe-swing | Lorc | CC BY 3.0 | ability:wide_hew |
 | ball-glow | Lorc | CC BY 3.0 | aura:oracle_devout_focus, talent:devout_focus |
+| ball-heart | Lorc | CC BY 3.0 | aura:templar_steadfast_heart, talent:steadfast_heart |
 | barbed-star | Lorc | CC BY 3.0 | talent:bitter_winter |
 | barbed-sun | Lorc | CC BY 3.0 | aura:seared_by_judgment, talent:searing_judgment |
+| beam-wake | Lorc | CC BY 3.0 | ability:dawnbolt |
 | beams-aura | Lorc | CC BY 3.0 | talent:exalted_surge |
 | bell-shield | Lorc | CC BY 3.0 | ability:veil_of_faith_ab, aura:iron_hide, aura:veil_of_faith, talent:sheltering_veil, talent:iron_hide |
 | beveled-star | Lorc | CC BY 3.0 | talent:clear_radiance |
@@ -132,7 +239,9 @@ unmodified; the game renders them with its own colors, outline, shading and fram
 | broken-skull | Lorc | CC BY 3.0 | talent:ringing_skull |
 | broken-tablet | Lorc | CC BY 3.0 | ability:spellsever |
 | bull-horns | Lorc | CC BY 3.0 | talent:headlong_rush |
+| burning-embers | Lorc | CC BY 3.0 | ability:brand_of_contrition_ab, aura:contrition, talent:brand_of_contrition, talent:contrition_choice, talent:swift_brand |
 | burning-eye | Lorc | CC BY 3.0 | talent:red_hunger |
+| candle-flame | Lorc | CC BY 3.0 | aura:templar_hearthglow, talent:hearthglow |
 | candle-light | Lorc | CC BY 3.0 | aura:oracle_ember_of_faith, talent:ember_of_faith |
 | candle-skull | Lorc | CC BY 3.0 | talent:unbroken_dread |
 | candlebright | Lorc | CC BY 3.0 | talent:frugal_light |
@@ -152,6 +261,7 @@ unmodified; the game renders them with its own colors, outline, shading and fram
 | crossed-chains | Lorc | CC BY 3.0 | ability:chains_of_awe, aura:awed_silence, talent:tightened_chains |
 | crossed-slashes | Lorc | CC BY 3.0 | talent:strike_the_fallen |
 | crossed-swords | Lorc | CC BY 3.0 | ability:auto_attack |
+| crowned-heart | Lorc | CC BY 3.0 | ability:final_mercy |
 | crowned-skull | Lorc | CC BY 3.0 | talent:dominion_of_dread |
 | crystal-ball | Lorc | CC BY 3.0 | talent:vast_reserves |
 | crystal-bars | Lorc | CC BY 3.0 | talent:swift_binding |
@@ -168,6 +278,7 @@ unmodified; the game renders them with its own colors, outline, shading and fram
 | dervish-swords | Lorc | CC BY 3.0 | talent:crimson_frenzy |
 | diamond-hard | Lorc | CC BY 3.0 | talent:sepulcher_reflex |
 | divided-spiral | Lorc | CC BY 3.0 | talent:twofold_unravel |
+| dove | Lorc | CC BY 3.0 | ability:purifying_touch |
 | dread-skull | Lorc | CC BY 3.0 | talent:long_dread |
 | dripping-blade | Lorc | CC BY 3.0 | talent:measured_fury |
 | dripping-sword | Lorc | CC BY 3.0 | talent:weeping_ruin |
@@ -179,6 +290,8 @@ unmodified; the game renders them with its own colors, outline, shading and fram
 | empty-hourglass | Lorc | CC BY 3.0 | ability:hourglass_ward, aura:hourglass_warded, talent:hourglass_ward_talent, talent:lingering_mist |
 | enlightenment | Lorc | CC BY 3.0 | talent:deep_conviction |
 | evil-book | Lorc | CC BY 3.0 | talent:grim_study |
+| expanded-rays | Lorc | CC BY 3.0 | ability:radiant_pulse |
+| explosion-rays | Lorc | CC BY 3.0 | ability:dazzling_halo, aura:dazzled, talent:wide_halo |
 | eye-shield | Lorc | CC BY 3.0 | talent:unbreakable_faith |
 | feather | Lorc | CC BY 3.0 | ability:winged_stride_ab, aura:winged_stride |
 | feathered-wing | Lorc | CC BY 3.0 | talent:soaring_stride |
@@ -190,6 +303,7 @@ unmodified; the game renders them with its own colors, outline, shading and fram
 | frozen-arrow | Lorc | CC BY 3.0 | ability:shiver_lance |
 | frozen-block | Lorc | CC BY 3.0 | talent:sepulcher_lore |
 | frozen-orb | Lorc | CC BY 3.0 | talent:dense_rime |
+| gavel | Lorc | CC BY 3.0 | ability:binding_gavel, aura:gavel_bound, talent:heavy_gavel |
 | gem-chain | Lorc | CC BY 3.0 | talent:lingering_awe |
 | ghost | Lorc | CC BY 3.0 | talent:haunting_psalm |
 | glass-heart | Lorc | CC BY 3.0 | talent:stopped_heart |
@@ -295,6 +409,7 @@ unmodified; the game renders them with its own colors, outline, shading and fram
 | star-pupil | Lorc | CC BY 3.0 | talent:keen_insight |
 | star-swirl | Lorc | CC BY 3.0 | talent:righteous_unravel |
 | stitched-wound | Lorc | CC BY 3.0 | aura:knotted_scars, talent:knotted_scars_talent |
+| sun | Lorc | CC BY 3.0 | ability:noonblaze_ab, aura:noonblaze, spec:templar_radiance |
 | sun-radiations | Lorc | CC BY 3.0 | talent:crowned_in_light, talent:piercing_radiance |
 | sunbeams | Lorc | CC BY 3.0 | talent:radiant_mending |
 | sundial | Lorc | CC BY 3.0 | aura:oracle_patient_devotion, talent:patient_devotion |

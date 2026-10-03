@@ -1,0 +1,34 @@
+{
+  "id": "hallowed_strike",
+  "name": "Hallowed Strike",
+  "description": "Strike an enemy for 4,000 and heal yourself for 2,500.",
+  "owner": "templar_radiance",
+  "kit_slot": "core",
+  "school": "physical",
+  "cast_type": "instant",
+  "cooldown_s": 6,
+  "triggers_gcd": true,
+  "range_m": 5,
+  "requires_los": true,
+  "target": "enemy",
+  "effects": [
+    {
+      "type": "damage",
+      "base": 4000
+    },
+    {
+      "type": "heal",
+      "base": 2500,
+      "affects": "self"
+    }
+  ],
+  "icon": {
+    "symbol": "warhammer",
+    "school": "physical",
+    "image": "delapouite/warhammer"
+  },
+  "cost": {
+    "resource": "mana",
+    "amount": 600
+  }
+}

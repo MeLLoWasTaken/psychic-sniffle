@@ -16,6 +16,9 @@
     "stiff_neck": {
       "style": "empower",
       "size": 0.8
+    },
+    "templar_unchained_stride": {
+      "style": "speed"
     }
   }
 }

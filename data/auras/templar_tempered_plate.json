@@ -1,0 +1,23 @@
+{
+  "id": "templar_tempered_plate",
+  "name": "Tempered Plate",
+  "description": "Talent: armor turns aside more physical damage.",
+  "kind": "buff",
+  "duration_s": 0,
+  "refresh": "refresh",
+  "dispel_type": "none",
+  "cc_category": "none",
+  "hud_priority": "hidden",
+  "icon": {
+    "symbol": "tempered_plate",
+    "school": "holy",
+    "image": "delapouite/metal-plate"
+  },
+  "modifiers": [
+    {
+      "stat": "armor",
+      "op": "add",
+      "value": 0
+    }
+  ]
+}

@@ -1,0 +1,13 @@
+{
+  "id": "noonblaze_ab",
+  "impact": {
+    "style": "rays",
+    "at": "self",
+    "size": 1.2
+  },
+  "auras": {
+    "noonblaze": {
+      "style": "empower"
+    }
+  }
+}

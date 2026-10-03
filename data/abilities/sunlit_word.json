@@ -1,0 +1,29 @@
+{
+  "id": "sunlit_word",
+  "name": "Sunlit Word",
+  "description": "An instant heal for 6,500.",
+  "owner": "templar_radiance",
+  "kit_slot": "core",
+  "school": "holy",
+  "cast_type": "instant",
+  "cooldown_s": 8,
+  "triggers_gcd": true,
+  "range_m": 40,
+  "requires_los": true,
+  "target": "ally",
+  "effects": [
+    {
+      "type": "heal",
+      "base": 6500
+    }
+  ],
+  "icon": {
+    "symbol": "sun_disc",
+    "school": "holy",
+    "image": "delapouite/aztec-calendar-sun"
+  },
+  "cost": {
+    "resource": "mana",
+    "amount": 1900
+  }
+}

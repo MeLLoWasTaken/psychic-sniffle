@@ -1,0 +1,13 @@
+{
+  "id": "daybreak_ab",
+  "ground": {
+    "style": "zone",
+    "center": "caster",
+    "lifetime_s": 1.2
+  },
+  "auras": {
+    "daybreak_glow": {
+      "style": "hot"
+    }
+  }
+}

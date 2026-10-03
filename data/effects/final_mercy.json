@@ -1,0 +1,8 @@
+{
+  "id": "final_mercy",
+  "impact": {
+    "style": "rays",
+    "at": "target",
+    "size": 1.8
+  }
+}

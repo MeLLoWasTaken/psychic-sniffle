@@ -1,0 +1,16 @@
+{
+  "id": "vesper_slumbered",
+  "name": "Vesper Slumber",
+  "description": "Asleep. Any damage wakes it.",
+  "kind": "debuff",
+  "duration_s": 5,
+  "dispel_type": "magic",
+  "cc_category": "incapacitate",
+  "hud_priority": "cc",
+  "breaks_on_damage": "any",
+  "icon": {
+    "symbol": "sleep",
+    "school": "holy",
+    "image": "delapouite/night-sleep"
+  }
+}

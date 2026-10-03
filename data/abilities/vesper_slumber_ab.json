@@ -1,0 +1,30 @@
+{
+  "id": "vesper_slumber_ab",
+  "name": "Vesper Slumber",
+  "description": "An enemy falls asleep, unable to act, for 5 s. Any damage wakes it.",
+  "owner": "templar_radiance",
+  "kit_slot": "cc",
+  "school": "holy",
+  "cast_type": "cast",
+  "cast_time_s": 1.5,
+  "cooldown_s": 45,
+  "triggers_gcd": true,
+  "range_m": 30,
+  "requires_los": true,
+  "target": "enemy",
+  "effects": [
+    {
+      "type": "apply_aura",
+      "aura": "vesper_slumbered"
+    }
+  ],
+  "icon": {
+    "symbol": "sleep",
+    "school": "holy",
+    "image": "delapouite/night-sleep"
+  },
+  "cost": {
+    "resource": "mana",
+    "amount": 1500
+  }
+}

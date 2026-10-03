@@ -1,0 +1,22 @@
+{
+  "id": "dawnstep_haste",
+  "name": "Dawnstep",
+  "description": "Movement up 30%.",
+  "kind": "buff",
+  "duration_s": 4,
+  "dispel_type": "magic",
+  "cc_category": "none",
+  "hud_priority": "normal",
+  "icon": {
+    "symbol": "winged_hand",
+    "school": "holy",
+    "image": "delapouite/hand-wing"
+  },
+  "modifiers": [
+    {
+      "stat": "move_speed",
+      "op": "multiply",
+      "value": 1.3
+    }
+  ]
+}

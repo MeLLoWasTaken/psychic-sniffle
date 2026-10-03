@@ -1,0 +1,25 @@
+{
+  "id": "templar_hearthglow",
+  "name": "Hearthglow",
+  "description": "Talent: healing 300 every 5 s.",
+  "kind": "buff",
+  "duration_s": 0,
+  "refresh": "refresh",
+  "dispel_type": "none",
+  "cc_category": "none",
+  "hud_priority": "hidden",
+  "icon": {
+    "symbol": "hearthglow",
+    "school": "holy",
+    "image": "lorc/candle-flame"
+  },
+  "periodic": {
+    "interval_s": 5,
+    "effect": {
+      "type": "heal",
+      "base": 300,
+      "can_crit": false,
+      "school": "holy"
+    }
+  }
+}

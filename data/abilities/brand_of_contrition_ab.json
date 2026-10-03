@@ -1,0 +1,29 @@
+{
+  "id": "brand_of_contrition_ab",
+  "name": "Brand of Contrition",
+  "description": "An enemy deals 20% less damage for 8 s.",
+  "owner": "templar",
+  "kit_slot": "utility",
+  "school": "holy",
+  "cast_type": "instant",
+  "cooldown_s": 45,
+  "triggers_gcd": true,
+  "range_m": 30,
+  "requires_los": true,
+  "target": "enemy",
+  "effects": [
+    {
+      "type": "apply_aura",
+      "aura": "contrition"
+    }
+  ],
+  "icon": {
+    "symbol": "brand",
+    "school": "holy",
+    "image": "lorc/burning-embers"
+  },
+  "cost": {
+    "resource": "mana",
+    "amount": 1200
+  }
+}

@@ -1,0 +1,33 @@
+{
+  "id": "sanctum_ab",
+  "name": "Sanctum",
+  "description": "Immune to damage and crowd control for 6 s; your healing is halved meanwhile. Removes crowd control.",
+  "owner": "templar_radiance",
+  "kit_slot": "defensive",
+  "school": "holy",
+  "cast_type": "instant",
+  "cooldown_s": 300,
+  "triggers_gcd": false,
+  "range_m": 0,
+  "requires_los": false,
+  "target": "self",
+  "effects": [
+    {
+      "type": "remove_cc"
+    },
+    {
+      "type": "apply_aura",
+      "aura": "sanctum"
+    }
+  ],
+  "icon": {
+    "symbol": "halo_aura",
+    "school": "holy",
+    "image": "lorc/aura"
+  },
+  "usable_while_cc": [
+    "stun",
+    "root",
+    "silence"
+  ]
+}

@@ -1,0 +1,25 @@
+{
+  "id": "final_mercy",
+  "name": "Final Mercy",
+  "description": "A great heal on an ally for 24,000.",
+  "owner": "templar_radiance",
+  "kit_slot": "burst",
+  "school": "holy",
+  "cast_type": "instant",
+  "cooldown_s": 180,
+  "triggers_gcd": true,
+  "range_m": 40,
+  "requires_los": true,
+  "target": "ally",
+  "effects": [
+    {
+      "type": "heal",
+      "base": 24000
+    }
+  ],
+  "icon": {
+    "symbol": "crowned_heart",
+    "school": "holy",
+    "image": "lorc/crowned-heart"
+  }
+}

@@ -1,0 +1,31 @@
+{
+  "id": "radiant_pulse",
+  "name": "Radiant Pulse",
+  "description": "Heal yourself and every ally within 10 m for 4,500.",
+  "owner": "templar_radiance",
+  "kit_slot": "core",
+  "school": "holy",
+  "cast_type": "instant",
+  "cooldown_s": 15,
+  "triggers_gcd": true,
+  "range_m": 0,
+  "requires_los": false,
+  "target": "self",
+  "effects": [
+    {
+      "type": "heal",
+      "base": 4500,
+      "affects": "allies_in_radius",
+      "radius_m": 10
+    }
+  ],
+  "icon": {
+    "symbol": "rays_out",
+    "school": "holy",
+    "image": "lorc/expanded-rays"
+  },
+  "cost": {
+    "resource": "mana",
+    "amount": 2400
+  }
+}

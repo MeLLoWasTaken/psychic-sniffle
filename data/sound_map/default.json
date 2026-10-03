@@ -363,6 +363,89 @@
       "cast_loop": "holy_cast_loop",
       "release": "holy_release",
       "impact": "chains_of_awe_impact"
+    },
+    "dawnmend": {
+      "cast_start": "holy_cast_start",
+      "cast_loop": "holy_cast_loop",
+      "release": "heal_release",
+      "impact": "holy_heal"
+    },
+    "sunlit_word": {
+      "release": "heal_release",
+      "impact": "heal_quick"
+    },
+    "hallowed_strike": {
+      "release": "@weapon_swing",
+      "impact": "@weapon_hit"
+    },
+    "radiant_pulse": {
+      "release": "heal_release",
+      "impact": "heal_chorus"
+    },
+    "dawnbolt": {
+      "cast_start": "holy_cast_start",
+      "cast_loop": "holy_cast_loop",
+      "release": "holy_release",
+      "impact": "castigate_impact"
+    },
+    "noonblaze_ab": {
+      "release": "seraphic_surge"
+    },
+    "final_mercy": {
+      "release": "heal_release",
+      "impact": "holy_heal"
+    },
+    "binding_gavel": {
+      "release": "@weapon_swing",
+      "impact": "pommel_crack_impact"
+    },
+    "dazzling_halo": {
+      "release": "psalm_of_dread"
+    },
+    "iron_reproach": {
+      "release": "@weapon_swing",
+      "impact": "interrupt_impact"
+    },
+    "sanctum_ab": {
+      "release": "veil_of_faith"
+    },
+    "ironbound_prayer_ab": {
+      "release": "waning_light"
+    },
+    "aegis_of_kin_ab": {
+      "release": "heal_release",
+      "impact": "veil_of_faith"
+    },
+    "dawnstep": {
+      "release": "charge_rush"
+    },
+    "purifying_touch": {
+      "release": "dispel_holy",
+      "impact": "dispel_impact"
+    },
+    "brand_of_contrition_ab": {
+      "release": "holy_release",
+      "impact": "castigate_impact"
+    },
+    "shackle_of_dawn_ab": {
+      "release": "chains_of_awe_release",
+      "impact": "chains_of_awe_impact"
+    },
+    "kindred_light_ab": {
+      "cast_start": "holy_cast_start",
+      "cast_loop": "holy_cast_loop",
+      "release": "heal_release",
+      "impact": "holy_heal"
+    },
+    "daybreak_ab": {
+      "release": "heal_release",
+      "impact": "heal_hot_apply"
+    },
+    "vesper_slumber_ab": {
+      "cast_start": "holy_cast_start",
+      "cast_loop": "holy_cast_loop",
+      "release": "chains_of_awe_release",
+      "impact": "chains_of_awe_impact"
     }
   },
   "auras": {

@@ -1,0 +1,27 @@
+{
+  "id": "noonblaze",
+  "name": "Noonblaze",
+  "description": "Healing up 25%, critical chance up 20%.",
+  "kind": "buff",
+  "duration_s": 12,
+  "dispel_type": "magic",
+  "cc_category": "none",
+  "hud_priority": "major_offensive",
+  "icon": {
+    "symbol": "noon_sun",
+    "school": "holy",
+    "image": "lorc/sun"
+  },
+  "modifiers": [
+    {
+      "stat": "healing_done",
+      "op": "multiply",
+      "value": 1.25
+    },
+    {
+      "stat": "crit_chance",
+      "op": "add",
+      "value": 0.2
+    }
+  ]
+}

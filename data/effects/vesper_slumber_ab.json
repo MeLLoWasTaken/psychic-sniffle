@@ -1,0 +1,17 @@
+{
+  "id": "vesper_slumber_ab",
+  "cast": {
+    "style": "hand_glow",
+    "hands": "right"
+  },
+  "impact": {
+    "style": "ring",
+    "at": "target",
+    "size": 0.9
+  },
+  "auras": {
+    "vesper_slumbered": {
+      "style": "disorient"
+    }
+  }
+}
