@@ -1,7 +1,7 @@
 {
   "id": "sun_ring",
   "name": "Sun Ring",
-  "description": "Enemies within 8 m take 2,800 holy damage.",
+  "description": "Enemies within 8 m take 2,200 holy damage.",
   "owner": "templar_vanguard",
   "kit_slot": "core",
   "school": "holy",
@@ -14,7 +14,7 @@
   "effects": [
     {
       "type": "damage",
-      "base": 2800,
+      "base": 2200,
       "affects": "enemies_in_radius",
       "radius_m": 8
     }

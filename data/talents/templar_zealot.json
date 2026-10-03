@@ -33,7 +33,7 @@
           "set": [
             {
               "type": "damage",
-              "base": 7500
+              "base": 7000
             },
             {
               "type": "dispel",

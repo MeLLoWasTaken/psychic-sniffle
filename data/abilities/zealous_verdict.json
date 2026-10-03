@@ -1,7 +1,7 @@
 {
   "id": "zealous_verdict",
   "name": "Zealous Verdict",
-  "description": "A crushing blow for 7,500.",
+  "description": "A crushing blow for 7,000.",
   "owner": "templar_zealot",
   "kit_slot": "core",
   "school": "physical",
@@ -14,7 +14,7 @@
   "effects": [
     {
       "type": "damage",
-      "base": 7500
+      "base": 7000
     }
   ],
   "icon": {

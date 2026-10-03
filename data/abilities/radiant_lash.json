@@ -1,7 +1,7 @@
 {
   "id": "radiant_lash",
   "name": "Radiant Lash",
-  "description": "Lash an enemy with light for 5,500 holy damage.",
+  "description": "Lash an enemy with light for 5,200 holy damage.",
   "owner": "templar_zealot",
   "kit_slot": "core",
   "school": "holy",
@@ -14,7 +14,7 @@
   "effects": [
     {
       "type": "damage",
-      "base": 5500
+      "base": 5200
     }
   ],
   "icon": {

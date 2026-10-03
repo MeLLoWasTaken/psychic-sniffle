@@ -1,7 +1,7 @@
 {
   "id": "crusading_blow",
   "name": "Crusading Blow",
-  "description": "Strike an enemy for 3,800.",
+  "description": "Strike an enemy for 3,000.",
   "owner": "templar_vanguard",
   "kit_slot": "core",
   "school": "physical",
@@ -14,7 +14,7 @@
   "effects": [
     {
       "type": "damage",
-      "base": 3800
+      "base": 3000
     }
   ],
   "icon": {

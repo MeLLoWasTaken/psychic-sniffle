@@ -21,7 +21,7 @@ Acceptance criteria are written before work starts. Refine them during step 2 of
 Items further down keep their history; this list is the order to take them in. Review 6: `docs/reports/review_06/review_06.md`.
 
 1. M3-04 Templar balance. Team brackets are inside 40-60% for every spec; 1v1 is not (Vanguard 67%, Radiance 60%, Warblade 24%). Waiting on the human: should 1v1 balance cover tanks and healers (review 6 asks; recommendation: measure 1v1 among damage specs, report tanks and healers separately)? The criterion stands as written until then.
-2. Frostgrave balance (the nightly at cac5431 includes it).
+2. Frostgrave balance: done by the nightly at cac5431 (1v1 43%, 2v2 44%, 3v3 46%).
 3. M3-11 Frostgrave sounds and effects (M3-10 done).
 4. F-08 leftover: Oracle mirrors reaching the time limit (a dampening proposal waits on the human).
 
@@ -682,6 +682,9 @@ The other 10 classes, and the 6 remaining specs of the first three classes, in t
 - [ ] Radiance, Vanguard and Zealot each win 40 to 60% in 1v1, 2v2 and 3v3 bot simulations (named and random builds), with every other spec still inside 40 to 60%. (Widened 2026-10-03 from Radiance alone: the three specs share class talents and abilities, so they are tuned together on one nightly run.)
 - Nightly 2026-10-03 (ba998c2, 3,000 matches per bracket, Radiance only): 2v2 Radiance 45%, 3v3 49%, 1v1 55%. Every other spec inside 40 to 60% except the Warblade in 1v1 (34%), because Radiance won 300 of 300 duels against it (the Warblade beats the Oracle 53% and the Arcanist 52%). Strongest 2v2 pairs: Radiance with a Warblade 69%, with an Arcanist 66%.
 - First pass: Radiance hits softer and heals less in melee (Hallowed Strike 4,000 to 3,000 and its self-heal 2,500 to 1,500, Mending Blow +800 to +500, Dawnbolt 3,400 to 2,800, the instant Sunlit Word 6,500 to 5,000) and more with its interruptible cast heal (Dawnmend 12,500 to 13,500). Six local duels: the Warblade still loses all six, about 5 s later. A traced duel shows why: plate takes 30% off the Warblade's damage, Radiance's mana never falls, and it settles at 30 to 40k health without casting Dawnmend. Dampening starts too late in 1v1 to matter (a DESIGN.md rule). Next: the nightly with this pass; then candidates are a healing reduction on a Warblade core strike, or Radiance spending more mana.
+- Nightly 2026-10-03 at ad00bac (Vanguard and Zealot in, before the first pass): 2v2 and 3v3 every spec inside 40-60%; 1v1 Vanguard 67%, Radiance 60%, Warblade 24%.
+- Nightly 2026-10-03 at cac5431 (first pass, Frostgrave in): 1v1 Arcanist 52%, Frostgrave 43%, Oracle 36%, Radiance 55%, Vanguard 76%, Zealot 42%, Warblade 27%; 2v2 Arcanist 46%, Frostgrave 44%, Oracle 44%, Radiance 48%, Vanguard 63%, Zealot 61%, Warblade 50%; 3v3 Arcanist 47%, Frostgrave 46%, Oracle 49%, Radiance 56%, Vanguard 58%, Zealot 56%, Warblade 49%. Radiance came down in every bracket. The Vanguard is too strong in team brackets too: in a traced 2v2 the tank dealt 269k damage to the Warblade's 366k.
+- Second pass: the Vanguard's attacks about 20% softer (Crusading Blow 3,800 to 3,000, Aegis Bash 4,500 to 3,600, Sun Ring 2,800 to 2,200, Hurled Aegis 3,600 to 2,900); the Zealot's about 5% (Dawnblade Strike 4,800 to 4,500, Zealous Verdict 7,500 to 7,000, Radiant Lash 5,500 to 5,200). Next: the nightly with this pass.
 
 ### M3-05 Templar Vanguard kit `[done]`
 - [x] The Vanguard tank spec: 14 to 18 abilities (holy damage around itself, protective blessings on allies), auras, spec and PvP talent trees, a bot profile with three builds; plays in bot matches without errors; counterplay reviewed.
@@ -724,7 +727,7 @@ The other 10 classes, and the 6 remaining specs of the first three classes, in t
 ### M3-11 Frostgrave sounds and effects `[todo]`
 - [ ] Frostgrave's strong effects (Grave Winter, Hoarfrost Surge, Glacial Tomb, Grave Tether, Gravecloak) get their own sounds instead of the Arcanist's and the Templar's; every ability's effect reads on enemy frames.
 
-Then, in order (split into items like M3-01 to M3-04 as each starts): Frostgrave balance, Bloodbound (tank) and Plague (minions); Stormcaller Tempest, Tidesinger (healer, totems) and Primal (wolves); Warblade Berserker; Arcanist Pyre and Aether; wave 1 gate.
+Then, in order (split into items like M3-01 to M3-04 as each starts): Bloodbound (tank) and Plague (minions); Stormcaller Tempest, Tidesinger (healer, totems) and Primal (wolves); Warblade Berserker; Arcanist Pyre and Aether; wave 1 gate.
 
 ## Later milestones (split into items when the milestone starts)
 

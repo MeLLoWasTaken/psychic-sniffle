@@ -1,7 +1,7 @@
 {
   "id": "hurled_aegis",
   "name": "Hurled Aegis",
-  "description": "Throw your shield at an enemy for 3,600; it moves 30% slower for 3 s.",
+  "description": "Throw your shield at an enemy for 2,900; it moves 30% slower for 3 s.",
   "owner": "templar_vanguard",
   "kit_slot": "core",
   "school": "physical",
@@ -14,7 +14,7 @@
   "effects": [
     {
       "type": "damage",
-      "base": 3600
+      "base": 2900
     },
     {
       "type": "apply_aura",
