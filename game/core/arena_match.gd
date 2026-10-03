@@ -16,6 +16,7 @@ var prep_ticks: int
 var dampening_start_ticks: int
 var dampening_step: float
 var dampening_interval_ticks: int
+var dampening_initial: float = 0.0  ## healing already taken off when dampening starts (1v1)
 var time_limit_ticks: int
 var winner_team: int = -1  ## -1 while running; -2 for a draw
 var geometry: ArenaGeometry
@@ -42,8 +43,12 @@ func _init(tuning: Dictionary, p_bracket: String, p_tick_rate: int, p_geometry: 
 	prep_ticks = roundi(float(a["prep_phase_s"]) * tick_rate)
 	var damp_s: float = a["dampening_start_1v1_s"] if bracket == "1v1" else a["dampening_start_s"]
 	dampening_start_ticks = roundi(float(damp_s) * tick_rate)
-	dampening_step = float(a["dampening_step_pct"]) / 100.0
-	dampening_interval_ticks = roundi(float(a["dampening_interval_s"]) * tick_rate)
+	# duels dampen sooner and faster (their own step and interval; DECISIONS 2026-10-03)
+	var duel: bool = bracket == "1v1"
+	dampening_step = float(a.get("dampening_step_1v1_pct", a["dampening_step_pct"]) if duel else a["dampening_step_pct"]) / 100.0
+	dampening_interval_ticks = maxi(1, roundi(float(a.get("dampening_interval_1v1_s", a["dampening_interval_s"])
+		if duel else a["dampening_interval_s"]) * tick_rate))
+	dampening_initial = float(a.get("dampening_initial_1v1_pct", 0.0)) / 100.0 if duel else 0.0
 	var limit_s: float = a["time_limit_1v1_s"] if bracket == "1v1" else a["time_limit_s"]
 	time_limit_ticks = roundi(float(limit_s) * tick_rate)
 	start_tick = now_tick + prep_ticks
@@ -78,7 +83,7 @@ func healing_multiplier(tick: int) -> float:
 	if phase != Phase.ACTIVE or since < 0:
 		return 1.0
 	var steps: int = since / dampening_interval_ticks + 1
-	return maxf(0.0, 1.0 - steps * dampening_step)
+	return maxf(0.0, 1.0 - dampening_initial - steps * dampening_step)
 
 
 func dampening_pct(tick: int) -> int:

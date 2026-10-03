@@ -169,7 +169,7 @@ Each CC effect belongs to one category. Repeated CC in the same category lasts 1
 **Arena rules**
 
 - 60 s preparation phase behind closed gates, then the gates open.
-- Dampening: from 3:00 of match time, all healing is reduced by 1% every 10 s, up to 100%. In 1v1, dampening starts at 1:00.
+- Dampening: from 3:00 of match time, all healing and new shields are reduced by 1% every 10 s, up to 100%. In 1v1, dampening is 40% when the gates open and grows 1% every second, reaching 100% at 1:00, so a duel is decided by damage rather than outlasted (changed 2026-10-03 by the human's decision: duels are balanced through dampening, leaving every kit untouched).
 - A match ends when one team is fully dead, or at 20:00 as a draw.
 
 ## Classes and specializations

@@ -195,6 +195,17 @@ func test_healing_is_reduced_by_dampening() -> void:
 	assert_int(arc.health).is_equal(20000 + roundi(_base("mending_light") * 0.9))
 
 
+func test_shields_are_dampened_like_healing() -> void:
+	var geo_arena: ArenaMatch = ArenaMatch.new(Data.tuning, "2v2", TR, null, 0)
+	cb.arena = geo_arena
+	geo_arena.update(geo_arena.start_tick, sim.units)
+	sim.tick = geo_arena.start_tick + 180 * TR + 90 * TR  # 10% dampening
+	cb.apply_aura(arc, arc, "glacier_shield")
+	for inst: Dictionary in arc.auras:
+		if inst["id"] == "glacier_shield":
+			assert_int(int(inst["absorb_left"])).is_equal(roundi(12000 * 0.9))
+
+
 func test_psalm_of_dread_makes_nearby_enemies_flee() -> void:
 	war.position = Vector3(3, 0, -9)
 	cb.press(ora, "psalm_of_dread", 3)

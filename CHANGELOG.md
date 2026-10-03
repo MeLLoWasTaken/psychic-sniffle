@@ -2,6 +2,11 @@
 
 One entry per build-loop iteration, newest first. Format: date, backlog ID, what changed, how it was checked.
 
+## 2026-10-03 — Duels balanced through dampening
+- Duels now dampen healing from the moment the gates open: 40% at once, 1% more every second, nothing left after one minute. A duel is decided by damage, so a healer can no longer simply outlast an attacker. In every bracket, dampening now shrinks shields as well as healing.
+- The human's decision: every spec, tanks and healers included, should win 40 to 60% of duels, and kits stay untouched.
+- Checked: new dampening and shield tests; in local duels the Warblade went from losing every duel against Radiance to winning 3 of 4. A nightly run measures all specs.
+
 ## 2026-10-03 — M3-12 Deathsworn Bloodbound
 - The Deathsworn's tank, Bloodbound: it heals itself from the damage it deals, drags every nearby enemy to it, strangles one, and marks another to weaken it. 14 abilities, a 42-node spec tree, 12 PvP talents, three bot builds.
 - A new effect rule: damage that heals the attacker for part of what it dealt.

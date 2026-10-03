@@ -679,6 +679,12 @@ func _condition(u: Unit, t: Unit, c: Dictionary) -> bool:
 	return true
 
 
+## A shield's size when it goes up: dampening shrinks shields as it does healing.
+func _dampened_absorb(data: Dictionary) -> int:
+	var m: float = arena.healing_multiplier(sim.tick) if arena else 1.0
+	return roundi(float(data["absorb"]) * m)
+
+
 func _add_resource(u: Unit, res: String, amount: float) -> void:
 	if not u.resource_max.has(res):
 		return
@@ -740,7 +746,7 @@ func apply_aura(u: Unit, t: Unit, aura_id: String) -> void:
 				_:
 					inst["expires_tick"] = now + duration
 			if data.has("absorb"):
-				inst["absorb_left"] = int(data["absorb"])
+				inst["absorb_left"] = _dampened_absorb(data)
 			if cat == "disorient":
 				inst["flee_yaw"] = _flee_yaw(t, u)
 			_log({"type": "aura_refreshed", "source": u.id, "target": t.id, "aura": aura_id})
@@ -752,7 +758,7 @@ func apply_aura(u: Unit, t: Unit, aura_id: String) -> void:
 	if data.has("periodic"):
 		inst_new["next_tick"] = now + _ticks(float(data["periodic"]["interval_s"]))
 	if data.has("absorb"):
-		inst_new["absorb_left"] = int(data["absorb"])
+		inst_new["absorb_left"] = _dampened_absorb(data)
 	if cat == "disorient":
 		inst_new["flee_yaw"] = _flee_yaw(t, u)
 	t.auras.append(inst_new)

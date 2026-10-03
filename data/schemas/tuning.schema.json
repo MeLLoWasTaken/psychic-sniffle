@@ -302,6 +302,21 @@
         "dampening_interval_s": {
           "type": "number"
         },
+        "dampening_step_1v1_pct": {
+          "type": "number",
+          "description": "1v1 only: healing (and new shields) reduced by this many percent each interval; defaults to dampening_step_pct."
+        },
+        "dampening_initial_1v1_pct": {
+          "type": "number",
+          "minimum": 0,
+          "maximum": 100,
+          "description": "1v1 only: healing (and new shields) already reduced by this much when dampening starts."
+        },
+        "dampening_interval_1v1_s": {
+          "type": "number",
+          "exclusiveMinimum": 0,
+          "description": "1v1 only: seconds between dampening steps; defaults to dampening_interval_s."
+        },
         "time_limit_s": {
           "type": "number"
         },

@@ -20,7 +20,7 @@ Acceptance criteria are written before work starts. Refine them during step 2 of
 
 Items further down keep their history; this list is the order to take them in. Review 6: `docs/reports/review_06/review_06.md`.
 
-1. M3-04 Templar balance. After two passes every spec is inside 40-60% in 2v2 and 3v3; 1v1 is not (Vanguard 66%, Warblade 28%, Oracle 38%). Waiting on the human: should 1v1 balance cover tanks and healers (review 6 asks; recommendation: measure 1v1 among damage specs, report tanks and healers separately)? The criterion stands as written until then.
+1. M3-04 Templar balance. After two passes every spec is inside 40-60% in 2v2 and 3v3; 1v1 is not (Vanguard 66%, Warblade 28%, Oracle 38%). The human chose (2026-10-03): every spec, tanks and healers included, is held to 40-60% in duels, balanced through dampening rather than kit changes. Duel dampening is in (40% at the gates, full at 1:00, shields included); a nightly measures it. Asked: equal health for every role in duels (dampening cannot reach a tank's larger health pool).
 2. Frostgrave balance: done by the nightly at cac5431 (1v1 43%, 2v2 44%, 3v3 46%).
 3. Wave 1 continues: Deathsworn Plague (minions; `summon` needs its engine work).
 4. F-08 leftover: Oracle mirrors reaching the time limit (a dampening proposal waits on the human).

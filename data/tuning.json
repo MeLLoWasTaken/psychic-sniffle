@@ -99,9 +99,12 @@
   "arena": {
     "prep_phase_s": 60,
     "dampening_start_s": 180,
-    "dampening_start_1v1_s": 60,
+    "dampening_start_1v1_s": 0,
     "dampening_step_pct": 1,
     "dampening_interval_s": 10,
+    "dampening_step_1v1_pct": 1,
+    "dampening_initial_1v1_pct": 39,
+    "dampening_interval_1v1_s": 1,
     "time_limit_s": 1200,
     "time_limit_1v1_s": 720,
     "pickup_spawn_s": 90,

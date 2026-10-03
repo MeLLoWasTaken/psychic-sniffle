@@ -44,10 +44,16 @@ func test_dampening_starts_at_3_minutes_and_drops_1_percent_per_10_s() -> void:
 	assert_int(arena.dampening_pct(start + 280 * TR)).is_equal(11)
 
 
-func test_one_v_one_dampening_starts_at_1_minute() -> void:
+func test_one_v_one_dampening_starts_at_40_percent_and_reaches_full_at_1_minute() -> void:
+	# duels dampen from the moment the gates open (DECISIONS 2026-10-03, the human's choice)
 	var a1: ArenaMatch = ArenaMatch.new(Data.tuning, "1v1", TR, null, 0)
 	a1.update(a1.start_tick, units)
-	assert_float(a1.healing_multiplier(a1.start_tick + 60 * TR)).is_equal_approx(0.99, 1e-9)
+	assert_int(a1.dampening_pct(a1.start_tick)).is_equal(40)
+	assert_int(a1.dampening_pct(a1.start_tick + 30 * TR)).is_equal(70)
+	assert_int(a1.dampening_pct(a1.start_tick + 60 * TR)).is_equal(100)
+	assert_float(a1.healing_multiplier(a1.start_tick + 90 * TR)).is_equal(0.0)
+	# team brackets keep the 3-minute start
+	assert_float(arena.healing_multiplier(arena.start_tick + 60 * TR)).is_equal(1.0)
 
 
 func test_team_elimination_wins() -> void:
@@ -117,7 +123,8 @@ func test_the_first_player_in_reach_takes_a_pickup_and_it_does_not_return() -> v
 
 
 func test_a_pickup_restores_health_and_mana_over_time_through_the_runner() -> void:
-	var runner: MatchRunner = MatchRunner.new(Data.maps["gallows_courtyard"], "arena", "1v1", 0.0, 3)
+	# 2v2: duel dampening is already full by the time pickups light at 1:30 (DECISIONS 2026-10-03)
+	var runner: MatchRunner = MatchRunner.new(Data.maps["gallows_courtyard"], "arena", "2v2", 0.0, 3)
 	var healer: Unit = runner.add_unit("oracle_grace", 0)
 	var foe: Unit = runner.add_unit("warblade_carnage", 1)
 	runner.sim.add_system(runner.system_combat_and_rules)
@@ -132,7 +139,7 @@ func test_a_pickup_restores_health_and_mana_over_time_through_the_runner() -> vo
 	assert_bool(runner.combat.has_aura(healer, "arena_clarity")).is_true()
 	for i: int in 11 * 60:
 		runner.sim.step()
-	assert_int(healer.health).is_greater(30000 + 9000)  # 10 heals of 1,500, dampened in 1v1
+	assert_int(healer.health).is_greater(30000 + 9000)  # 10 heals of 1,500
 	assert_float(float(healer.resources["mana"])).is_greater(15000.0)
 	assert_int(runner.match_state()["pickups"]).is_equal(0b10)
 
