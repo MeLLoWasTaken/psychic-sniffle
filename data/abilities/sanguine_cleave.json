@@ -1,7 +1,7 @@
 {
   "id": "sanguine_cleave",
   "name": "Sanguine Cleave",
-  "description": "Enemies within 6 m take 3,500; you heal for 20% of the damage dealt.",
+  "description": "Enemies within 6 m take 3,700; you heal for 20% of the damage dealt.",
   "owner": "deathsworn_bloodbound",
   "kit_slot": "core",
   "school": "physical",
@@ -14,7 +14,7 @@
   "effects": [
     {
       "type": "damage",
-      "base": 3500,
+      "base": 3700,
       "affects": "enemies_in_radius",
       "radius_m": 6,
       "school": "physical",
