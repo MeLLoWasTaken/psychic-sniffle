@@ -18,7 +18,7 @@
       "id": "play_1v1",
       "label": "Play 1v1 vs a bot",
       "action": "play_1v1",
-      "hint": "A duel against one bot on a match server started on this machine: dampening from 1:00, a 12-minute limit.",
+      "hint": "A duel against one bot on a match server started on this machine: healing dampened from the start and gone by 3:00, a 12-minute limit.",
       "row": "play"
     },
     {

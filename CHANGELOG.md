@@ -2,9 +2,14 @@
 
 One entry per build-loop iteration, newest first. Format: date, backlog ID, what changed, how it was checked.
 
+## 2026-10-03 — M3-04 balance done
+- Every specialization now wins 40 to 60% of its bot matches in 1v1, 2v2 and 3v3 (nightly at 952db81, 3,000 matches per bracket over named and random talent builds). Duels now end in a kill almost every time: 8 draws in 3,000, and all 83 duels between two Oracles ended in a kill, which closes the old "Oracle mirrors reach the time limit" issue.
+- The 1v1 button's hint describes the new duel dampening, and the playtest guide's known issues are current.
+- Checked: the nightly run; data validation.
+
 ## 2026-10-03 — Bloodbound balance passes (fifth to eighth)
 - The Bloodbound was the last spec outside a 40 to 60% win rate. Over four passes its strikes, area damage and bleeds grew (Crimson Reaping 5,200, Marrow Rend 4,200, Sanguine Cleave 3,900, Blood Lash 2,450, Veinburst 850 a tick, Gorefield Grip every 60 s), and a duel-only trim (damage done -20%) keeps it from winning too many duels. The Grace Oracle's duel adjustment grew to healing +75% and damage taken -18%.
-- Checked: nightly runs of 3,000 matches per bracket. At the seventh pass every spec was inside 40 to 60% in 1v1 and 2v2, and every spec but the Bloodbound (39.7%) in 3v3; a nightly measures the eighth.
+- Checked: nightly runs of 3,000 matches per bracket. At the seventh pass every spec was inside 40 to 60% in 1v1 and 2v2, and every spec but the Bloodbound (39.7%) in 3v3; after the eighth, every spec in every bracket.
 
 ## 2026-10-03 — Second balance pass on duels and kits
 - The first duel dampening was too harsh on healers (they won 14 to 20% of duels). Duels now start at 10% dampening and add 1% every 2 seconds. The Grace Oracle gets duel-only help (more healing, less damage taken), since it is balanced in team play. The Zealot hits a little softer again; the Bloodbound, still weak in team play, hits harder and has a bigger Sanguine Bulwark.
