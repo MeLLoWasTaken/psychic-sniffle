@@ -69,8 +69,8 @@ var _input_time: float = 0.0
 var _cursor_restore: Vector2 = Vector2.ZERO
 var _settings: Dictionary = {}
 var playback_rate: int = 1  ## recorded ticks drawn per physics tick (playback; > 1 fast-forwards)
-var _record: FileAccess
-var _playback: FileAccess
+var _record: RecordingFile
+var _playback: RecordingFile
 var _playback_ready: bool = false
 var _playback_done: bool = false
 var _cam_override: Array = []  ## [yaw, pitch] recorded with the tick being drawn (playback)
@@ -132,13 +132,13 @@ func _ready() -> void:
 		screens.pause_menu.talents_chosen.connect(change_talents)
 
 	if str(options["playback"]) != "":
-		_playback = FileAccess.open_compressed(str(options["playback"]), FileAccess.READ, FileAccess.COMPRESSION_ZSTD)
-		if _playback == null:
+		_playback = RecordingFile.open(str(options["playback"]))
+		if _playback == null or not _playback.has_next():
 			Log.error("match: cannot read the recording %s" % options["playback"])
 			flow.fail("start")
 		else:
 			# a recording starts with its header ({"map"}); older ones start with the first tick
-			var first: Variant = _playback.get_var()
+			var first: Variant = _playback.next()
 			if first is Dictionary:
 				preset["map"] = str((first as Dictionary).get("map", preset["map"]))
 			else:
@@ -149,9 +149,9 @@ func _ready() -> void:
 	if str(options["record"]) == "" and bool(Settings.get_value("gameplay.record_matches", true)):
 		options["record"] = auto_record_path(str(preset["map"]), str(preset["bracket"]))
 	if str(options["record"]) != "":
-		_record = FileAccess.open_compressed(str(options["record"]), FileAccess.WRITE, FileAccess.COMPRESSION_ZSTD)
+		_record = RecordingFile.create(str(options["record"]))
 		if _record != null:
-			_record.store_var({"map": str(preset["map"]), "bracket": str(preset["bracket"])})
+			_record.store({"map": str(preset["map"]), "bracket": str(preset["bracket"])})
 	local_server = LocalServer.new()
 	local_server.name = "LocalServer"
 	local_server.start_timeout_s = float(preset["server_start_timeout_s"])
@@ -283,7 +283,7 @@ func _on_ticked() -> void:
 	_pending_events = []
 	_apply_tick(v, evs)
 	if _record != null:
-		_record.store_var([v, evs, controller.camera_yaw(), controller.pitch, controller.target_id])
+		_record.store([v, evs, controller.camera_yaw(), controller.pitch, controller.target_id])
 
 
 ## Draw one tick's world view and hand out its combat events (live and playback).
@@ -317,8 +317,8 @@ func _physics_process(_delta: float) -> void:
 		if flow.state != state_before:
 			playback_rate = 1  # a new step of the flow: let the owner decide how fast to go on
 			break
-		if not _playback_done and (_pending_record != null or _playback.get_position() < _playback.get_length()):
-			var rec: Array = _pending_record if _pending_record != null else _playback.get_var()
+		if not _playback_done and (_pending_record != null or _playback.has_next()):
+			var rec: Array = _pending_record if _pending_record != null else _playback.next()
 			_pending_record = null
 			controller.target_id = int(rec[4])
 			_cam_override = [float(rec[2]), float(rec[3])]

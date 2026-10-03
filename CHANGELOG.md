@@ -2,6 +2,11 @@
 
 One entry per build-loop iteration, newest first. Format: date, backlog ID, what changed, how it was checked.
 
+## 2026-10-03 — M3-13 Eight specs in the main menu; recording memory fix
+- All eight specializations can be played from the main menu in 1v1, 2v2 and 3v3, each with its own bot partners and opponents. The spec cards now sit in two rows of four, grouped by class. The playtest guide lists all eight.
+- Fixed: a long match could use several gigabytes of memory and be killed, because match recordings were held in memory until the match ended. They are now written to disk in compressed pieces as the match runs, so memory stays flat and a crash keeps everything up to the last two seconds.
+- Checked: an end-to-end match from the menu as each new spec; recording tests (round trip, flat memory, old recordings still play); menu screenshots at two sizes.
+
 ## 2026-10-03 — M3-04 balance done
 - Every specialization now wins 40 to 60% of its bot matches in 1v1, 2v2 and 3v3 (nightly at 952db81, 3,000 matches per bracket over named and random talent builds). Duels now end in a kill almost every time: 8 draws in 3,000, and all 83 duels between two Oracles ended in a kill, which closes the old "Oracle mirrors reach the time limit" issue.
 - The 1v1 button's hint describes the new duel dampening, and the playtest guide's known issues are current.

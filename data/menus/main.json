@@ -65,7 +65,12 @@
     "specs": [
       "warblade_carnage",
       "arcanist_rime",
-      "oracle_grace"
+      "oracle_grace",
+      "templar_radiance",
+      "templar_vanguard",
+      "templar_zealot",
+      "deathsworn_frostgrave",
+      "deathsworn_bloodbound"
     ],
     "default": "warblade_carnage"
   },
@@ -107,6 +112,51 @@
         ],
         "enemies": [
           "arcanist_rime",
+          "oracle_grace"
+        ]
+      },
+      "templar_radiance": {
+        "allies": [
+          "warblade_carnage"
+        ],
+        "enemies": [
+          "templar_zealot",
+          "oracle_grace"
+        ]
+      },
+      "templar_vanguard": {
+        "allies": [
+          "oracle_grace"
+        ],
+        "enemies": [
+          "deathsworn_frostgrave",
+          "templar_radiance"
+        ]
+      },
+      "templar_zealot": {
+        "allies": [
+          "templar_radiance"
+        ],
+        "enemies": [
+          "warblade_carnage",
+          "oracle_grace"
+        ]
+      },
+      "deathsworn_frostgrave": {
+        "allies": [
+          "oracle_grace"
+        ],
+        "enemies": [
+          "arcanist_rime",
+          "templar_radiance"
+        ]
+      },
+      "deathsworn_bloodbound": {
+        "allies": [
+          "templar_radiance"
+        ],
+        "enemies": [
+          "templar_zealot",
           "oracle_grace"
         ]
       }
@@ -378,6 +428,36 @@
         "enemies": [
           "warblade_carnage"
         ]
+      },
+      "templar_radiance": {
+        "allies": [],
+        "enemies": [
+          "warblade_carnage"
+        ]
+      },
+      "templar_vanguard": {
+        "allies": [],
+        "enemies": [
+          "deathsworn_frostgrave"
+        ]
+      },
+      "templar_zealot": {
+        "allies": [],
+        "enemies": [
+          "arcanist_rime"
+        ]
+      },
+      "deathsworn_frostgrave": {
+        "allies": [],
+        "enemies": [
+          "templar_zealot"
+        ]
+      },
+      "deathsworn_bloodbound": {
+        "allies": [],
+        "enemies": [
+          "warblade_carnage"
+        ]
       }
     },
     "bot_names": {
@@ -435,6 +515,61 @@
         "enemies": [
           "warblade_carnage",
           "arcanist_rime",
+          "oracle_grace"
+        ]
+      },
+      "templar_radiance": {
+        "allies": [
+          "templar_zealot",
+          "arcanist_rime"
+        ],
+        "enemies": [
+          "warblade_carnage",
+          "deathsworn_frostgrave",
+          "oracle_grace"
+        ]
+      },
+      "templar_vanguard": {
+        "allies": [
+          "arcanist_rime",
+          "oracle_grace"
+        ],
+        "enemies": [
+          "templar_zealot",
+          "deathsworn_frostgrave",
+          "templar_radiance"
+        ]
+      },
+      "templar_zealot": {
+        "allies": [
+          "deathsworn_frostgrave",
+          "templar_radiance"
+        ],
+        "enemies": [
+          "warblade_carnage",
+          "arcanist_rime",
+          "oracle_grace"
+        ]
+      },
+      "deathsworn_frostgrave": {
+        "allies": [
+          "warblade_carnage",
+          "oracle_grace"
+        ],
+        "enemies": [
+          "templar_zealot",
+          "arcanist_rime",
+          "templar_radiance"
+        ]
+      },
+      "deathsworn_bloodbound": {
+        "allies": [
+          "arcanist_rime",
+          "templar_radiance"
+        ],
+        "enemies": [
+          "warblade_carnage",
+          "deathsworn_frostgrave",
           "oracle_grace"
         ]
       }

@@ -18,6 +18,11 @@ On the main menu, pick your specialization first (top of the menu):
 - **Warblade (Carnage):** a plate-armoured melee fighter with a two-handed sword.
 - **Arcanist (Rime):** a frost caster who slows, roots and freezes.
 - **Oracle (Grace):** a healer with some holy damage and crowd control.
+- **Templar (Radiance):** a plate-armoured healer with strong single-target heals and a short full immunity, who can also fight in melee.
+- **Templar (Vanguard):** a tank with a shield and hammer, holy damage around itself and protective blessings on allies.
+- **Templar (Zealot):** a holy melee fighter with burst windows, stuns and emergency heals for allies.
+- **Deathsworn (Frostgrave):** a frost melee fighter with a runeblade, slows and bursts of runic power.
+- **Deathsworn (Bloodbound):** a tank that heals itself from the damage it deals and drags enemies to it.
 
 Then:
 
@@ -73,5 +78,6 @@ Useful files: everything in `logs`, and in `recordings` the match files (`.bin`)
 
 ## Known issues
 
-- Five of the planned thirteen classes exist, and the menu offers three of their specializations so far; battlegrounds come in a later milestone.
+- Five of the planned thirteen classes exist (eight specializations); battlegrounds come in a later milestone.
+- The characters still use the current art; a full graphics overhaul (more detail, armor customization and a character creator) is in progress and not in this build.
 - Visual polish varies: the Gallows Courtyard's walls and floor are plainer than the other two arenas.

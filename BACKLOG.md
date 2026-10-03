@@ -16,15 +16,62 @@ Acceptance criteria are written before work starts. Refine them during step 2 of
 
 ---
 
-## Next up (set by review 6, 2026-10-03)
+## Next up (set 2026-10-03 after the human's graphics overhaul request)
 
-Items further down keep their history; this list is the order to take them in. Review 6: `docs/reports/review_06/review_06.md`.
+Items further down keep their history; this list is the order to take them in. Review 6: `docs/reports/review_06/review_06.md`. The human chose to run the Monday playtest on the current art while the overhaul is built (DECISIONS.md, 2026-10-03).
 
-1. M3-04 Templar balance: done (nightly at 952db81, every spec inside 40-60% in every bracket; history under the item).
-2. M3-13 The five balanced specs in the main menu (Radiance, Vanguard, Zealot, Frostgrave, Bloodbound), before the Monday playtest.
-3. Frostgrave balance: done by the nightly at cac5431 (1v1 43%, 2v2 44%, 3v3 46%).
-4. Wave 1 continues: Deathsworn Plague (minions; `summon` needs its engine work).
-5. F-08 leftover, Oracle mirrors reaching the time limit: solved by duel dampening (83 of 83 Oracle duels in the nightly at 952db81 ended in a kill).
+1. M3-13 The five balanced specs in the main menu, before the Monday playtest.
+2. G-01 to G-10, the graphics overhaul, in order.
+3. Wave 1 continues: Deathsworn Plague (minions; `summon` needs its engine work).
+
+Done from review 6's list: M3-04 Templar balance (nightly at 952db81, every spec inside 40-60% in every bracket); Frostgrave balance (nightly at cac5431); F-08's Oracle mirrors reaching the time limit (solved by duel dampening: 83 of 83 Oracle duels in the nightly at 952db81 ended in a kill).
+
+## Graphics overhaul (G track, asked by the human 2026-10-03)
+
+Goals and rules: DESIGN.md "Art direction", "Appearance and armor customization" and "Budgets" (changed the same day). Each item ends with reference sheets read with the Read tool and compared with the current art side by side.
+
+### G-01 New bodies: two body types at the new proportions `[todo]`
+- [ ] Broad and slender body types at about 7.5 heads, hands, feet and shoulders about 10% oversized; anatomy with readable muscle masses, knuckles, collarbones; 12,000 to 16,000 triangles each at LOD0, with a separate head.
+- [ ] The standard 20-bone skeleton keeps its bone names; an animation library per body type, baked from the shared pose data, passes the clipping report.
+- [ ] Preview sheets of both bodies next to the old heavy and lean builds.
+
+### G-02 Heads and the face, hair and color options `[todo]`
+- [ ] A head mesh per body type with at least 6 face presets (shape keys or variants: brow, jaw, nose, cheekbones), at least 8 skin tones, eye colors, scars and war paint as texture layers.
+- [ ] At least 6 hair styles and 4 beards as separate meshes that fit under every helm (hidden when a helm is worn), hair colors as a dye.
+- [ ] A sheet of every face, hair and beard on both body types.
+
+### G-03 Modular armor pipeline `[todo]`
+- [ ] Armor pieces are data (`data/armor_pieces/*.json`: slot, armor type, body types, builder parameters, dye channels, texture size); one builder exports each piece per body type as its own skinned `.glb`, with LODs at 50%, 25% and 10%.
+- [ ] Normal maps baked from a higher-resolution version of each piece (rivets, engraving, mail rings, stitching); base color, roughness and a dye mask (primary, secondary, metal).
+- [ ] Every piece fits both body types with no body showing through in idle, run, cast and attack poses (the clipping report extended to armor).
+- [ ] An assembled character stays between 40,000 and 60,000 triangles.
+
+### G-04 Templar crusader set `[todo]`
+- [ ] Head: flat-topped great helm with eye slit and breaths, sun emblem in the faceplate's cross-band; shoulders: rounded plate spaulders; chest: mail hauberk with a plate breastplate under a long surcoat with the sun emblem; hands: plate gauntlets over mail; waist: sword belt; legs: mail chausses with plate poleyns; feet: plate sabatons; back: a cape.
+- [ ] Spec variations by dye and weapon: Radiance (white and gold), Vanguard (blue and steel, kite shield), Zealot (crimson and black, a two-handed sword).
+- [ ] Reference sheets read and judged against the crusader brief; a 30 m grayscale check against the other plate classes' default sets.
+
+### G-05 Game-side appearance and assembly `[todo]`
+- [ ] `data/schemas/appearance.schema.json`: body type, height, face, skin, hair, hair color, beard, eyes, scars, war paint, one piece id or none per slot, dyes per piece; validation rejects pieces of the wrong armor type.
+- [ ] The client assembles a character from body, head, hair and pieces on one skeleton, with a dye shader; the default appearance per spec comes from data.
+- [ ] The appearance goes from the profile to the server at join and to every client; a network test with mixed appearances passes; team color overrides the cape and tabard in matches.
+- [ ] LODs switch by distance; 20 assembled characters in a battleground-sized scene, measured frame time recorded (GPU numbers pending, KNOWN_ISSUES).
+
+### G-06 Character creator screen `[todo]`
+- [ ] A Character screen from the main menu: a turntable preview in arena lighting, tabs for Body, Face, Hair, Armor (per slot, filtered to the class's armor type) and Dyes; randomize and reset; saved per spec in the profile.
+- [ ] Keyboard and mouse only; every option reachable; a UI test walks every tab and saves.
+
+### G-07 Plate sets for the Warblade and Deathsworn `[todo]`
+- [ ] Each class's default set rebuilt as modular pieces at the new fidelity, keeping its class marks (Warblade horns, Deathsworn ice crown).
+
+### G-08 Cloth sets for the Arcanist and Oracle `[todo]`
+- [ ] Each class's default set rebuilt as modular pieces (robes as chest plus legs, hoods as head pieces); cloth hangs heavy with torn hems.
+
+### G-09 Weapons at the new fidelity `[todo]`
+- [ ] Every weapon rebuilt to 10-25% oversize, 3,000 to 6,000 triangles, normal-mapped detail.
+
+### G-10 Overhaul gate `[todo]`
+- [ ] Lineup and in-arena screenshots of all specs; a side-by-side with the old art; performance numbers; old characters removed; the human reviews the result.
 
 ### P-01 Playtest build `[done]`
 - [x] A Windows (and Linux) package of the game the human downloads from a GitHub release, unzips and runs: built on CI from export templates compiled from the same Godot 4.7.2 source; the Linux package smoke-tested on CI (it starts as a headless server).
@@ -741,9 +788,11 @@ The other 10 classes, and the 6 remaining specs of the first three classes, in t
 - Checked: data validation (kit complete), a leech rule test, bot matches in 1v1 and 2v2 (with the Oracle against the Warblade and the Arcanist; with Radiance against the Vanguard and the Oracle), no errors.
 - Follow-ups: Bloodbound balance joins the next nightly. Character done the same day: `char_deathsworn_bloodbound`, the Deathsworn plate with a crimson cape and loincloth and a red glow in the crown, shards and eyes (23,908 triangles; `previews/m3_12/`).
 
-### M3-13 The five balanced specs in the main menu `[todo]`
-- [ ] Radiance, Vanguard, Zealot, Frostgrave and Bloodbound can be picked in the main menu for 1v1, 2v2 and 3v3, each with a bot comp in `data/menus/main.json` (allies and enemies drawn from specs already in the menu), their character models and sounds in play; a client smoke test starts a match as each.
-- [ ] `docs/PLAYTEST.md` lists all eight specs; the codex drops their "In development" badges.
+### M3-13 The five balanced specs in the main menu `[done]`
+- [x] Radiance, Vanguard, Zealot, Frostgrave and Bloodbound can be picked in the main menu for 1v1, 2v2 and 3v3, each with a bot comp in `data/menus/main.json` (allies and enemies drawn from specs already in the menu), their character models and sounds in play; a client smoke test starts a match as each.
+- [x] `docs/PLAYTEST.md` lists all eight specs; the codex drops their "In development" badges.
+- Done 2026-10-03. With more than four specs the menu shows compact cards in two rows of four, grouped by class (the description moves to the hint line on hover or focus); screenshots at 1920x1080 and 1280x720 in `previews/m3_13/`. `tools/match_flow_e2e.py` passed as each new spec (2v2 against bots, from the menu to the end screen and back).
+- Bug found on the way: the first Vanguard run was killed for memory at 5.5 GB. The client's match recording used Godot's compressed file writer, which holds the whole uncompressed stream (about 16 MB a second) until it is closed. Recordings are now written in compressed chunks every 2 s (`game/net/recording_file.gd`, reads the old format too); the rerun stayed under 0.8 GB until the end screen and passed. Test: `test/net/test_recording_file.gd`.
 
 Then, in order (split into items like M3-01 to M3-04 as each starts): Plague (minions, needs `summon`); Stormcaller Tempest, Tidesinger (healer, totems) and Primal (wolves); Warblade Berserker; Arcanist Pyre and Aether; wave 1 gate.
 

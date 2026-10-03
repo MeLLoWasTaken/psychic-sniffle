@@ -317,13 +317,15 @@ There are three arena brackets and two battlegrounds at launch, each with an unr
 
 ## Art direction
 
-Stylized, hand-painted fantasy with exaggerated, chunky proportions, pushed darker: lower saturation in the world, harsh rim lighting, scars and wear, and saturated color reserved for spells and team markers.
+Stylized, hand-painted fantasy with heroic, slightly exaggerated proportions and dense surface detail, pushed darker: lower saturation in the world, harsh rim lighting, scars and wear, and saturated color reserved for spells and team markers.
 
 **Shapes and proportions**
 
-- Characters are about 7 heads tall with oversized hands, feet, shoulders and weapons. Silhouettes must be readable at 30 m.
+- Characters are about 7.5 heads tall. Hands, feet and shoulders are about 10% larger than realistic, not more. Silhouettes must be readable at 30 m. (Changed 2026-10-03 by the human, from 7 heads with oversized hands, feet and shoulders, for a less exaggerated look.)
 - Plate is massive and angular with spikes, rivets and dents. Leather is layered and strapped. Cloth hangs heavy with torn hems.
-- Weapons are 20 to 40% larger than realistic.
+- Weapons are 10 to 25% larger than realistic.
+- Detail is modelled, not only painted: plate has bevelled edges, rolled rims, rivets and engraving; mail, quilting, stitching and leather grain are baked into normal maps.
+- The Templar is a crusading knight: a flat-topped great helm with an eye slit and breaths, mail under plate, and a long surcoat or tabard with the order's sun emblem.
 
 **Color and surface**
 
@@ -354,9 +356,18 @@ Stylized, hand-painted fantasy with exaggerated, chunky proportions, pushed dark
 
 **Budgets**
 
-- Characters: 15,000 to 25,000 triangles at LOD0, with two lower LODs. One 2048 px texture set per character.
+- Characters: 40,000 to 60,000 triangles at LOD0 for an assembled character (body, head, hair and every armor piece), with lower LODs at 50%, 25% and 10%. Texture sets (base color, normal map, roughness and dye masks) add up to about one 4096 px set per character: 4096 px for the chest piece, 2048 px for the body and head and for the other armor pieces. (Changed 2026-10-03 by the human, from 15,000 to 25,000 triangles and one 2048 px set.)
 - Environment props: 500 to 5,000 triangles, sharing texture atlases.
 - An arena map should stay under 1.5 million visible triangles.
+
+**Appearance and armor customization** (added 2026-10-03 by the human)
+
+- Appearance is cosmetic only and never changes stats or hit boxes.
+- Character creator: body type (two, broad and slender, both available to every class), height within ±4%, face (at least 6 presets), skin tone (at least 8), hair style (at least 6, hidden under helms) and hair color, beard (broad body type), eye color, scars and war paint. No races: one people.
+- Armor has eight slots: head, shoulders, chest, hands, waist, legs, feet and back (cape). The chest slot includes any surcoat or tabard. Every piece belongs to one armor type (cloth, leather, mail, plate), and a character can wear any piece of its class's armor type, mixed freely. Each class has at least one complete set as its default look, and each piece can be hidden except chest, legs and feet.
+- Dyes: each piece has primary, secondary and metal channels chosen from a fixed palette.
+- In matches, team color overrides the back slot and the tabard's primary channel, so teams stay readable. Because pieces mix within an armor type, a class is no longer always readable from armor alone: the weapon, the nameplate's class color and class icon, and spell colors identify the class.
+- Appearance lives in the player's profile and is sent to the match server when joining; the server passes it to every client.
 
 The art rules live in `docs/ART_BIBLE.md`, with reference renders added as they are approved.
 
@@ -378,11 +389,11 @@ In the cloud workspace, Blender is installed as the `bpy` Python module (Blender
 **Characters**
 
 1. *Body*: a parametric humanoid built from a vertex skeleton with the Skin modifier, then smoothed and remeshed. Two builds to start (heavy and lean), with sliders for height, shoulder width and limb thickness.
-2. *Armor and weapons*: kitbashed from primitives with bevel, solidify, array, boolean and Geometry Nodes for spikes, rivets and trims. Each class has its own armor kit; each spec varies color, trim and weapon.
+2. *Armor and weapons*: kitbashed from primitives with bevel, solidify, array, boolean and Geometry Nodes for spikes, rivets and trims. Armor is built as separate pieces per slot and per body type, each its own exported mesh, so the game assembles any mix (see Appearance and armor customization). Each class has its own default set; each spec varies color, trim and weapon.
 3. *Rig*: one standard skeleton with fixed bone names for every humanoid. Body skin uses automatic weights; armor pieces are rigidly parented to single bones to avoid stretching.
 4. *Animation*: keyframed by script from pose data, shared across all humanoids. Required set: idle, combat idle, run, strafe left and right, backpedal, jump, cast start, cast loop, cast release (per school), channel, 3 melee attacks, ranged shot, hit reaction, stunned, feared run, death, victory.
-5. *Textures*: procedural materials baked into a 2048 px base color map with light from above, darkened crevices and highlighted edges, which gives the hand-painted look. Also bake a soft normal map and a roughness map.
-6. *LODs*: two lower-detail versions at 50% and 20% of the triangles.
+5. *Textures*: procedural materials baked into base color maps (sizes under Budgets) with light from above, darkened crevices and highlighted edges, which gives the hand-painted look. Also bake a normal map carrying fine modelled detail from a higher-resolution version (engraving, mail, stitching, dents), a roughness map, and dye masks.
+6. *LODs*: three lower-detail versions at 50%, 25% and 10% of the triangles.
 
 **Environments**
 
@@ -539,7 +550,7 @@ Frame-rate targets can only be measured on real GPU hardware. In a GPU-less clou
 
 **Quality bar for visual and audio work**
 
-- Character silhouettes are distinguishable by class at 30 m in a grayscale screenshot.
+- In their default sets, character silhouettes are distinguishable by class at 30 m in a grayscale screenshot; with any armor mix, by armor type and weapon. (Changed 2026-10-03: the human chose free armor mixing within an armor type, so armor alone cannot always show the class.)
 - Each spell school is identifiable by color alone in a screenshot.
 - A tester (or the model reviewing a screenshot) can name who is casting and who is crowd-controlled within 2 seconds of looking at a 3v3 frame.
 - No clipping armor in the idle, run and cast poses of the preview sheet.
@@ -562,7 +573,7 @@ The full roster means roughly 600 abilities, 2,500 talent nodes (13 class trees,
 | Animation source | Keyframed by script | Retarget CC0 motion-capture data onto the standard skeleton | Decided: hybrid. Locomotion from retargeted CMU motion capture (commercial use allowed), stylised by data; combat, casts and crowd control scripted; foot IK and look-at in game (delegated by the human, 2026-09-30) |
 | Sound effects | Synthesized by script, plus CC0 libraries | AI audio tools, a hired sound designer | Decided: synthesized by script with data-driven studio processing; the human reviews by ear |
 | Music | Licensed or CC0 tracks | Commissioned composer | M5 |
-| Playable races | None; two body builds per class | Races with cosmetic differences only | M3 |
+| Playable races | None; two body builds per class | Races with cosmetic differences only | Decided: no races; two body types (broad and slender) open to every class, with a character creator (human, 2026-10-03) |
 | Final names | Placeholders in this document | A naming pass with trademark checks | Before any public release |
 | Server hosting | Self-hosted during development | Cloud game-server hosting | M4 |
 

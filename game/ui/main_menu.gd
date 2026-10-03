@@ -14,8 +14,12 @@ extends Control
 signal action_chosen(action: String, spec: String)
 
 const CARD_SIZE: Vector2 = Vector2(360, 196)
+const COMPACT_CARD_SIZE: Vector2 = Vector2(400, 104)  ## more than four specs: two rows, the description moves to the hint line
+const COMPACT_GAP: Vector2 = Vector2(20, 14)
 const CARDS_Y: float = 364.0
 const BUTTONS_Y: float = 596.0
+const COMPACT_BUTTONS_Y: float = 622.0
+const COMPACT_BUTTONS_BOTTOM: float = 924.0
 const BUTTONS_BOTTOM: float = 940.0  ## the hint line sits below this
 const ROW_BUTTON_W: float = 330.0  ## width of each button in a shared row
 
@@ -56,6 +60,10 @@ class SpecCard:
 		style.draw_text(self, Vector2(34, 80), str(cls.get("name", "")), 20, cc.lerp(Color.WHITE, 0.25))
 		var role: String = "%s · %s" % [str(s.get("role", "")).to_upper(), str(s.get("range", "")).capitalize()]
 		style.draw_text(self, Vector2(0, 80), role, 17, style.color("text_dim"), HORIZONTAL_ALIGNMENT_RIGHT, size.x - 20)
+		if size.y < 150.0:  # compact card: name, class and role only
+			if on:
+				draw_rect(Rect2(Vector2.ZERO, size).grow(-3.0), style.color("accent"), false, 3.0)
+			return
 		draw_line(Vector2(34, 96), Vector2(size.x - 20, 96), Color(style.color("button_border"), 0.5), 1.0)
 		draw_multiline_string(style.font, Vector2(34, 126), str(s.get("description", "")), HORIZONTAL_ALIGNMENT_LEFT,
 			size.x - 56, 19, 3, style.color("text") if on else style.color("text_dim"))
@@ -80,6 +88,7 @@ func _init(menu_id: String = "main") -> void:
 		card.button_pressed = sid == spec
 		card.pressed.connect(select_spec.bind(sid))
 		card.mouse_entered.connect(_set_hint.bind(str(Data.specs.get(sid, {}).get("description", ""))))
+		card.focus_entered.connect(_set_hint.bind(str(Data.specs.get(sid, {}).get("description", ""))))
 		add_child(card)
 		cards[sid] = card
 	for b: Dictionary in menu["buttons"]:
@@ -160,12 +169,19 @@ func _layout() -> void:
 	var w: float = maxf(size.x, 1.0)
 	var cx: float = w * 0.5
 	var n: int = cards.size()
-	var gap: float = 28.0
-	var row_w: float = n * CARD_SIZE.x + (n - 1) * gap
+	var compact: bool = n > 4
+	var cols: int = ceili(n / 2.0) if compact else n
+	var card: Vector2 = COMPACT_CARD_SIZE if compact else CARD_SIZE
+	var gap: Vector2 = COMPACT_GAP if compact else Vector2(28, 0)
 	var i: int = 0
 	for c: SpecCard in cards.values():
-		c.position = Vector2(cx - row_w * 0.5 + i * (CARD_SIZE.x + gap), CARDS_Y)
-		c.size = CARD_SIZE
+		var col: int = i % cols
+		var row: int = i / cols
+		var in_row: int = mini(cols, n - row * cols)  # a short last row stays centred
+		var row_w: float = in_row * card.x + (in_row - 1) * gap.x
+		c.position = Vector2(cx - row_w * 0.5 + col * (card.x + gap.x), CARDS_Y + row * (card.y + gap.y))
+		c.custom_minimum_size = card
+		c.size = card
 		i += 1
 	# buttons sharing a "row" id sit side by side; the rest stack, all above the hint line
 	var rows: Array = []
@@ -178,8 +194,10 @@ func _layout() -> void:
 			row_of[key if key != "" else str(b["id"])] = rows.size()
 			rows.append([buttons[str(b["id"])]])
 	var bgap: float = 10.0 if rows.size() <= 5 else 8.0
-	var h: float = minf(58.0, (BUTTONS_BOTTOM - BUTTONS_Y - bgap * (rows.size() - 1)) / maxi(rows.size(), 1))
-	var y: float = BUTTONS_Y
+	var top: float = COMPACT_BUTTONS_Y if compact else BUTTONS_Y
+	var bottom: float = COMPACT_BUTTONS_BOTTOM if compact else BUTTONS_BOTTOM
+	var h: float = minf(58.0, (bottom - top - bgap * (rows.size() - 1)) / maxi(rows.size(), 1))
+	var y: float = top
 	for row: Array in rows:
 		var bw: float = (row[0] as Button).custom_minimum_size.x if row.size() == 1 else ROW_BUTTON_W
 		var total: float = row.size() * bw + (row.size() - 1) * 16.0
