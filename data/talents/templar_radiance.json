@@ -33,11 +33,11 @@
           "set": [
             {
               "type": "damage",
-              "base": 4000
+              "base": 3000
             },
             {
               "type": "heal",
-              "base": 2500,
+              "base": 1500,
               "affects": "self"
             },
             {
@@ -304,7 +304,7 @@
       "requires_any": [
         "hammer_weight"
       ],
-      "description": "Hallowed Strike heals you for 800 more.",
+      "description": "Hallowed Strike heals you for 500 more.",
       "icon": {
         "image": "delapouite/stake-hammer",
         "school": "physical"
@@ -312,7 +312,7 @@
       "effects": [
         {
           "modify": "hallowed_strike.effects.1.base",
-          "per_rank": 800
+          "per_rank": 500
         }
       ]
     },

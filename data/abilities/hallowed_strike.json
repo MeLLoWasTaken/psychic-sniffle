@@ -1,7 +1,7 @@
 {
   "id": "hallowed_strike",
   "name": "Hallowed Strike",
-  "description": "Strike an enemy for 4,000 and heal yourself for 2,500.",
+  "description": "Strike an enemy for 3,000 and heal yourself for 1,500.",
   "owner": "templar_radiance",
   "kit_slot": "core",
   "school": "physical",
@@ -14,11 +14,11 @@
   "effects": [
     {
       "type": "damage",
-      "base": 4000
+      "base": 3000
     },
     {
       "type": "heal",
-      "base": 2500,
+      "base": 1500,
       "affects": "self"
     }
   ],

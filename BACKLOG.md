@@ -678,6 +678,8 @@ The other 10 classes, and the 6 remaining specs of the first three classes, in t
 
 ### M3-04 Templar balance `[todo]`
 - [ ] Radiance, Vanguard and Zealot each win 40 to 60% in 1v1, 2v2 and 3v3 bot simulations (named and random builds), with every other spec still inside 40 to 60%. (Widened 2026-10-03 from Radiance alone: the three specs share class talents and abilities, so they are tuned together on one nightly run.)
+- Nightly 2026-10-03 (ba998c2, 3,000 matches per bracket, Radiance only): 2v2 Radiance 45%, 3v3 49%, 1v1 55%. Every other spec inside 40 to 60% except the Warblade in 1v1 (34%), because Radiance won 300 of 300 duels against it (the Warblade beats the Oracle 53% and the Arcanist 52%). Strongest 2v2 pairs: Radiance with a Warblade 69%, with an Arcanist 66%.
+- First pass: Radiance hits softer and heals less in melee (Hallowed Strike 4,000 to 3,000 and its self-heal 2,500 to 1,500, Mending Blow +800 to +500, Dawnbolt 3,400 to 2,800, the instant Sunlit Word 6,500 to 5,000) and more with its interruptible cast heal (Dawnmend 12,500 to 13,500). Six local duels: the Warblade still loses all six, about 5 s later. A traced duel shows why: plate takes 30% off the Warblade's damage, Radiance's mana never falls, and it settles at 30 to 40k health without casting Dawnmend. Dampening starts too late in 1v1 to matter (a DESIGN.md rule). Next: the nightly with this pass; then candidates are a healing reduction on a Warblade core strike, or Radiance spending more mana.
 
 ### M3-05 Templar Vanguard kit `[done]`
 - [x] The Vanguard tank spec: 14 to 18 abilities (holy damage around itself, protective blessings on allies), auras, spec and PvP talent trees, a bot profile with three builds; plays in bot matches without errors; counterplay reviewed.

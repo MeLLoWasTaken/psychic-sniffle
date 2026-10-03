@@ -1,7 +1,7 @@
 {
   "id": "sunlit_word",
   "name": "Sunlit Word",
-  "description": "An instant heal for 6,500.",
+  "description": "An instant heal for 5,000.",
   "owner": "templar_radiance",
   "kit_slot": "core",
   "school": "holy",
@@ -14,7 +14,7 @@
   "effects": [
     {
       "type": "heal",
-      "base": 6500
+      "base": 5000
     }
   ],
   "icon": {

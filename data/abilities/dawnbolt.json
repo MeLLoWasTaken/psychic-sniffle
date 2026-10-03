@@ -1,7 +1,7 @@
 {
   "id": "dawnbolt",
   "name": "Dawnbolt",
-  "description": "Sear an enemy for 3,400.",
+  "description": "Sear an enemy for 2,800.",
   "owner": "templar_radiance",
   "kit_slot": "core",
   "school": "holy",
@@ -14,7 +14,7 @@
   "effects": [
     {
       "type": "damage",
-      "base": 3400
+      "base": 2800
     }
   ],
   "icon": {

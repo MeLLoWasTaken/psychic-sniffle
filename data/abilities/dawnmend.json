@@ -1,7 +1,7 @@
 {
   "id": "dawnmend",
   "name": "Dawnmend",
-  "description": "A strong heal for 12,500.",
+  "description": "A strong heal for 13,500.",
   "owner": "templar_radiance",
   "kit_slot": "core",
   "school": "holy",
@@ -14,7 +14,7 @@
   "effects": [
     {
       "type": "heal",
-      "base": 12500
+      "base": 13500
     }
   ],
   "icon": {
