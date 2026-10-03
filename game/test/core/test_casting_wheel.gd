@@ -156,6 +156,37 @@ func test_both_crucibles_pour_toward_the_furnace_as_they_turn() -> void:
 			assert_float(front.dot(inward)).override_failure_message("lip off the furnace at %.1f s: %s" % [s, front]).is_greater(0.999)
 
 
+## Pushes taken by an Oracle standing where the north crucible will be in 2 s, with a foe in range
+## outside the ring and in sight (so it would otherwise stand its ground), over 6 s; `brain` false
+## leaves it standing without one.
+func _pushes_in_the_crucibles_path(brain: bool) -> int:
+	var runner: MatchRunner = MatchRunner.new(Data.maps["burning_foundry"], "arena", "1v1", 0.0, 5)
+	var bot: Unit = runner.add_unit("oracle_grace", 0)
+	var foe: Unit = runner.add_unit("oracle_grace", 1)
+	var brains: Dictionary = {}
+	runner.sim.add_system(runner.bot_system(brains))
+	runner.sim.add_system(runner.system_combat_and_rules)
+	var start: int = runner.arena.start_tick
+	var pushed: int = 0
+	while runner.sim.tick <= start + 166 * TR:
+		if runner.sim.tick == start + 160 * TR:
+			var at: Vector2 = ArenaTwists.rotated(_wheel(), Vector2(0, 9), 162.0)
+			bot.position = Vector3(at.x, 0, at.y)
+			var out: Vector2 = at.normalized() * 22.0
+			foe.position = runner.geometry.resolve(Vector3(out.x, 0, out.y))
+			if brain:
+				brains[bot.id] = BotBrain.new("oracle_grace", 7, runner.geometry)
+		runner.sim.step()
+		pushed += runner.take_events().filter(func(e: Dictionary) -> bool:
+			return e["type"] == "twist_push" and int(e["target"]) == bot.id).size()
+	return pushed
+
+
+func test_a_bot_steps_off_the_ring_before_a_crucible_reaches_it() -> void:
+	assert_int(_pushes_in_the_crucibles_path(false)).override_failure_message("the setup never pushes").is_greater(0)
+	assert_int(_pushes_in_the_crucibles_path(true)).is_equal(0)
+
+
 func test_bots_stop_pathing_around_the_crucibles_once_they_move() -> void:
 	var geo: ArenaGeometry = ArenaGeometry.from_map(Data.maps["burning_foundry"])
 	var nav: NavGrid = NavGrid.new(geo)

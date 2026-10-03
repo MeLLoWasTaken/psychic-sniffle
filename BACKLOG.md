@@ -21,9 +21,9 @@ Acceptance criteria are written before work starts. Refine them during step 2 of
 Items further down keep their history; this list is the order to take them in.
 
 1. F-08: duel balance done (specs 45-54%, match-ups 41-56% on fresh seeds, named and random builds); left: Oracle mirrors reaching the time limit (a dampening proposal waits on the human).
-2. X-22 Intermittent large prediction correction in the lagged 2v2 check.
-3. F-18 Burning Foundry follow-ups.
-4. M3: split the remaining classes into waves of 3 or 4 and start the first wave.
+2. F-18 Burning Foundry follow-ups (left: the floor reads busy at a distance).
+3. M3: split the remaining classes into waves of 3 or 4 and start the first wave.
+4. X-22 Intermittent large prediction correction in the lagged 2v2 check (waiting for its next CI failure, which now prints the details).
 
 ### P-01 Playtest build `[done]`
 - [x] A Windows (and Linux) package of the game the human downloads from a GitHub release, unzips and runs: built on CI from export templates compiled from the same Godot 4.7.2 source; the Linux package smoke-tested on CI (it starts as a headless server).
@@ -390,6 +390,7 @@ The human asked to incorporate any readily available offering that improves the 
 
 ### X-22 Intermittent large prediction correction in the lagged 2v2 check `[todo]`
 - [ ] The CI check of 3065072 failed "network 2v2 arena at 150 ms": one bot's largest correction was 3.244 m (limit 0.5), not after a server-applied effect; the other three bots stayed under 0.09 m. The commit changed no movement or prediction code; the same check passed on 1f770a6 and locally on 3065072 (7-minute match on Gallows Courtyard, which collapses its gallows at 5:00). The client now records its largest correction (match time, predicted and replayed positions, collapsed colliders, auras) and the check prints it on failure, so the next occurrence says where it happened.
+- 2026-10-03: not reproduced locally: two full runs of the same check on 43baa0e passed (largest prediction corrections 0 and 0.20 m; a third run stopped without a result). Still waiting for the diagnostics from the next failure on CI; it moves below the other items until then.
 
 ### X-18 Nightly balance results (first run, 2026-10-01) `[done]`
 - [ ] 1v1 (1,000 duels, random builds): Warblade 62%, Oracle 8%, Arcanist 78%; the Arcanist has 1 viable build; two Arcanist nodes are in every top build (turning_hours, gliding_ice). 2v2 and 3v3 hit the 4-hour job limit (now split into 6 and 8 parallel shards); the 20-player profile failed without saying why (it now reports the end of its output as errors). Feed into M2-07 (1v1 tuning) and M2-04 (trees).
@@ -457,7 +458,7 @@ The human asked to incorporate any readily available offering that improves the 
 - [x] No sound while the wheel turns: now a looping rumble with rail thuds and chain creaks follows each crucible while the wheel turns (`foundry_wheel_loop`, twist `loop_sound`; AudioDirector map loops on the world bus).
 - [x] No sound when a crucible pushes a player (needs a server event for the push). Done 2026-10-02: the arena emits a `twist_push` event when a turning collider moves into a living player (at most every 0.6 s per player), carrying the twist's new `push_sound`; the foundry's is `foundry_shove` (a dull iron bump, a short clank and a boot scuff). Test: `test_a_shoved_player_hears_it_now_and_then_not_every_tick`.
 - [x] An acoustics file for the foundry (and the crypt): both use the default room. Done 2026-10-02: `data/acoustics/flooded_crypt.json` (darker and a little longer than the courtyard, niches scattering the echo) and `burning_foundry.json` (shorter and drier, clutter breaking up reflections), measured on a sword hit with the offline model of Godot's reverb; every world sound stays quieter than the CC warning through both (tests/test_audio.py).
-- [ ] Bots do not anticipate a crucible coming at them; they are pushed and steer away afterwards. Most bot matches end before 2:30, so the turning phase is rarely played.
+- [x] Bots do not anticipate a crucible coming at them; they are pushed and steer away afterwards. Most bot matches end before 2:30, so the turning phase is rarely played. Done 2026-10-03: a bot reads each turning collider's path from the twist data and match time; when one will reach it within 1.2 s it steps straight off the ring to the side it is on, ahead of every other goal, breaking off a cast and starting no cast that needs standing still. Test: `test_a_bot_steps_off_the_ring_before_a_crucible_reaches_it` (8 shoves without the dodge, none with it).
 - [ ] The floor still reads busy at a distance (brick herringbone and riveted plates); try larger plates or fewer joints.
 - [x] The two crucibles are placed unturned, so one pouring lip faces the furnace and the other faces away. Done 2026-10-02: an asset spec param `faces_pivot` turns a piece so its front faces the centre of the rotate twist that moves it; the crucible sets it. Test: `test_both_crucibles_pour_toward_the_furnace_as_they_turn` (fails without the flag).
 

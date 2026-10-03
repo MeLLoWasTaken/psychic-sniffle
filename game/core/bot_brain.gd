@@ -38,6 +38,8 @@ const HIDE_MAX_S: float = 8.0
 const MELEE_CLOSE_M: float = 5.0
 const HIDE_COOLDOWN_S: float = 6.0
 const TIE_PCT: float = 3.0  ## health shares this close count as a tie (see _lowest)
+const DODGE_AHEAD_S: Array[float] = [0.3, 0.6, 0.9, 1.2]  ## where a turning collider will be, looked ahead
+const DODGE_MARGIN_M: float = 0.4  ## extra room a dodging bot leaves a turning collider
 var stuck_count: int = 0
 var stuck_log: Array = []  ## where and toward what the bot got stuck (explain mode only)  ## times this bot stopped making progress toward a goal (for reports)
 var explain: bool = false  ## record why each priority rule was skipped (for traces)
@@ -96,14 +98,20 @@ func next_input(view: Dictionary) -> Dictionary:
 		input["ability"] = press["ability"]
 		input["target"] = press["target"]
 	# movement
-	var casting: bool = not me["cast"].is_empty() or tick < _hold_until
 	_movement_impaired = _has_cc(me, ["root", "stun", "incapacitate", "disorient"])
+	# a turning collider (a foundry crucible) about to run into the bot: step off its path before
+	# anything else, breaking off a cast, and start no cast that needs standing still
+	var dodge: Variant = null if _movement_impaired else _dodge_point(view, me["position"])
+	if dodge != null and input["ability"] != "" and Data.abilities.get(input["ability"], {}).get("cast_type", "instant") != "instant":
+		input["ability"] = ""
+		input["target"] = target["id"]
+	var casting: bool = dodge == null and (not me["cast"].is_empty() or tick < _hold_until)
 	if casting or _movement_impaired:
 		_reset_progress(me["position"], tick)  # not trying to move, so not stuck
 	if casting:
 		input["yaw"] = _yaw_to(me["position"], _pos_of(view, int(me["cast"].get("target", target["id"]))))
 		return input
-	var final_goal: Vector3 = _movement_goal(view, me, target, enemies, allies)
+	var final_goal: Vector3 = dodge if dodge != null else _movement_goal(view, me, target, enemies, allies)
 	var goal: Vector3 = _steer_point(me["position"], final_goal, tick)
 	var to: Vector3 = goal - me["position"]
 	to.y = 0.0
@@ -449,6 +457,43 @@ func _movement_goal(view: Dictionary, me: Dictionary, target: Dictionary, enemie
 	if d < lo:
 		return _kite_point(pos, target["position"])
 	return pos
+
+
+## Where to step when a rotate twist's collider will reach the bot within the last of
+## DODGE_AHEAD_S (F-18): straight off its ring, to the side of the ring the bot is already on (the
+## other side when that is blocked); null when nothing is coming. Bots read the collider's path
+## from the map's twist data and match time, as a player reads the turning wheel.
+func _dodge_point(view: Dictionary, pos: Vector3) -> Variant:
+	if geometry == null:
+		return null
+	var twists: Array = Data.maps.get(str(view.get("map", "")), {}).get("twists", [])
+	var s: float = float(int(view["tick"]) - int(view.get("match", {}).get("start_tick", 0))) / float(view.get("tick_rate", 60))
+	var p: Vector2 = Vector2(pos.x, pos.z)
+	for t: Dictionary in twists:
+		if str(t.get("type", "")) != "rotate" or ArenaTwists.stage(t, s) != ArenaTwists.Stage.DONE:
+			continue
+		var pivot: Vector2 = Vector2(t["center"][0], t["center"][1])
+		for c: Dictionary in geometry.circles:
+			if not c["tag"] in t.get("tags", []):
+				continue
+			var reach: float = float(c["radius"]) + ArenaGeometry.UNIT_RADIUS + DODGE_MARGIN_M
+			var coming: bool = false
+			for ahead: float in DODGE_AHEAD_S:
+				if p.distance_to(ArenaTwists.rotated(t, c["home"], s + ahead)) < reach:
+					coming = true
+					break
+			if not coming:
+				continue
+			var radial: Vector2 = p - pivot
+			radial = radial.normalized() if radial.length() > 0.01 else Vector2.RIGHT
+			var ring: float = (c["home"] as Vector2).distance_to(pivot)
+			var inside: Vector2 = pivot + radial * (ring - reach - 0.3)
+			var outside: Vector2 = pivot + radial * (ring + reach + 0.3)
+			for q: Vector2 in ([inside, outside] if p.distance_to(pivot) < ring else [outside, inside]):
+				var q3: Vector3 = Vector3(q.x, pos.y, q.y)
+				if geometry.resolve(q3).distance_to(q3) < 0.05:
+					return q3
+	return null
 
 
 ## The nearest active pickup within PICKUP_REACH_M when the bot's health is under `below_pct`.

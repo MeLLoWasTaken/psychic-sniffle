@@ -74,6 +74,5 @@ Useful files: everything in `logs`, and in `recordings` the match files (`.bin`)
 ## Known issues
 
 - Two Oracles in a duel often reach the 12-minute limit.
-- Bots do not see a foundry crucible coming; they get pushed and then steer away.
 - Only three of the planned thirteen classes exist; battlegrounds come in a later milestone.
 - Visual polish varies: the Gallows Courtyard's walls and floor are plainer than the other two arenas.

@@ -2,6 +2,10 @@
 
 One entry per build-loop iteration, newest first. Format: date, backlog ID, what changed, how it was checked.
 
+## 2026-10-03 — F-18 bots step out of a crucible's way
+- Bots now see a foundry crucible coming: when one will reach them within 1.2 s they step off its ring, breaking off a cast if they must. Before, they were shoved and steered away afterwards.
+- Checked: a new test puts an Oracle bot in a crucible's path with a foe in range (shoved 8 times without the dodge, never with it); all bot test suites pass.
+
 ## 2026-10-02 — F-18 foundry follow-ups: shove sound, arena reverbs, crucible lips
 - A crucible shoving a player now makes a sound at that player: a dull iron bump, a clank and a boot scuff, at most every 0.6 s while they are carried along. The server sends it as a new event, so it also plays in replays.
 - The Flooded Crypt and the Burning Foundry have their own reverb: the crypt darker and a little longer than the courtyard, the foundry shorter and drier. Before, both used the default small room.
