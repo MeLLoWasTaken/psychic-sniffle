@@ -2,6 +2,10 @@
 
 One entry per build-loop iteration, newest first. Format: date, backlog ID, what changed, how it was checked.
 
+## 2026-10-03 — F-18 done: a calmer foundry floor
+- The foundry floor's brick pavers are now laid in long courses (1 m by 0.5 m, running bond) instead of a basket weave, so the floor reads calmer at a distance and players stand out more. Both floor tiles rebuilt.
+- Checked: asset validation, the same camera before and after (`previews/f_18/floor_before_after.png`).
+
 ## 2026-10-03 — F-18 bots step out of a crucible's way
 - Bots now see a foundry crucible coming: when one will reach them within 1.2 s they step off its ring, breaking off a cast if they must. Before, they were shoved and steered away afterwards.
 - Checked: a new test puts an Oracle bot in a crucible's path with a foe in range (shoved 8 times without the dodge, never with it); all bot test suites pass.

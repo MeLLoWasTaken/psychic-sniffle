@@ -395,7 +395,7 @@ def anchor_plate(parts: list, m, loc, s: float = 1.0) -> None:
 # ----------------------------------------------------------------------------- floor
 
 def floor_tile(p: dict, m: dict, rng) -> list:
-    """4 x 4 m of soot-darkened brick pavers in basket weave (1 m cells of three pavers) mixed
+    """4 x 4 m of soot-darkened brick pavers (1 x 0.5 m, running bond along x) mixed
     with riveted iron floor plates, slag spatter and scorch marks (darkened pavers around a few
     centres). With params.worn: cracked and missing pavers filled with cinders, a sunken plate
     and more slag. The top stays within about 0.05 m of flat."""
@@ -433,49 +433,60 @@ def floor_tile(p: dict, m: dict, rng) -> list:
             f *= 1.0 - 0.6 * math.exp(-((x - sx) ** 2 + (y - sy) ** 2) / (sr * sr))
         return f
 
-    # pavers
-    for i in range(cells):
-        for j in range(cells):
-            if (i, j) in used:
-                continue
-            x0, y0 = -half + i, -half + j
-            along_x = (i + j) % 2 == 0
-            fg = 0.03  # floor joints are tighter than the walls': a calmer surface to fight on
-            for k in range(3):
-                if along_x:
-                    cx, cy, sx, sy = x0 + 0.5, y0 + (k + 0.5) / 3, 1.0 - fg, 1 / 3 - fg
-                else:
-                    cx, cy, sx, sy = x0 + (k + 0.5) / 3, y0 + 0.5, 1 / 3 - fg, 1.0 - fg
-                t = brick_tint(rng, 0.07)
-                f = scorch_f(cx, cy)
-                t = (t[0] * f, t[1] * f, t[2] * f)
-                key = "brick_dark" if rng.random() < 0.06 else "paver"
-                top = top0 + rng.uniform(-0.012, 0.008)
-                r = rng.random()
-                if worn and r < 0.08:  # missing: cinders and a chip in the hole
-                    parts.append(block("cinders", (sx - 0.02, sy - 0.02, 0.07), (cx, cy, 0.135), bevel=0.015, mat=m["ash"],
-                                       tint=(f, f, f)))
-                    parts.append(lump("chip", 0.07, (cx + rng.uniform(-0.1, 0.1), cy + rng.uniform(-0.1, 0.1), 0.17),
-                                      m["slag"], scale=(1.2, 0.9, 0.5)))
-                    continue
-                if (worn and r < 0.3) or r < 0.05:  # cracked across, the halves tilted apart
-                    fr = rng.uniform(0.35, 0.65)
-                    long_x = sx > sy
-                    L = sx if long_x else sy
-                    for lo, hi in ((0.0, fr), (fr, 1.0)):
-                        c = -L / 2 + L * (lo + hi) / 2
-                        ln = L * (hi - lo) - 0.025
-                        pc = (cx + c, cy) if long_x else (cx, cy + c)
-                        ps = (ln, sy, thick) if long_x else (sx, ln, thick)
-                        o = block("paver", ps, (pc[0], pc[1], top - thick / 2 - rng.uniform(0, 0.012)), bevel=0.022,
-                                  mat=m[key], tint=t, rot=(rng.uniform(-0.02, 0.02), rng.uniform(-0.02, 0.02), rng.uniform(-0.03, 0.03)))
-                        kit.jitter_vertices(o, rng, 0.006)
-                        parts.append(o)
-                    continue
-                o = block("paver", (sx, sy, thick), (cx, cy, top - thick / 2), bevel=0.018, mat=m[key], tint=t,
-                          rot=(rng.uniform(-0.01, 0.01), rng.uniform(-0.01, 0.01), rng.uniform(-0.012, 0.012)))
+    # pavers: 1 x 0.5 m in running bond along x (F-18: the basket weave read busy at a distance);
+    # a paver crossing into a plate's cell is cut at the cell edge
+    fg = 0.03  # floor joints are tighter than the walls': a calmer surface to fight on
+    row_h = 0.5
+
+    def paver(cx, cy, sx, sy):
+        t = brick_tint(rng, 0.06)
+        f = scorch_f(cx, cy)
+        t = (t[0] * f, t[1] * f, t[2] * f)
+        key = "brick_dark" if rng.random() < 0.04 else "paver"
+        top = top0 + rng.uniform(-0.01, 0.006)
+        r = rng.random()
+        if worn and r < 0.08:  # missing: cinders and a chip in the hole
+            parts.append(block("cinders", (sx - 0.02, sy - 0.02, 0.07), (cx, cy, 0.135), bevel=0.015, mat=m["ash"],
+                               tint=(f, f, f)))
+            parts.append(lump("chip", 0.07, (cx + rng.uniform(-0.1, 0.1), cy + rng.uniform(-0.1, 0.1), 0.17),
+                              m["slag"], scale=(1.2, 0.9, 0.5)))
+            return
+        if (worn and r < 0.3) or r < 0.05:  # cracked across, the halves tilted apart
+            fr = rng.uniform(0.35, 0.65)
+            long_x = sx > sy
+            L = sx if long_x else sy
+            for lo, hi in ((0.0, fr), (fr, 1.0)):
+                c = -L / 2 + L * (lo + hi) / 2
+                ln = L * (hi - lo) - 0.025
+                pc = (cx + c, cy) if long_x else (cx, cy + c)
+                ps = (ln, sy, thick) if long_x else (sx, ln, thick)
+                o = block("paver", ps, (pc[0], pc[1], top - thick / 2 - rng.uniform(0, 0.012)), bevel=0.022,
+                          mat=m[key], tint=t, rot=(rng.uniform(-0.02, 0.02), rng.uniform(-0.02, 0.02), rng.uniform(-0.03, 0.03)))
                 kit.jitter_vertices(o, rng, 0.006)
                 parts.append(o)
+            return
+        o = block("paver", (sx, sy, thick), (cx, cy, top - thick / 2), bevel=0.018, mat=m[key], tint=t,
+                  rot=(rng.uniform(-0.008, 0.008), rng.uniform(-0.008, 0.008), rng.uniform(-0.01, 0.01)))
+        kit.jitter_vertices(o, rng, 0.006)
+        parts.append(o)
+
+    def free(x0, x1, y):  # the stretch [x0, x1] of the row at y lies outside every plate cell
+        j = min(cells - 1, int(y + half))
+        return all((i, j) not in used for i in range(int(x0 + half + 1e-6), int(x1 + half - 1e-6) + 1))
+
+    for row in range(int(round(size / row_h))):
+        y = -half + (row + 0.5) * row_h
+        x = -half - (0.5 if row % 2 else 0.0)
+        while x < half - 1e-6:
+            a, b = max(x, -half), min(x + 1.0, half)
+            pieces = [(a, b)]
+            cut = math.floor(a + half + 1e-6) + 1 - half  # the cell edge inside the paver, if any
+            if a + 1e-6 < cut < b - 1e-6:
+                pieces = [(a, cut), (cut, b)]
+            for (u0, u1) in pieces:
+                if u1 - u0 > 0.05 and free(u0, u1, y):
+                    paver((u0 + u1) / 2, y, u1 - u0 - fg, row_h - fg)
+            x += 1.0
     # iron plates: riveted along their edges, a flush lifting ring on the bigger ones
     for n_plate, (i, j, w, h) in enumerate(plates):
         cx, cy = -half + i + w / 2, -half + j + h / 2

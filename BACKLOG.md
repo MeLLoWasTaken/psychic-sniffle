@@ -21,9 +21,8 @@ Acceptance criteria are written before work starts. Refine them during step 2 of
 Items further down keep their history; this list is the order to take them in.
 
 1. F-08: duel balance done (specs 45-54%, match-ups 41-56% on fresh seeds, named and random builds); left: Oracle mirrors reaching the time limit (a dampening proposal waits on the human).
-2. F-18 Burning Foundry follow-ups (left: the floor reads busy at a distance).
-3. M3: split the remaining classes into waves of 3 or 4 and start the first wave.
-4. X-22 Intermittent large prediction correction in the lagged 2v2 check (waiting for its next CI failure, which now prints the details).
+2. M3-01 Templar class and Radiance kit, then M3-02 to M3-04 (the M3 section below has the wave plan).
+3. X-22 Intermittent large prediction correction in the lagged 2v2 check (waiting for its next CI failure, which now prints the details).
 
 ### P-01 Playtest build `[done]`
 - [x] A Windows (and Linux) package of the game the human downloads from a GitHub release, unzips and runs: built on CI from export templates compiled from the same Godot 4.7.2 source; the Linux package smoke-tested on CI (it starts as a headless server).
@@ -454,12 +453,12 @@ The human asked to incorporate any readily available offering that improves the 
 - Done 2026-10-02: the pillar is an octagonal pier of individual stones (some split, chipped or spalled) on a stepped plinth, with a band course, three corbel courses, a cornice, a pyramid cap with a ball finial, iron shackles on chains, a notice board and chips at its foot (4,598 triangles, budget 5,000). The gallows is a stone plinth with quoins and a chamfered cap under a timber stage (posts, cross-braced bays with iron straps, boards set back with one missing, joist ends), a plank deck with a trapdoor and a rail, a ladder, and a taller frame with raking struts, knee braces and iron straps, three nooses over the trap, a hanging iron cage and a lantern (14,250 triangles, budget 16,000). The frame now runs along the arena's z axis, side-on to both gates. Same camera before and after: `docs/reports/review_05/f19_courtyard_before_after.png`; the collapse wreck still reads (`previews/f_19/courtyard_wreck.png`). New asset pivot `axis` (DECISIONS 2026-10-02).
 - Follow-up (not in this item): the floor still has little dressing, and the walls are the kit's first, plainest pieces; review 6 compares the three arenas again.
 
-### F-18 Burning Foundry follow-ups (from M2-10) `[todo]`
+### F-18 Burning Foundry follow-ups (from M2-10) `[done]`
 - [x] No sound while the wheel turns: now a looping rumble with rail thuds and chain creaks follows each crucible while the wheel turns (`foundry_wheel_loop`, twist `loop_sound`; AudioDirector map loops on the world bus).
 - [x] No sound when a crucible pushes a player (needs a server event for the push). Done 2026-10-02: the arena emits a `twist_push` event when a turning collider moves into a living player (at most every 0.6 s per player), carrying the twist's new `push_sound`; the foundry's is `foundry_shove` (a dull iron bump, a short clank and a boot scuff). Test: `test_a_shoved_player_hears_it_now_and_then_not_every_tick`.
 - [x] An acoustics file for the foundry (and the crypt): both use the default room. Done 2026-10-02: `data/acoustics/flooded_crypt.json` (darker and a little longer than the courtyard, niches scattering the echo) and `burning_foundry.json` (shorter and drier, clutter breaking up reflections), measured on a sword hit with the offline model of Godot's reverb; every world sound stays quieter than the CC warning through both (tests/test_audio.py).
 - [x] Bots do not anticipate a crucible coming at them; they are pushed and steer away afterwards. Most bot matches end before 2:30, so the turning phase is rarely played. Done 2026-10-03: a bot reads each turning collider's path from the twist data and match time; when one will reach it within 1.2 s it steps straight off the ring to the side it is on, ahead of every other goal, breaking off a cast and starting no cast that needs standing still. Test: `test_a_bot_steps_off_the_ring_before_a_crucible_reaches_it` (8 shoves without the dodge, none with it).
-- [ ] The floor still reads busy at a distance (brick herringbone and riveted plates); try larger plates or fewer joints.
+- [x] The floor still reads busy at a distance (brick herringbone and riveted plates); try larger plates or fewer joints. Done 2026-10-03: the pavers are 1 x 0.5 m in running bond along x (a third fewer joints, no alternating cells), cut at the iron plates' edges; same camera before and after: `previews/f_18/floor_before_after.png`.
 - [x] The two crucibles are placed unturned, so one pouring lip faces the furnace and the other faces away. Done 2026-10-02: an asset spec param `faces_pivot` turns a piece so its front faces the centre of the rotate twist that moves it; the crucible sets it. Test: `test_both_crucibles_pour_toward_the_furnace_as_they_turn` (fails without the flag).
 
 ### F-06 Two-handed grip, melee clean-up and stronger releases `[todo]`
@@ -638,8 +637,38 @@ Exit gate (DESIGN.md): every combat rule has passing tests; every action is rebi
 - [x] Full review pass; the M2 gate checked and written to CHANGELOG.md.
 - Done 2026-10-02 (`docs/reports/review_05/review_05.md`): the three gate conditions pass with tests (every combat rule, every action rebound, layouts saved and reloaded); balance, arenas and performance reviewed; the backlog re-ordered ("Next up" at the top). Waiting on the human's sign-off of the gate.
 
+## M3 — Class waves (split 2026-10-03)
+
+The other 10 classes, and the 6 remaining specs of the first three classes, in three waves of 12 specs each, grouped so each wave brings few new combat systems (DECISIONS 2026-10-03). Every wave has healers and tanks.
+
+| Wave | New classes (all three specs) | Specs of existing classes | New systems |
+| --- | --- | --- | --- |
+| 1 | Templar, Deathsworn, Stormcaller | Warblade Berserker, Arcanist Pyre, Arcanist Aether | summoned minions (Plague, Primal wolves), totems (Tidesinger), a pull (Bloodbound) |
+| 2 | Stalker, Occultist, Shade | Warblade Bulwark, Oracle Absolution, Oracle Void | pets with their own crowd control, traps, stealth |
+| 3 | Wildkin, Ascetic, Felhunter, Scalebinder | none | shapeshifting, delayed damage (stagger), gliding, charged casts released at a chosen power, rewinding damage, ground sigils |
+
+**Per spec** (one item each, in order): kit data (abilities, auras, class and spec talent trees, PvP talents, bot profile; `kit_status: complete` passes the kit template), icons, sounds and effects for every ability (counterplay rule: every strong effect visible and audible), then balance in 1v1, 2v2 and 3v3 bot simulations (40 to 60%). **Per class:** a character (body build, armor set, weapons) that passes the art checklist. **Art checklist** (DESIGN.md names it without defining it; DECISIONS 2026-10-03): asset validation passes; contact sheet and idle, cast and attack poses reviewed; a lineup next to the approved characters; the class reads at a glance in an arena screenshot (silhouette and class colour); the art bible's lessons applied.
+
+**Wave gate** (DESIGN.md): each new spec wins 40 to 60% in bot simulations and passes the art checklist.
+
+### Wave 1
+
+### M3-01 Templar class and Radiance kit `[todo]`
+- [ ] Templar class data (plate, class colour, class talent tree) and the Radiance healer spec: 14 to 18 abilities filling the kit template (strong single-target heals, a short full immunity, able to fight in melee), its auras, spec and PvP talent trees, a bot profile. `validate_data.py` passes with `kit_status: complete`.
+- [ ] Radiance plays in bot matches without errors (a 2v2 with each existing spec as its partner), and its kit is reviewed against the counterplay rules (at most one full immunity; burst answerable by two tools).
+
+### M3-02 Templar character `[todo]`
+- [ ] A Templar model on the heavy body build, a plate armor set distinct from the Warblade's (lighter, robed over plate, holy trim), a one-handed hammer and a shield; passes the art checklist.
+
+### M3-03 Radiance icons, sounds and effects `[todo]`
+- [ ] Every Radiance ability has an icon, sounds at each stage and an effect; strong effects are distinct on enemy frames.
+
+### M3-04 Radiance balance `[todo]`
+- [ ] Radiance wins 40 to 60% in 1v1, 2v2 and 3v3 bot simulations (named and random builds), with every other spec still inside 40 to 60%.
+
+Then, in order (split into items like M3-01 to M3-04 as each starts): Templar Vanguard (tank) and Zealot; Deathsworn Frostgrave, Bloodbound (tank) and Plague (minions); Stormcaller Tempest, Tidesinger (healer, totems) and Primal (wolves); Warblade Berserker; Arcanist Pyre and Aether; wave 1 gate.
+
 ## Later milestones (split into items when the milestone starts)
 
-- **M3** Remaining 10 classes in waves of 3 or 4, each with kits, bots, models, animations, effects and sounds.
 - **M4** Capture-the-flag and resource-control battlegrounds, raid frames, scoreboard, minimap, bot fill.
 - **M5** Art and audio polish, rated matchmaking with Glicko-2, accessibility options, performance work, balance.
