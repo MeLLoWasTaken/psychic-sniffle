@@ -2,6 +2,12 @@
 
 One entry per build-loop iteration, newest first. Format: date, backlog ID, what changed, how it was checked.
 
+## 2026-10-03 — G-01 New male and female bodies (graphics overhaul begins)
+- The human asked for a major step up in graphics: more detail, armor customization, a character creator, less exaggerated proportions and a crusader-style Templar. The plan is in the backlog as G-01 to G-10, and DESIGN.md has the new budgets: 40,000 to 60,000 triangles per character and about one 4096 px texture set.
+- First step: two new bodies, male and female, open to every class. They are built from real anatomy (collarbones, chest and stomach muscles, shoulder blades, kneecaps, calves, ankle bones) at more natural proportions: about 7.5 heads tall, with hands and shoulders close to life size. Each has 14,000 triangles plus a normal map baked from a version about 40 times denser, and its own animation set with no limbs passing through the body.
+- Not in the game yet: characters keep the current art until the new armor and the assembly code are ready (G-03 to G-05). Faces are still rough; G-02 rebuilds them.
+- Checked: asset validation, clipping checks on every animation, side-by-side sheets with the old bodies.
+
 ## 2026-10-03 — M3-13 Eight specs in the main menu; recording memory fix
 - All eight specializations can be played from the main menu in 1v1, 2v2 and 3v3, each with its own bot partners and opponents. The spec cards now sit in two rows of four, grouped by class. The playtest guide lists all eight.
 - Fixed: a long match could use several gigabytes of memory and be killed, because match recordings were held in memory until the match ended. They are now written to disk in compressed pieces as the match runs, so memory stays flat and a crash keeps everything up to the last two seconds.

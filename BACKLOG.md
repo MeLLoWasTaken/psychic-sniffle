@@ -30,10 +30,12 @@ Done from review 6's list: M3-04 Templar balance (nightly at 952db81, every spec
 
 Goals and rules: DESIGN.md "Art direction", "Appearance and armor customization" and "Budgets" (changed the same day). Each item ends with reference sheets read with the Read tool and compared with the current art side by side.
 
-### G-01 New bodies: two body types at the new proportions `[todo]`
-- [ ] Broad and slender body types at about 7.5 heads, hands, feet and shoulders about 10% oversized; anatomy with readable muscle masses, knuckles, collarbones; 12,000 to 16,000 triangles each at LOD0, with a separate head.
-- [ ] The standard 20-bone skeleton keeps its bone names; an animation library per body type, baked from the shared pose data, passes the clipping report.
-- [ ] Preview sheets of both bodies next to the old heavy and lean builds.
+### G-01 New bodies: two body types at the new proportions `[done]`
+- [x] Male and female body types at about 7.5 heads, hands, feet and shoulders about 10% oversized; anatomy with readable muscle masses, knuckles, collarbones; 12,000 to 16,000 triangles each at LOD0. (Changed while building, not loosened: the head stays part of the body mesh instead of a separate one, because two meshes reduced separately never share their seam vertices and would crack at the neck; G-02's face presets become shape keys on the head's vertices. DECISIONS.md.)
+- [x] The standard 20-bone skeleton keeps its bone names; an animation library per body type, baked from the shared pose data, passes the clipping report.
+- [x] Preview sheets of both bodies next to the old heavy and lean builds.
+- Done 2026-10-03. `tools/blender/anatomy.py`: clavicles, neck muscles, fan-shaped pectorals, abdominals and obliques, shoulder blades and the spine's groove, deltoids, biceps, triceps, forearm muscles, the thigh's teardrop, kneecaps, two-headed calves, ankle bones, Achilles tendons; the female body with a narrower waist, wider pelvis and softer muscle. Skeleton builds `male` (1.88 m, shoulders 0.205 m from the midline) and `female` (1.76 m, 0.18 m), shoulders a little higher than the old builds; hands 1.08 and 0.94 (the old heavy build 1.22). Each body is extracted at 3 mm (about 570,000 triangles), reduced to 14,000 with the head kept denser (about 2,200 triangles), and gets a 2048 px normal map baked from the dense surface (`tools/blender/bake.py`, new: high-to-low bakes for G-03). `anims_male` and `anims_female`: no clipping in any clip. Sheets: `previews/g_01/` (`bodies_compare.png` against heavy and lean; pose sheets in `anims/`). Fast shape loop: `tools/blender/preview_anatomy.py`.
+- Follow-ups: the face is still crude (G-02 rebuilds it); a sharp hollow where the neck meets the collarbones (G-02, with the neck); weapon grips for the new builds are computed from the hand scale and get checked when weapons attach (G-05, G-09).
 
 ### G-02 Heads and the face, hair and color options `[todo]`
 - [ ] A head mesh per body type with at least 6 face presets (shape keys or variants: brow, jaw, nose, cheekbones), at least 8 skin tones, eye colors, scars and war paint as texture layers.

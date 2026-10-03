@@ -90,6 +90,34 @@ BUILDS = {
             "hip": (0.10, 0.10), "knee": (0.075, 0.075), "ankle": (0.06, 0.06), "toe": (0.065, 0.055),
         },
     },
+    # Graphics overhaul (G-01): realistic-heroic proportions, about 7.5 heads, open to every class.
+    # Bodies come from anatomy.py; "radii" and "parts" are unused (metaball and skin bodies only).
+    "male": {
+        "height": 1.88,
+        "shoulder_width": 0.205,
+        "shoulder_z": 0.802,
+        "chest_top_z": 0.812,
+        "hip_width": 0.052,
+        "knee_width": 0.05,
+        "ankle_width": 0.052,
+        "arm_angle_deg": 50,
+        "bulk": 1.0,
+        "parts": HEAVY_PARTS,
+        "radii": {},
+    },
+    "female": {
+        "height": 1.76,
+        "shoulder_width": 0.18,
+        "shoulder_z": 0.802,
+        "chest_top_z": 0.812,
+        "hip_width": 0.058,
+        "knee_width": 0.046,
+        "ankle_width": 0.048,
+        "arm_angle_deg": 50,
+        "bulk": 0.8,
+        "parts": HEAVY_PARTS,
+        "radii": {},
+    },
 }
 
 
@@ -103,14 +131,14 @@ def joints(build: dict) -> dict[str, Vector]:
         "pelvis": Vector((0, 0, 0.53 * h)),
         "spine": Vector((0, 0.005, 0.62 * h)),
         "chest": Vector((0, 0.0, 0.72 * h)),
-        "chest_top": Vector((0, 0.01, 0.80 * h)),
+        "chest_top": Vector((0, 0.01, build.get("chest_top_z", 0.80) * h)),
         "neck": Vector((0, 0.0, 0.845 * h)),
         "head": Vector((0, -0.01, 0.875 * h)),
         "head_top": Vector((0, -0.015, h)),
     }
     upper, fore, hand = 0.17 * h, 0.155 * h, 0.10 * h
     for side, sx in (("l", 1), ("r", -1)):
-        sh = Vector((sx * sw, 0.01, 0.79 * h))
+        sh = Vector((sx * sw, 0.01, build.get("shoulder_z", 0.79) * h))
         down = Vector((sx * math.cos(a), 0, -math.sin(a)))
         el = sh + down * upper
         wr = el + down * fore
@@ -118,10 +146,10 @@ def joints(build: dict) -> dict[str, Vector]:
         j[f"elbow_{side}"] = el + Vector((0, 0.02, 0))  # elbows slightly back
         j[f"wrist_{side}"] = wr
         j[f"hand_end_{side}"] = wr + down * hand
-        j[f"hip_{side}"] = Vector((sx * 0.065 * h, 0, 0.50 * h))
-        j[f"knee_{side}"] = Vector((sx * 0.07 * h, -0.015, 0.275 * h))
-        j[f"ankle_{side}"] = Vector((sx * 0.075 * h, 0.01, 0.045 * h))
-        j[f"toe_{side}"] = Vector((sx * 0.08 * h, -0.11 * h, 0.02 * h))
+        j[f"hip_{side}"] = Vector((sx * build.get("hip_width", 0.065) * h, 0, 0.50 * h))
+        j[f"knee_{side}"] = Vector((sx * build.get("knee_width", 0.07) * h, -0.015, 0.275 * h))
+        j[f"ankle_{side}"] = Vector((sx * build.get("ankle_width", 0.075) * h, 0.01, 0.045 * h))
+        j[f"toe_{side}"] = Vector((sx * (build.get("ankle_width", 0.075) + 0.005) * h, -0.11 * h, 0.02 * h))
     return j
 
 
@@ -326,3 +354,56 @@ def bind(body: bpy.types.Object, rig: bpy.types.Object) -> None:
     rig.select_set(True)
     bpy.context.view_layer.objects.active = rig
     bpy.ops.object.parent_set(type="ARMATURE_AUTO")
+
+
+def build_body_anatomy(body_type: str, name: str = "body", target_tris: int = 14000, voxel: float = 0.003,
+                       hands: tuple[str, str] = ("relaxed", "fist")) -> tuple[bpy.types.Object, bpy.types.Object]:
+    """Overhaul body (G-01): the anatomy.py field extracted densely (`high`, the normal-bake
+    source) and a game mesh reduced from it to `target_tris` (`low`). The head and hands keep
+    proportionally more triangles (a weighted reduction), since faces and fingers are seen close."""
+    import numpy as np
+    import anatomy
+    build = BUILDS[body_type]
+    jv = joints(build)
+    j = {k: np.array(v) for k, v in jv.items()}
+    verts, faces = anatomy.body_mesh(j, body_type, voxel, hands)
+    objs = []
+    for label in ("high", "low"):
+        mesh = bpy.data.meshes.new(f"{name}_{label}")
+        mesh.from_pydata(verts.tolist(), [], faces.tolist())
+        mesh.validate()
+        o = bpy.data.objects.new(f"{name}_{label}" if label == "high" else name, mesh)
+        bpy.context.scene.collection.objects.link(o)
+        objs.append(o)
+    high, low = objs
+    detail = low.vertex_groups.new(name="detail")
+    neck_z = float(jv["neck"].z)
+    hand_c = [(jv[f"wrist_{s}"] + jv[f"hand_end_{s}"]) / 2 for s in ("l", "r")]
+    # the group's weight is how freely a vertex may be removed (Blender's reduction reads it that way)
+    for vtx in low.data.vertices:
+        w = 0.5 if vtx.co.z > neck_z else 1.0
+        if min((vtx.co - c).length for c in hand_c) < 0.11:
+            w = 0.7
+        detail.add([vtx.index], w, "REPLACE")
+    bpy.ops.object.select_all(action="DESELECT")
+    low.select_set(True)
+    bpy.context.view_layer.objects.active = low
+    dec = low.modifiers.new("decimate", "DECIMATE")
+    dec.ratio = min(1.0, target_tris / max(len(faces), 1))
+    dec.vertex_group = "detail"
+    dec.vertex_group_factor = 0.003  # very sensitive: 0.003 gives the head about a quarter of the triangles
+    dec.use_symmetry = False
+    smooth = low.modifiers.new("smooth", "CORRECTIVE_SMOOTH")
+    smooth.iterations = 2
+    smooth.use_only_smooth = True
+    for m in list(low.modifiers):
+        bpy.ops.object.modifier_apply(modifier=m.name)
+    low.vertex_groups.remove(low.vertex_groups["detail"])
+    head_tris = sum(1 for p in low.data.polygons if p.center.z > neck_z)
+    print(f"BODY {name}: {len(low.data.polygons)} triangles, {head_tris} on the head", flush=True)
+    for o in (low, high):
+        bpy.context.view_layer.objects.active = o
+        o.select_set(True)
+        bpy.ops.object.shade_smooth()
+        o.select_set(False)
+    return low, high

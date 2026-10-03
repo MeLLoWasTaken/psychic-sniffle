@@ -1,0 +1,22 @@
+{
+  "id": "body_male",
+  "kind": "test",
+  "builder": "build_body.py",
+  "seed": 1,
+  "body_build": "male",
+  "tri_budget": {
+    "min": 12000,
+    "max": 16000
+  },
+  "texture_size": 2048,
+  "palette": {
+    "skin": "#b08a70"
+  },
+  "out": "game/assets/characters/body_male.glb",
+  "status": "draft",
+  "params": {
+    "target_tris": 14000,
+    "voxel": 0.003
+  },
+  "pivot": "axis"
+}

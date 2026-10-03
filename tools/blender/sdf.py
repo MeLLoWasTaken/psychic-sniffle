@@ -115,11 +115,11 @@ class Shape:
     prims: list[Prim] = field(default_factory=list)
 
     # the helpers compute a bounding box so each primitive is evaluated only near itself
-    def round_cone(self, a, b, r1, r2, k=0.04, name=""):
+    def round_cone(self, a, b, r1, r2, k=0.04, name="", subtract=False):
         a, b = _v(a), _v(b)
         m = max(r1, r2)
         self.prims.append(Prim(lambda P, a=a, b=b: sd_round_cone(P, a, b, r1, r2),
-                               np.minimum(a, b) - m, np.maximum(a, b) + m, k, name=name))
+                               np.minimum(a, b) - m, np.maximum(a, b) + m, k, subtract, name))
 
     def ellipsoid(self, c, radii, k=0.03, rot=None, subtract=False, name=""):
         c = _v(c)

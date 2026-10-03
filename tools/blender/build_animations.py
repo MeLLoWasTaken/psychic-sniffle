@@ -447,7 +447,8 @@ def review(spec: dict, anim: dict, rig, clips: list[str], previews: Path, sheets
     report = {}
     for path in sorted((REPO / "data" / "assets").glob("*.json")):
         cs = json.loads(path.read_text())
-        if cs["kind"] != "character" or cs.get("body_build") != spec["body_build"]:
+        bare_body = cs["id"] == f"body_{spec['body_build']}"  # the overhaul's bare bodies (G-01) are reviewed too
+        if (cs["kind"] != "character" and not bare_body) or cs.get("body_build") != spec["body_build"]:
             continue
         if not (REPO / cs["out"]).exists():
             print(f"  skip {cs['id']}: not built")

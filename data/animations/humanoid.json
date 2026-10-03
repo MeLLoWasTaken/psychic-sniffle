@@ -4,9 +4,9 @@
   "fps": 30,
   "overlap_s": {"chest": 0.02, "neck": 0.04, "head": 0.06, "forearm": 0.033, "hand": 0.066, "foot": 0.033},
   "auto_shrug": 0.35,
-  "capture_leg_m": {"heavy": 0.8884, "lean": 0.843},
+  "capture_leg_m": {"heavy": 0.8884, "lean": 0.843, "male": 0.8554, "female": 0.8008},
   "build_offsets": {"lean": {"idle": {"upperarm_l": {"raise": -9}, "upperarm_r": {"raise": -3}, "forearm_l": {"bend": 4}}}},
-  "weapon_grip": {"bone": "hand_r", "along_m": {"heavy": 0.125, "lean": 0.112}, "palm_m": {"heavy": 0.039, "lean": 0.037}, "holds": {"forward": {"blade": [0, -1, 0], "flat": [1, 0, 0]}, "two_handed": {"blade": [0, -1, 0], "flat": [1, 0, 0], "slide_m": 0.09, "second_hand": {"bone": "hand_l", "below_m": 0.16, "min_forward_m": 0.5, "clips": ["attack_1", "attack_2", "attack_3"]}}, "upright": {"blade": [0, 0, 1], "flat": [1, 0, 0], "wrist": {"aim": [0.2, 0, 1], "weight": 0.85, "limit": 110}}}},
+  "weapon_grip": {"bone": "hand_r", "along_m": {"heavy": 0.125, "lean": 0.112, "male": 0.112, "female": 0.0982}, "palm_m": {"heavy": 0.039, "lean": 0.037, "male": 0.0367, "female": 0.0346}, "holds": {"forward": {"blade": [0, -1, 0], "flat": [1, 0, 0]}, "two_handed": {"blade": [0, -1, 0], "flat": [1, 0, 0], "slide_m": 0.09, "second_hand": {"bone": "hand_l", "below_m": 0.16, "min_forward_m": 0.5, "clips": ["attack_1", "attack_2", "attack_3"]}}, "upright": {"blade": [0, 0, 1], "flat": [1, 0, 0], "wrist": {"aim": [0.2, 0, 1], "weight": 0.85, "limit": 110}}}},
   "clips": {
     "idle": {"length_s": 2.4, "loop": true,
       "capture": {"source": "idle", "relative": true, "bones": ["spine", "chest", "neck", "head"], "gains": {"neck.twist": 0.35, "neck.lean": 0.35, "head.twist": 0.5}},

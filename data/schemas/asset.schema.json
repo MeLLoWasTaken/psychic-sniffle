@@ -43,7 +43,9 @@
   "body_build": {
    "enum": [
     "heavy",
-    "lean"
+    "lean",
+    "male",
+    "female"
    ]
   },
   "tri_budget": {

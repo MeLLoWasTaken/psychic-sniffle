@@ -1,0 +1,16 @@
+{
+  "id": "anims_male",
+  "kind": "animation",
+  "builder": "build_animations.py",
+  "seed": 0,
+  "body_build": "male",
+  "tri_budget": {
+    "min": 0,
+    "max": 100
+  },
+  "params": {
+    "set": "humanoid"
+  },
+  "out": "game/assets/animations/anims_male.glb",
+  "status": "draft"
+}

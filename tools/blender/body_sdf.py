@@ -20,6 +20,9 @@ import sdf
 BUILD_SCALES = {
     "heavy": {"torso": 1.0, "limb": 1.0, "muscle": 1.0, "hand": 1.22, "foot": 1.08, "jaw": 1.0},
     "lean": {"torso": 0.8, "limb": 0.8, "muscle": 0.62, "hand": 1.08, "foot": 1.0, "jaw": 0.82},
+    # overhaul bodies (anatomy.py, G-01): only the hand scale is read here (hands and weapon grips)
+    "male": {"torso": 1.0, "limb": 1.0, "muscle": 1.0, "hand": 1.08, "foot": 1.05, "jaw": 1.0},
+    "female": {"torso": 0.86, "limb": 0.84, "muscle": 0.55, "hand": 0.94, "foot": 0.95, "jaw": 1.0},
 }
 
 

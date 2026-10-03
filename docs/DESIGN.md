@@ -363,7 +363,7 @@ Stylized, hand-painted fantasy with heroic, slightly exaggerated proportions and
 **Appearance and armor customization** (added 2026-10-03 by the human)
 
 - Appearance is cosmetic only and never changes stats or hit boxes.
-- Character creator: body type (two, broad and slender, both available to every class), height within ±4%, face (at least 6 presets), skin tone (at least 8), hair style (at least 6, hidden under helms) and hair color, beard (broad body type), eye color, scars and war paint. No races: one people.
+- Character creator: body type (two, male and female, both available to every class), height within ±4%, face (at least 6 presets), skin tone (at least 8), hair style (at least 6, hidden under helms) and hair color, beard (male body type), eye color, scars and war paint. No races: one people.
 - Armor has eight slots: head, shoulders, chest, hands, waist, legs, feet and back (cape). The chest slot includes any surcoat or tabard. Every piece belongs to one armor type (cloth, leather, mail, plate), and a character can wear any piece of its class's armor type, mixed freely. Each class has at least one complete set as its default look, and each piece can be hidden except chest, legs and feet.
 - Dyes: each piece has primary, secondary and metal channels chosen from a fixed palette.
 - In matches, team color overrides the back slot and the tabard's primary channel, so teams stay readable. Because pieces mix within an armor type, a class is no longer always readable from armor alone: the weapon, the nameplate's class color and class icon, and spell colors identify the class.
@@ -573,7 +573,7 @@ The full roster means roughly 600 abilities, 2,500 talent nodes (13 class trees,
 | Animation source | Keyframed by script | Retarget CC0 motion-capture data onto the standard skeleton | Decided: hybrid. Locomotion from retargeted CMU motion capture (commercial use allowed), stylised by data; combat, casts and crowd control scripted; foot IK and look-at in game (delegated by the human, 2026-09-30) |
 | Sound effects | Synthesized by script, plus CC0 libraries | AI audio tools, a hired sound designer | Decided: synthesized by script with data-driven studio processing; the human reviews by ear |
 | Music | Licensed or CC0 tracks | Commissioned composer | M5 |
-| Playable races | None; two body builds per class | Races with cosmetic differences only | Decided: no races; two body types (broad and slender) open to every class, with a character creator (human, 2026-10-03) |
+| Playable races | None; two body builds per class | Races with cosmetic differences only | Decided: no races; two body types (male and female) open to every class, with a character creator (human, 2026-10-03) |
 | Final names | Placeholders in this document | A naming pass with trademark checks | Before any public release |
 | Server hosting | Self-hosted during development | Cloud game-server hosting | M4 |
 

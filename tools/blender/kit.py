@@ -415,7 +415,8 @@ def fuse_touching_parts(obj: bpy.types.Object, dist: float = 1e-5) -> int:
 # ----------------------------------------------------------------------------- baking
 
 def bake_piece(obj: bpy.types.Object, out_dir: Path, name: str, size: int = 1024, samples: int = 48,
-               keep_unbaked: list[bpy.types.Object] | None = None, bevel_normal: float = 0.012) -> None:
+               keep_unbaked: list[bpy.types.Object] | None = None, bevel_normal: float = 0.012,
+               keep_uvs: bool = False) -> None:
     """Bake the painted materials of `obj` into textures and replace them with one plain
     material: base color from `<name>_albedo.png`, roughness and metallic from `<name>_orm.png`
     (glTF layout: G = roughness, B = metallic), and a tangent-space normal map from Cycles'
@@ -434,20 +435,21 @@ def bake_piece(obj: bpy.types.Object, out_dir: Path, name: str, size: int = 1024
     obj.select_set(True)
     bpy.context.view_layer.objects.active = obj
     me = obj.data
-    while me.uv_layers:
-        me.uv_layers.remove(me.uv_layers[0])
-    me.uv_layers.new(name="UVMap")
-    bpy.ops.object.mode_set(mode="EDIT")
-    bpy.ops.mesh.select_all(action="SELECT")
-    bpy.ops.uv.smart_project(angle_limit=math.radians(60), island_margin=0.006)
-    bpy.ops.object.mode_set(mode="OBJECT")
-    buried = shrink_buried_uvs(obj)
-    bpy.ops.object.mode_set(mode="EDIT")
-    bpy.ops.mesh.select_all(action="SELECT")
-    bpy.ops.uv.select_all(action="SELECT")
-    bpy.ops.uv.pack_islands(rotate=True, scale=True, margin=0.004)
-    bpy.ops.object.mode_set(mode="OBJECT")
-    print(f"  {name}: {buried} of {len(me.polygons)} faces are hidden and get almost no texture space")
+    if not keep_uvs:  # (bake.bake_asset unwraps first, so its normal bake shares these UVs)
+        while me.uv_layers:
+            me.uv_layers.remove(me.uv_layers[0])
+        me.uv_layers.new(name="UVMap")
+        bpy.ops.object.mode_set(mode="EDIT")
+        bpy.ops.mesh.select_all(action="SELECT")
+        bpy.ops.uv.smart_project(angle_limit=math.radians(60), island_margin=0.006)
+        bpy.ops.object.mode_set(mode="OBJECT")
+        buried = shrink_buried_uvs(obj)
+        bpy.ops.object.mode_set(mode="EDIT")
+        bpy.ops.mesh.select_all(action="SELECT")
+        bpy.ops.uv.select_all(action="SELECT")
+        bpy.ops.uv.pack_islands(rotate=True, scale=True, margin=0.004)
+        bpy.ops.object.mode_set(mode="OBJECT")
+        print(f"  {name}: {buried} of {len(me.polygons)} faces are hidden and get almost no texture space")
 
     albedo = bpy.data.images.new(f"{name}_albedo", size, size, alpha=False)
     orm = bpy.data.images.new(f"{name}_orm", size, size, alpha=False)
