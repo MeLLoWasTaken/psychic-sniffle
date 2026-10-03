@@ -2,6 +2,10 @@
 
 One entry per build-loop iteration, newest first. Format: date, backlog ID, what changed, how it was checked.
 
+## 2026-10-03 — Kit tuning for tanks and Bloodbound
+- The human chose to balance tanks through their kits rather than giving every role the same health in duels. The Vanguard's shields and heals are smaller and its main strike softer; the Bloodbound, which won under a third of its matches, hits harder, bleeds more and wears a thicker bone ward; the Zealot's two biggest strikes are a little softer.
+- Checked: data validation, local duels; the nightly run measures every bracket.
+
 ## 2026-10-03 — Duels balanced through dampening
 - Duels now dampen healing from the moment the gates open: 40% at once, 1% more every second, nothing left after one minute. A duel is decided by damage, so a healer can no longer simply outlast an attacker. In every bracket, dampening now shrinks shields as well as healing.
 - The human's decision: every spec, tanks and healers included, should win 40 to 60% of duels, and kits stay untouched.

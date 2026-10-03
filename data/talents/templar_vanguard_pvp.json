@@ -80,7 +80,7 @@
           "set": [
             {
               "type": "damage",
-              "base": 3000
+              "base": 2700
             },
             {
               "type": "apply_aura",

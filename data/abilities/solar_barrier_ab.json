@@ -1,7 +1,7 @@
 {
   "id": "solar_barrier_ab",
   "name": "Solar Barrier",
-  "description": "Shield yourself, absorbing 14,000 damage for 10 s.",
+  "description": "Shield yourself, absorbing 10,000 damage for 10 s.",
   "owner": "templar_vanguard",
   "kit_slot": "defensive",
   "school": "holy",

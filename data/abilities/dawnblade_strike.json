@@ -1,7 +1,7 @@
 {
   "id": "dawnblade_strike",
   "name": "Dawnblade Strike",
-  "description": "Strike an enemy for 4,500.",
+  "description": "Strike an enemy for 4,300.",
   "owner": "templar_zealot",
   "kit_slot": "core",
   "school": "physical",
@@ -14,7 +14,7 @@
   "effects": [
     {
       "type": "damage",
-      "base": 4500
+      "base": 4300
     }
   ],
   "icon": {

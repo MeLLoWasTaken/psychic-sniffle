@@ -1,7 +1,7 @@
 {
   "id": "lightward",
   "name": "Lightward",
-  "description": "Instantly heal an ally for 6,500.",
+  "description": "Instantly heal an ally for 5,500.",
   "owner": "templar_vanguard",
   "kit_slot": "core",
   "school": "holy",
@@ -14,7 +14,7 @@
   "effects": [
     {
       "type": "heal",
-      "base": 6500
+      "base": 5500
     }
   ],
   "icon": {

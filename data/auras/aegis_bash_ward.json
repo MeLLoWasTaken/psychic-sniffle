@@ -1,7 +1,7 @@
 {
   "id": "aegis_bash_ward",
   "name": "Aegis Ward",
-  "description": "Absorbs 3,000 damage.",
+  "description": "Absorbs 2,000 damage.",
   "kind": "buff",
   "duration_s": 6,
   "dispel_type": "magic",
@@ -12,5 +12,5 @@
     "school": "physical",
     "image": "delapouite/spiked-shield"
   },
-  "absorb": 3000
+  "absorb": 2000
 }

@@ -16,7 +16,7 @@
     "interval_s": 2,
     "effect": {
       "type": "damage",
-      "base": 500,
+      "base": 600,
       "school": "blood"
     }
   }

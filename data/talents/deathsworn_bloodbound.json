@@ -33,7 +33,7 @@
           "set": [
             {
               "type": "damage",
-              "base": 3400,
+              "base": 4000,
               "leech_pct": 60
             },
             {
@@ -572,7 +572,7 @@
         "bone_shards"
       ],
       "gate": 8,
-      "description": "Grants Veinburst: enemies within 10 m bleed for 500 every 2 s for 10 s. Costs 1 rune, 15 s cooldown.",
+      "description": "Grants Veinburst: enemies within 10 m bleed for 600 every 2 s for 10 s. Costs 1 rune, 15 s cooldown.",
       "icon": {
         "image": "lorc/droplet-splash",
         "school": "blood"

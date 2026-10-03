@@ -1,7 +1,7 @@
 {
   "id": "aegis_bash",
   "name": "Aegis Bash",
-  "description": "Bash an enemy with your shield for 3,600 and gain a 3,000 shield for 6 s.",
+  "description": "Bash an enemy with your shield for 3,600 and gain a 2,000 shield for 6 s.",
   "owner": "templar_vanguard",
   "kit_slot": "core",
   "school": "physical",
