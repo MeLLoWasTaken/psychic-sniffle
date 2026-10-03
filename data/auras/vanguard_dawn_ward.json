@@ -1,0 +1,16 @@
+{
+  "id": "vanguard_dawn_ward",
+  "name": "Guarding Step",
+  "description": "Absorbs 6,000 damage.",
+  "kind": "buff",
+  "duration_s": 6,
+  "dispel_type": "magic",
+  "cc_category": "none",
+  "hud_priority": "normal",
+  "icon": {
+    "symbol": "vanguard_dawn_ward",
+    "school": "holy",
+    "image": "delapouite/guards"
+  },
+  "absorb": 6000
+}

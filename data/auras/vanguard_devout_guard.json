@@ -1,0 +1,23 @@
+{
+  "id": "vanguard_devout_guard",
+  "name": "Devout Guard",
+  "description": "Talent: damage taken down.",
+  "kind": "buff",
+  "duration_s": 0,
+  "refresh": "refresh",
+  "dispel_type": "none",
+  "cc_category": "none",
+  "hud_priority": "hidden",
+  "modifiers": [
+    {
+      "stat": "damage_taken",
+      "op": "multiply",
+      "value": 1.0
+    }
+  ],
+  "icon": {
+    "symbol": "guard",
+    "school": "holy",
+    "image": "delapouite/custodian-helmet"
+  }
+}

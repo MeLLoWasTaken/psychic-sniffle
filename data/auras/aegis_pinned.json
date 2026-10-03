@@ -1,0 +1,17 @@
+{
+  "id": "aegis_pinned",
+  "name": "Pinned",
+  "description": "Rooted in place.",
+  "kind": "debuff",
+  "duration_s": 2,
+  "dispel_type": "magic",
+  "cc_category": "root",
+  "hud_priority": "cc",
+  "icon": {
+    "symbol": "aegis_pinned",
+    "school": "physical",
+    "image": "delapouite/armored-boomerang"
+  },
+  "breaks_on_damage": "threshold",
+  "damage_threshold_pct": 15
+}

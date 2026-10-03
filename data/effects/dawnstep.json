@@ -6,6 +6,10 @@
   "auras": {
     "dawnstep_haste": {
       "style": "speed"
+    },
+    "vanguard_dawn_ward": {
+      "style": "shield",
+      "size": 0.9
     }
   }
 }

@@ -1,0 +1,33 @@
+{
+  "id": "hurled_aegis",
+  "name": "Hurled Aegis",
+  "description": "Throw your shield at an enemy for 3,600; it moves 30% slower for 3 s.",
+  "owner": "templar_vanguard",
+  "kit_slot": "core",
+  "school": "physical",
+  "cast_type": "instant",
+  "cooldown_s": 12,
+  "triggers_gcd": true,
+  "range_m": 25,
+  "requires_los": true,
+  "target": "enemy",
+  "effects": [
+    {
+      "type": "damage",
+      "base": 3600
+    },
+    {
+      "type": "apply_aura",
+      "aura": "aegis_hurled_slow"
+    }
+  ],
+  "icon": {
+    "symbol": "hurled_aegis",
+    "school": "physical",
+    "image": "delapouite/armored-boomerang"
+  },
+  "cost": {
+    "resource": "mana",
+    "amount": 900
+  }
+}

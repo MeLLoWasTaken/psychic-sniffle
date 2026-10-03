@@ -2,7 +2,7 @@
   "id": "ironbound_prayer_ab",
   "name": "Ironbound Prayer",
   "description": "Take 30% less damage for 8 s. Usable while stunned.",
-  "owner": "templar_radiance",
+  "owner": "templar",
   "kit_slot": "defensive",
   "school": "holy",
   "cast_type": "instant",

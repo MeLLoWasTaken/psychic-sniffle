@@ -446,6 +446,55 @@
       "cast_loop": "holy_cast_loop",
       "release": "chains_of_awe_release",
       "impact": "chains_of_awe_impact"
+    },
+    "aegis_bash": {
+      "release": "@weapon_swing",
+      "impact": "shield_breaker_impact"
+    },
+    "sun_ring": {
+      "release": "holy_release",
+      "impact": "castigate_impact"
+    },
+    "hurled_aegis": {
+      "release": "holy_release",
+      "impact": "binding_gavel_impact"
+    },
+    "lightward": {
+      "release": "heal_release",
+      "impact": "heal_quick"
+    },
+    "crusading_blow": {
+      "release": "@weapon_swing",
+      "impact": "@weapon_hit"
+    },
+    "bastion_of_dawn_ab": {
+      "release": "noonblaze"
+    },
+    "bulwark_strike": {
+      "release": "@weapon_swing",
+      "impact": "interrupt_impact"
+    },
+    "solar_barrier_ab": {
+      "release": "sanctum"
+    },
+    "kinward_ab": {
+      "release": "heal_release",
+      "impact": "veil_of_faith"
+    },
+    "sunder_ward": {
+      "release": "dispel_holy",
+      "impact": "dispel_impact"
+    },
+    "hallowed_bulwark_ab": {
+      "release": "veil_of_faith"
+    },
+    "dawnfall_ab": {
+      "release": "dazzling_halo",
+      "impact": "castigate_impact"
+    },
+    "sunward_charge_ab": {
+      "release": "charge_rush",
+      "impact": "charge_impact"
     }
   },
   "auras": {

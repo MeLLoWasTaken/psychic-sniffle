@@ -2,6 +2,11 @@
 
 One entry per build-loop iteration, newest first. Format: date, backlog ID, what changed, how it was checked.
 
+## 2026-10-03 — M3-05 Templar Vanguard kit
+- The Templar's tank spec, Vanguard: holy damage around itself (Sun Ring, Dawnfall), a shield bash that shields, protective blessings on allies (Kinward, Hallowed Bulwark), a full interrupt and 72,000 health. 14 abilities, a 42-node spec tree, 12 PvP talents, three bot builds.
+- Binding Gavel, Dazzling Halo, Ironbound Prayer and Dawnstep are now Templar class abilities, shared by every Templar spec.
+- Checked: data validation, rule tests, six bot matches without errors.
+
 ## 2026-10-03 — M3-02 Templar character, M3-03 Radiance sounds
 - The Templar has a character: bright polished plate with gold trim, a cream tabard with a sun sigil, rounded gold-rimmed pauldrons, a winged great helm with a sun crest, a warhammer and a heater shield with a glowing sun. At a distance it reads as the brightest figure, with a tall V of wings and a shield, where the Warblade is dark with wide horns.
 - Four new sounds for Radiance's strongest abilities: Sanctum, Noonblaze, Dazzling Halo and Binding Gavel.

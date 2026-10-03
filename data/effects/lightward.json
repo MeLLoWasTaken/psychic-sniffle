@@ -1,0 +1,8 @@
+{
+  "id": "lightward",
+  "impact": {
+    "style": "rays",
+    "at": "target",
+    "size": 1.0
+  }
+}

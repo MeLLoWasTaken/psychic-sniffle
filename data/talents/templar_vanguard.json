@@ -1,0 +1,1124 @@
+{
+  "tree_id": "templar_vanguard",
+  "kind": "spec",
+  "owner": "templar_vanguard",
+  "points": 30,
+  "gates": [
+    8,
+    20
+  ],
+  "status": "complete",
+  "nodes": [
+    {
+      "id": "purging_bash",
+      "name": "Purging Bash",
+      "type": "passive",
+      "ranks": 1,
+      "pos": [
+        6,
+        6
+      ],
+      "requires_any": [
+        "sure_sunder"
+      ],
+      "gate": 20,
+      "description": "Aegis Bash also strips one magic effect from the enemy.",
+      "icon": {
+        "image": "lorc/cracked-helm",
+        "school": "physical"
+      },
+      "effects": [
+        {
+          "modify": "aegis_bash.effects",
+          "set": [
+            {
+              "type": "damage",
+              "base": 4500
+            },
+            {
+              "type": "apply_aura",
+              "aura": "aegis_bash_ward",
+              "affects": "self"
+            },
+            {
+              "type": "dispel",
+              "dispel_types": [
+                "magic"
+              ],
+              "dispel_count": 1
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "aegis_weight",
+      "name": "Weight of the Aegis",
+      "type": "passive",
+      "ranks": 2,
+      "pos": [
+        0,
+        0
+      ],
+      "requires_any": [
+        "aegis_bash"
+      ],
+      "description": "Aegis Bash deals 400 more damage per rank.",
+      "icon": {
+        "image": "delapouite/attached-shield",
+        "school": "physical"
+      },
+      "effects": [
+        {
+          "modify": "aegis_bash.effects.0.base",
+          "per_rank": 400
+        }
+      ]
+    },
+    {
+      "id": "quick_ward",
+      "name": "Quick Ward",
+      "type": "passive",
+      "ranks": 2,
+      "pos": [
+        2,
+        0
+      ],
+      "requires_any": [
+        "lightward"
+      ],
+      "description": "Lightward's cooldown is 1 s shorter per rank.",
+      "icon": {
+        "image": "delapouite/dandelion-flower",
+        "school": "holy"
+      },
+      "effects": [
+        {
+          "modify": "lightward.cooldown_s",
+          "per_rank": -1
+        }
+      ]
+    },
+    {
+      "id": "ring_blaze",
+      "name": "Blazing Ring",
+      "type": "passive",
+      "ranks": 2,
+      "pos": [
+        3,
+        0
+      ],
+      "requires_any": [
+        "sun_ring"
+      ],
+      "description": "Sun Ring deals 250 more damage per rank.",
+      "icon": {
+        "image": "lorc/double-ringed-orb",
+        "school": "holy"
+      },
+      "effects": [
+        {
+          "modify": "sun_ring.effects.0.base",
+          "per_rank": 250
+        }
+      ]
+    },
+    {
+      "id": "heavy_throw",
+      "name": "Heavy Throw",
+      "type": "passive",
+      "ranks": 2,
+      "pos": [
+        4,
+        0
+      ],
+      "requires_any": [
+        "hurled_aegis"
+      ],
+      "description": "Hurled Aegis deals 350 more damage per rank.",
+      "icon": {
+        "image": "delapouite/throwing-ball",
+        "school": "physical"
+      },
+      "effects": [
+        {
+          "modify": "hurled_aegis.effects.0.base",
+          "per_rank": 350
+        }
+      ]
+    },
+    {
+      "id": "firm_bulwark",
+      "name": "Firm Bulwark",
+      "type": "passive",
+      "ranks": 2,
+      "pos": [
+        5,
+        0
+      ],
+      "requires_any": [
+        "bulwark_strike"
+      ],
+      "description": "Bulwark Strike's cooldown is 1 s shorter per rank.",
+      "icon": {
+        "image": "lorc/crenulated-shield",
+        "school": "physical"
+      },
+      "effects": [
+        {
+          "modify": "bulwark_strike.cooldown_s",
+          "per_rank": -1
+        }
+      ]
+    },
+    {
+      "id": "ready_sunder",
+      "name": "Ready Sunder",
+      "type": "passive",
+      "ranks": 2,
+      "pos": [
+        6,
+        0
+      ],
+      "requires_any": [
+        "sunder_ward"
+      ],
+      "description": "Sunder Ward's cooldown is 2 s shorter per rank.",
+      "icon": {
+        "image": "lorc/cracked-disc",
+        "school": "holy"
+      },
+      "effects": [
+        {
+          "modify": "sunder_ward.cooldown_s",
+          "per_rank": -2
+        }
+      ]
+    },
+    {
+      "id": "thrifty_bash",
+      "name": "Thrifty Bash",
+      "type": "passive",
+      "ranks": 2,
+      "pos": [
+        0,
+        1
+      ],
+      "requires_any": [
+        "aegis_weight"
+      ],
+      "description": "Aegis Bash costs 150 less mana per rank.",
+      "icon": {
+        "image": "delapouite/strongbox",
+        "school": "holy"
+      },
+      "effects": [
+        {
+          "modify": "aegis_bash.cost.amount",
+          "per_rank": -150
+        }
+      ]
+    },
+    {
+      "id": "deeper_ward",
+      "name": "Deeper Ward",
+      "type": "passive",
+      "ranks": 2,
+      "pos": [
+        1,
+        1
+      ],
+      "requires_any": [
+        "aegis_weight",
+        "quick_ward"
+      ],
+      "description": "Aegis Bash's shield absorbs 1,000 more per rank.",
+      "icon": {
+        "image": "delapouite/stone-wall",
+        "school": "holy"
+      },
+      "effects": [
+        {
+          "modify": "aegis_bash_ward.absorb",
+          "per_rank": 1000
+        }
+      ]
+    },
+    {
+      "id": "thrifty_ward",
+      "name": "Thrifty Ward",
+      "type": "passive",
+      "ranks": 2,
+      "pos": [
+        2,
+        1
+      ],
+      "requires_any": [
+        "quick_ward"
+      ],
+      "description": "Lightward costs 200 less mana per rank.",
+      "icon": {
+        "image": "delapouite/pouring-pot",
+        "school": "holy"
+      },
+      "effects": [
+        {
+          "modify": "lightward.cost.amount",
+          "per_rank": -200
+        }
+      ]
+    },
+    {
+      "id": "ring_reach",
+      "name": "Reaching Ring",
+      "type": "passive",
+      "ranks": 1,
+      "pos": [
+        3,
+        1
+      ],
+      "requires_any": [
+        "ring_blaze"
+      ],
+      "description": "Sun Ring reaches 2 m further.",
+      "icon": {
+        "image": "delapouite/ringmaster",
+        "school": "holy"
+      },
+      "effects": [
+        {
+          "modify": "sun_ring.effects.0.radius_m",
+          "per_rank": 2
+        }
+      ]
+    },
+    {
+      "id": "sapping_throw",
+      "name": "Sapping Throw",
+      "type": "passive",
+      "ranks": 1,
+      "pos": [
+        4,
+        1
+      ],
+      "requires_any": [
+        "heavy_throw"
+      ],
+      "description": "Hurled Aegis slows by a further 10%.",
+      "icon": {
+        "image": "lorc/anchor",
+        "school": "holy"
+      },
+      "effects": [
+        {
+          "modify": "aegis_hurled_slow.modifiers.0.value",
+          "per_rank": -0.1
+        }
+      ]
+    },
+    {
+      "id": "ringing_bulwark",
+      "name": "Ringing Bulwark",
+      "type": "passive",
+      "ranks": 1,
+      "pos": [
+        5,
+        1
+      ],
+      "requires_any": [
+        "firm_bulwark"
+      ],
+      "description": "Bulwark Strike locks the school for 1 s longer.",
+      "icon": {
+        "image": "delapouite/ringing-alarm",
+        "school": "physical"
+      },
+      "effects": [
+        {
+          "modify": "bulwark_strike.effects.0.school_lock_s",
+          "per_rank": 1
+        }
+      ]
+    },
+    {
+      "id": "sunder_choice",
+      "name": "Edge of the Sunder",
+      "type": "choice",
+      "pos": [
+        6,
+        1
+      ],
+      "requires_any": [
+        "ready_sunder"
+      ],
+      "description": "Choose how Sunder Ward improves.",
+      "icon": {
+        "image": "lorc/broken-heart-zone",
+        "school": "holy"
+      },
+      "choices": [
+        {
+          "id": "thorough_sunder",
+          "name": "Thorough Sunder",
+          "description": "Sunder Ward strips one more effect.",
+          "icon": {
+            "image": "lorc/earth-crack",
+            "school": "holy"
+          },
+          "effects": [
+            {
+              "modify": "sunder_ward.effects.0.dispel_count",
+              "per_rank": 1
+            }
+          ]
+        },
+        {
+          "id": "searing_sunder",
+          "name": "Searing Sunder",
+          "description": "Sunder Ward also sears the enemy for 2,500.",
+          "icon": {
+            "image": "lorc/fire-shield",
+            "school": "holy"
+          },
+          "effects": [
+            {
+              "modify": "sunder_ward.effects",
+              "set": [
+                {
+                  "type": "dispel",
+                  "dispel_types": [
+                    "magic"
+                  ],
+                  "dispel_count": 1
+                },
+                {
+                  "type": "damage",
+                  "base": 2500
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "tithe_of_dawn",
+      "name": "Tithe of Dawn",
+      "type": "passive",
+      "ranks": 1,
+      "pos": [
+        0,
+        2
+      ],
+      "requires_any": [
+        "thrifty_bash",
+        "deeper_ward"
+      ],
+      "description": "Aegis Bash restores 1,000 mana.",
+      "icon": {
+        "image": "delapouite/matchbox",
+        "school": "holy"
+      },
+      "effects": [
+        {
+          "modify": "aegis_bash.generates",
+          "set": {
+            "resource": "mana",
+            "amount": 1000
+          }
+        }
+      ]
+    },
+    {
+      "id": "earnest_ward",
+      "name": "Earnest Ward",
+      "type": "passive",
+      "ranks": 2,
+      "pos": [
+        2,
+        2
+      ],
+      "requires_any": [
+        "thrifty_ward",
+        "deeper_ward"
+      ],
+      "description": "Lightward heals 400 more per rank.",
+      "icon": {
+        "image": "lorc/delighted",
+        "school": "holy"
+      },
+      "effects": [
+        {
+          "modify": "lightward.effects.0.base",
+          "per_rank": 400
+        }
+      ]
+    },
+    {
+      "id": "ring_cadence",
+      "name": "Ring Cadence",
+      "type": "passive",
+      "ranks": 2,
+      "pos": [
+        3,
+        2
+      ],
+      "requires_any": [
+        "ring_reach"
+      ],
+      "description": "Sun Ring's cooldown is 1 s shorter per rank.",
+      "icon": {
+        "image": "lorc/engagement-ring",
+        "school": "holy"
+      },
+      "effects": [
+        {
+          "modify": "sun_ring.cooldown_s",
+          "per_rank": -1
+        }
+      ]
+    },
+    {
+      "id": "swift_throw",
+      "name": "Swift Throw",
+      "type": "passive",
+      "ranks": 2,
+      "pos": [
+        4,
+        2
+      ],
+      "requires_any": [
+        "sapping_throw"
+      ],
+      "description": "Hurled Aegis's cooldown is 1 s shorter per rank.",
+      "icon": {
+        "image": "delapouite/swallow",
+        "school": "physical"
+      },
+      "effects": [
+        {
+          "modify": "hurled_aegis.cooldown_s",
+          "per_rank": -1
+        }
+      ]
+    },
+    {
+      "id": "bulwark_reach",
+      "name": "Long Reach",
+      "type": "passive",
+      "ranks": 1,
+      "pos": [
+        5,
+        2
+      ],
+      "requires_any": [
+        "ringing_bulwark"
+      ],
+      "description": "Bulwark Strike reaches 3 m further.",
+      "icon": {
+        "image": "lorc/forward-field",
+        "school": "physical"
+      },
+      "effects": [
+        {
+          "modify": "bulwark_strike.range_m",
+          "per_rank": 3
+        }
+      ]
+    },
+    {
+      "id": "frugal_sunder",
+      "name": "Frugal Sunder",
+      "type": "passive",
+      "ranks": 2,
+      "pos": [
+        6,
+        2
+      ],
+      "requires_any": [
+        "sunder_choice"
+      ],
+      "description": "Sunder Ward costs 300 less mana per rank.",
+      "icon": {
+        "image": "delapouite/stone-stack",
+        "school": "holy"
+      },
+      "effects": [
+        {
+          "modify": "sunder_ward.cost.amount",
+          "per_rank": -300
+        }
+      ]
+    },
+    {
+      "id": "long_bastion",
+      "name": "Long Bastion",
+      "type": "passive",
+      "ranks": 2,
+      "pos": [
+        0,
+        3
+      ],
+      "requires_any": [
+        "tithe_of_dawn"
+      ],
+      "gate": 8,
+      "description": "Bastion of Dawn's cooldown is 15 s shorter per rank.",
+      "icon": {
+        "image": "delapouite/tower-flag",
+        "school": "holy"
+      },
+      "effects": [
+        {
+          "modify": "bastion_of_dawn_ab.cooldown_s",
+          "per_rank": -15
+        }
+      ]
+    },
+    {
+      "id": "hallowed_bulwark",
+      "name": "Hallowed Bulwark",
+      "type": "active",
+      "pos": [
+        1,
+        3
+      ],
+      "requires_any": [
+        "tithe_of_dawn",
+        "earnest_ward"
+      ],
+      "gate": 8,
+      "description": "Grants Hallowed Bulwark: you and allies within 10 m take 15% less damage for 8 s. Costs 2,000 mana, 60 s cooldown.",
+      "icon": {
+        "image": "delapouite/military-fort",
+        "school": "holy"
+      },
+      "grants_ability": "hallowed_bulwark_ab"
+    },
+    {
+      "id": "bright_bastion",
+      "name": "Bright Bastion",
+      "type": "passive",
+      "ranks": 1,
+      "pos": [
+        2,
+        3
+      ],
+      "requires_any": [
+        "earnest_ward"
+      ],
+      "gate": 8,
+      "description": "Bastion of Dawn increases damage by a further 10%.",
+      "icon": {
+        "image": "caro-asercion/tarot-16-the-tower",
+        "school": "holy"
+      },
+      "effects": [
+        {
+          "modify": "bastion_of_dawn.modifiers.0.value",
+          "per_rank": 0.1
+        }
+      ]
+    },
+    {
+      "id": "dawnfall",
+      "name": "Dawnfall",
+      "type": "active",
+      "pos": [
+        3,
+        3
+      ],
+      "requires_any": [
+        "ring_cadence",
+        "swift_throw"
+      ],
+      "gate": 8,
+      "description": "Grants Dawnfall: enemies within 10 m take 5,000 and move 40% slower for 4 s. Costs 2,500 mana, 45 s cooldown.",
+      "icon": {
+        "image": "delapouite/falling-rocks",
+        "school": "holy"
+      },
+      "grants_ability": "dawnfall_ab"
+    },
+    {
+      "id": "steady_barrier",
+      "name": "Steady Barrier",
+      "type": "passive",
+      "ranks": 2,
+      "pos": [
+        4,
+        3
+      ],
+      "requires_any": [
+        "swift_throw"
+      ],
+      "gate": 8,
+      "description": "Solar Barrier's cooldown is 10 s shorter per rank.",
+      "icon": {
+        "image": "delapouite/tentacles-barrier",
+        "school": "holy"
+      },
+      "effects": [
+        {
+          "modify": "solar_barrier_ab.cooldown_s",
+          "per_rank": -10
+        }
+      ]
+    },
+    {
+      "id": "sunward_charge",
+      "name": "Sunward Charge",
+      "type": "active",
+      "pos": [
+        5,
+        3
+      ],
+      "requires_any": [
+        "bulwark_reach",
+        "frugal_sunder"
+      ],
+      "gate": 8,
+      "description": "Grants Sunward Charge: rush to an enemy 8 to 25 m away and stun it for 1 s (25 s cooldown).",
+      "icon": {
+        "image": "delapouite/bully-minion",
+        "school": "physical"
+      },
+      "grants_ability": "sunward_charge_ab"
+    },
+    {
+      "id": "sure_sunder",
+      "name": "Sure Sunder",
+      "type": "passive",
+      "ranks": 1,
+      "pos": [
+        6,
+        3
+      ],
+      "requires_any": [
+        "frugal_sunder"
+      ],
+      "gate": 8,
+      "description": "Sunder Ward reaches 10 m further.",
+      "icon": {
+        "image": "lorc/eagle-emblem",
+        "school": "holy"
+      },
+      "effects": [
+        {
+          "modify": "sunder_ward.range_m",
+          "per_rank": 10
+        }
+      ]
+    },
+    {
+      "id": "bastion_wellspring",
+      "name": "Bastion Wellspring",
+      "type": "passive",
+      "ranks": 1,
+      "pos": [
+        0,
+        4
+      ],
+      "requires_any": [
+        "long_bastion"
+      ],
+      "gate": 8,
+      "description": "Bastion of Dawn restores 5,000 mana.",
+      "icon": {
+        "image": "delapouite/water-tower",
+        "school": "holy"
+      },
+      "effects": [
+        {
+          "modify": "bastion_of_dawn_ab.generates",
+          "set": {
+            "resource": "mana",
+            "amount": 5000
+          }
+        }
+      ]
+    },
+    {
+      "id": "wide_bulwark",
+      "name": "Wide Bulwark",
+      "type": "passive",
+      "ranks": 1,
+      "pos": [
+        1,
+        4
+      ],
+      "requires_any": [
+        "hallowed_bulwark"
+      ],
+      "gate": 8,
+      "description": "Hallowed Bulwark reaches 5 m further.",
+      "icon": {
+        "image": "delapouite/medieval-pavilion",
+        "school": "holy"
+      },
+      "effects": [
+        {
+          "modify": "hallowed_bulwark_ab.effects.0.radius_m",
+          "per_rank": 5
+        }
+      ]
+    },
+    {
+      "id": "lasting_bastion",
+      "name": "Lasting Bastion",
+      "type": "passive",
+      "ranks": 1,
+      "pos": [
+        2,
+        4
+      ],
+      "requires_any": [
+        "bright_bastion"
+      ],
+      "gate": 8,
+      "description": "Bastion of Dawn lasts 3 s longer.",
+      "icon": {
+        "image": "delapouite/tower-bridge",
+        "school": "holy"
+      },
+      "effects": [
+        {
+          "modify": "bastion_of_dawn.duration_s",
+          "per_rank": 3
+        }
+      ]
+    },
+    {
+      "id": "burning_dawnfall",
+      "name": "Burning Dawnfall",
+      "type": "passive",
+      "ranks": 2,
+      "pos": [
+        3,
+        4
+      ],
+      "requires_any": [
+        "dawnfall"
+      ],
+      "gate": 8,
+      "description": "Dawnfall deals 500 more damage per rank.",
+      "icon": {
+        "image": "delapouite/lightning-flame",
+        "school": "holy"
+      },
+      "effects": [
+        {
+          "modify": "dawnfall_ab.effects.0.base",
+          "per_rank": 500
+        }
+      ]
+    },
+    {
+      "id": "thick_barrier",
+      "name": "Thick Barrier",
+      "type": "passive",
+      "ranks": 1,
+      "pos": [
+        4,
+        4
+      ],
+      "requires_any": [
+        "steady_barrier"
+      ],
+      "gate": 8,
+      "description": "Solar Barrier absorbs 2,000 more.",
+      "icon": {
+        "image": "delapouite/armor-upgrade",
+        "school": "holy"
+      },
+      "effects": [
+        {
+          "modify": "solar_barrier.absorb",
+          "per_rank": 2000
+        }
+      ]
+    },
+    {
+      "id": "swift_charge",
+      "name": "Swift Charge",
+      "type": "passive",
+      "ranks": 2,
+      "pos": [
+        5,
+        4
+      ],
+      "requires_any": [
+        "sunward_charge"
+      ],
+      "gate": 8,
+      "description": "Sunward Charge's cooldown is 4 s shorter per rank.",
+      "icon": {
+        "image": "delapouite/bear-head",
+        "school": "physical"
+      },
+      "effects": [
+        {
+          "modify": "sunward_charge_ab.cooldown_s",
+          "per_rank": -4
+        }
+      ]
+    },
+    {
+      "id": "unyielding_line",
+      "name": "Unyielding Line",
+      "type": "passive",
+      "ranks": 1,
+      "pos": [
+        1,
+        5
+      ],
+      "requires_any": [
+        "wide_bulwark"
+      ],
+      "gate": 8,
+      "description": "Hallowed Bulwark reduces damage by a further 5%.",
+      "icon": {
+        "image": "delapouite/hill-fort",
+        "school": "holy"
+      },
+      "effects": [
+        {
+          "modify": "hallowed_bulwark.modifiers.0.value",
+          "per_rank": -0.05
+        }
+      ]
+    },
+    {
+      "id": "devout_guard",
+      "name": "Devout Guard",
+      "type": "passive",
+      "ranks": 2,
+      "pos": [
+        2,
+        5
+      ],
+      "requires_any": [
+        "lasting_bastion",
+        "burning_dawnfall"
+      ],
+      "gate": 8,
+      "description": "You take 2% less damage per rank.",
+      "icon": {
+        "image": "delapouite/custodian-helmet",
+        "school": "holy"
+      },
+      "effects": [
+        {
+          "modify": "vanguard_devout_guard.modifiers.0.value",
+          "per_rank": -0.02
+        }
+      ],
+      "grants_aura": "vanguard_devout_guard"
+    },
+    {
+      "id": "wide_dawnfall",
+      "name": "Wide Dawnfall",
+      "type": "passive",
+      "ranks": 1,
+      "pos": [
+        3,
+        5
+      ],
+      "requires_any": [
+        "burning_dawnfall"
+      ],
+      "gate": 8,
+      "description": "Dawnfall reaches 3 m further.",
+      "icon": {
+        "image": "delapouite/mountain-road",
+        "school": "holy"
+      },
+      "effects": [
+        {
+          "modify": "dawnfall_ab.effects.0.radius_m",
+          "per_rank": 3
+        },
+        {
+          "modify": "dawnfall_ab.effects.1.radius_m",
+          "per_rank": 3
+        }
+      ]
+    },
+    {
+      "id": "long_daze",
+      "name": "Long Daze",
+      "type": "passive",
+      "ranks": 1,
+      "pos": [
+        5,
+        5
+      ],
+      "requires_any": [
+        "swift_charge"
+      ],
+      "gate": 8,
+      "description": "Sunward Charge stuns for 0.5 s longer.",
+      "icon": {
+        "image": "delapouite/rock-golem",
+        "school": "physical"
+      },
+      "effects": [
+        {
+          "modify": "sunward_dazed.duration_s",
+          "per_rank": 0.5
+        }
+      ]
+    },
+    {
+      "id": "clear_eye",
+      "name": "Clear Eye",
+      "type": "passive",
+      "ranks": 2,
+      "pos": [
+        0,
+        6
+      ],
+      "requires_any": [
+        "bastion_wellspring"
+      ],
+      "gate": 20,
+      "description": "Your critical strike chance is 3% higher per rank.",
+      "icon": {
+        "image": "lorc/floating-crystal",
+        "school": "holy"
+      },
+      "effects": [
+        {
+          "modify": "self.stats.crit_chance",
+          "per_rank": 0.03
+        }
+      ]
+    },
+    {
+      "id": "dawns_bastion",
+      "name": "Dawn's Bastion",
+      "type": "capstone",
+      "pos": [
+        1,
+        6
+      ],
+      "requires_any": [
+        "unyielding_line"
+      ],
+      "gate": 20,
+      "description": "Aegis Bash deals 1,000 more damage, Lightward heals 1,000 more and Solar Barrier absorbs 3,000 more.",
+      "icon": {
+        "image": "delapouite/overlord-helm",
+        "school": "holy"
+      },
+      "effects": [
+        {
+          "modify": "aegis_bash.effects.0.base",
+          "per_rank": 1000
+        },
+        {
+          "modify": "lightward.effects.0.base",
+          "per_rank": 1000
+        },
+        {
+          "modify": "solar_barrier.absorb",
+          "per_rank": 3000
+        }
+      ]
+    },
+    {
+      "id": "ring_of_dawn",
+      "name": "Ring of Dawn",
+      "type": "capstone",
+      "pos": [
+        3,
+        6
+      ],
+      "requires_any": [
+        "wide_dawnfall"
+      ],
+      "gate": 20,
+      "description": "Sun Ring deals 800 more damage and Dawnfall 1,500 more.",
+      "icon": {
+        "image": "caro-asercion/tarot-10-wheel-of-fortune",
+        "school": "holy"
+      },
+      "effects": [
+        {
+          "modify": "sun_ring.effects.0.base",
+          "per_rank": 800
+        },
+        {
+          "modify": "dawnfall_ab.effects.0.base",
+          "per_rank": 1500
+        }
+      ]
+    },
+    {
+      "id": "iron_vanguard",
+      "name": "Iron Vanguard",
+      "type": "capstone",
+      "pos": [
+        5,
+        6
+      ],
+      "requires_any": [
+        "long_daze"
+      ],
+      "gate": 20,
+      "description": "Bulwark Strike locks the school for 1 s longer, Binding Gavel stuns for 0.5 s longer and Sunward Charge's stun lasts 0.5 s longer.",
+      "icon": {
+        "image": "caro-asercion/warlord-helmet",
+        "school": "physical"
+      },
+      "effects": [
+        {
+          "modify": "bulwark_strike.effects.0.school_lock_s",
+          "per_rank": 1
+        },
+        {
+          "modify": "gavel_bound.duration_s",
+          "per_rank": 0.5
+        },
+        {
+          "modify": "sunward_dazed.duration_s",
+          "per_rank": 0.5
+        }
+      ]
+    },
+    {
+      "id": "sheltering_kinward",
+      "name": "Sheltering Kinward",
+      "type": "passive",
+      "ranks": 1,
+      "pos": [
+        4,
+        6
+      ],
+      "requires_any": [
+        "thick_barrier"
+      ],
+      "gate": 20,
+      "description": "Kinward also heals the ally for 6,000.",
+      "icon": {
+        "image": "lorc/chewed-heart",
+        "school": "holy"
+      },
+      "effects": [
+        {
+          "modify": "kinward_ab.effects",
+          "set": [
+            {
+              "type": "apply_aura",
+              "aura": "kinward"
+            },
+            {
+              "type": "heal",
+              "base": 6000
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

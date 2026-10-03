@@ -1,0 +1,16 @@
+{
+  "id": "hurled_aegis",
+  "projectile": {
+    "style": "orb"
+  },
+  "impact": {
+    "style": "spark",
+    "at": "target",
+    "size": 1.1
+  },
+  "auras": {
+    "aegis_hurled_slow": {
+      "style": "slow"
+    }
+  }
+}

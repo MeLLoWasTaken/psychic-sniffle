@@ -5,7 +5,8 @@
   "armor": "plate",
   "color": "#f2c75c",
   "specs": [
-    "templar_radiance"
+    "templar_radiance",
+    "templar_vanguard"
   ],
   "class_tree": "templar_class",
   "shared_abilities": [

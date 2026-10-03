@@ -1,0 +1,9 @@
+{
+  "id": "solar_barrier_ab",
+  "auras": {
+    "solar_barrier": {
+      "style": "shield",
+      "size": 1.1
+    }
+  }
+}

@@ -1,0 +1,22 @@
+{
+  "id": "kinward",
+  "name": "Kinward",
+  "description": "Damage taken down 30%.",
+  "kind": "buff",
+  "duration_s": 6,
+  "dispel_type": "magic",
+  "cc_category": "none",
+  "hud_priority": "major_defensive",
+  "icon": {
+    "symbol": "kinward",
+    "school": "holy",
+    "image": "delapouite/guards"
+  },
+  "modifiers": [
+    {
+      "stat": "damage_taken",
+      "op": "multiply",
+      "value": 0.7
+    }
+  ]
+}

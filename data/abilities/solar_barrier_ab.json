@@ -1,0 +1,25 @@
+{
+  "id": "solar_barrier_ab",
+  "name": "Solar Barrier",
+  "description": "Shield yourself, absorbing 14,000 damage for 10 s.",
+  "owner": "templar_vanguard",
+  "kit_slot": "defensive",
+  "school": "holy",
+  "cast_type": "instant",
+  "cooldown_s": 60,
+  "triggers_gcd": false,
+  "range_m": 0,
+  "requires_los": false,
+  "target": "self",
+  "effects": [
+    {
+      "type": "apply_aura",
+      "aura": "solar_barrier"
+    }
+  ],
+  "icon": {
+    "symbol": "solar_barrier",
+    "school": "holy",
+    "image": "delapouite/lightning-dome"
+  }
+}

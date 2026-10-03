@@ -1,0 +1,8 @@
+{
+  "id": "sunder_ward",
+  "impact": {
+    "style": "burst",
+    "at": "target",
+    "size": 0.8
+  }
+}

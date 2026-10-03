@@ -1,0 +1,11 @@
+{
+  "id": "bulwark_strike",
+  "melee": {
+    "style": "thrust"
+  },
+  "impact": {
+    "style": "spark",
+    "at": "target",
+    "size": 1.0
+  }
+}

@@ -1,0 +1,13 @@
+{
+  "id": "bastion_of_dawn_ab",
+  "impact": {
+    "style": "rays",
+    "at": "self",
+    "size": 1.3
+  },
+  "auras": {
+    "bastion_of_dawn": {
+      "style": "empower"
+    }
+  }
+}

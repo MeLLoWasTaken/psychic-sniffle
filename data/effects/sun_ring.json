@@ -1,0 +1,13 @@
+{
+  "id": "sun_ring",
+  "ground": {
+    "style": "nova",
+    "center": "caster",
+    "lifetime_s": 0.7
+  },
+  "impact": {
+    "style": "flash",
+    "at": "hits",
+    "size": 0.8
+  }
+}

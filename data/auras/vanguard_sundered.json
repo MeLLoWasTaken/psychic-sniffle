@@ -1,0 +1,22 @@
+{
+  "id": "vanguard_sundered",
+  "name": "Sundered",
+  "description": "Healing received down 25%.",
+  "kind": "debuff",
+  "duration_s": 6,
+  "dispel_type": "none",
+  "cc_category": "none",
+  "hud_priority": "normal",
+  "icon": {
+    "symbol": "vanguard_sundered",
+    "school": "holy",
+    "image": "lorc/fire-ring"
+  },
+  "modifiers": [
+    {
+      "stat": "healing_taken",
+      "op": "multiply",
+      "value": 0.75
+    }
+  ]
+}

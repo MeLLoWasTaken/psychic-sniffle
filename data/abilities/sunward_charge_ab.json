@@ -1,0 +1,29 @@
+{
+  "id": "sunward_charge_ab",
+  "name": "Sunward Charge",
+  "description": "Rush to an enemy 8 to 25 m away and stun it for 1 s.",
+  "owner": "templar_vanguard",
+  "kit_slot": "mobility",
+  "school": "physical",
+  "cast_type": "instant",
+  "cooldown_s": 25,
+  "triggers_gcd": false,
+  "range_m": 25,
+  "requires_los": true,
+  "target": "enemy",
+  "effects": [
+    {
+      "type": "charge"
+    },
+    {
+      "type": "apply_aura",
+      "aura": "sunward_dazed"
+    }
+  ],
+  "icon": {
+    "symbol": "sunward_charge",
+    "school": "physical",
+    "image": "delapouite/bully-minion"
+  },
+  "min_range_m": 8
+}

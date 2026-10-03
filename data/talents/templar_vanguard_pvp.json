@@ -1,0 +1,295 @@
+{
+  "tree_id": "templar_vanguard_pvp",
+  "kind": "pvp",
+  "owner": "templar_vanguard",
+  "points": 3,
+  "status": "complete",
+  "nodes": [
+    {
+      "id": "unbreakable_barrier",
+      "name": "Unbreakable Barrier",
+      "type": "passive",
+      "ranks": 1,
+      "description": "Enemy dispels can no longer remove your Solar Barrier.",
+      "icon": {
+        "image": "delapouite/samurai-helmet",
+        "school": "holy"
+      },
+      "effects": [
+        {
+          "modify": "solar_barrier.dispel_type",
+          "set": "none"
+        }
+      ]
+    },
+    {
+      "id": "swift_kinward",
+      "name": "Swift Kinward",
+      "type": "passive",
+      "ranks": 1,
+      "description": "Kinward's cooldown is 20 s shorter, but it lasts 2 s less.",
+      "icon": {
+        "image": "delapouite/trumpet-flag",
+        "school": "holy"
+      },
+      "effects": [
+        {
+          "modify": "kinward_ab.cooldown_s",
+          "per_rank": -20
+        },
+        {
+          "modify": "kinward.duration_s",
+          "per_rank": -2
+        }
+      ]
+    },
+    {
+      "id": "relentless_bulwark",
+      "name": "Relentless Bulwark",
+      "type": "passive",
+      "ranks": 1,
+      "description": "Bulwark Strike's cooldown is 5 s shorter, but it locks the school for 1 s less.",
+      "icon": {
+        "image": "lorc/arrows-shield",
+        "school": "physical"
+      },
+      "effects": [
+        {
+          "modify": "bulwark_strike.cooldown_s",
+          "per_rank": -5
+        },
+        {
+          "modify": "bulwark_strike.effects.0.school_lock_s",
+          "per_rank": -1
+        }
+      ]
+    },
+    {
+      "id": "sundering_blow",
+      "name": "Sundering Blow",
+      "type": "passive",
+      "ranks": 1,
+      "description": "Crusading Blow also reduces the healing its target receives by 25% for 6 s.",
+      "icon": {
+        "image": "lorc/cracked-ball-dunk",
+        "school": "physical"
+      },
+      "effects": [
+        {
+          "modify": "crusading_blow.effects",
+          "set": [
+            {
+              "type": "damage",
+              "base": 3800
+            },
+            {
+              "type": "apply_aura",
+              "aura": "vanguard_sundered"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "ironclad_prayer",
+      "name": "Ironclad Prayer",
+      "type": "passive",
+      "ranks": 1,
+      "description": "Ironbound Prayer lasts 4 s longer, but its cooldown is 30 s longer.",
+      "icon": {
+        "image": "delapouite/abdominal-armor",
+        "school": "holy"
+      },
+      "effects": [
+        {
+          "modify": "ironbound_prayer.duration_s",
+          "per_rank": 4
+        },
+        {
+          "modify": "ironbound_prayer_ab.cooldown_s",
+          "per_rank": 30
+        }
+      ]
+    },
+    {
+      "id": "vow_of_the_wall",
+      "name": "Vow of the Wall",
+      "type": "passive",
+      "ranks": 1,
+      "description": "You take 8% less damage, but Break Free's cooldown is 45 s longer.",
+      "icon": {
+        "image": "delapouite/castle-ruins",
+        "school": "holy"
+      },
+      "effects": [
+        {
+          "modify": "break_free.cooldown_s",
+          "per_rank": 45
+        }
+      ],
+      "grants_aura": "vanguard_vow_of_the_wall"
+    },
+    {
+      "id": "pinning_charge",
+      "name": "Pinning Charge",
+      "type": "passive",
+      "ranks": 1,
+      "description": "Sunward Charge also roots its target for 2 s, but its cooldown is 8 s longer.",
+      "icon": {
+        "image": "lorc/claw-string",
+        "school": "physical"
+      },
+      "effects": [
+        {
+          "modify": "sunward_charge_ab.effects",
+          "set": [
+            {
+              "type": "charge"
+            },
+            {
+              "type": "apply_aura",
+              "aura": "sunward_dazed"
+            },
+            {
+              "type": "apply_aura",
+              "aura": "aegis_pinned"
+            }
+          ]
+        },
+        {
+          "modify": "sunward_charge_ab.cooldown_s",
+          "per_rank": 8
+        }
+      ]
+    },
+    {
+      "id": "guarding_step",
+      "name": "Guarding Step",
+      "type": "passive",
+      "ranks": 1,
+      "description": "Dawnstep also shields the ally, absorbing 6,000 damage for 6 s.",
+      "icon": {
+        "image": "delapouite/leather-armor",
+        "school": "holy"
+      },
+      "effects": [
+        {
+          "modify": "dawnstep.effects",
+          "set": [
+            {
+              "type": "charge"
+            },
+            {
+              "type": "apply_aura",
+              "aura": "dawnstep_haste"
+            },
+            {
+              "type": "apply_aura",
+              "aura": "vanguard_dawn_ward"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "steadfast_light",
+      "name": "Steadfast Light",
+      "type": "passive",
+      "ranks": 1,
+      "description": "You can cast Lightward while stunned, incapacitated or disoriented.",
+      "icon": {
+        "image": "delapouite/double-street-lights",
+        "school": "holy"
+      },
+      "effects": [
+        {
+          "modify": "lightward.usable_while_cc",
+          "set": [
+            "stun",
+            "incapacitate",
+            "disorient"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "bastion_unbound",
+      "name": "Bastion Unbound",
+      "type": "passive",
+      "ranks": 1,
+      "description": "Bastion of Dawn also frees you from crowd control, but its cooldown is 30 s longer.",
+      "icon": {
+        "image": "delapouite/evil-tower",
+        "school": "holy"
+      },
+      "effects": [
+        {
+          "modify": "bastion_of_dawn_ab.effects",
+          "set": [
+            {
+              "type": "remove_cc"
+            },
+            {
+              "type": "apply_aura",
+              "aura": "bastion_of_dawn"
+            }
+          ]
+        },
+        {
+          "modify": "bastion_of_dawn_ab.cooldown_s",
+          "per_rank": 30
+        },
+        {
+          "modify": "bastion_of_dawn_ab.usable_while_cc",
+          "set": [
+            "stun",
+            "incapacitate",
+            "disorient"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "lingering_halo",
+      "name": "Lingering Halo",
+      "type": "passive",
+      "ranks": 1,
+      "description": "Dazzling Halo disorients for 2 s longer, but its cooldown is 20 s longer.",
+      "icon": {
+        "image": "delapouite/fog-light",
+        "school": "holy"
+      },
+      "effects": [
+        {
+          "modify": "dazzled.duration_s",
+          "per_rank": 2
+        },
+        {
+          "modify": "dazzling_halo.cooldown_s",
+          "per_rank": 20
+        }
+      ]
+    },
+    {
+      "id": "heavy_hand",
+      "name": "Heavy Hand",
+      "type": "passive",
+      "ranks": 1,
+      "description": "Binding Gavel stuns for 1 s longer, but its cooldown is 15 s longer.",
+      "icon": {
+        "image": "delapouite/hammer-sickle",
+        "school": "physical"
+      },
+      "effects": [
+        {
+          "modify": "gavel_bound.duration_s",
+          "per_rank": 1
+        },
+        {
+          "modify": "binding_gavel.cooldown_s",
+          "per_rank": 15
+        }
+      ]
+    }
+  ]
+}

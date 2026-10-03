@@ -1,0 +1,16 @@
+{
+  "id": "solar_barrier",
+  "name": "Solar Barrier",
+  "description": "Absorbs 14,000 damage.",
+  "kind": "buff",
+  "duration_s": 10,
+  "dispel_type": "magic",
+  "cc_category": "none",
+  "hud_priority": "major_defensive",
+  "icon": {
+    "symbol": "solar_barrier",
+    "school": "holy",
+    "image": "delapouite/lightning-dome"
+  },
+  "absorb": 14000
+}

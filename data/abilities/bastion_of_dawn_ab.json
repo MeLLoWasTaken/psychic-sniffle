@@ -1,0 +1,25 @@
+{
+  "id": "bastion_of_dawn_ab",
+  "name": "Bastion of Dawn",
+  "description": "For 15 s, deal 20% more damage and take 15% less.",
+  "owner": "templar_vanguard",
+  "kit_slot": "burst",
+  "school": "holy",
+  "cast_type": "instant",
+  "cooldown_s": 120,
+  "triggers_gcd": false,
+  "range_m": 0,
+  "requires_los": false,
+  "target": "self",
+  "effects": [
+    {
+      "type": "apply_aura",
+      "aura": "bastion_of_dawn"
+    }
+  ],
+  "icon": {
+    "symbol": "bastion_of_dawn",
+    "school": "holy",
+    "image": "delapouite/castle"
+  }
+}

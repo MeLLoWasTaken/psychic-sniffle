@@ -1,0 +1,22 @@
+{
+  "id": "aegis_hurled_slow",
+  "name": "Hurled Aegis",
+  "description": "Movement down 30%.",
+  "kind": "debuff",
+  "duration_s": 3,
+  "dispel_type": "magic",
+  "cc_category": "none",
+  "hud_priority": "normal",
+  "icon": {
+    "symbol": "aegis_hurled_slow",
+    "school": "physical",
+    "image": "delapouite/armored-boomerang"
+  },
+  "modifiers": [
+    {
+      "stat": "move_speed",
+      "op": "multiply",
+      "value": 0.7
+    }
+  ]
+}

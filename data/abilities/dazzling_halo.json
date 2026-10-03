@@ -2,7 +2,7 @@
   "id": "dazzling_halo",
   "name": "Dazzling Halo",
   "description": "Enemies within 8 m are disoriented for 5 s. Heavy damage breaks it.",
-  "owner": "templar_radiance",
+  "owner": "templar",
   "kit_slot": "cc",
   "school": "holy",
   "cast_type": "instant",

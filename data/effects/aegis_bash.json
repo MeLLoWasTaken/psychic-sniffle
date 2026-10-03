@@ -1,0 +1,17 @@
+{
+  "id": "aegis_bash",
+  "melee": {
+    "style": "thrust"
+  },
+  "impact": {
+    "style": "spark",
+    "at": "target",
+    "size": 1.2
+  },
+  "auras": {
+    "aegis_bash_ward": {
+      "style": "shield",
+      "size": 0.8
+    }
+  }
+}

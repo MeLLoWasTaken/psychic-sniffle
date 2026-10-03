@@ -1,0 +1,29 @@
+{
+  "id": "crusading_blow",
+  "name": "Crusading Blow",
+  "description": "Strike an enemy for 3,800.",
+  "owner": "templar_vanguard",
+  "kit_slot": "core",
+  "school": "physical",
+  "cast_type": "instant",
+  "cooldown_s": 0,
+  "triggers_gcd": true,
+  "range_m": 5,
+  "requires_los": true,
+  "target": "enemy",
+  "effects": [
+    {
+      "type": "damage",
+      "base": 3800
+    }
+  ],
+  "icon": {
+    "symbol": "crusading_blow",
+    "school": "physical",
+    "image": "lorc/deadly-strike"
+  },
+  "cost": {
+    "resource": "mana",
+    "amount": 600
+  }
+}

@@ -1,0 +1,37 @@
+{
+  "id": "templar_vanguard",
+  "name": "Vanguard",
+  "class": "templar",
+  "description": "Holy damage around itself, protective blessings on allies.",
+  "role": "tank",
+  "icon": {
+    "image": "delapouite/castle"
+  },
+  "range": "melee",
+  "primary_resource": "mana",
+  "abilities": [
+    "aegis_bash",
+    "sun_ring",
+    "hurled_aegis",
+    "lightward",
+    "crusading_blow",
+    "bastion_of_dawn_ab",
+    "bulwark_strike",
+    "solar_barrier_ab",
+    "kinward_ab",
+    "sunder_ward",
+    "binding_gavel",
+    "dazzling_halo",
+    "ironbound_prayer_ab",
+    "dawnstep"
+  ],
+  "spec_tree": "templar_vanguard",
+  "pvp_talents": "templar_vanguard_pvp",
+  "kit_status": "complete",
+  "asset": "test_crate",
+  "weapon": {
+    "type": "mace",
+    "hands": 1
+  },
+  "stats": {}
+}

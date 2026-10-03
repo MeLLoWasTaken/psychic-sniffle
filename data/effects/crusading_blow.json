@@ -1,0 +1,17 @@
+{
+  "id": "crusading_blow",
+  "melee": {
+    "style": "overhead"
+  },
+  "impact": {
+    "style": "flash",
+    "at": "target",
+    "size": 0.9
+  },
+  "auras": {
+    "vanguard_sundered": {
+      "style": "dot",
+      "size": 0.8
+    }
+  }
+}

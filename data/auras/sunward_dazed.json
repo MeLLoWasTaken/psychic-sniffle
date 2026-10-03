@@ -1,0 +1,15 @@
+{
+  "id": "sunward_dazed",
+  "name": "Sunward Daze",
+  "description": "Stunned.",
+  "kind": "debuff",
+  "duration_s": 1,
+  "dispel_type": "none",
+  "cc_category": "stun",
+  "hud_priority": "cc",
+  "icon": {
+    "symbol": "sunward_dazed",
+    "school": "physical",
+    "image": "delapouite/bully-minion"
+  }
+}

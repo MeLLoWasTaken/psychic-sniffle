@@ -1,0 +1,34 @@
+{
+  "id": "aegis_bash",
+  "name": "Aegis Bash",
+  "description": "Bash an enemy with your shield for 4,500 and gain a 3,000 shield for 6 s.",
+  "owner": "templar_vanguard",
+  "kit_slot": "core",
+  "school": "physical",
+  "cast_type": "instant",
+  "cooldown_s": 8,
+  "triggers_gcd": true,
+  "range_m": 5,
+  "requires_los": true,
+  "target": "enemy",
+  "effects": [
+    {
+      "type": "damage",
+      "base": 4500
+    },
+    {
+      "type": "apply_aura",
+      "aura": "aegis_bash_ward",
+      "affects": "self"
+    }
+  ],
+  "icon": {
+    "symbol": "aegis_bash",
+    "school": "physical",
+    "image": "delapouite/spiked-shield"
+  },
+  "cost": {
+    "resource": "mana",
+    "amount": 800
+  }
+}

@@ -1,0 +1,27 @@
+{
+  "id": "bastion_of_dawn",
+  "name": "Bastion of Dawn",
+  "description": "Damage done up 20%, damage taken down 15%.",
+  "kind": "buff",
+  "duration_s": 15,
+  "dispel_type": "magic",
+  "cc_category": "none",
+  "hud_priority": "major_offensive",
+  "icon": {
+    "symbol": "bastion_of_dawn",
+    "school": "holy",
+    "image": "delapouite/castle"
+  },
+  "modifiers": [
+    {
+      "stat": "damage_done",
+      "op": "multiply",
+      "value": 1.2
+    },
+    {
+      "stat": "damage_taken",
+      "op": "multiply",
+      "value": 0.85
+    }
+  ]
+}

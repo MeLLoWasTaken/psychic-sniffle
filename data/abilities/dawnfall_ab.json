@@ -1,0 +1,37 @@
+{
+  "id": "dawnfall_ab",
+  "name": "Dawnfall",
+  "description": "Light crashes down: enemies within 10 m take 5,000 and move 40% slower for 4 s.",
+  "owner": "templar_vanguard",
+  "kit_slot": "core",
+  "school": "holy",
+  "cast_type": "instant",
+  "cooldown_s": 45,
+  "triggers_gcd": true,
+  "range_m": 0,
+  "requires_los": false,
+  "target": "self",
+  "effects": [
+    {
+      "type": "damage",
+      "base": 5000,
+      "affects": "enemies_in_radius",
+      "radius_m": 10
+    },
+    {
+      "type": "apply_aura",
+      "aura": "dawnfall_slow",
+      "affects": "enemies_in_radius",
+      "radius_m": 10
+    }
+  ],
+  "icon": {
+    "symbol": "dawnfall",
+    "school": "holy",
+    "image": "delapouite/falling-rocks"
+  },
+  "cost": {
+    "resource": "mana",
+    "amount": 2500
+  }
+}

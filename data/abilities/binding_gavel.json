@@ -2,7 +2,7 @@
   "id": "binding_gavel",
   "name": "Binding Gavel",
   "description": "Hurl a hammer that stuns an enemy for 3 s.",
-  "owner": "templar_radiance",
+  "owner": "templar",
   "kit_slot": "cc",
   "school": "physical",
   "cast_type": "instant",

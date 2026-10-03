@@ -1,0 +1,32 @@
+{
+  "id": "sunder_ward",
+  "name": "Sunder Ward",
+  "description": "Strip one magic effect from an enemy.",
+  "owner": "templar_vanguard",
+  "kit_slot": "utility",
+  "school": "holy",
+  "cast_type": "instant",
+  "cooldown_s": 10,
+  "triggers_gcd": true,
+  "range_m": 30,
+  "requires_los": true,
+  "target": "enemy",
+  "effects": [
+    {
+      "type": "dispel",
+      "dispel_types": [
+        "magic"
+      ],
+      "dispel_count": 1
+    }
+  ],
+  "icon": {
+    "symbol": "sunder_ward",
+    "school": "holy",
+    "image": "delapouite/broken-wall"
+  },
+  "cost": {
+    "resource": "mana",
+    "amount": 1000
+  }
+}

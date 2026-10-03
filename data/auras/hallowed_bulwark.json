@@ -1,0 +1,22 @@
+{
+  "id": "hallowed_bulwark",
+  "name": "Hallowed Bulwark",
+  "description": "Damage taken down 15%.",
+  "kind": "buff",
+  "duration_s": 8,
+  "dispel_type": "magic",
+  "cc_category": "none",
+  "hud_priority": "major_defensive",
+  "icon": {
+    "symbol": "hallowed_bulwark",
+    "school": "holy",
+    "image": "delapouite/military-fort"
+  },
+  "modifiers": [
+    {
+      "stat": "damage_taken",
+      "op": "multiply",
+      "value": 0.85
+    }
+  ]
+}

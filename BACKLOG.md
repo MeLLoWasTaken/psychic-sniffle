@@ -679,7 +679,16 @@ The other 10 classes, and the 6 remaining specs of the first three classes, in t
 ### M3-04 Radiance balance `[todo]`
 - [ ] Radiance wins 40 to 60% in 1v1, 2v2 and 3v3 bot simulations (named and random builds), with every other spec still inside 40 to 60%.
 
-Then, in order (split into items like M3-01 to M3-04 as each starts): Templar Vanguard (tank) and Zealot; Deathsworn Frostgrave, Bloodbound (tank) and Plague (minions); Stormcaller Tempest, Tidesinger (healer, totems) and Primal (wolves); Warblade Berserker; Arcanist Pyre and Aether; wave 1 gate.
+### M3-05 Templar Vanguard kit `[done]`
+- [x] The Vanguard tank spec: 14 to 18 abilities (holy damage around itself, protective blessings on allies), auras, spec and PvP talent trees, a bot profile with three builds; plays in bot matches without errors; counterplay reviewed.
+- Done 2026-10-03: four Templar abilities became class abilities that every Templar spec carries (Binding Gavel, Dazzling Halo, Ironbound Prayer, Dawnstep), so the class tree's nodes on them help each spec; Iron Reproach stays Radiance's (the healer's weaker interrupt). Vanguard's own: Aegis Bash (4,500 and a 3,000 shield), Sun Ring (2,800 to enemies within 8 m), Hurled Aegis (3,600 and a slow), Lightward (instant 6,500 on an ally), Crusading Blow; Bastion of Dawn (burst: 20% more damage, 15% less taken); Bulwark Strike (full interrupt, 15 s); Solar Barrier (14,000 shield) and Kinward (an ally takes 30% less); Sunder Ward (offensive dispel). 72,000 health (tank). Spec tree of 42 nodes on Radiance's layout with Hallowed Bulwark, Dawnfall and Sunward Charge; 12 PvP talents; builds dawn_bastion, sun_hammer and iron_warden. 66 new icons; existing effect styles and sounds (Bastion and Solar Barrier share Noonblaze's and Sanctum's sounds, the Templar's).
+- Counterplay: no full immunity; Bastion of Dawn (15 s) is answered by crowd control, a dispel (magic), kiting (melee) and line of sight.
+- Checked: data validation (kit complete), Python rule tests, six bot matches (with each healer, with the Arcanist, a tank mirror): all ended in a kill, no errors.
+
+### M3-06 Vanguard character `[doing]`
+- [ ] The Templar armor set in Vanguard colours (a deep blue tabard, darker steel), so the two specs read apart; asset validation and a lineup.
+
+Then, in order (split into items like M3-01 to M3-04 as each starts): Vanguard balance (with M3-04's run), Templar Zealot; Deathsworn Frostgrave, Bloodbound (tank) and Plague (minions); Stormcaller Tempest, Tidesinger (healer, totems) and Primal (wolves); Warblade Berserker; Arcanist Pyre and Aether; wave 1 gate.
 
 ## Later milestones (split into items when the milestone starts)
 

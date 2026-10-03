@@ -2,7 +2,7 @@
   "id": "dawnstep",
   "name": "Dawnstep",
   "description": "Rush to an ally 8 to 40 m away; they move 30% faster for 4 s.",
-  "owner": "templar_radiance",
+  "owner": "templar",
   "kit_slot": "mobility",
   "school": "holy",
   "cast_type": "instant",

@@ -1,0 +1,31 @@
+{
+  "id": "hallowed_bulwark_ab",
+  "name": "Hallowed Bulwark",
+  "description": "You and allies within 10 m take 15% less damage for 8 s.",
+  "owner": "templar_vanguard",
+  "kit_slot": "defensive",
+  "school": "holy",
+  "cast_type": "instant",
+  "cooldown_s": 60,
+  "triggers_gcd": true,
+  "range_m": 0,
+  "requires_los": false,
+  "target": "self",
+  "effects": [
+    {
+      "type": "apply_aura",
+      "aura": "hallowed_bulwark",
+      "affects": "allies_in_radius",
+      "radius_m": 10
+    }
+  ],
+  "icon": {
+    "symbol": "hallowed_bulwark",
+    "school": "holy",
+    "image": "delapouite/military-fort"
+  },
+  "cost": {
+    "resource": "mana",
+    "amount": 2000
+  }
+}

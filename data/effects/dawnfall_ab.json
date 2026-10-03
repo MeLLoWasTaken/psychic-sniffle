@@ -1,0 +1,18 @@
+{
+  "id": "dawnfall_ab",
+  "ground": {
+    "style": "nova",
+    "center": "caster",
+    "lifetime_s": 1.0
+  },
+  "impact": {
+    "style": "rays",
+    "at": "hits",
+    "size": 1.0
+  },
+  "auras": {
+    "dawnfall_slow": {
+      "style": "slow"
+    }
+  }
+}

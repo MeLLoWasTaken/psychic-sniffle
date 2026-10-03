@@ -1,0 +1,25 @@
+{
+  "id": "kinward_ab",
+  "name": "Kinward",
+  "description": "An ally takes 30% less damage for 6 s.",
+  "owner": "templar_vanguard",
+  "kit_slot": "defensive",
+  "school": "holy",
+  "cast_type": "instant",
+  "cooldown_s": 60,
+  "triggers_gcd": false,
+  "range_m": 40,
+  "requires_los": true,
+  "target": "ally",
+  "effects": [
+    {
+      "type": "apply_aura",
+      "aura": "kinward"
+    }
+  ],
+  "icon": {
+    "symbol": "kinward",
+    "school": "holy",
+    "image": "delapouite/guards"
+  }
+}

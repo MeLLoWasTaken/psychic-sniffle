@@ -1,0 +1,14 @@
+{
+  "id": "hallowed_bulwark_ab",
+  "ground": {
+    "style": "zone",
+    "center": "caster",
+    "lifetime_s": 1.2
+  },
+  "auras": {
+    "hallowed_bulwark": {
+      "style": "shield",
+      "size": 0.95
+    }
+  }
+}

@@ -1,0 +1,29 @@
+{
+  "id": "lightward",
+  "name": "Lightward",
+  "description": "Instantly heal an ally for 6,500.",
+  "owner": "templar_vanguard",
+  "kit_slot": "core",
+  "school": "holy",
+  "cast_type": "instant",
+  "cooldown_s": 12,
+  "triggers_gcd": true,
+  "range_m": 40,
+  "requires_los": true,
+  "target": "ally",
+  "effects": [
+    {
+      "type": "heal",
+      "base": 6500
+    }
+  ],
+  "icon": {
+    "symbol": "lightward",
+    "school": "holy",
+    "image": "lorc/energy-shield"
+  },
+  "cost": {
+    "resource": "mana",
+    "amount": 1800
+  }
+}

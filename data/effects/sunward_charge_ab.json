@@ -1,0 +1,20 @@
+{
+  "id": "sunward_charge_ab",
+  "displacement": {
+    "style": "dust"
+  },
+  "impact": {
+    "style": "spark",
+    "at": "target",
+    "size": 1.2
+  },
+  "auras": {
+    "sunward_dazed": {
+      "style": "stun",
+      "size": 0.85
+    },
+    "aegis_pinned": {
+      "style": "root"
+    }
+  }
+}

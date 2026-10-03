@@ -1,0 +1,301 @@
+{
+  "id": "templar_vanguard",
+  "behavior": {
+    "preferred_range_m": [
+      2,
+      5
+    ],
+    "target_priority": "lowest_health",
+    "reaction_ms": [
+      250,
+      600
+    ],
+    "kite_melee": false,
+    "stay_near_allies_m": 18,
+    "take_pickup_below_pct": 70
+  },
+  "priorities": [
+    {
+      "ability": "bulwark_strike",
+      "on": "enemy_caster",
+      "when": {
+        "target_casting": true
+      }
+    },
+    {
+      "ability": "break_free",
+      "on": "self",
+      "when": {
+        "self_hard_cc": true,
+        "self_health_below_pct": 70
+      }
+    },
+    {
+      "ability": "kinward_ab",
+      "on": "lowest_ally",
+      "when": {
+        "ally_health_below_pct": 40
+      }
+    },
+    {
+      "ability": "solar_barrier_ab",
+      "on": "self",
+      "when": {
+        "self_health_below_pct": 60
+      }
+    },
+    {
+      "ability": "ironbound_prayer_ab",
+      "on": "self",
+      "when": {
+        "self_health_below_pct": 40
+      }
+    },
+    {
+      "ability": "hallowed_bulwark_ab",
+      "on": "self",
+      "when": {
+        "ally_health_below_pct": 55
+      }
+    },
+    {
+      "ability": "binding_gavel",
+      "on": "ally_attacker",
+      "when": {
+        "ally_health_below_pct": 50,
+        "target_not_cc": true
+      }
+    },
+    {
+      "ability": "dazzling_halo",
+      "on": "self",
+      "when": {
+        "enemies_within_m": [
+          8,
+          2
+        ]
+      }
+    },
+    {
+      "ability": "dawnstep",
+      "on": "lowest_ally",
+      "when": {
+        "ally_health_below_pct": 45,
+        "target_distance_above_m": 12
+      }
+    },
+    {
+      "ability": "sunward_charge_ab",
+      "when": {
+        "target_distance_above_m": 10
+      }
+    },
+    {
+      "ability": "lightward",
+      "on": "lowest_ally",
+      "when": {
+        "ally_health_below_pct": 60
+      }
+    },
+    {
+      "ability": "bastion_of_dawn_ab",
+      "on": "self",
+      "when": {
+        "target_health_below_pct": 70
+      }
+    },
+    {
+      "ability": "dawnfall_ab",
+      "on": "self",
+      "when": {
+        "enemies_within_m": [
+          10,
+          1
+        ]
+      }
+    },
+    {
+      "ability": "sun_ring",
+      "on": "self",
+      "when": {
+        "enemies_within_m": [
+          8,
+          1
+        ]
+      }
+    },
+    {
+      "ability": "aegis_bash",
+      "when": {
+        "target_distance_below_m": 5
+      }
+    },
+    {
+      "ability": "hurled_aegis",
+      "when": {
+        "target_distance_above_m": 6
+      }
+    },
+    {
+      "ability": "crusading_blow",
+      "when": {
+        "target_distance_below_m": 5
+      }
+    }
+  ],
+  "builds": [
+    {
+      "name": "dawn_bastion",
+      "description": "Protect the team: a big Aegis Bash shield, Lightward, Hallowed Bulwark for the group and long Bastions; survival and Brand of Contrition in the class tree.",
+      "class": {
+        "plated_vigor": 2,
+        "tempered_plate": 2,
+        "steadfast_heart": 2,
+        "welcoming_light": 2,
+        "hearthglow": 1,
+        "oathbound": 2,
+        "prayer_of_iron": 2,
+        "deeper_devotion": 1,
+        "brand_of_contrition": 1,
+        "swift_brand": 2,
+        "contrition_choice": 1,
+        "lasting_brand": 1,
+        "deep_reserves": 2,
+        "unyielding": 1,
+        "dawnforged_mantle": 1,
+        "unbroken_oath": 1,
+        "quiet_vigil": 2,
+        "keen_eye": 2,
+        "zealous_pace": 2
+      },
+      "spec": {
+        "aegis_weight": 2,
+        "thrifty_bash": 2,
+        "deeper_ward": 2,
+        "quick_ward": 2,
+        "thrifty_ward": 2,
+        "tithe_of_dawn": 1,
+        "earnest_ward": 2,
+        "long_bastion": 2,
+        "hallowed_bulwark": 1,
+        "bright_bastion": 1,
+        "bastion_wellspring": 1,
+        "wide_bulwark": 1,
+        "lasting_bastion": 1,
+        "unyielding_line": 1,
+        "devout_guard": 2,
+        "clear_eye": 2,
+        "dawns_bastion": 1,
+        "ring_blaze": 2,
+        "ring_reach": 1,
+        "ring_cadence": 1
+      },
+      "pvp": [
+        "unbreakable_barrier",
+        "swift_kinward",
+        "vow_of_the_wall"
+      ]
+    },
+    {
+      "name": "sun_hammer",
+      "description": "Holy damage around itself: Sun Ring and Dawnfall, a heavy Hurled Aegis, Solar Barrier to hold the line; throughput in the class tree.",
+      "class": {
+        "deep_reserves": 2,
+        "quiet_vigil": 2,
+        "keen_eye": 2,
+        "zealous_pace": 2,
+        "path_choice": 1,
+        "conviction": 2,
+        "swift_litany": 2,
+        "brimming_faith": 2,
+        "sure_stride": 2,
+        "swift_dawnstep": 2,
+        "unbowed_oath": 2,
+        "unchained_choice": 1,
+        "patient_oath": 2,
+        "sunlit_calm": 1,
+        "crown_choice": 1,
+        "plated_vigor": 2,
+        "steadfast_heart": 2
+      },
+      "spec": {
+        "ring_blaze": 2,
+        "ring_reach": 1,
+        "ring_cadence": 2,
+        "heavy_throw": 2,
+        "sapping_throw": 1,
+        "swift_throw": 2,
+        "dawnfall": 1,
+        "steady_barrier": 2,
+        "burning_dawnfall": 2,
+        "thick_barrier": 1,
+        "wide_dawnfall": 1,
+        "aegis_weight": 2,
+        "thrifty_bash": 2,
+        "tithe_of_dawn": 1,
+        "ring_of_dawn": 1,
+        "sheltering_kinward": 1,
+        "deeper_ward": 2,
+        "quick_ward": 2,
+        "earnest_ward": 2
+      },
+      "pvp": [
+        "sundering_blow",
+        "relentless_bulwark",
+        "ironclad_prayer"
+      ]
+    },
+    {
+      "name": "iron_warden",
+      "description": "Lock enemies down: Bulwark Strike from further away, Sunward Charge, a longer Binding Gavel, Sunder Ward that sears; Shackle of Dawn and a wider Halo in the class tree.",
+      "class": {
+        "sure_stride": 2,
+        "swift_dawnstep": 2,
+        "unbowed_oath": 2,
+        "lingering_dawnstep": 1,
+        "unchained_choice": 1,
+        "wide_halo": 1,
+        "patient_oath": 2,
+        "shackle_of_dawn": 1,
+        "heavy_gavel": 1,
+        "long_shackle": 2,
+        "firm_shackle": 1,
+        "swift_reproach": 2,
+        "shackle_choice": 2,
+        "stunning_weight": 1,
+        "plated_vigor": 2,
+        "steadfast_heart": 2,
+        "searing_shackle": 1,
+        "soul_choice": 1,
+        "tempered_plate": 2,
+        "welcoming_light": 2
+      },
+      "spec": {
+        "firm_bulwark": 2,
+        "ringing_bulwark": 1,
+        "bulwark_reach": 1,
+        "ready_sunder": 2,
+        "sunder_choice": 2,
+        "frugal_sunder": 2,
+        "sunward_charge": 1,
+        "sure_sunder": 1,
+        "swift_charge": 2,
+        "long_daze": 1,
+        "aegis_weight": 2,
+        "quick_ward": 2,
+        "deeper_ward": 2,
+        "thrifty_ward": 2,
+        "iron_vanguard": 1,
+        "purging_bash": 1,
+        "earnest_ward": 2,
+        "thrifty_bash": 2,
+        "heavy_throw": 2
+      },
+      "pvp": [
+        "pinning_charge",
+        "lingering_halo",
+        "heavy_hand"
+      ]
+    }
+  ]
+}
