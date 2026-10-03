@@ -710,6 +710,8 @@ func apply_aura(u: Unit, t: Unit, aura_id: String) -> void:
 					inst["expires_tick"] = now + duration
 			if data.has("absorb"):
 				inst["absorb_left"] = int(data["absorb"])
+			if cat == "disorient":
+				inst["flee_yaw"] = _flee_yaw(t, u)
 			_log({"type": "aura_refreshed", "source": u.id, "target": t.id, "aura": aura_id})
 			return
 	var inst_new: Dictionary = {"id": aura_id, "source": u.id, "applied_tick": now,
@@ -720,6 +722,8 @@ func apply_aura(u: Unit, t: Unit, aura_id: String) -> void:
 		inst_new["next_tick"] = now + _ticks(float(data["periodic"]["interval_s"]))
 	if data.has("absorb"):
 		inst_new["absorb_left"] = int(data["absorb"])
+	if cat == "disorient":
+		inst_new["flee_yaw"] = _flee_yaw(t, u)
 	t.auras.append(inst_new)
 	if cat in HARD_CC or cat == "silence":
 		_cancel_if_casting(t, "crowd_controlled")
@@ -881,19 +885,27 @@ static func is_forced_from(aura_list: Array, db: Dictionary) -> bool:
 	return false
 
 
-## When a unit is feared (disorient), the server moves it away from the source instead of
-## applying the player's input. Returns an input dictionary, or empty when not feared.
+## When a unit is feared (disorient), the server moves it instead of applying the player's
+## input: straight on in the direction away from the source at the moment the fear landed
+## (X-22). The direction is fixed when the fear lands and travels to the feared player in its
+## snapshot, so the client predicts the run exactly; following the source as it moved made the
+## run depend on where the source went next, which no client can know. Returns an input
+## dictionary, or empty when not feared.
 func forced_input(u: Unit) -> Dictionary:
 	for a: Dictionary in u.auras:
 		var data: Dictionary = aura_data(a)
 		if data["cc_category"] == "disorient":
-			var src: Unit = sim.units.get(a["source"])
-			var away: Vector3 = _flat3(u.position - src.position) if src else Movement.forward_of(u.facing)
-			var yaw: float = atan2(-away.x, -away.z) if away.length() > 0.01 else u.facing
-			return {"move": Vector2(0, 1), "yaw": yaw, "jump": false}
+			return {"move": Vector2(0, 1), "yaw": float(a.get("flee_yaw", u.facing)), "jump": false}
 		if data["cc_category"] in ["stun", "incapacitate"]:
 			return {"move": Vector2.ZERO, "yaw": u.facing, "jump": false}
 	return {}
+
+
+## The direction a unit feared by `src` runs: away from it, or straight ahead when they stand
+## on the same spot.
+func _flee_yaw(t: Unit, src: Unit) -> float:
+	var away: Vector3 = _flat3(t.position - src.position) if src and src != t else Vector3.ZERO
+	return atan2(-away.x, -away.z) if away.length() > 0.01 else t.facing
 
 
 # ================================================================== auto-attack, targeting, resources

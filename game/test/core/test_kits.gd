@@ -203,3 +203,6 @@ func test_psalm_of_dread_makes_nearby_enemies_flee() -> void:
 	assert_bool(forced.is_empty()).is_false()
 	var away: Vector3 = Movement.forward_of(forced["yaw"])
 	assert_float(away.dot((war.position - ora.position).normalized())).is_greater(0.9)
+	# the run keeps the direction the fear set when it landed, wherever the Oracle goes next (X-22)
+	ora.position = war.position + away * 4.0
+	assert_float(cb.forced_input(war)["yaw"]).is_equal(forced["yaw"])

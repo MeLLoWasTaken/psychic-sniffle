@@ -280,15 +280,19 @@ func _reconcile(snap: Dictionary) -> void:
 	predicted.team = mine["team"]
 	if not _synced:
 		predicted.facing = float(mine["facing"])  # spawn facing (toward the gate); ours to steer from then on
-	var effect_changed: bool = _movement_effects_changed(own_auras, mine["auras"], int(snap["tick"]))
+	var auras: Array = mine["auras"]
+	for pos: int in own.get("aura_speeds", {}):  # talented slows and boosts (X-12)
+		if pos < auras.size():
+			auras[pos]["move_speed"] = own["aura_speeds"][pos]
+	for pos: int in own.get("aura_flee", {}):  # where each fear makes us run (X-22)
+		if pos < auras.size():
+			auras[pos]["flee_yaw"] = own["aura_flee"][pos]
+	var effect_changed: bool = _movement_effects_changed(own_auras, auras, int(snap["tick"]))
 	var displaced: int = int(own.get("displaced_tick", -1))
 	if displaced != _last_displaced_tick:
 		_last_displaced_tick = displaced
 		effect_changed = true  # an ability moved us (charge, blink, knockback): server-decided
-	own_auras = mine["auras"]
-	for pos: int in snap.get("own", {}).get("aura_speeds", {}):  # talented slows and boosts (X-12)
-		if pos < own_auras.size():
-			own_auras[pos]["move_speed"] = snap["own"]["aura_speeds"][pos]
+	own_auras = auras
 	while not _pending.is_empty() and int(_pending[0]["seq"]) <= int(snap["ack_seq"]):
 		_pending.pop_front()
 	if int(snap["match"]["phase"]) == ArenaMatch.Phase.ENDED:
@@ -331,19 +335,25 @@ func _reconcile(snap: Dictionary) -> void:
 
 
 ## True when the movement-affecting auras in a new snapshot differ from what the previous one
-## predicted: something was applied, refreshed or removed before its natural expiry.
+## predicted: something was applied, refreshed or removed before its natural expiry, or a
+## talented speed changed (talents swapped mid-match keep a passive's id but change its speed;
+## X-22), or a fear's direction did.
 static func _movement_effects_changed(before: Array, after: Array, snap_tick: int) -> bool:
 	var expected: Array = []
 	for a: Dictionary in before:
 		if _affects_movement(a["id"]) and (int(a["expires_tick"]) == 0 or int(a["expires_tick"]) >= snap_tick):
-			expected.append("%s@%d" % [a["id"], a["expires_tick"]])
+			expected.append(_movement_key(a))
 	var now: Array = []
 	for a: Dictionary in after:
 		if _affects_movement(a["id"]):
-			now.append("%s@%d" % [a["id"], a["expires_tick"]])
+			now.append(_movement_key(a))
 	expected.sort()
 	now.sort()
 	return expected != now
+
+
+static func _movement_key(a: Dictionary) -> String:
+	return "%s@%d@%s@%s" % [a["id"], a["expires_tick"], str(a.get("move_speed", [])), str(a.get("flee_yaw", ""))]
 
 
 static func _affects_movement(aura_id: String) -> bool:
@@ -392,23 +402,21 @@ func _predict_move(inp: Dictionary, tick: int) -> void:
 		return int(a["expires_tick"]) == 0 or tick <= int(a["expires_tick"]))
 	var mult: float = Combat.speed_multiplier_from(active, Data.auras)
 	var use: Dictionary = inp
-	var fear_from: Vector3 = _fear_source(active)
-	if fear_from.x != INF:
-		var away: Vector3 = predicted.position - fear_from
-		away.y = 0.0
-		var yaw: float = atan2(-away.x, -away.z) if away.length() > 0.01 else predicted.facing
-		use = {"move": Vector2(0, 1), "yaw": yaw, "jump": false}
+	var flee: float = _flee_yaw(active)
+	if not is_nan(flee):
+		use = {"move": Vector2(0, 1), "yaw": flee, "jump": false}
 	elif Combat.is_forced_from(active, Data.auras):
 		use = {"move": Vector2.ZERO, "yaw": predicted.facing, "jump": false}
 	movement.apply(predicted, use, 1.0 / Data.tick_rate(), mult)
 
 
-## Where the unit that feared us stands (newest snapshot), or INF when we are not feared.
-func _fear_source(active: Array) -> Vector3:
+## The direction a fear on us makes us run (fixed by the server when it landed), or NAN when we
+## are not feared. The server steers by the first fear in our aura list, so this does too.
+func _flee_yaw(active: Array) -> float:
 	for a: Dictionary in active:
 		if Data.auras.get(a["id"], {}).get("cc_category", "") == "disorient":
-			return _unit_pos(snapshots[-1], int(a["source"])) if not snapshots.is_empty() else Vector3.ZERO
-	return Vector3(INF, 0, 0)
+			return float(a.get("flee_yaw", predicted.facing))
+	return NAN
 
 
 ## Position of another unit, drawn `delay_ticks` behind the newest snapshot and interpolated

@@ -21,8 +21,7 @@ Acceptance criteria are written before work starts. Refine them during step 2 of
 Items further down keep their history; this list is the order to take them in.
 
 1. F-08: duel balance done (specs 45-54%, match-ups 41-56% on fresh seeds, named and random builds); left: Oracle mirrors reaching the time limit (a dampening proposal waits on the human).
-2. M3-01 Templar class and Radiance kit, then M3-02 to M3-04 (the M3 section below has the wave plan).
-3. X-22 Intermittent large prediction correction in the lagged 2v2 check (waiting for its next CI failure, which now prints the details).
+2. M3-02 Templar character, M3-03 Radiance icons, sounds and effects, M3-04 Radiance balance (the M3 section below has the wave plan).
 
 ### P-01 Playtest build `[done]`
 - [x] A Windows (and Linux) package of the game the human downloads from a GitHub release, unzips and runs: built on CI from export templates compiled from the same Godot 4.7.2 source; the Linux package smoke-tested on CI (it starts as a headless server).
@@ -387,9 +386,14 @@ The human asked to incorporate any readily available offering that improves the 
 - [ ] The CI run of 26e3202 failed the match-flow check with 418 of 8543 ticks not drawn (4.9%, limit 2%) and 14.6% of ticks without a new snapshot; earlier runs passed. Find out whether it is runner speed or a change in M2-13 (settings applied at match start), once the workspace CPU is free to run the check locally.
 - 2026-10-01: the CI run of 7576b97 failed the same check differently: the client timed out in the match step after 870 s with no tick drawn while the bots stayed connected. The same check passed locally on aa36784 (227 s, 1.2% of ticks not drawn, with the video render using the CPU). The check now prints the run's last client and server log lines on failure, so the next CI annotation shows where it stopped.
 
-### X-22 Intermittent large prediction correction in the lagged 2v2 check `[todo]`
+### X-22 Intermittent large prediction correction in the lagged 2v2 check `[done]`
 - [ ] The CI check of 3065072 failed "network 2v2 arena at 150 ms": one bot's largest correction was 3.244 m (limit 0.5), not after a server-applied effect; the other three bots stayed under 0.09 m. The commit changed no movement or prediction code; the same check passed on 1f770a6 and locally on 3065072 (7-minute match on Gallows Courtyard, which collapses its gallows at 5:00). The client now records its largest correction (match time, predicted and replayed positions, collapsed colliders, auras) and the check prints it on failure, so the next occurrence says where it happened.
 - 2026-10-03: not reproduced locally: two full runs of the same check on 43baa0e passed (largest prediction corrections 0 and 0.20 m; a third run stopped without a result). Still waiting for the diagnostics from the next failure on CI; it moves below the other items until then.
+- Done 2026-10-03: it recurred on CI (4f223d5) in two checks, and the new diagnostics showed two separate causes, both fixed:
+  - A fear moved the feared unit away from wherever its fearer stood each tick, so the run depended on where the fearer went next, which no client can know (1.88 m during a Dread Roar). A fear now runs straight on, away from the fearer as it stood when the fear landed; the direction travels in the feared player's snapshot (protocol 11) and the client predicts the run exactly. The lagged 2v2 check went from dozens of small corrections per bot to none.
+  - The lag simulator drew each packet's delay when it was polled, so a burst polled at once after a stall (the server busy with a joining player) came out shuffled; the server then gave up waiting for an input that was only late and counted it lost, and the client's prediction ran ahead by the lost inputs' movement (0.99 m on CI; reproduced here as 0.23 m with exactly 2 lost inputs). The simulator now keeps each channel's packets in order, as a real network path does.
+  - Also: a talented speed or fear direction that changes now counts as a server-applied movement change (talents swapped mid-match keep a passive's id but change its speed).
+  - Tests: the flee direction stays put when the fearer moves; snapshots carry it; a burst through the lag simulator keeps its order (fails on the old code).
 
 ### X-18 Nightly balance results (first run, 2026-10-01) `[done]`
 - [ ] 1v1 (1,000 duels, random builds): Warblade 62%, Oracle 8%, Arcanist 78%; the Arcanist has 1 viable build; two Arcanist nodes are in every top build (turning_hours, gliding_ice). 2v2 and 3v3 hit the 4-hour job limit (now split into 6 and 8 parallel shards); the 20-player profile failed without saying why (it now reports the end of its output as errors). Feed into M2-07 (1v1 tuning) and M2-04 (trees).
@@ -653,9 +657,13 @@ The other 10 classes, and the 6 remaining specs of the first three classes, in t
 
 ### Wave 1
 
-### M3-01 Templar class and Radiance kit `[todo]`
-- [ ] Templar class data (plate, class colour, class talent tree) and the Radiance healer spec: 14 to 18 abilities filling the kit template (strong single-target heals, a short full immunity, able to fight in melee), its auras, spec and PvP talent trees, a bot profile. `validate_data.py` passes with `kit_status: complete`.
-- [ ] Radiance plays in bot matches without errors (a 2v2 with each existing spec as its partner), and its kit is reviewed against the counterplay rules (at most one full immunity; burst answerable by two tools).
+### M3-01 Templar class and Radiance kit `[done]`
+- [x] Templar class data (plate, class colour, class talent tree) and the Radiance healer spec: 14 to 18 abilities filling the kit template (strong single-target heals, a short full immunity, able to fight in melee), its auras, spec and PvP talent trees, a bot profile. `validate_data.py` passes with `kit_status: complete`.
+- [x] Radiance plays in bot matches without errors (a 2v2 with each existing spec as its partner), and its kit is reviewed against the counterplay rules (at most one full immunity; burst answerable by two tools).
+- Done 2026-10-03. Kit (15 abilities): Dawnmend (1.8 s, 12,500), Sunlit Word (instant 6,500, 8 s), Hallowed Strike (melee 4,000 and a 2,500 self-heal), Radiant Pulse (4,500 to allies within 10 m), Dawnbolt; Noonblaze and Final Mercy (burst); Binding Gavel (3 s stun) and Dazzling Halo (5 s disorient); Iron Reproach (melee interrupt, 40 s); Sanctum (6 s full immunity, healing halved), Ironbound Prayer, Aegis of Kin (ally immune to physical damage); Dawnstep (rush to an ally); Purifying Touch. Class tree (41 nodes, laid out like the Oracle's, with class abilities Brand of Contrition and Shackle of Dawn: a third crowd-control category, roots), spec tree (42 nodes with Kindred Light, Daybreak and Vesper Slumber), 12 PvP talents, three bot builds (dawn_mender, iron_vigil, dawn_warden). 115 new icons. Reuses existing effect styles and sounds; its own sounds and effects are M3-03.
+- Counterplay: one full immunity (Sanctum; Aegis of Kin blocks physical damage only). Noonblaze is answered by interrupts on Dawnmend and Kindred Light, crowd control, a dispel (magic) and line of sight; Final Mercy by crowd control before it and healing reduction.
+- Checked: six 2v2 bot matches, Radiance with each existing spec as partner and in a mirror: all ended in a kill, no errors; Radiance healed 66k to 849k per match (the Oracle 33k to 531k), a first sign it may be strong (M3-04). Two data rules caught on the way: helpful spells on allies reach 40 m (Dawnstep), and a disorient breaks past 10% of max health, not on any damage (Dazzling Halo).
+- Not yet in the main menu: Radiance has no character model (a capsule stands in) and no sounds of its own until M3-02 and M3-03. The nightly balance run picks it up automatically, so its numbers appear there.
 
 ### M3-02 Templar character `[todo]`
 - [ ] A Templar model on the heavy body build, a plate armor set distinct from the Warblade's (lighter, robed over plate, holy trim), a one-handed hammer and a shield; passes the art checklist.

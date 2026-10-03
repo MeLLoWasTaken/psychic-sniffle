@@ -112,6 +112,19 @@ func test_talent_change_messages_round_trip() -> void:
 	assert_str(str(no["error"])).is_equal("talents_locked")
 
 
+func test_snapshots_carry_each_fears_flee_direction_to_the_feared_player() -> void:
+	# X-22: a feared unit runs the way the fear set when it landed; the client must know that way
+	var runner: MatchRunner = MatchRunner.new(Data.maps["gallows_courtyard"], "arena", "2v2", 0.0, 5)
+	var me: Unit = runner.add_unit("warblade_carnage", 0)
+	var ora: Unit = runner.add_unit("oracle_grace", 1)
+	me.auras.append({"id": "chilled", "source": ora.id, "applied_tick": 0, "expires_tick": 600, "stacks": 1})
+	me.auras.append({"id": "psalm_dread", "source": ora.id, "applied_tick": 0, "expires_tick": 300, "stacks": 1, "flee_yaw": 1.25})
+	var snap: Dictionary = Protocol.decode(Protocol.snapshot(10, 1, [me, ora], {}, me, {}))
+	assert_dict(snap["own"]["aura_flee"]).is_equal({1: 1.25})
+	# other players' snapshots carry no own block, so nobody else learns it
+	assert_bool(Protocol.decode(Protocol.snapshot(10, 1, [me, ora], {}, ora, {}))["own"]["aura_flee"].is_empty()).is_true()
+
+
 func test_snapshots_carry_talented_aura_speeds_so_prediction_matches_the_server() -> void:
 	# X-12: an Arcanist whose talents make Chilled a 50% slow (the data says 40%)
 	var runner: MatchRunner = MatchRunner.new(Data.maps["gallows_courtyard"], "arena", "2v2", 0.0, 5)

@@ -124,18 +124,20 @@ func poll() -> Array[Dictionary]:
 	return ready
 
 
-func _release_time(direction: String, channel: int, reliable: bool) -> float:
+func _release_time(direction: String, channel: int, _reliable: bool) -> float:
 	var now: float = Time.get_ticks_usec() / 1000.0
 	# Jitter drifts as a bounded random walk: real network delay changes gradually (queueing),
 	# so consecutive packets have similar delays and are rarely reordered.
 	var off: float = float(_jitter_offset[direction]) + rng.randf_range(-jitter_ms, jitter_ms) * 0.15
 	off = clampf(off, -jitter_ms * 0.5, jitter_ms * 0.5)
 	_jitter_offset[direction] = off
-	var t: float = now + lag_ms * 0.5 + off
-	if reliable:
-		var key: String = "%s:%d" % [direction, channel]
-		t = maxf(t, float(_last_release.get(key, 0.0)))
-		_last_release[key] = t
+	# packets keep their order on each channel, as on a real network path (X-22): delays are
+	# drawn when a packet is sent or polled, so a burst polled at once after a stall (a server
+	# busy with a joining player) would otherwise come out shuffled, and the server would count
+	# an input that is only late as lost
+	var key: String = "%s:%d" % [direction, channel]
+	var t: float = maxf(now + lag_ms * 0.5 + off, float(_last_release.get(key, 0.0)))
+	_last_release[key] = t
 	return t
 
 

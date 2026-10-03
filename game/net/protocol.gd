@@ -6,7 +6,7 @@ extends RefCounted
 ## Abilities, auras and specs travel as small indexes into their sorted id lists (both sides
 ## load the same data, and the protocol version changes whenever that could differ).
 
-const VERSION: int = 10
+const VERSION: int = 11
 const CH_RELIABLE: int = 0
 const CH_UNRELIABLE: int = 1
 const CHANNELS: int = 2
@@ -204,6 +204,12 @@ static func snapshot(tick: int, ack_seq: int, units: Array, match_state: Diction
 			b.put_u8((own_speeds[i] as Array).size())
 			for v: float in own_speeds[i]:
 				b.put_float(v)
+		# the flee direction of each fear on our unit (Combat.forced_input; X-22), by aura position
+		var flees: Array = range(mini(own.auras.size(), 32)).filter(func(i: int) -> bool: return own.auras[i].has("flee_yaw"))
+		b.put_u8(flees.size())
+		for i: int in flees:
+			b.put_u8(i)
+			b.put_float(float(own.auras[i]["flee_yaw"]))
 	else:
 		b.put_u8(0)
 	return b.data_array
@@ -361,6 +367,10 @@ static func decode(data: PackedByteArray) -> Dictionary:
 					for k: int in b.get_u8():
 						vals.append(b.get_float())
 					own["aura_speeds"][pos] = vals
+				own["aura_flee"] = {}
+				for j: int in b.get_u8():
+					var fpos: int = b.get_u8()
+					own["aura_flee"][fpos] = b.get_float()
 				snap["own"] = own
 			return snap
 		Msg.PING, Msg.PONG:

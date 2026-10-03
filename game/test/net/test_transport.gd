@@ -38,3 +38,18 @@ func test_leaving_with_a_reliable_packet_in_flight_still_disconnects_at_once() -
 	assert_bool(_pump(server, null, server, "disconnect", 1.0)).override_failure_message(
 		"the server did not see the client leave within 1 s").is_true()
 	server.close()
+
+
+func test_the_lag_simulator_keeps_a_burst_of_packets_in_order() -> void:
+	# X-22: a burst polled at once after a stall got delays from the drifting jitter and came out
+	# shuffled, so the server counted late inputs as lost
+	var t: NetTransport = NetTransport.new()
+	t.lag_ms = 150.0
+	t.jitter_ms = 30.0
+	t.rng.seed = 7
+	for channel: int in [Protocol.CH_UNRELIABLE, Protocol.CH_RELIABLE]:
+		var last: float = -INF
+		for i: int in 300:
+			var at: float = t._release_time("in", channel, channel == Protocol.CH_RELIABLE)
+			assert_float(at).override_failure_message("packet %d overtook the one before it" % i).is_greater_equal(last)
+			last = at

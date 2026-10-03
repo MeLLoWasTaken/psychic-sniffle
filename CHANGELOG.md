@@ -2,6 +2,16 @@
 
 One entry per build-loop iteration, newest first. Format: date, backlog ID, what changed, how it was checked.
 
+## 2026-10-03 — X-22 prediction corrections under lag fixed
+- Fears now send the feared player running straight away from the one who feared them, as they stood when the fear landed, instead of re-aiming every moment at the fearer's new position. A player's own game now predicts a fear run exactly, so a feared character no longer jumps when the server's view arrives.
+- The test network's lag simulator kept shuffling packets that arrived together after a short stall, which made the server treat late inputs as lost. It now keeps them in order, as real networks do.
+- Checked: the lagged 2v2 arena check (zero prediction corrections for every bot, down from dozens), lagged skirmishes, new tests for the fear direction, the snapshot field and packet order.
+
+## 2026-10-03 — M3-01 Templar class and Radiance kit
+- The first new class of milestone 3: the Templar, a plate-armoured champion of the dawn, and its healer spec Radiance: strong single-target heals, a short full immunity (Sanctum), and a hammer to fight in melee with. 15 abilities, a 41-node class tree shared by future Templar specs, a 42-node spec tree, 12 PvP talents and three bot builds.
+- Radiance plays in bot matches with every existing spec and without errors. It is not in the main menu yet: it has no character model or sounds of its own until the next items.
+- Checked: data validation with the kit marked complete (kit template, talent trees, descriptions), Python rule tests, six bot matches.
+
 ## 2026-10-03 — F-18 done: a calmer foundry floor
 - The foundry floor's brick pavers are now laid in long courses (1 m by 0.5 m, running bond) instead of a basket weave, so the floor reads calmer at a distance and players stand out more. Both floor tiles rebuilt.
 - Checked: asset validation, the same camera before and after (`previews/f_18/floor_before_after.png`).
