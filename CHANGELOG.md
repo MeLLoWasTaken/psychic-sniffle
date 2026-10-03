@@ -2,6 +2,10 @@
 
 One entry per build-loop iteration, newest first. Format: date, backlog ID, what changed, how it was checked.
 
+## 2026-10-03 — Codex for eight specs, reference images
+- The Arena PvP Codex now covers all eight specializations (Radiance, Vanguard, Zealot, Frostgrave and Bloodbound added), with a reference image of each spec's character: front, three-quarter, side and back views on one scale and a combat-ready stance, rendered with its weapon in the arena lighting (`tools/blender/render_reference.py`, sheets in `previews/reference/`). It also learned the new effects (pulls, leech, rune refills), shows both resources, marks class-wide abilities and the specs not yet in the main menu, writes talents that replace effects in plain words, and no longer overflows a phone screen.
+- Checked: the page at 1280 and 400 px wide, no stale ability descriptions.
+
 ## 2026-10-03 — Kit tuning for tanks and Bloodbound
 - The human chose to balance tanks through their kits rather than giving every role the same health in duels. The Vanguard's shields and heals are smaller and its main strike softer; the Bloodbound, which won under a third of its matches, hits harder, bleeds more and wears a thicker bone ward; the Zealot's two biggest strikes are a little softer.
 - Checked: data validation, local duels; the nightly run measures every bracket.

@@ -23,7 +23,8 @@
   color-scheme: dark;
 }
 body { background: var(--bg); color: var(--ink); font: 15px/1.55 var(--text); }
-.wrap { max-width: 1080px; margin: 0 auto; padding-inline: 20px; padding-block: 28px 48px; display: grid; gap: 40px; }
+.wrap { max-width: 1080px; margin: 0 auto; padding-inline: 20px; padding-block: 28px 48px; display: grid; grid-template-columns: minmax(0, 1fr); gap: 40px; }
+.wrap > *, .spec > *, .top > * { min-width: 0; }
 h1, h2, h3, h4 { font-family: var(--display); text-wrap: balance; margin: 0; }
 h1 { font-size: clamp(2rem, 5vw, 3rem); letter-spacing: .02em; color: var(--gold); }
 h2 { font-size: clamp(1.6rem, 4vw, 2.2rem); }
@@ -41,7 +42,7 @@ p { margin: 0; }
 .search { display: grid; gap: 6px; max-width: 420px; font-size: .85rem; color: var(--muted); }
 .search input { font: inherit; font-size: 1rem; padding: 9px 12px; background: var(--panel); color: var(--ink); border: 1px solid var(--line); }
 .search input:focus-visible { outline: 2px solid var(--gold); outline-offset: 1px; }
-.spec { display: grid; gap: 16px; scroll-margin-top: 16px; }
+.spec { display: grid; grid-template-columns: minmax(0, 1fr); gap: 16px; scroll-margin-top: 16px; }
 .spec-head { display: grid; gap: 10px; padding: 22px 22px 18px; background: var(--panel); border-top: 4px solid var(--class); }
 .facts { display: grid; grid-template-columns: repeat(auto-fit, minmax(120px, 1fr)); gap: 10px 18px; margin: 6px 0 0; }
 .facts div { display: grid; gap: 2px; }
@@ -64,8 +65,14 @@ p { margin: 0; }
 .aura .mini { width: 18px; height: 18px; vertical-align: -3px; margin-right: 4px; }
 .dim { color: var(--muted); font-weight: 400; }
 .trees { display: grid; grid-template-columns: repeat(auto-fill, minmax(min(100%, 320px), 1fr)); gap: 12px; }
-.tree { padding: 14px 16px; background: var(--panel); border: 1px solid var(--line); display: grid; gap: 8px; }
+.trees > *, .grid > * { min-width: 0; }
+.tree { overflow-wrap: anywhere; padding: 14px 16px; background: var(--panel); border: 1px solid var(--line); display: grid; gap: 8px; }
 .tree ol { margin: 0; padding-left: 20px; display: grid; gap: 8px; }
 .draft { font-size: .85rem; color: var(--muted); border-left: 3px solid var(--gold); padding-left: 10px; }
 .foot { font-size: .8rem; color: var(--muted); border-top: 1px solid var(--line); padding-top: 14px; }
+.ref { margin: 0; display: grid; gap: 6px; }
+.ref img { width: 100%; height: auto; max-width: 100%; display: block; background: #1d1915; border: 1px solid var(--line); }
+.ref figcaption { font-size: .8rem; color: var(--muted); }
+.badge { display: inline-block; margin-left: 10px; padding: 1px 8px; font-size: .68rem; letter-spacing: .08em; color: var(--gold); border: 1px solid var(--gold); text-transform: uppercase; }
+@media (max-width: 720px) { .ref { overflow-x: auto; } .ref img { width: 760px; max-width: none; } }
 @media (max-width: 520px) { .spec-head { padding: 16px; } .ability { grid-template-columns: 44px minmax(0, 1fr); } .ability .icon { width: 44px; height: 44px; } }

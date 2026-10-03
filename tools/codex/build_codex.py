@@ -64,6 +64,8 @@ class Codex:
         self.frame = Image.open(ICONS / "frame.png").convert("RGBA")
         self._icons: dict[str, str] = {}
         self.stale: list[str] = []
+        self.playable = set(json.loads((DATA / "menus" / "main.json").read_text())["spec_picker"]["specs"])
+        self.reference: dict[str, str] = {}  # spec id -> image path relative to the page
 
     # ------------------------------------------------------------------ icons
     def icon(self, spec_icon: dict | None, size: int = 56) -> str:
@@ -167,6 +169,8 @@ class Codex:
                     numbers.append(v * float(mi["value"]))
                     line += (f'; <b class="num">{fmt(v * float(mi["value"]))}</b> against a target that is '
                              f'{" or ".join(mi.get("target_cc", []))}')
+                if e.get("leech_pct"):
+                    line += f'; heals you for <b class="num">{e["leech_pct"]:g}%</b> of the damage dealt'
                 out.append(line)
             elif t == "apply_aura":
                 out.append("Applies " + self.aura_text(e["aura"], stats, ab, numbers))
@@ -181,9 +185,38 @@ class Codex:
                 out.append(f"Teleports {e['distance_m']:g} m forward")
             elif t == "charge":
                 out.append("Charges to the target")
+            elif t == "pull":
+                out.append(f"Pulls {'every enemy within ' + format(e['radius_m'], 'g') + ' m' if area else 'the target'} "
+                           f"to {e.get('distance_m', 2.0):g} m in front of you")
+            elif t == "knockback":
+                out.append(f"Knocks back {e.get('distance_m', 8.0):g} m{area}")
+            elif t == "resource":
+                out.append(f"Restores {fmt(e['amount'])} {e['resource'].replace('_', ' ')}")
+            elif t == "summon":
+                out.append(f"Summons {html.escape(str(e.get('unit', 'a minion')))}")
             else:
                 out.append(html.escape(json.dumps(e)))
         return out, numbers
+
+    def short_effect(self, e: dict) -> str:
+        """One effect in plain words, for talent nodes that replace an ability's effects."""
+        t = e["type"]
+        area = f" within {e['radius_m']:g} m" if e.get("affects", "").endswith("in_radius") else ""
+        who = {"self": " on yourself", "allies_in_radius": " to allies" + area, "enemies_in_radius": " to enemies" + area}.get(
+            e.get("affects", ""), "")
+        if t in ("damage", "heal"):
+            word = "damage" if t == "damage" else "healing"
+            leech = f", heals you for {e['leech_pct']:g}%" if e.get("leech_pct") else ""
+            return f"{fmt(float(e['base']))} {e.get('school', '')} {word}{who}{leech}".replace("  ", " ")
+        if t in ("apply_aura", "absorb"):
+            return f"applies {self.auras.get(e['aura'], {}).get('name', e['aura'])}{who}"
+        if t == "dispel":
+            return f"removes {e.get('dispel_count', 1)} {' or '.join(e.get('dispel_types', []))} effect{who}"
+        if t == "interrupt":
+            return f"interrupts, locking the school for {secs(float(e['school_lock_s']))}"
+        return {"remove_cc": "breaks crowd control", "charge": "charges to the target",
+                "pull": f"pulls{who or ' the target'} to you",
+                "teleport": f"teleports {e.get('distance_m', 0):g} m forward"}.get(t, t.replace("_", " "))
 
     def check_text(self, ab: dict, numbers: list[float]) -> bool:
         said = [float(m.replace(",", "")) for m in re.findall(r"\d[\d,]{2,}", ab.get("description", ""))]
@@ -204,10 +237,11 @@ class Codex:
                 "channel": f"{ab.get('cast_time_s', 0):g} s channel"}.get(ab["cast_type"], ab["cast_type"])
         meta = [cast, f"{secs(float(ab['cooldown_s']))} cooldown" if ab["cooldown_s"] else "No cooldown"]
         if ab.get("cost"):
-            meta.append(f"{fmt(ab['cost']['amount'])} {ab['cost']['resource']}")
+            res = ab["cost"]["resource"].replace("_", " ")
+            meta.append(f"{fmt(ab['cost']['amount'])} {res[:-1] if res.endswith('s') and ab['cost']['amount'] == 1 else res}")
         if ab.get("generates"):
             g = ab["generates"]
-            meta.append(f"generates {fmt(g['amount'])} {g['resource']}" if isinstance(g, dict) else "generates resource")
+            meta.append(f"generates {fmt(g['amount'])} {g['resource'].replace('_', ' ')}" if isinstance(g, dict) else "generates resource")
         tgt = ab.get("target", "enemy")
         if tgt == "self":
             meta.append("Self")
@@ -221,6 +255,9 @@ class Codex:
             tags.append("usable while controlled")
         if ab.get("castable_while_moving"):
             tags.append("castable while moving")
+        cls = self.classes.get(spec["class"], {})
+        if ab.get("owner") == spec["class"]:
+            tags.insert(0, f"every {cls.get('name', spec['class'])} spec has it")
         search = " ".join([ab["name"], ab["school"], ab["kit_slot"], ab.get("description", "")]).lower()
         icon = self.icon(ab.get("icon"))
         stale = '' if ok else '<p class="stale">The tooltip text above is out of date: its numbers differ from the data.</p>'
@@ -241,9 +278,26 @@ class Codex:
             return ""
         nodes = []
         for n in sorted(t["nodes"], key=lambda n: (n.get("pos", [0, 0])[1], n.get("pos", [0, 0])[0])):
+            def set_text(v) -> str:
+                if isinstance(v, list) and v and all(isinstance(x, dict) and "type" in x for x in v):
+                    return "[" + "; ".join(self.short_effect(x) for x in v) + "]"
+                if isinstance(v, str):
+                    return v.replace("_", " ")
+                if isinstance(v, list) and all(isinstance(x, str) for x in v):
+                    return ", ".join(v) if v else "nothing"
+                if isinstance(v, list) and all(isinstance(x, dict) and "stat" in x for x in v):
+                    return "; ".join(f"{STAT_WORDS.get(m['stat'], m['stat'])} "
+                                     f"{'+' if m['value'] > 1 else '−'}{abs(round((m['value'] - 1) * 100))}%"
+                                     if m["op"] == "multiply" else f"{STAT_WORDS.get(m['stat'], m['stat'])} {m['value']:+g}"
+                                     for m in v)
+                if isinstance(v, dict) and "resource" in v:
+                    res = v["resource"].replace("_", " ")
+                    return f"{fmt(v.get('amount', 0))} {res[:-1] if res.endswith('s') and v.get('amount') == 1 else res}"
+                return json.dumps(v)
+
             def effect_text(src: dict) -> str:
                 parts = [f"{e['modify']} {e['per_rank']:+g} per rank" if "per_rank" in e
-                         else f"{e['modify']} set to {json.dumps(e.get('set'))}" for e in src.get("effects", [])]
+                         else f"{e['modify']} set to {set_text(e.get('set'))}" for e in src.get("effects", [])]
                 if src.get("grants_ability"):
                     parts.insert(0, f"grants {self.abilities.get(src['grants_ability'], {}).get('name', src['grants_ability'])}")
                 if src.get("grants_aura"):
@@ -276,18 +330,29 @@ class Codex:
         shared = [self.ability_card(self.abilities[a], spec) for a in cls.get("shared_abilities", []) if a in self.abilities]
         if shared:
             groups.append(f'<h3>Every class</h3><div class="grid">{"".join(shared)}</div>')
+        resource = spec["primary_resource"].replace("_", " ")
+        if spec.get("secondary_resource"):
+            resource += " and " + spec["secondary_resource"].replace("_", " ")
         facts = [("Role", spec["role"].upper()), ("Range", spec.get("range", "")), ("Armor", cls["armor"]),
-                 ("Resource", spec["primary_resource"]), ("Health", fmt(health)),
+                 ("Resource", resource), ("Health", fmt(health)),
                  ("Critical strike", f"{stats['crit_chance'] * 100:g}%"), ("Haste", f"{stats['haste'] * 100:g}%"),
                  ("Weapon", spec.get("weapon", {}).get("type", ""))]
         anchor = spec["id"]
+        ref = self.reference.get(spec["id"])
+        figure = (f'<figure class="ref"><img src="{ref}" alt="{html.escape(spec["name"])} {html.escape(cls["name"])}: front, '
+                  f'three-quarter, side and back views and a combat-ready stance" loading="lazy" width="1800" height="511">'
+                  f'<figcaption>Reference: the in-game model with its weapon, in the arena lighting.</figcaption></figure>'
+                  if ref else "")
+        status = ("" if spec["id"] in self.playable else
+                  ' <span class="badge">In development: not in the main menu yet</span>')
         return f'''<section class="spec" id="{anchor}" style="--class:{cls.get("color", "#999")}">
   <header class="spec-head">
-    <p class="eyebrow">{html.escape(cls["name"])}</p>
+    <p class="eyebrow">{html.escape(cls["name"])}{status}</p>
     <h2>{html.escape(spec["name"])}</h2>
     <p class="lede">{html.escape(spec.get("description", ""))} {html.escape(cls.get("description", ""))}</p>
     <dl class="facts">{"".join(f"<div><dt>{k}</dt><dd>{html.escape(str(v))}</dd></div>" for k, v in facts)}</dl>
   </header>
+  {figure}
   {"".join(groups)}
   <h3>Talents</h3>
   <div class="trees">{self.tree(cls.get("class_tree"), cls["name"] + " class tree")}{self.tree(spec.get("spec_tree"), spec["name"] + " spec tree")}{self.tree(spec.get("pvp_talents"), "PvP talents")}</div>
@@ -311,9 +376,9 @@ class Codex:
 <style>{css}</style>
 <div class="wrap">
   <header class="top">
-    <p class="eyebrow">Vertical slice · {len(specs)} specs · {count} abilities</p>
+    <p class="eyebrow">Milestone 3 · {len(self.classes)} classes · {len(specs)} specs · {count} abilities</p>
     <h1>Arena PvP Codex</h1>
-    <p class="lede">Every ability and talent tree in the game, generated from its data files. Bold numbers come from the combat formula: base × (1 + power bonus × coefficient), with the power bonus at {pb:g} unless a spec sets its own. Critical strikes multiply by {self.tuning["damage"]["crit_multiplier"]:g}; physical damage is then reduced by the target's armor (cloth {self.tuning["damage"]["armor_reduction"]["cloth"] * 100:g}%, plate {self.tuning["damage"]["armor_reduction"]["plate"] * 100:g}%).</p>
+    <p class="lede">Every ability and talent tree in the game, generated from its data files, with a reference image of each specialization's character. Bold numbers come from the combat formula: base × (1 + power bonus × coefficient), with the power bonus at {pb:g} unless a spec sets its own. Critical strikes multiply by {self.tuning["damage"]["crit_multiplier"]:g}; physical damage is then reduced by the target's armor (cloth {self.tuning["damage"]["armor_reduction"]["cloth"] * 100:g}%, plate {self.tuning["damage"]["armor_reduction"]["plate"] * 100:g}%).</p>
     {stale}
     <nav class="specnav">{nav}</nav>
     <label class="search" for="q">Find an ability <input id="q" type="search" placeholder="Name, school or effect"></label>
@@ -329,10 +394,21 @@ def main() -> None:
     ap.add_argument("--out", type=Path, default=REPO / "previews" / "codex" / "codex.html")
     args = ap.parse_args()
     cx = Codex()
+    ref_src = REPO / "previews" / "reference"
+    ref_dir = args.out.parent / "reference"
+    for png in sorted(ref_src.glob("*.png")):
+        if png.stem not in cx.specs:
+            continue
+        ref_dir.mkdir(parents=True, exist_ok=True)
+        im = Image.open(png).convert("RGB")
+        im = im.resize((1800, round(im.height * 1800 / im.width)), Image.LANCZOS)
+        im.save(ref_dir / f"{png.stem}.jpg", quality=86, optimize=True, progressive=True)
+        cx.reference[png.stem] = f"reference/{png.stem}.jpg"
     page = cx.page()
     args.out.parent.mkdir(parents=True, exist_ok=True)
     args.out.write_text(page)
-    print(f"{args.out} ({len(page) // 1024} KB); stale descriptions: {', '.join(cx.stale) or 'none'}")
+    print(f"{args.out} ({len(page) // 1024} KB, {len(cx.reference)} reference images); "
+          f"stale descriptions: {', '.join(cx.stale) or 'none'}")
 
 
 if __name__ == "__main__":
