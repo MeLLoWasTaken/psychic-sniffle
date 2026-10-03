@@ -16,12 +16,14 @@ Acceptance criteria are written before work starts. Refine them during step 2 of
 
 ---
 
-## Next up (set by review 5, 2026-10-02)
+## Next up (set by review 6, 2026-10-03)
 
-Items further down keep their history; this list is the order to take them in.
+Items further down keep their history; this list is the order to take them in. Review 6: `docs/reports/review_06/review_06.md`.
 
-1. F-08: duel balance done (specs 45-54%, match-ups 41-56% on fresh seeds, named and random builds); left: Oracle mirrors reaching the time limit (a dampening proposal waits on the human).
-2. M3-04 Templar balance: Radiance, Vanguard and Zealot on one nightly run on CI (the M3 section below has the wave plan).
+1. M3-04 Templar balance. Team brackets are inside 40-60% for every spec; 1v1 is not (Vanguard 67%, Radiance 60%, Warblade 24%). Waiting on the human: should 1v1 balance cover tanks and healers (review 6 asks; recommendation: measure 1v1 among damage specs, report tanks and healers separately)? The criterion stands as written until then.
+2. Frostgrave balance (the nightly at cac5431 includes it).
+3. M3-10 Deathsworn character; M3-11 Frostgrave sounds and effects.
+4. F-08 leftover: Oracle mirrors reaching the time limit (a dampening proposal waits on the human).
 
 ### P-01 Playtest build `[done]`
 - [x] A Windows (and Linux) package of the game the human downloads from a GitHub release, unzips and runs: built on CI from export templates compiled from the same Godot 4.7.2 source; the Linux package smoke-tested on CI (it starts as a headless server).
@@ -714,7 +716,13 @@ The other 10 classes, and the 6 remaining specs of the first three classes, in t
 - Not in the main menu: no character model (a capsule stands in), no sounds of its own.
 - Follow-ups: M3-10 Deathsworn character; M3-11 Frostgrave sounds and effects; Frostgrave balance joins the next nightly.
 
-Then, in order (split into items like M3-01 to M3-04 as each starts): Deathsworn character, Frostgrave sounds, Frostgrave balance, Bloodbound (tank) and Plague (minions); Stormcaller Tempest, Tidesinger (healer, totems) and Primal (wolves); Warblade Berserker; Arcanist Pyre and Aether; wave 1 gate.
+### M3-10 Deathsworn character `[todo]`
+- [ ] A Deathsworn model on the heavy body build: a plate armor set distinct from the Warblade's and the Templar's (grave-cold, rimed, a hooded or crowned helm), a two-handed runed blade; passes the art checklist, including the silhouette test against the other plate classes.
+
+### M3-11 Frostgrave sounds and effects `[todo]`
+- [ ] Frostgrave's strong effects (Grave Winter, Hoarfrost Surge, Glacial Tomb, Grave Tether, Gravecloak) get their own sounds instead of the Arcanist's and the Templar's; every ability's effect reads on enemy frames.
+
+Then, in order (split into items like M3-01 to M3-04 as each starts): Frostgrave balance, Bloodbound (tank) and Plague (minions); Stormcaller Tempest, Tidesinger (healer, totems) and Primal (wolves); Warblade Berserker; Arcanist Pyre and Aether; wave 1 gate.
 
 ## Later milestones (split into items when the milestone starts)
 

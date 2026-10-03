@@ -2,6 +2,11 @@
 
 One entry per build-loop iteration, newest first. Format: date, backlog ID, what changed, how it was checked.
 
+## 2026-10-03 — Review pass 6
+- Balance with six specs: in 2v2 and 3v3 every spec wins 42 to 57% of 3,000 simulated matches. Duels are lopsided: the Templar tank and healer win most of them and the Warblade only 24%. The review asks the human whether 1v1 balance should cover tanks and healers.
+- The six characters side by side, the three arenas side by side (the rebuilt courtyard now matches the other two), and a 20-player profile on CI (server tick 1.6 ms on average).
+- Report: `docs/reports/review_06/review_06.md`. Next: Templar balance, Frostgrave balance, the Deathsworn character and Frostgrave's sounds.
+
 ## 2026-10-03 — M3-09 Deathsworn class and Frostgrave kit, M3-04 Radiance first balance pass
 - A second new class: the Deathsworn, plate-armoured knights returned from the grave, who spend runes to build runic power and runic power on their heaviest blows. Every Deathsworn can pull an enemy to it (Grave Tether), interrupt, shrug off damage while stunned, and turn magic damage aside for 4 s. Its first spec, Frostgrave, hits hard with frost and slows heavily; it can refill all its runes once a minute and a half.
 - A new kind of effect, the pull, and a bot rule for a second resource.
