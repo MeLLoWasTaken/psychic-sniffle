@@ -1,7 +1,7 @@
 {
   "id": "veinburst_ab",
   "name": "Veinburst",
-  "description": "Enemies within 10 m bleed for 600 every 2 s for 10 s.",
+  "description": "Enemies within 10 m bleed for 750 every 2 s for 10 s.",
   "owner": "deathsworn_bloodbound",
   "kit_slot": "core",
   "school": "blood",

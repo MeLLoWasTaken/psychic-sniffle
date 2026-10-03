@@ -6,7 +6,7 @@
   "kit_slot": "cc",
   "school": "shadow",
   "cast_type": "instant",
-  "cooldown_s": 90,
+  "cooldown_s": 60,
   "triggers_gcd": true,
   "range_m": 0,
   "requires_los": false,
