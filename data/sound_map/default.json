@@ -389,7 +389,7 @@
       "impact": "castigate_impact"
     },
     "noonblaze_ab": {
-      "release": "seraphic_surge"
+      "release": "noonblaze"
     },
     "final_mercy": {
       "release": "heal_release",
@@ -397,17 +397,17 @@
     },
     "binding_gavel": {
       "release": "@weapon_swing",
-      "impact": "pommel_crack_impact"
+      "impact": "binding_gavel_impact"
     },
     "dazzling_halo": {
-      "release": "psalm_of_dread"
+      "release": "dazzling_halo"
     },
     "iron_reproach": {
       "release": "@weapon_swing",
       "impact": "interrupt_impact"
     },
     "sanctum_ab": {
-      "release": "veil_of_faith"
+      "release": "sanctum"
     },
     "ironbound_prayer_ab": {
       "release": "waning_light"

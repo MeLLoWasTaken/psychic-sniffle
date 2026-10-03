@@ -23,6 +23,9 @@ func _ready() -> void:
 	var view: String = _arg(args, "--view", "overview")
 	anim_clip = _arg(args, "--anim", "idle")
 	anim_time = float(_arg(args, "--anim-time", "0"))
+	for a: Dictionary in Data.assets.values():  # every spec with a built character joins the lineup
+		if a.get("kind", "") == "character" and not str(a.get("spec", "")) in lineup:
+			lineup.append(str(a["spec"]))
 	var map: Dictionary = Data.maps.get(map_id, {})
 	var scene: PackedScene = load(map.get("scene", "res://scenes/maps/gallows_courtyard.tscn"))
 	builder = scene.instantiate()
@@ -34,9 +37,9 @@ func _ready() -> void:
 		for i: int in spawns.size():
 			var sp: Array = spawns[i]
 			_stand_in(Vector3(sp[0], 0, sp[2]), team, -PI / 2 if team == 0 else PI / 2, lineup[i % lineup.size()])
-	if view == "lineup":  # the three classes side by side, facing the camera (east)
+	if view == "lineup":  # the classes side by side, facing the camera (east)
 		for i: int in lineup.size():
-			_stand_in(Vector3(-15.5, 0, -1.7 + i * 1.7), 0, -PI / 2, lineup[i])
+			_stand_in(Vector3(-15.5, 0, (i - (lineup.size() - 1) * 0.5) * 1.6), 0, -PI / 2, lineup[i])
 	else:  # a skirmish in the courtyard, and the player for the player view
 		_stand_in(Vector3(-4.5, 0, 9.5), 0, -2.2, "warblade_carnage")
 		_stand_in(Vector3(-3.2, 0, 10.8), 1, 0.9, "oracle_grace")

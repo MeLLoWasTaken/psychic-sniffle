@@ -1,4 +1,11 @@
 {
+ "binding_gavel_impact": {
+  "hash": "9f995e3d46a7fa10",
+  "files": [
+   "binding_gavel_impact"
+  ],
+  "category": "impact"
+ },
  "bleed_tick": {
   "hash": "fc56d0f784ad913d",
   "files": [
@@ -83,6 +90,13 @@
    "crypt_seep"
   ],
   "category": "impact"
+ },
+ "dazzling_halo": {
+  "hash": "1b9038a7007f3a9a",
+  "files": [
+   "dazzling_halo"
+  ],
+  "category": "release"
  },
  "deep_winter": {
   "hash": "9dcd0609b78da0cc",
@@ -463,6 +477,13 @@
   ],
   "category": "footstep"
  },
+ "noonblaze": {
+  "hash": "b6be0ba7cc11cc61",
+  "files": [
+   "noonblaze"
+  ],
+  "category": "buff"
+ },
  "pommel_crack_impact": {
   "hash": "c007dbff6ef5ea84",
   "files": [
@@ -527,6 +548,13 @@
    "root_ice_impact_02"
   ],
   "category": "impact"
+ },
+ "sanctum": {
+  "hash": "783544994db9ec17",
+  "files": [
+   "sanctum"
+  ],
+  "category": "buff"
  },
  "seraphic_surge": {
   "hash": "6e80c1926f0786ab",

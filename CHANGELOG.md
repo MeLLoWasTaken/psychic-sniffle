@@ -2,6 +2,11 @@
 
 One entry per build-loop iteration, newest first. Format: date, backlog ID, what changed, how it was checked.
 
+## 2026-10-03 — M3-02 Templar character, M3-03 Radiance sounds
+- The Templar has a character: bright polished plate with gold trim, a cream tabard with a sun sigil, rounded gold-rimmed pauldrons, a winged great helm with a sun crest, a warhammer and a heater shield with a glowing sun. At a distance it reads as the brightest figure, with a tall V of wings and a shield, where the Warblade is dark with wide horns.
+- Four new sounds for Radiance's strongest abilities: Sanctum, Noonblaze, Dazzling Halo and Binding Gavel.
+- Checked: asset validation, contact sheet, lineups in idle, cast and attack poses, the character in the arena; audio rule tests.
+
 ## 2026-10-03 — X-22 prediction corrections under lag fixed
 - Fears now send the feared player running straight away from the one who feared them, as they stood when the fear landed, instead of re-aiming every moment at the fearer's new position. A player's own game now predicts a fear run exactly, so a feared character no longer jumps when the server's view arrives.
 - The test network's lag simulator kept shuffling packets that arrived together after a short stall, which made the server treat late inputs as lost. It now keeps them in order, as real networks do.

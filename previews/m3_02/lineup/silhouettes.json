@@ -1,0 +1,29 @@
+{
+ "distance_m": 30.0,
+ "fov_deg": 75.0,
+ "px_per_m_at_distance": 23.46,
+ "clips": {
+  "cast_release": {
+   "iou": {
+    "char_arcanist_rime/char_oracle_grace": 0.724,
+    "char_arcanist_rime/char_templar_radiance": 0.582,
+    "char_arcanist_rime/char_warblade_carnage": 0.554,
+    "char_oracle_grace/char_templar_radiance": 0.654,
+    "char_oracle_grace/char_warblade_carnage": 0.59,
+    "char_templar_radiance/char_warblade_carnage": 0.801
+   },
+   "height_px_at_distance": 70.1
+  },
+  "attack_1": {
+   "iou": {
+    "char_arcanist_rime/char_oracle_grace": 0.733,
+    "char_arcanist_rime/char_templar_radiance": 0.625,
+    "char_arcanist_rime/char_warblade_carnage": 0.58,
+    "char_oracle_grace/char_templar_radiance": 0.669,
+    "char_oracle_grace/char_warblade_carnage": 0.619,
+    "char_templar_radiance/char_warblade_carnage": 0.735
+   },
+   "height_px_at_distance": 62.2
+  }
+ }
+}

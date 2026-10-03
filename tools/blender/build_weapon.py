@@ -185,7 +185,59 @@ def mace(p: dict, m: dict, rng) -> list:
     return parts
 
 
-WEAPONS = {"greatsword": greatsword, "staff": staff, "mace": mace}
+def warhammer(p: dict, m: dict, rng) -> list:
+    """One-handed warhammer, about 0.85 m (M3-02, the Templar's): wrapped grip, a gold-banded iron
+    haft with langets, a heavy squared head: a broad striking face on +X (the swing direction,
+    like a sword's edge), a curved back spike on -X, a short top spike and a sun disc inlaid on
+    each cheek."""
+    grip = p.get("grip_m", 0.22)
+    haft = p.get("shaft_m", 0.45)
+    parts = [cylinder("grip", 0.022, grip, (0, 0, 0), sides=8, mat=m["leather"], tint=random_tint(rng, 0.05))]
+    for i in range(5):  # raised wrap bands
+        z = -grip / 2 + grip * (i + 0.5) / 5
+        bpy.ops.mesh.primitive_torus_add(major_radius=0.023, minor_radius=0.005, major_segments=8, minor_segments=4,
+                                         location=(0, 0, z))
+        band = bpy.context.active_object
+        kit.clear_uvs(band)
+        band.data.materials.append(m["leather"])
+        kit.set_tint(band, (0.85, 0.85, 0.85))
+        parts.append(band)
+    parts.append(cylinder("pommel", 0.036, 0.055, (0, 0, -grip / 2 - 0.025), sides=8, radius_top=0.026, mat=m["gold"]))
+    parts.append(cylinder("haft", 0.02, haft, (0, 0, grip / 2 + haft / 2), sides=8, mat=m["iron"]))
+    for z in (grip / 2 + 0.02, grip / 2 + haft * 0.55):
+        parts.append(cylinder("haft_ring", 0.027, 0.03, (0, 0, z), sides=8, mat=m["gold"]))
+    hz = grip / 2 + haft + 0.06
+    for sy in (-1, 1):  # langets: iron straps running down the haft from the head
+        parts.append(block("langet", (0.03, 0.008, 0.2), (0, sy * 0.022, hz - 0.13), bevel=0.003, mat=m["iron"]))
+    # the head: a block with chamfered corners, a wider striking face, a back spike
+    head = block("head", (0.22, 0.11, 0.14), (0, 0, hz), bevel=0.015, segments=2, mat=m["iron"], tint=random_tint(rng, 0.05))
+    parts.append(head)
+    face = block("face", (0.055, 0.15, 0.17), (0.13, 0, hz), bevel=0.012, segments=2, mat=m["steel"],
+                 tint=random_tint(rng, 0.04))
+    for v in face.data.vertices:  # a slightly domed striking face, scored with a cross
+        if v.co.x > 0.14:
+            v.co.x += 0.008 * (1 - min(1.0, (v.co.y ** 2 + (v.co.z - hz) ** 2) / 0.008))
+    parts.append(face)
+    for (y, z, w, h) in ((0.0, hz, 0.012, 0.17), (0.0, hz, 0.15, 0.012)):
+        parts.append(block("score", (0.006, w, h), (0.16, y, z), bevel=0.0, mat=m["dark"]))
+    # back spike, curving down: a thick root in the head, then a tapering point
+    parts.append(kit.strut("beak_root", (-0.08, 0, hz + 0.01), (-0.17, 0, hz - 0.005), 0.03, sides=6, mat=m["iron"]))
+    tip = cylinder("beak_tip", 0.03, 0.1, (0, 0, 0.05), sides=6, radius_top=0.003, mat=m["iron"])
+    tip.rotation_euler = (0, -math.radians(115), 0)  # +Z turned toward -X and a little down
+    tip.location = (-0.17, 0, hz - 0.005)
+    parts.append(tip)
+    parts.append(cylinder("top_spike", 0.028, 0.09, (0, 0, hz + 0.11), sides=8, radius_top=0.003, mat=m["gold"]))
+    for sy in (-1, 1):  # a gold sun disc on each cheek
+        parts.append(cylinder("sun_disc", 0.034, 0.01, (0.0, sy * 0.059, hz), rot=(math.pi / 2, 0, 0), sides=12,
+                              mat=m["gold"]))
+        for k in range(8):  # its rays
+            ang = k * math.tau / 8
+            parts.append(block("ray", (0.012, 0.006, 0.026), (math.cos(ang) * 0.048, sy * 0.059, hz + math.sin(ang) * 0.048),
+                               rot=(0, -ang + math.pi / 2, 0), bevel=0.0, mat=m["gold"]))
+    return parts
+
+
+WEAPONS = {"greatsword": greatsword, "staff": staff, "mace": mace, "warhammer": warhammer}
 
 
 def main() -> None:

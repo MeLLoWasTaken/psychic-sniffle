@@ -1,0 +1,35 @@
+{
+  "id": "char_templar_radiance",
+  "kind": "character",
+  "builder": "build_character.py",
+  "seed": 27,
+  "spec": "templar_radiance",
+  "body_build": "heavy",
+  "tri_budget": {
+    "min": 15000,
+    "max": 25000
+  },
+  "texture_size": 2048,
+  "palette": {
+    "plate": "#b9bcc2",
+    "trim": "#c9a050",
+    "gold": "#c9a050",
+    "holy": "#ffd98a",
+    "leather": "#4a3325",
+    "trim_cloth": "#ece5d3",
+    "cloth": "#ece5d3",
+    "skin": "#9a7a62"
+  },
+  "params": {
+    "armor": "templar_plate",
+    "body_tris": 4000,
+    "weapon": "weapon_warhammer",
+    "hands": [
+      "fist",
+      "fist"
+    ]
+  },
+  "out": "game/assets/characters/char_templar_radiance.glb",
+  "status": "draft",
+  "pivot": "axis"
+}

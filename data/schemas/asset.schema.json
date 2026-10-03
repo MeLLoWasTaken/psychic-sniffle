@@ -98,7 +98,7 @@
     "axis"
    ],
    "default": "centre",
-   "description": "centre: centred on x and y, lowest point at z = 0. face: the mounting face lies on y = 0 (walls, banners, lintels placed flush against a collider), centred on x only. grip: the origin is where a hand holds it (weapons), centred on x and y; the lowest point may be below zero. axis: built around the collider's axis at the origin (a round pillar, a box's centre), lowest point at z = 0; asymmetric details may move the bounding-box centre up to 15 cm off it."
+   "description": "centre: centred on x and y, lowest point at z = 0. face: the mounting face lies on y = 0 (walls, banners, lintels placed flush against a collider), centred on x only. grip: the origin is where a hand holds it (weapons), centred on x and y; the lowest point may be below zero. axis: built around a fixed axis at the origin (a round pillar's or a box collider's centre, a character's body with a shield on one arm), lowest point at z = 0; asymmetric details may move the bounding-box centre up to 15 cm off it."
   }
  }
 }

@@ -1,0 +1,96 @@
+{
+  "id": "binding_gavel_impact",
+  "description": "Binding Gavel lands: a heavy hammer slams into armour, a short iron clang and a ringing daze.",
+  "category": "impact",
+  "peak_dbfs": -4.0,
+  "duration_s": 0.9,
+  "layers": [
+    {
+      "type": "sub",
+      "from_hz": 130,
+      "to_hz": 40,
+      "curve": 7,
+      "env": {
+        "attack_s": 0.002,
+        "decay_s": 0.16
+      },
+      "gain": 1.2
+    },
+    {
+      "type": "noise",
+      "highpass": 1500,
+      "env": {
+        "attack_s": 0.0003,
+        "decay_s": 0.005
+      },
+      "gain": 0.9
+    },
+    {
+      "type": "noise",
+      "band": [
+        120,
+        900
+      ],
+      "env": {
+        "attack_s": 0.001,
+        "decay_s": 0.09
+      },
+      "gain": 1.1
+    },
+    {
+      "type": "resonant",
+      "base": 620,
+      "jitter": 0.12,
+      "partials": [
+        [
+          1,
+          16,
+          1.0,
+          0.085
+        ],
+        [
+          1.58,
+          20,
+          0.7,
+          0.07
+        ],
+        [
+          2.41,
+          24,
+          0.45,
+          0.05
+        ],
+        [
+          3.73,
+          28,
+          0.3,
+          0.035
+        ]
+      ],
+      "highpass": 450,
+      "gain": 0.65
+    },
+    {
+      "type": "crackle",
+      "band": [
+        900,
+        5000
+      ],
+      "per_second": 700,
+      "grain_s": 0.003,
+      "env": {
+        "attack_s": 0.001,
+        "decay_s": 0.1
+      },
+      "gain": 0.45
+    }
+  ],
+  "post": {
+    "saturate": 2.2,
+    "reverb": {
+      "length_s": 0.6,
+      "mix": 0.14,
+      "brightness": 4000
+    }
+  }
+}

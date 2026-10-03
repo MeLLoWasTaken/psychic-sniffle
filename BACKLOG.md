@@ -21,7 +21,7 @@ Acceptance criteria are written before work starts. Refine them during step 2 of
 Items further down keep their history; this list is the order to take them in.
 
 1. F-08: duel balance done (specs 45-54%, match-ups 41-56% on fresh seeds, named and random builds); left: Oracle mirrors reaching the time limit (a dampening proposal waits on the human).
-2. M3-02 Templar character, M3-03 Radiance icons, sounds and effects, M3-04 Radiance balance (the M3 section below has the wave plan).
+2. M3-04 Radiance balance (a nightly run on CI with Radiance in it), then Templar Vanguard (the M3 section below has the wave plan).
 
 ### P-01 Playtest build `[done]`
 - [x] A Windows (and Linux) package of the game the human downloads from a GitHub release, unzips and runs: built on CI from export templates compiled from the same Godot 4.7.2 source; the Linux package smoke-tested on CI (it starts as a headless server).
@@ -665,11 +665,16 @@ The other 10 classes, and the 6 remaining specs of the first three classes, in t
 - Checked: six 2v2 bot matches, Radiance with each existing spec as partner and in a mirror: all ended in a kill, no errors; Radiance healed 66k to 849k per match (the Oracle 33k to 531k), a first sign it may be strong (M3-04). Two data rules caught on the way: helpful spells on allies reach 40 m (Dawnstep), and a disorient breaks past 10% of max health, not on any damage (Dazzling Halo).
 - Not yet in the main menu: Radiance has no character model (a capsule stands in) and no sounds of its own until M3-02 and M3-03. The nightly balance run picks it up automatically, so its numbers appear there.
 
-### M3-02 Templar character `[todo]`
-- [ ] A Templar model on the heavy body build, a plate armor set distinct from the Warblade's (lighter, robed over plate, holy trim), a one-handed hammer and a shield; passes the art checklist.
+### M3-02 Templar character `[done]`
+- [x] A Templar model on the heavy body build, a plate armor set distinct from the Warblade's (lighter, robed over plate, holy trim), a one-handed hammer and a shield; passes the art checklist.
+- Done 2026-10-03: `templar_plate` (tools/blender/armor.py): bright polished plate with gold trim; a smooth breastplate with a raised gold sun; cream tabard panels front and back below the belt with gold borders and a sun sigil; rounded pauldrons with gold rims and three lames; plate limbs without spikes; a domed great helm with a cross visor, a gold band, tall gold wings rising in a V and a sun-disc crest; a heater shield (gold rim, glowing sun) strapped to the left forearm, turned half forward. A new `weapon_warhammer` (squared head, back spike, sun discs on the cheeks; 1,136 triangles). Character 24,796 triangles (budget 25,000), pivot `axis` (the shield moves the bounding box 5 cm off centre).
+- Art checklist: asset validation passes; contact sheet and close-ups (`previews/m3_02/`); lineup in idle, cast and attack poses next to the three approved characters (`previews/m3_02/lineup/`); in the arena with its lighting (`previews/m3_02/arena_lineup.png`). Silhouette overlap with the Warblade 0.82 (they share the heavy body; the V of wings and the shield set it apart, down from 0.87 with small wings and an edge-on shield), with the others 0.52 to 0.55; in colour and grayscale it is the brightest figure, the Warblade the darkest.
+- The map view's lineup now includes every spec with a built character.
 
-### M3-03 Radiance icons, sounds and effects `[todo]`
-- [ ] Every Radiance ability has an icon, sounds at each stage and an effect; strong effects are distinct on enemy frames.
+### M3-03 Radiance icons, sounds and effects `[done]`
+- [x] Every Radiance ability has an icon, sounds at each stage and an effect; strong effects are distinct on enemy frames.
+- Done 2026-10-03: icons and effect files came with the kit (M3-01); every ability maps sounds for each of its stages. Four new sounds for the strong effects, which had borrowed the Oracle's: Sanctum (a bell strike into a swelling major chord), Noonblaze (a choir voice rising an octave into chimes), Dazzling Halo (a sharp glassy flash), Binding Gavel's impact (a heavy iron clang). All pass the audio rules (quieter than the CC warning, no sustained tone in an impact). The human should listen to them at the next review.
+- Radiance stays out of the main menu until its balance pass (M3-04).
 
 ### M3-04 Radiance balance `[todo]`
 - [ ] Radiance wins 40 to 60% in 1v1, 2v2 and 3v3 bot simulations (named and random builds), with every other spec still inside 40 to 60%.
