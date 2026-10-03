@@ -5,6 +5,7 @@ One entry per build-loop iteration, newest first. Format: date, backlog ID, what
 ## 2026-10-03 — M3-12 Deathsworn Bloodbound
 - The Deathsworn's tank, Bloodbound: it heals itself from the damage it deals, drags every nearby enemy to it, strangles one, and marks another to weaken it. 14 abilities, a 42-node spec tree, 12 PvP talents, three bot builds.
 - A new effect rule: damage that heals the attacker for part of what it dealt.
+- The Bloodbound has its own colours: a crimson cape and a red glow where the Frostgrave glows ice-blue.
 - Checked: data validation, a new rule test, bot matches without errors.
 
 ## 2026-10-03 — M3-11 Frostgrave sounds

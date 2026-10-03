@@ -1,0 +1,38 @@
+{
+  "id": "char_deathsworn_bloodbound",
+  "kind": "character",
+  "builder": "build_character.py",
+  "seed": 59,
+  "spec": "deathsworn_bloodbound",
+  "body_build": "heavy",
+  "tri_budget": {
+    "min": 15000,
+    "max": 25000
+  },
+  "texture_size": 2048,
+  "palette": {
+    "plate": "#45474f",
+    "trim": "#cdc4ad",
+    "gold": "#cdc4ad",
+    "holy": "#e0464a",
+    "frost": "#e0464a",
+    "eyes": "#ff5a5a",
+    "leather": "#2a2230",
+    "trim_cloth": "#5a1a1e",
+    "cloth": "#5a1a1e",
+    "cloth_dark": "#4a1418",
+    "skin": "#8a8f99"
+  },
+  "params": {
+    "armor": "deathsworn_plate",
+    "body_tris": 4000,
+    "weapon": "weapon_runeblade",
+    "hands": [
+      "fist",
+      "fist"
+    ]
+  },
+  "out": "game/assets/characters/char_deathsworn_bloodbound.glb",
+  "status": "draft",
+  "pivot": "axis"
+}
