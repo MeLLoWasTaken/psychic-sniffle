@@ -33,7 +33,7 @@
           "set": [
             {
               "type": "damage",
-              "base": 4000,
+              "base": 4400,
               "leech_pct": 60
             },
             {
@@ -662,7 +662,7 @@
         "swift_stride"
       ],
       "gate": 8,
-      "description": "Grants Sanguine Bulwark: absorb 12,000 damage for 10 s (90 s cooldown).",
+      "description": "Grants Sanguine Bulwark: absorb 14,000 damage for 10 s (90 s cooldown).",
       "icon": {
         "image": "lorc/slashed-shield",
         "school": "blood"

@@ -147,7 +147,8 @@ func test_low_health_melee_duel_keeps_fighting() -> void:
 
 
 func test_a_hurt_bot_goes_for_an_active_pickup() -> void:
-	var runner: MatchRunner = MatchRunner.new(Data.maps["gallows_courtyard"], "arena", "1v1", 0.0, 4)
+	# 2v2 (pickups light there too): duel-only adjustments would let the Oracle heal past its threshold first
+	var runner: MatchRunner = MatchRunner.new(Data.maps["gallows_courtyard"], "arena", "2v2", 0.0, 4)
 	var nav: NavGrid = NavGrid.new(runner.geometry)
 	var bot: Unit = runner.add_unit("oracle_grace", 0)
 	runner.add_unit("warblade_carnage", 1)  # no brain: stays in its room

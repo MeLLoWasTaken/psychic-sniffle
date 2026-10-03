@@ -1,0 +1,28 @@
+{
+  "id": "lone_vigil",
+  "name": "Lone Vigil",
+  "description": "Duels only: the Grace Oracle heals more and holds out longer against a lone opponent.",
+  "kind": "buff",
+  "duration_s": 0,
+  "refresh": "refresh",
+  "dispel_type": "none",
+  "cc_category": "none",
+  "modifiers": [
+    {
+      "stat": "healing_done",
+      "op": "multiply",
+      "value": 1.4
+    },
+    {
+      "stat": "damage_taken",
+      "op": "multiply",
+      "value": 0.88
+    }
+  ],
+  "hud_priority": "normal",
+  "icon": {
+    "symbol": "shield",
+    "school": "holy",
+    "image": "lorc/life-in-the-balance"
+  }
+}

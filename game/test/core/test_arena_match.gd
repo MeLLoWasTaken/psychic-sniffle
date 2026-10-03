@@ -44,14 +44,14 @@ func test_dampening_starts_at_3_minutes_and_drops_1_percent_per_10_s() -> void:
 	assert_int(arena.dampening_pct(start + 280 * TR)).is_equal(11)
 
 
-func test_one_v_one_dampening_starts_at_40_percent_and_reaches_full_at_1_minute() -> void:
+func test_one_v_one_dampening_starts_at_10_percent_and_reaches_full_at_3_minutes() -> void:
 	# duels dampen from the moment the gates open (DECISIONS 2026-10-03, the human's choice)
 	var a1: ArenaMatch = ArenaMatch.new(Data.tuning, "1v1", TR, null, 0)
 	a1.update(a1.start_tick, units)
-	assert_int(a1.dampening_pct(a1.start_tick)).is_equal(40)
-	assert_int(a1.dampening_pct(a1.start_tick + 30 * TR)).is_equal(70)
-	assert_int(a1.dampening_pct(a1.start_tick + 60 * TR)).is_equal(100)
-	assert_float(a1.healing_multiplier(a1.start_tick + 90 * TR)).is_equal(0.0)
+	assert_int(a1.dampening_pct(a1.start_tick)).is_equal(10)
+	assert_int(a1.dampening_pct(a1.start_tick + 30 * TR)).is_equal(25)
+	assert_int(a1.dampening_pct(a1.start_tick + 60 * TR)).is_equal(40)
+	assert_int(a1.dampening_pct(a1.start_tick + 180 * TR)).is_equal(100)
 	# team brackets keep the 3-minute start
 	assert_float(arena.healing_multiplier(arena.start_tick + 60 * TR)).is_equal(1.0)
 
