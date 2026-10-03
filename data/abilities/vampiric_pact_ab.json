@@ -1,0 +1,25 @@
+{
+  "id": "vampiric_pact_ab",
+  "name": "Vampiric Pact",
+  "description": "For 10 s, take 10% less damage and receive 30% more healing.",
+  "owner": "deathsworn_bloodbound",
+  "kit_slot": "defensive",
+  "school": "blood",
+  "cast_type": "instant",
+  "cooldown_s": 90,
+  "triggers_gcd": false,
+  "range_m": 0,
+  "requires_los": false,
+  "target": "self",
+  "effects": [
+    {
+      "type": "apply_aura",
+      "aura": "vampiric_pact"
+    }
+  ],
+  "icon": {
+    "symbol": "vampiric_pact",
+    "school": "blood",
+    "image": "delapouite/resting-vampire"
+  }
+}

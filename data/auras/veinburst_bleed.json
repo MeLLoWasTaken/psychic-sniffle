@@ -1,0 +1,23 @@
+{
+  "id": "veinburst_bleed",
+  "name": "Veinburst",
+  "description": "Bleeding.",
+  "kind": "debuff",
+  "duration_s": 10,
+  "dispel_type": "none",
+  "cc_category": "none",
+  "hud_priority": "normal",
+  "icon": {
+    "symbol": "veinburst_bleed",
+    "school": "blood",
+    "image": "lorc/droplet-splash"
+  },
+  "periodic": {
+    "interval_s": 2,
+    "effect": {
+      "type": "damage",
+      "base": 500,
+      "school": "blood"
+    }
+  }
+}

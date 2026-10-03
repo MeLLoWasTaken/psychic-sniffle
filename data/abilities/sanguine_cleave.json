@@ -1,0 +1,37 @@
+{
+  "id": "sanguine_cleave",
+  "name": "Sanguine Cleave",
+  "description": "Enemies within 6 m take 2,400; you heal for 20% of the damage dealt.",
+  "owner": "deathsworn_bloodbound",
+  "kit_slot": "core",
+  "school": "physical",
+  "cast_type": "instant",
+  "cooldown_s": 6,
+  "triggers_gcd": true,
+  "range_m": 0,
+  "requires_los": false,
+  "target": "self",
+  "effects": [
+    {
+      "type": "damage",
+      "base": 2400,
+      "affects": "enemies_in_radius",
+      "radius_m": 6,
+      "school": "physical",
+      "leech_pct": 20
+    }
+  ],
+  "icon": {
+    "symbol": "sanguine_cleave",
+    "school": "physical",
+    "image": "lorc/atomic-slashes"
+  },
+  "cost": {
+    "resource": "runes",
+    "amount": 2
+  },
+  "generates": {
+    "resource": "runic_power",
+    "amount": 20
+  }
+}

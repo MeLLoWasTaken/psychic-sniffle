@@ -22,7 +22,7 @@ Items further down keep their history; this list is the order to take them in. R
 
 1. M3-04 Templar balance. Team brackets are inside 40-60% for every spec; 1v1 is not (Vanguard 67%, Radiance 60%, Warblade 24%). Waiting on the human: should 1v1 balance cover tanks and healers (review 6 asks; recommendation: measure 1v1 among damage specs, report tanks and healers separately)? The criterion stands as written until then.
 2. Frostgrave balance: done by the nightly at cac5431 (1v1 43%, 2v2 44%, 3v3 46%).
-3. Wave 1 continues: Deathsworn Bloodbound (tank, the pull) and Plague (minions; `summon` needs its engine work).
+3. Wave 1 continues: Deathsworn Plague (minions; `summon` needs its engine work); a Bloodbound colour variant of the Deathsworn character.
 4. F-08 leftover: Oracle mirrors reaching the time limit (a dampening proposal waits on the human).
 
 ### P-01 Playtest build `[done]`
@@ -728,7 +728,15 @@ The other 10 classes, and the 6 remaining specs of the first three classes, in t
 - [x] Frostgrave's strong effects (Grave Winter, Hoarfrost Surge, Glacial Tomb, Grave Tether, Gravecloak) get their own sounds instead of the Arcanist's and the Templar's; every ability's effect reads on enemy frames.
 - Done 2026-10-03: five new sounds. Grave Winter (a low cold drone sinking under a rising frost hiss, 3.2 s), Hoarfrost Surge (a crackling rush rising into glassy chimes), Glacial Tomb's impact (a glassy snap over a thump, splinters ringing out), Grave Tether's throw (a chain whipping out, rattling links), Gravecloak (a hollow ghostly breath). All pass the audio rules; spectrograms in `previews/m3_11/`. Every Frostgrave ability already had an effect file, and every aura a visual (data validation checks both). The other abilities keep the Arcanist's frost sounds, which suit them; the human should listen at the next review.
 
-Then, in order (split into items like M3-01 to M3-04 as each starts): Bloodbound (tank) and Plague (minions); Stormcaller Tempest, Tidesinger (healer, totems) and Primal (wolves); Warblade Berserker; Arcanist Pyre and Aether; wave 1 gate.
+### M3-12 Deathsworn Bloodbound kit `[done]`
+- [x] The Bloodbound tank (heals from its own damage, pulls enemies to it): 14 to 18 abilities, auras, spec and PvP talent trees, a bot profile with three builds; plays in bot matches without errors; counterplay reviewed.
+- Done 2026-10-03. 14 abilities (4 of them the class's): Sanguine Cleave (area, heals for 20% of its damage), Marrow Rend (3,000 and a 4,000 bone ward), Crimson Reaping (40 runic power, 3,400, heals for 60%), Blood Lash (20 m, a bleed); Sanguine Vigil (burst: 20% more damage and healing received); Gorefield Grip (pulls every enemy within 12 m) and Grave Strangle (stun); Vampiric Pact (10% less damage taken, 30% more healing received); Crimson Stride; Bloodmark (an enemy deals 15% less damage). Spec tree of 42 nodes on the Zealot layout with Veinburst, Bone Cage and Sanguine Bulwark; 12 PvP talents (the healing reduction on Bloodmark); builds crimson_tide, bone_warden and undying. 66 new icons; existing sounds and effect styles (Frostgrave's new ones among them).
+- New engine piece: `leech_pct` on damage effects (the caster heals for a share of the damage that reached health; shields absorb it first, healing reductions and dampening apply). The kit check counts a pull as a displacement like a knockback.
+- Counterplay: its healing comes from hitting, so kiting, crowd control, shields and healing reduction all starve it; no full immunity.
+- Checked: data validation (kit complete), a leech rule test, bot matches in 1v1 and 2v2 (with the Oracle against the Warblade and the Arcanist; with Radiance against the Vanguard and the Oracle), no errors.
+- Follow-ups: Bloodbound balance joins the next nightly; the Deathsworn character in Bloodbound colours.
+
+Then, in order (split into items like M3-01 to M3-04 as each starts): Plague (minions, needs `summon`); Stormcaller Tempest, Tidesinger (healer, totems) and Primal (wolves); Warblade Berserker; Arcanist Pyre and Aether; wave 1 gate.
 
 ## Later milestones (split into items when the milestone starts)
 

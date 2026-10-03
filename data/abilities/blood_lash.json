@@ -1,0 +1,37 @@
+{
+  "id": "blood_lash",
+  "name": "Blood Lash",
+  "description": "Lash an enemy within 20 m for 1,800; it bleeds for 400 every 2 s for 10 s.",
+  "owner": "deathsworn_bloodbound",
+  "kit_slot": "core",
+  "school": "blood",
+  "cast_type": "instant",
+  "cooldown_s": 8,
+  "triggers_gcd": true,
+  "range_m": 20,
+  "requires_los": true,
+  "target": "enemy",
+  "effects": [
+    {
+      "type": "damage",
+      "base": 1800
+    },
+    {
+      "type": "apply_aura",
+      "aura": "lash_bleed"
+    }
+  ],
+  "icon": {
+    "symbol": "blood_lash",
+    "school": "blood",
+    "image": "lorc/rough-wound"
+  },
+  "cost": {
+    "resource": "runes",
+    "amount": 1
+  },
+  "generates": {
+    "resource": "runic_power",
+    "amount": 10
+  }
+}

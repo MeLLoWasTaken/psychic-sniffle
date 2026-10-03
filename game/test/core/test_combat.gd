@@ -37,6 +37,7 @@ func before_test() -> void:
 		"rune_strike": _ab("rune_strike", {"triggers_gcd": false, "cost": {"resource": "runes", "amount": 2},
 			"generates": {"resource": "runic_power", "amount": 20}, "effects": [{"type": "damage", "base": 100}]}),
 		"tether": _ab("tether", {"school": "shadow", "triggers_gcd": false, "range_m": 30, "effects": [{"type": "pull", "distance_m": 2.0}]}),
+		"drain": _ab("drain", {"school": "shadow", "triggers_gcd": false, "effects": [{"type": "damage", "base": 1000, "leech_pct": 50}]}),
 		"rune_tap": _ab("rune_tap", {"triggers_gcd": false, "target": "self",
 			"effects": [{"type": "resource", "resource": "runes", "amount": 1}]}),
 		"kick": _ab("kick", {"school": "physical", "triggers_gcd": false, "cooldown_s": 15, "effects": [{"type": "interrupt", "school_lock_s": 4}]}),
@@ -249,6 +250,18 @@ func test_a_pull_drags_the_target_in_front_of_the_caster_and_stops_its_cast() ->
 	assert_bool(foe.is_casting()).is_false()
 	assert_int(foe.displaced_tick).is_equal(sim.tick)
 	assert_int(_count("pull")).is_equal(1)
+
+
+func test_leech_heals_the_caster_for_a_share_of_the_damage_that_landed() -> void:
+	me.health = 50000  # M3: the Bloodbound heals from its own damage
+	cb.press(me, "drain", foe.id)
+	assert_int(foe.health).is_equal(60000 - 1000)
+	assert_int(me.health).is_equal(50000 + 500)
+	# damage a shield soaks up heals nothing
+	auras["soak"] = _aura("soak", {"kind": "buff", "dispel_type": "none", "absorb": 5000})
+	cb.apply_aura(foe, foe, "soak")
+	cb.press(me, "drain", foe.id)
+	assert_int(me.health).is_equal(50500)
 
 
 func test_crowd_control_immunity_stops_a_pull() -> void:

@@ -1,0 +1,25 @@
+{
+  "id": "crimson_stride_ab",
+  "name": "Crimson Stride",
+  "description": "Move 40% faster for 4 s.",
+  "owner": "deathsworn_bloodbound",
+  "kit_slot": "mobility",
+  "school": "blood",
+  "cast_type": "instant",
+  "cooldown_s": 30,
+  "triggers_gcd": false,
+  "range_m": 0,
+  "requires_los": false,
+  "target": "self",
+  "effects": [
+    {
+      "type": "apply_aura",
+      "aura": "crimson_stride"
+    }
+  ],
+  "icon": {
+    "symbol": "crimson_stride",
+    "school": "blood",
+    "image": "lorc/run"
+  }
+}

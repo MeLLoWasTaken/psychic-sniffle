@@ -1,0 +1,13 @@
+{
+  "id": "gorefield_grip",
+  "ground": {
+    "style": "nova",
+    "center": "caster",
+    "lifetime_s": 0.9
+  },
+  "impact": {
+    "style": "ring",
+    "at": "hits",
+    "size": 0.9
+  }
+}

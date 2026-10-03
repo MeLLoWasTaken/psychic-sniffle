@@ -1,0 +1,16 @@
+{
+  "id": "marrow_ward",
+  "name": "Marrow Ward",
+  "description": "Absorbs 4,000 damage.",
+  "kind": "buff",
+  "duration_s": 8,
+  "dispel_type": "magic",
+  "cc_category": "none",
+  "hud_priority": "normal",
+  "icon": {
+    "symbol": "marrow_ward",
+    "school": "physical",
+    "image": "delapouite/bone-mace"
+  },
+  "absorb": 4000
+}

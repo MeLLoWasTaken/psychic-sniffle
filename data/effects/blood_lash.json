@@ -1,0 +1,17 @@
+{
+  "id": "blood_lash",
+  "projectile": {
+    "style": "streak"
+  },
+  "impact": {
+    "style": "spark",
+    "at": "target",
+    "size": 0.9
+  },
+  "auras": {
+    "lash_bleed": {
+      "style": "dot",
+      "size": 0.8
+    }
+  }
+}

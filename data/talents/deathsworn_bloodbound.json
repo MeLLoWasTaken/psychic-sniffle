@@ -1,0 +1,1106 @@
+{
+  "tree_id": "deathsworn_bloodbound",
+  "kind": "spec",
+  "owner": "deathsworn_bloodbound",
+  "points": 30,
+  "gates": [
+    8,
+    20
+  ],
+  "status": "complete",
+  "nodes": [
+    {
+      "id": "purging_reap",
+      "name": "Purging Reap",
+      "type": "passive",
+      "ranks": 1,
+      "pos": [
+        6,
+        6
+      ],
+      "requires_any": [
+        "swift_stride"
+      ],
+      "gate": 20,
+      "description": "Crimson Reaping also strips one magic effect from the enemy.",
+      "icon": {
+        "image": "lorc/needle-jaws",
+        "school": "shadow"
+      },
+      "effects": [
+        {
+          "modify": "crimson_reaping.effects",
+          "set": [
+            {
+              "type": "damage",
+              "base": 3400,
+              "leech_pct": 60
+            },
+            {
+              "type": "dispel",
+              "dispel_types": [
+                "magic"
+              ],
+              "dispel_count": 1
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "keen_cleave_b",
+      "name": "Wide Butchery",
+      "type": "passive",
+      "ranks": 2,
+      "pos": [
+        0,
+        0
+      ],
+      "requires_any": [
+        "sanguine_cleave"
+      ],
+      "description": "Sanguine Cleave deals 250 more damage per rank.",
+      "icon": {
+        "image": "lorc/battle-axe",
+        "school": "physical"
+      },
+      "effects": [
+        {
+          "modify": "sanguine_cleave.effects.0.base",
+          "per_rank": 250
+        }
+      ]
+    },
+    {
+      "id": "quick_rend",
+      "name": "Quick Rend",
+      "type": "passive",
+      "ranks": 2,
+      "pos": [
+        2,
+        0
+      ],
+      "requires_any": [
+        "marrow_rend"
+      ],
+      "description": "Marrow Rend's cooldown is 1 s shorter per rank.",
+      "icon": {
+        "image": "delapouite/bone-knife",
+        "school": "physical"
+      },
+      "effects": [
+        {
+          "modify": "marrow_rend.cooldown_s",
+          "per_rank": -1
+        }
+      ]
+    },
+    {
+      "id": "deep_lash",
+      "name": "Deep Lash",
+      "type": "passive",
+      "ranks": 2,
+      "pos": [
+        3,
+        0
+      ],
+      "requires_any": [
+        "blood_lash"
+      ],
+      "description": "Blood Lash deals 250 more damage per rank.",
+      "icon": {
+        "image": "lorc/bestial-fangs",
+        "school": "blood"
+      },
+      "effects": [
+        {
+          "modify": "blood_lash.effects.0.base",
+          "per_rank": 250
+        }
+      ]
+    },
+    {
+      "id": "heavy_reaping",
+      "name": "Heavy Reaping",
+      "type": "passive",
+      "ranks": 2,
+      "pos": [
+        4,
+        0
+      ],
+      "requires_any": [
+        "crimson_reaping"
+      ],
+      "description": "Crimson Reaping deals 300 more damage per rank.",
+      "icon": {
+        "image": "lorc/croc-sword",
+        "school": "shadow"
+      },
+      "effects": [
+        {
+          "modify": "crimson_reaping.effects.0.base",
+          "per_rank": 300
+        }
+      ]
+    },
+    {
+      "id": "quick_sever_b",
+      "name": "Quick Sever",
+      "type": "passive",
+      "ranks": 2,
+      "pos": [
+        5,
+        0
+      ],
+      "requires_any": [
+        "oathsever"
+      ],
+      "description": "Oathsever's cooldown is 1 s shorter per rank.",
+      "icon": {
+        "image": "lorc/bouncing-sword",
+        "school": "physical"
+      },
+      "effects": [
+        {
+          "modify": "oathsever.cooldown_s",
+          "per_rank": -1
+        }
+      ]
+    },
+    {
+      "id": "ready_pact",
+      "name": "Ready Pact",
+      "type": "passive",
+      "ranks": 2,
+      "pos": [
+        6,
+        0
+      ],
+      "requires_any": [
+        "vampiric_pact_ab"
+      ],
+      "description": "Vampiric Pact's cooldown is 10 s shorter per rank.",
+      "icon": {
+        "image": "delapouite/contract",
+        "school": "blood"
+      },
+      "effects": [
+        {
+          "modify": "vampiric_pact_ab.cooldown_s",
+          "per_rank": -10
+        }
+      ]
+    },
+    {
+      "id": "hungry_cleave_b",
+      "name": "Hungry Cleave",
+      "type": "passive",
+      "ranks": 2,
+      "pos": [
+        0,
+        1
+      ],
+      "requires_any": [
+        "keen_cleave_b"
+      ],
+      "description": "Sanguine Cleave builds 5 more runic power per rank.",
+      "icon": {
+        "image": "lorc/shark-jaws",
+        "school": "blood"
+      },
+      "effects": [
+        {
+          "modify": "sanguine_cleave.generates.amount",
+          "per_rank": 5
+        }
+      ]
+    },
+    {
+      "id": "thick_marrow",
+      "name": "Thick Marrow",
+      "type": "passive",
+      "ranks": 2,
+      "pos": [
+        1,
+        1
+      ],
+      "requires_any": [
+        "keen_cleave_b",
+        "quick_rend"
+      ],
+      "description": "Marrow Rend's ward absorbs 750 more per rank.",
+      "icon": {
+        "image": "delapouite/pelvis-bone",
+        "school": "physical"
+      },
+      "effects": [
+        {
+          "modify": "marrow_ward.absorb",
+          "per_rank": 750
+        }
+      ]
+    },
+    {
+      "id": "hungry_rend",
+      "name": "Hungry Rend",
+      "type": "passive",
+      "ranks": 2,
+      "pos": [
+        2,
+        1
+      ],
+      "requires_any": [
+        "quick_rend"
+      ],
+      "description": "Marrow Rend builds 5 more runic power per rank.",
+      "icon": {
+        "image": "lorc/croc-jaws",
+        "school": "blood"
+      },
+      "effects": [
+        {
+          "modify": "marrow_rend.generates.amount",
+          "per_rank": 5
+        }
+      ]
+    },
+    {
+      "id": "long_bleed",
+      "name": "Long Bleed",
+      "type": "passive",
+      "ranks": 1,
+      "pos": [
+        3,
+        1
+      ],
+      "requires_any": [
+        "deep_lash"
+      ],
+      "description": "Blood Lash's bleed lasts 4 s longer.",
+      "icon": {
+        "image": "lorc/chemical-drop",
+        "school": "blood"
+      },
+      "effects": [
+        {
+          "modify": "lash_bleed.duration_s",
+          "per_rank": 4
+        }
+      ]
+    },
+    {
+      "id": "thrifty_reaping",
+      "name": "Thrifty Reaping",
+      "type": "passive",
+      "ranks": 1,
+      "pos": [
+        4,
+        1
+      ],
+      "requires_any": [
+        "heavy_reaping"
+      ],
+      "description": "Crimson Reaping costs 5 less runic power.",
+      "icon": {
+        "image": "lorc/drink-me",
+        "school": "blood"
+      },
+      "effects": [
+        {
+          "modify": "crimson_reaping.cost.amount",
+          "per_rank": -5
+        }
+      ]
+    },
+    {
+      "id": "deep_sever_b",
+      "name": "Deeper Sever",
+      "type": "passive",
+      "ranks": 1,
+      "pos": [
+        5,
+        1
+      ],
+      "requires_any": [
+        "quick_sever_b"
+      ],
+      "description": "Oathsever locks the school for 1 s longer.",
+      "icon": {
+        "image": "lorc/sword-array",
+        "school": "physical"
+      },
+      "effects": [
+        {
+          "modify": "oathsever.effects.0.school_lock_s",
+          "per_rank": 1
+        }
+      ]
+    },
+    {
+      "id": "pact_choice",
+      "name": "Terms of the Pact",
+      "type": "choice",
+      "pos": [
+        6,
+        1
+      ],
+      "requires_any": [
+        "ready_pact"
+      ],
+      "description": "Choose how Vampiric Pact improves.",
+      "icon": {
+        "image": "delapouite/wanted-reward",
+        "school": "blood"
+      },
+      "choices": [
+        {
+          "id": "long_pact",
+          "name": "Long Pact",
+          "description": "Vampiric Pact lasts 3 s longer.",
+          "icon": {
+            "image": "lorc/tied-scroll",
+            "school": "blood"
+          },
+          "effects": [
+            {
+              "modify": "vampiric_pact.duration_s",
+              "per_rank": 3
+            }
+          ]
+        },
+        {
+          "id": "iron_pact",
+          "name": "Iron Pact",
+          "description": "Vampiric Pact makes you take a further 10% less damage.",
+          "icon": {
+            "image": "lorc/zebra-shield",
+            "school": "blood"
+          },
+          "effects": [
+            {
+              "modify": "vampiric_pact.modifiers.0.value",
+              "per_rank": -0.1
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "rune_tithe_b",
+      "name": "Blood Tithe",
+      "type": "passive",
+      "ranks": 1,
+      "pos": [
+        0,
+        2
+      ],
+      "requires_any": [
+        "hungry_cleave_b",
+        "thick_marrow"
+      ],
+      "description": "Crimson Reaping gives back a rune.",
+      "icon": {
+        "image": "lorc/brandy-bottle",
+        "school": "blood"
+      },
+      "effects": [
+        {
+          "modify": "crimson_reaping.generates",
+          "set": {
+            "resource": "runes",
+            "amount": 1
+          }
+        }
+      ]
+    },
+    {
+      "id": "bone_shards",
+      "name": "Bone Shards",
+      "type": "passive",
+      "ranks": 2,
+      "pos": [
+        2,
+        2
+      ],
+      "requires_any": [
+        "hungry_rend",
+        "thick_marrow"
+      ],
+      "description": "Marrow Rend deals 400 more damage per rank.",
+      "icon": {
+        "image": "lorc/fishbone",
+        "school": "physical"
+      },
+      "effects": [
+        {
+          "modify": "marrow_rend.effects.0.base",
+          "per_rank": 400
+        }
+      ]
+    },
+    {
+      "id": "quick_lash_b",
+      "name": "Quick Lash",
+      "type": "passive",
+      "ranks": 2,
+      "pos": [
+        3,
+        2
+      ],
+      "requires_any": [
+        "long_bleed"
+      ],
+      "description": "Blood Lash's cooldown is 1 s shorter per rank.",
+      "icon": {
+        "image": "lorc/pretty-fangs",
+        "school": "blood"
+      },
+      "effects": [
+        {
+          "modify": "blood_lash.cooldown_s",
+          "per_rank": -1
+        }
+      ]
+    },
+    {
+      "id": "long_strangle",
+      "name": "Long Strangle",
+      "type": "passive",
+      "ranks": 2,
+      "pos": [
+        4,
+        2
+      ],
+      "requires_any": [
+        "thrifty_reaping"
+      ],
+      "description": "Grave Strangle stuns for 0.25 s longer per rank.",
+      "icon": {
+        "image": "delapouite/rope-coil",
+        "school": "shadow"
+      },
+      "effects": [
+        {
+          "modify": "strangled.duration_s",
+          "per_rank": 0.25
+        }
+      ]
+    },
+    {
+      "id": "long_sever_b",
+      "name": "Long Sever",
+      "type": "passive",
+      "ranks": 1,
+      "pos": [
+        5,
+        2
+      ],
+      "requires_any": [
+        "deep_sever_b"
+      ],
+      "description": "Oathsever reaches 3 m further.",
+      "icon": {
+        "image": "lorc/winged-sword",
+        "school": "physical"
+      },
+      "effects": [
+        {
+          "modify": "oathsever.range_m",
+          "per_rank": 3
+        }
+      ]
+    },
+    {
+      "id": "swift_stride",
+      "name": "Swift Stride",
+      "type": "passive",
+      "ranks": 2,
+      "pos": [
+        6,
+        2
+      ],
+      "requires_any": [
+        "pact_choice"
+      ],
+      "description": "Crimson Stride's cooldown is 4 s shorter per rank.",
+      "icon": {
+        "image": "darkzaitzev/tabi-boot",
+        "school": "blood"
+      },
+      "effects": [
+        {
+          "modify": "crimson_stride_ab.cooldown_s",
+          "per_rank": -4
+        }
+      ]
+    },
+    {
+      "id": "long_vigil",
+      "name": "Long Vigil",
+      "type": "passive",
+      "ranks": 2,
+      "pos": [
+        0,
+        3
+      ],
+      "requires_any": [
+        "rune_tithe_b"
+      ],
+      "gate": 8,
+      "description": "Sanguine Vigil's cooldown is 15 s shorter per rank.",
+      "icon": {
+        "image": "delapouite/vampire-cape",
+        "school": "blood"
+      },
+      "effects": [
+        {
+          "modify": "sanguine_vigil_ab.cooldown_s",
+          "per_rank": -15
+        }
+      ]
+    },
+    {
+      "id": "veinburst",
+      "name": "Veinburst",
+      "type": "active",
+      "pos": [
+        1,
+        3
+      ],
+      "requires_any": [
+        "rune_tithe_b",
+        "bone_shards"
+      ],
+      "gate": 8,
+      "description": "Grants Veinburst: enemies within 10 m bleed for 500 every 2 s for 10 s. Costs 1 rune, 15 s cooldown.",
+      "icon": {
+        "image": "lorc/droplet-splash",
+        "school": "blood"
+      },
+      "grants_ability": "veinburst_ab"
+    },
+    {
+      "id": "bright_vigil",
+      "name": "Thirsting Vigil",
+      "type": "passive",
+      "ranks": 1,
+      "pos": [
+        2,
+        3
+      ],
+      "requires_any": [
+        "bone_shards"
+      ],
+      "gate": 8,
+      "description": "Sanguine Vigil increases damage by a further 5%.",
+      "icon": {
+        "image": "lorc/fangs-circle",
+        "school": "blood"
+      },
+      "effects": [
+        {
+          "modify": "sanguine_vigil.modifiers.0.value",
+          "per_rank": 0.05
+        }
+      ]
+    },
+    {
+      "id": "bone_cage",
+      "name": "Bone Cage",
+      "type": "active",
+      "pos": [
+        3,
+        3
+      ],
+      "requires_any": [
+        "quick_lash_b",
+        "long_strangle"
+      ],
+      "gate": 8,
+      "description": "Grants Bone Cage: root an enemy within 25 m for 4 s; heavy damage breaks it. Costs 1 rune, 30 s cooldown.",
+      "icon": {
+        "image": "lorc/caged-ball",
+        "school": "blood"
+      },
+      "grants_ability": "bone_cage_ab"
+    },
+    {
+      "id": "ready_mark",
+      "name": "Ready Mark",
+      "type": "passive",
+      "ranks": 2,
+      "pos": [
+        4,
+        3
+      ],
+      "requires_any": [
+        "long_strangle"
+      ],
+      "gate": 8,
+      "description": "Bloodmark's cooldown is 4 s shorter per rank.",
+      "icon": {
+        "image": "delapouite/position-marker",
+        "school": "blood"
+      },
+      "effects": [
+        {
+          "modify": "bloodmark.cooldown_s",
+          "per_rank": -4
+        }
+      ]
+    },
+    {
+      "id": "sanguine_bulwark",
+      "name": "Sanguine Bulwark",
+      "type": "active",
+      "pos": [
+        5,
+        3
+      ],
+      "requires_any": [
+        "long_sever_b",
+        "swift_stride"
+      ],
+      "gate": 8,
+      "description": "Grants Sanguine Bulwark: absorb 12,000 damage for 10 s (90 s cooldown).",
+      "icon": {
+        "image": "lorc/slashed-shield",
+        "school": "blood"
+      },
+      "grants_ability": "sanguine_bulwark_ab"
+    },
+    {
+      "id": "sure_reaping",
+      "name": "Sure Pact",
+      "type": "passive",
+      "ranks": 1,
+      "pos": [
+        6,
+        3
+      ],
+      "requires_any": [
+        "swift_stride"
+      ],
+      "gate": 8,
+      "description": "Vampiric Pact can be used while stunned.",
+      "icon": {
+        "image": "delapouite/shaking-hands",
+        "school": "blood"
+      },
+      "effects": [
+        {
+          "modify": "vampiric_pact_ab.usable_while_cc",
+          "set": [
+            "stun"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "vigil_wellspring",
+      "name": "Vigil Wellspring",
+      "type": "passive",
+      "ranks": 1,
+      "pos": [
+        0,
+        4
+      ],
+      "requires_any": [
+        "long_vigil"
+      ],
+      "gate": 8,
+      "description": "Sanguine Vigil gives 30 runic power.",
+      "icon": {
+        "image": "lorc/bubbling-flask",
+        "school": "blood"
+      },
+      "effects": [
+        {
+          "modify": "sanguine_vigil_ab.generates",
+          "set": {
+            "resource": "runic_power",
+            "amount": 30
+          }
+        }
+      ]
+    },
+    {
+      "id": "wide_veinburst",
+      "name": "Wide Veinburst",
+      "type": "passive",
+      "ranks": 1,
+      "pos": [
+        1,
+        4
+      ],
+      "requires_any": [
+        "veinburst"
+      ],
+      "gate": 8,
+      "description": "Veinburst reaches 3 m further.",
+      "icon": {
+        "image": "lorc/gooey-impact",
+        "school": "blood"
+      },
+      "effects": [
+        {
+          "modify": "veinburst_ab.effects.0.radius_m",
+          "per_rank": 3
+        }
+      ]
+    },
+    {
+      "id": "lasting_vigil",
+      "name": "Lasting Vigil",
+      "type": "passive",
+      "ranks": 1,
+      "pos": [
+        2,
+        4
+      ],
+      "requires_any": [
+        "bright_vigil"
+      ],
+      "gate": 8,
+      "description": "Sanguine Vigil lasts 3 s longer.",
+      "icon": {
+        "image": "lorc/standing-potion",
+        "school": "blood"
+      },
+      "effects": [
+        {
+          "modify": "sanguine_vigil.duration_s",
+          "per_rank": 3
+        }
+      ]
+    },
+    {
+      "id": "long_cage",
+      "name": "Long Cage",
+      "type": "passive",
+      "ranks": 2,
+      "pos": [
+        3,
+        4
+      ],
+      "requires_any": [
+        "bone_cage"
+      ],
+      "gate": 8,
+      "description": "Bone Cage lasts 0.5 s longer per rank.",
+      "icon": {
+        "image": "lorc/dinosaur-bones",
+        "school": "physical"
+      },
+      "effects": [
+        {
+          "modify": "bone_caged.duration_s",
+          "per_rank": 0.5
+        }
+      ]
+    },
+    {
+      "id": "thick_mark",
+      "name": "Heavy Mark",
+      "type": "passive",
+      "ranks": 1,
+      "pos": [
+        4,
+        4
+      ],
+      "requires_any": [
+        "ready_mark"
+      ],
+      "gate": 8,
+      "description": "Bloodmark lowers damage done by a further 5%.",
+      "icon": {
+        "image": "lorc/beast-eye",
+        "school": "blood"
+      },
+      "effects": [
+        {
+          "modify": "bloodmarked.modifiers.0.value",
+          "per_rank": -0.05
+        }
+      ]
+    },
+    {
+      "id": "swift_bulwark",
+      "name": "Swift Bulwark",
+      "type": "passive",
+      "ranks": 2,
+      "pos": [
+        5,
+        4
+      ],
+      "requires_any": [
+        "sanguine_bulwark"
+      ],
+      "gate": 8,
+      "description": "Sanguine Bulwark's cooldown is 10 s shorter per rank.",
+      "icon": {
+        "image": "sbed/shield",
+        "school": "blood"
+      },
+      "effects": [
+        {
+          "modify": "sanguine_bulwark_ab.cooldown_s",
+          "per_rank": -10
+        }
+      ]
+    },
+    {
+      "id": "deep_veinburst",
+      "name": "Deep Veinburst",
+      "type": "passive",
+      "ranks": 1,
+      "pos": [
+        1,
+        5
+      ],
+      "requires_any": [
+        "wide_veinburst"
+      ],
+      "gate": 8,
+      "description": "Veinburst bleeds 150 more every 2 s.",
+      "icon": {
+        "image": "lorc/pill-drop",
+        "school": "blood"
+      },
+      "effects": [
+        {
+          "modify": "veinburst_bleed.periodic.effect.base",
+          "per_rank": 150
+        }
+      ]
+    },
+    {
+      "id": "blood_focus",
+      "name": "Blood Focus",
+      "type": "passive",
+      "ranks": 2,
+      "pos": [
+        2,
+        5
+      ],
+      "requires_any": [
+        "lasting_vigil",
+        "long_cage"
+      ],
+      "gate": 8,
+      "description": "Your damage is increased by 2% per rank.",
+      "icon": {
+        "image": "lorc/eyeball",
+        "school": "blood"
+      },
+      "effects": [
+        {
+          "modify": "bloodbound_focus.modifiers.0.value",
+          "per_rank": 0.02
+        }
+      ],
+      "grants_aura": "bloodbound_focus"
+    },
+    {
+      "id": "swift_cage",
+      "name": "Swift Cage",
+      "type": "passive",
+      "ranks": 1,
+      "pos": [
+        3,
+        5
+      ],
+      "requires_any": [
+        "long_cage"
+      ],
+      "gate": 8,
+      "description": "Bone Cage's cooldown is 8 s shorter.",
+      "icon": {
+        "image": "lorc/alien-skull",
+        "school": "physical"
+      },
+      "effects": [
+        {
+          "modify": "bone_cage_ab.cooldown_s",
+          "per_rank": -8
+        }
+      ]
+    },
+    {
+      "id": "thick_bulwark",
+      "name": "Thick Bulwark",
+      "type": "passive",
+      "ranks": 1,
+      "pos": [
+        5,
+        5
+      ],
+      "requires_any": [
+        "swift_bulwark"
+      ],
+      "gate": 8,
+      "description": "Sanguine Bulwark absorbs 3,000 more.",
+      "icon": {
+        "image": "skoll/trench-body-armor",
+        "school": "blood"
+      },
+      "effects": [
+        {
+          "modify": "sanguine_bulwark.absorb",
+          "per_rank": 3000
+        }
+      ]
+    },
+    {
+      "id": "keen_blood",
+      "name": "Keen Blood",
+      "type": "passive",
+      "ranks": 2,
+      "pos": [
+        0,
+        6
+      ],
+      "requires_any": [
+        "vigil_wellspring"
+      ],
+      "gate": 20,
+      "description": "Your critical strike chance is 3% higher per rank.",
+      "icon": {
+        "image": "lorc/gem-necklace",
+        "school": "blood"
+      },
+      "effects": [
+        {
+          "modify": "self.stats.crit_chance",
+          "per_rank": 0.03
+        }
+      ]
+    },
+    {
+      "id": "crimson_tide",
+      "name": "Crimson Tide",
+      "type": "capstone",
+      "pos": [
+        1,
+        6
+      ],
+      "requires_any": [
+        "deep_veinburst"
+      ],
+      "gate": 20,
+      "description": "Sanguine Cleave deals 500 more damage, Crimson Reaping 800 more and Marrow Rend 600 more.",
+      "icon": {
+        "image": "lorc/crown-of-thorns",
+        "school": "blood"
+      },
+      "effects": [
+        {
+          "modify": "sanguine_cleave.effects.0.base",
+          "per_rank": 500
+        },
+        {
+          "modify": "crimson_reaping.effects.0.base",
+          "per_rank": 800
+        },
+        {
+          "modify": "marrow_rend.effects.0.base",
+          "per_rank": 600
+        }
+      ]
+    },
+    {
+      "id": "open_veins",
+      "name": "Open Veins",
+      "type": "capstone",
+      "pos": [
+        3,
+        6
+      ],
+      "requires_any": [
+        "swift_cage"
+      ],
+      "gate": 20,
+      "description": "Blood Lash deals 800 more damage and its bleed 150 more every 2 s.",
+      "icon": {
+        "image": "lorc/internal-organ",
+        "school": "blood"
+      },
+      "effects": [
+        {
+          "modify": "blood_lash.effects.0.base",
+          "per_rank": 800
+        },
+        {
+          "modify": "lash_bleed.periodic.effect.base",
+          "per_rank": 150
+        }
+      ]
+    },
+    {
+      "id": "undying_will",
+      "name": "Undying Will",
+      "type": "capstone",
+      "pos": [
+        5,
+        6
+      ],
+      "requires_any": [
+        "thick_bulwark"
+      ],
+      "gate": 20,
+      "description": "Oathsever locks the school for 1 s longer, Grave Strangle stuns for 0.5 s longer and Bone Cage lasts 1 s longer.",
+      "icon": {
+        "image": "lorc/spade-skull",
+        "school": "shadow"
+      },
+      "effects": [
+        {
+          "modify": "oathsever.effects.0.school_lock_s",
+          "per_rank": 1
+        },
+        {
+          "modify": "strangled.duration_s",
+          "per_rank": 0.5
+        },
+        {
+          "modify": "bone_caged.duration_s",
+          "per_rank": 1
+        }
+      ]
+    },
+    {
+      "id": "marrow_feast",
+      "name": "Marrow Feast",
+      "type": "passive",
+      "ranks": 1,
+      "pos": [
+        4,
+        6
+      ],
+      "requires_any": [
+        "thick_mark"
+      ],
+      "gate": 20,
+      "description": "Vampiric Pact also heals you for 6,000.",
+      "icon": {
+        "image": "delapouite/kidneys",
+        "school": "blood"
+      },
+      "effects": [
+        {
+          "modify": "vampiric_pact_ab.effects",
+          "set": [
+            {
+              "type": "apply_aura",
+              "aura": "vampiric_pact"
+            },
+            {
+              "type": "heal",
+              "base": 6000
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

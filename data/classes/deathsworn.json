@@ -5,7 +5,8 @@
   "armor": "plate",
   "color": "#8f7ad6",
   "specs": [
-    "deathsworn_frostgrave"
+    "deathsworn_frostgrave",
+    "deathsworn_bloodbound"
   ],
   "class_tree": "deathsworn_class",
   "shared_abilities": [

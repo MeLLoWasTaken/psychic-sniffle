@@ -1,0 +1,25 @@
+{
+  "id": "sanguine_bulwark_ab",
+  "name": "Sanguine Bulwark",
+  "description": "Absorb 12,000 damage for 10 s.",
+  "owner": "deathsworn_bloodbound",
+  "kit_slot": "defensive",
+  "school": "blood",
+  "cast_type": "instant",
+  "cooldown_s": 90,
+  "triggers_gcd": false,
+  "range_m": 0,
+  "requires_los": false,
+  "target": "self",
+  "effects": [
+    {
+      "type": "apply_aura",
+      "aura": "sanguine_bulwark"
+    }
+  ],
+  "icon": {
+    "symbol": "sanguine_bulwark",
+    "school": "blood",
+    "image": "lorc/slashed-shield"
+  }
+}

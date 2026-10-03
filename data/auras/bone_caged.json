@@ -1,0 +1,17 @@
+{
+  "id": "bone_caged",
+  "name": "Bone Cage",
+  "description": "Rooted in place.",
+  "kind": "debuff",
+  "duration_s": 4,
+  "dispel_type": "magic",
+  "cc_category": "root",
+  "hud_priority": "cc",
+  "icon": {
+    "symbol": "bone_caged",
+    "school": "physical",
+    "image": "lorc/caged-ball"
+  },
+  "breaks_on_damage": "threshold",
+  "damage_threshold_pct": 15
+}

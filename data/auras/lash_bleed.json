@@ -1,0 +1,23 @@
+{
+  "id": "lash_bleed",
+  "name": "Blood Lash",
+  "description": "Bleeding.",
+  "kind": "debuff",
+  "duration_s": 10,
+  "dispel_type": "none",
+  "cc_category": "none",
+  "hud_priority": "normal",
+  "icon": {
+    "symbol": "lash_bleed",
+    "school": "blood",
+    "image": "lorc/rough-wound"
+  },
+  "periodic": {
+    "interval_s": 2,
+    "effect": {
+      "type": "damage",
+      "base": 400,
+      "school": "blood"
+    }
+  }
+}

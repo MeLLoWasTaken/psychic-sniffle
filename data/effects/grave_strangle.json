@@ -1,0 +1,13 @@
+{
+  "id": "grave_strangle",
+  "impact": {
+    "style": "ring",
+    "at": "target",
+    "size": 1.0
+  },
+  "auras": {
+    "strangled": {
+      "style": "stun"
+    }
+  }
+}

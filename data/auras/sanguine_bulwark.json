@@ -1,0 +1,16 @@
+{
+  "id": "sanguine_bulwark",
+  "name": "Sanguine Bulwark",
+  "description": "Absorbs 12,000 damage.",
+  "kind": "buff",
+  "duration_s": 10,
+  "dispel_type": "magic",
+  "cc_category": "none",
+  "hud_priority": "major_defensive",
+  "icon": {
+    "symbol": "sanguine_bulwark",
+    "school": "blood",
+    "image": "lorc/slashed-shield"
+  },
+  "absorb": 12000
+}

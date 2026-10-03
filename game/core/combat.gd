@@ -462,8 +462,12 @@ func apply_effect(u: Unit, t: Unit, eff: Dictionary, ab: Dictionary, scale: floa
 				mult *= float(mi["value"])
 			if eff.has("condition") and not _condition(u, t, eff["condition"]):
 				return
-			deal_damage(u, t, float(eff["base"]) * mult, eff.get("school", ab["school"]), ab,
+			var dealt: int = deal_damage(u, t, float(eff["base"]) * mult, eff.get("school", ab["school"]), ab,
 				float(eff.get("power_coefficient", 1.0)), bool(eff.get("can_crit", true)))
+			if eff.has("leech_pct") and u and u.is_alive() and dealt > 0:
+				# heal for a share of the damage that reached health (shields absorb it first); no power
+				# or crit on top, but healing modifiers and dampening apply (M3: the Bloodbound)
+				heal(u, u, dealt * float(eff["leech_pct"]) / 100.0, ab, 0.0, false)
 		"heal":
 			heal(u, t, float(eff["base"]) * scale, ab, float(eff.get("power_coefficient", 1.0)),
 				bool(eff.get("can_crit", true)))

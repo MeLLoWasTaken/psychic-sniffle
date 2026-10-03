@@ -1,0 +1,13 @@
+{
+  "id": "sanguine_cleave",
+  "ground": {
+    "style": "nova",
+    "center": "caster",
+    "lifetime_s": 0.6
+  },
+  "impact": {
+    "style": "burst",
+    "at": "hits",
+    "size": 0.8
+  }
+}

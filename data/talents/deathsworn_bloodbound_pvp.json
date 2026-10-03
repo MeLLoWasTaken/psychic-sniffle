@@ -1,0 +1,273 @@
+{
+  "tree_id": "deathsworn_bloodbound_pvp",
+  "kind": "pvp",
+  "owner": "deathsworn_bloodbound",
+  "points": 3,
+  "status": "complete",
+  "nodes": [
+    {
+      "id": "unyielding_blood",
+      "name": "Unyielding Blood",
+      "type": "passive",
+      "ranks": 1,
+      "description": "Enemy dispels can no longer remove your Sanguine Vigil or Vampiric Pact.",
+      "icon": {
+        "image": "lorc/batwing-emblem",
+        "school": "blood"
+      },
+      "effects": [
+        {
+          "modify": "sanguine_vigil.dispel_type",
+          "set": "none"
+        },
+        {
+          "modify": "vampiric_pact.dispel_type",
+          "set": "none"
+        }
+      ]
+    },
+    {
+      "id": "hasty_vigil",
+      "name": "Hasty Vigil",
+      "type": "passive",
+      "ranks": 1,
+      "description": "Sanguine Vigil's cooldown is 30 s shorter, but it lasts 5 s less.",
+      "icon": {
+        "image": "lorc/evil-bat",
+        "school": "blood"
+      },
+      "effects": [
+        {
+          "modify": "sanguine_vigil_ab.cooldown_s",
+          "per_rank": -30
+        },
+        {
+          "modify": "sanguine_vigil.duration_s",
+          "per_rank": -5
+        }
+      ]
+    },
+    {
+      "id": "hasty_sever_b",
+      "name": "Hasty Sever",
+      "type": "passive",
+      "ranks": 1,
+      "description": "Oathsever's cooldown is 5 s shorter, but it locks the school for 1 s less.",
+      "icon": {
+        "image": "lorc/thunder-blade",
+        "school": "physical"
+      },
+      "effects": [
+        {
+          "modify": "oathsever.cooldown_s",
+          "per_rank": -5
+        },
+        {
+          "modify": "oathsever.effects.0.school_lock_s",
+          "per_rank": -1
+        }
+      ]
+    },
+    {
+      "id": "festering_mark",
+      "name": "Festering Mark",
+      "type": "passive",
+      "ranks": 1,
+      "description": "Bloodmark also reduces the healing its target receives by 25% for 8 s.",
+      "icon": {
+        "image": "lorc/goo-skull",
+        "school": "blood"
+      },
+      "effects": [
+        {
+          "modify": "bloodmark.effects",
+          "set": [
+            {
+              "type": "apply_aura",
+              "aura": "bloodmarked"
+            },
+            {
+              "type": "apply_aura",
+              "aura": "bloodbound_festering"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "dense_marrow",
+      "name": "Dense Marrow",
+      "type": "passive",
+      "ranks": 1,
+      "description": "Sanguine Bulwark absorbs 4,000 more, but its cooldown is 20 s longer.",
+      "icon": {
+        "image": "delapouite/leg-armor",
+        "school": "blood"
+      },
+      "effects": [
+        {
+          "modify": "sanguine_bulwark.absorb",
+          "per_rank": 4000
+        },
+        {
+          "modify": "sanguine_bulwark_ab.cooldown_s",
+          "per_rank": 20
+        }
+      ]
+    },
+    {
+      "id": "blood_oath",
+      "name": "Blood Oath",
+      "type": "passive",
+      "ranks": 1,
+      "description": "You take 8% less damage, but Break Free's cooldown is 45 s longer.",
+      "icon": {
+        "image": "delapouite/tribal-pendant",
+        "school": "blood"
+      },
+      "effects": [
+        {
+          "modify": "break_free.cooldown_s",
+          "per_rank": 45
+        }
+      ],
+      "grants_aura": "bloodbound_oath"
+    },
+    {
+      "id": "iron_tether_b",
+      "name": "Iron Tether",
+      "type": "passive",
+      "ranks": 1,
+      "description": "Grave Tether's cooldown is 8 s shorter, but it reaches 5 m less.",
+      "icon": {
+        "image": "delapouite/rope-dart",
+        "school": "shadow"
+      },
+      "effects": [
+        {
+          "modify": "grave_tether.cooldown_s",
+          "per_rank": -8
+        },
+        {
+          "modify": "grave_tether.range_m",
+          "per_rank": -5
+        }
+      ]
+    },
+    {
+      "id": "long_strangle_pvp",
+      "name": "Lasting Strangle",
+      "type": "passive",
+      "ranks": 1,
+      "description": "Grave Strangle stuns for 1 s longer, but its cooldown is 15 s longer.",
+      "icon": {
+        "image": "delapouite/skipping-rope",
+        "school": "shadow"
+      },
+      "effects": [
+        {
+          "modify": "strangled.duration_s",
+          "per_rank": 1
+        },
+        {
+          "modify": "grave_strangle.cooldown_s",
+          "per_rank": 15
+        }
+      ]
+    },
+    {
+      "id": "unbound_stride",
+      "name": "Unbound Stride",
+      "type": "passive",
+      "ranks": 1,
+      "description": "You can use Crimson Stride while rooted, and it frees you from roots and slows.",
+      "icon": {
+        "image": "delapouite/chelsea-boot",
+        "school": "blood"
+      },
+      "effects": [
+        {
+          "modify": "crimson_stride_ab.usable_while_cc",
+          "set": [
+            "root"
+          ]
+        },
+        {
+          "modify": "crimson_stride_ab.effects",
+          "set": [
+            {
+              "type": "remove_cc"
+            },
+            {
+              "type": "apply_aura",
+              "aura": "crimson_stride"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "lingering_howl_b",
+      "name": "Lingering Howl",
+      "type": "passive",
+      "ranks": 1,
+      "description": "Sepulchral Howl disorients for 2 s longer, but its cooldown is 20 s longer.",
+      "icon": {
+        "image": "lorc/scarecrow",
+        "school": "shadow"
+      },
+      "effects": [
+        {
+          "modify": "howl_dread.duration_s",
+          "per_rank": 2
+        },
+        {
+          "modify": "sepulchral_howl_ab.cooldown_s",
+          "per_rank": 20
+        }
+      ]
+    },
+    {
+      "id": "wide_grip",
+      "name": "Wide Grip",
+      "type": "passive",
+      "ranks": 1,
+      "description": "Gorefield Grip reaches 4 m further, but its cooldown is 20 s longer.",
+      "icon": {
+        "image": "lorc/triple-claws",
+        "school": "shadow"
+      },
+      "effects": [
+        {
+          "modify": "gorefield_grip.effects.0.radius_m",
+          "per_rank": 4
+        },
+        {
+          "modify": "gorefield_grip.cooldown_s",
+          "per_rank": 20
+        }
+      ]
+    },
+    {
+      "id": "gorging_reap",
+      "name": "Gorging Reap",
+      "type": "passive",
+      "ranks": 1,
+      "description": "Crimson Reaping deals 600 less damage but costs 10 less runic power.",
+      "icon": {
+        "image": "lorc/toad-teeth",
+        "school": "shadow"
+      },
+      "effects": [
+        {
+          "modify": "crimson_reaping.effects.0.base",
+          "per_rank": -600
+        },
+        {
+          "modify": "crimson_reaping.cost.amount",
+          "per_rank": -10
+        }
+      ]
+    }
+  ]
+}

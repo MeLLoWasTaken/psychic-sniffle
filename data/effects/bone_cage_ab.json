@@ -1,0 +1,13 @@
+{
+  "id": "bone_cage_ab",
+  "impact": {
+    "style": "ring",
+    "at": "target",
+    "size": 1.0
+  },
+  "auras": {
+    "bone_caged": {
+      "style": "root"
+    }
+  }
+}

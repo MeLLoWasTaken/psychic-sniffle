@@ -1,0 +1,25 @@
+{
+  "id": "sanguine_vigil_ab",
+  "name": "Sanguine Vigil",
+  "description": "For 15 s, deal 20% more damage and receive 20% more healing.",
+  "owner": "deathsworn_bloodbound",
+  "kit_slot": "burst",
+  "school": "blood",
+  "cast_type": "instant",
+  "cooldown_s": 120,
+  "triggers_gcd": false,
+  "range_m": 0,
+  "requires_los": false,
+  "target": "self",
+  "effects": [
+    {
+      "type": "apply_aura",
+      "aura": "sanguine_vigil"
+    }
+  ],
+  "icon": {
+    "symbol": "sanguine_vigil",
+    "school": "blood",
+    "image": "delapouite/vampire-dracula"
+  }
+}

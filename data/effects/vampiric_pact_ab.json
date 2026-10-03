@@ -1,0 +1,9 @@
+{
+  "id": "vampiric_pact_ab",
+  "auras": {
+    "vampiric_pact": {
+      "style": "shield",
+      "size": 1.1
+    }
+  }
+}

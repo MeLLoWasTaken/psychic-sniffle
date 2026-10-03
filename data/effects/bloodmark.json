@@ -1,0 +1,17 @@
+{
+  "id": "bloodmark",
+  "impact": {
+    "style": "burst",
+    "at": "target",
+    "size": 0.9
+  },
+  "auras": {
+    "bloodmarked": {
+      "style": "dot"
+    },
+    "bloodbound_festering": {
+      "style": "dot",
+      "size": 0.8
+    }
+  }
+}

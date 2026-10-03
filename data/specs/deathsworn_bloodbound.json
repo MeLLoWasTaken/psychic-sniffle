@@ -1,0 +1,38 @@
+{
+  "id": "deathsworn_bloodbound",
+  "name": "Bloodbound",
+  "class": "deathsworn",
+  "description": "Tank: heals from its own damage, pulls enemies to it.",
+  "role": "tank",
+  "icon": {
+    "image": "delapouite/vampire-dracula"
+  },
+  "range": "melee",
+  "primary_resource": "runic_power",
+  "secondary_resource": "runes",
+  "abilities": [
+    "sanguine_cleave",
+    "marrow_rend",
+    "crimson_reaping",
+    "blood_lash",
+    "sanguine_vigil_ab",
+    "gorefield_grip",
+    "grave_strangle",
+    "vampiric_pact_ab",
+    "crimson_stride_ab",
+    "bloodmark",
+    "grave_tether",
+    "oathsever",
+    "deathless_resolve_ab",
+    "gravecloak_ab"
+  ],
+  "spec_tree": "deathsworn_bloodbound",
+  "pvp_talents": "deathsworn_bloodbound_pvp",
+  "kit_status": "complete",
+  "asset": "test_crate",
+  "weapon": {
+    "type": "sword",
+    "hands": 2
+  },
+  "stats": {}
+}

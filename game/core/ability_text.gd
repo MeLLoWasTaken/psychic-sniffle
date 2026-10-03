@@ -115,6 +115,9 @@ func effects(ab: Dictionary) -> Dictionary:
 					var mi: Dictionary = e["multiplier_if"]
 					numbers.append(v * float(mi["value"]))
 					line += "; %s against a target that is %s" % [fmt(v * float(mi["value"])), " or ".join(PackedStringArray(mi.get("target_cc", [])))]
+				if e.has("leech_pct"):
+					numbers.append(float(e["leech_pct"]))
+					line += "; heals you for %s%% of the damage dealt" % _g(float(e["leech_pct"]))
 				lines.append(line)
 			"apply_aura":
 				lines.append("Applies " + aura_line(str(e["aura"]), ab, numbers))

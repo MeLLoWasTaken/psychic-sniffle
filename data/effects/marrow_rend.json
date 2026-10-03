@@ -1,0 +1,17 @@
+{
+  "id": "marrow_rend",
+  "melee": {
+    "style": "overhead"
+  },
+  "impact": {
+    "style": "burst",
+    "at": "target",
+    "size": 1.0
+  },
+  "auras": {
+    "marrow_ward": {
+      "style": "shield",
+      "size": 0.9
+    }
+  }
+}

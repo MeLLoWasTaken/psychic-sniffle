@@ -1,0 +1,30 @@
+{
+  "id": "crimson_reaping",
+  "name": "Crimson Reaping",
+  "description": "A draining blow for 3,400; you heal for 60% of the damage dealt.",
+  "owner": "deathsworn_bloodbound",
+  "kit_slot": "core",
+  "school": "shadow",
+  "cast_type": "instant",
+  "cooldown_s": 0,
+  "triggers_gcd": true,
+  "range_m": 5,
+  "requires_los": true,
+  "target": "enemy",
+  "effects": [
+    {
+      "type": "damage",
+      "base": 3400,
+      "leech_pct": 60
+    }
+  ],
+  "icon": {
+    "symbol": "crimson_reaping",
+    "school": "shadow",
+    "image": "lorc/saber-slash"
+  },
+  "cost": {
+    "resource": "runic_power",
+    "amount": 40
+  }
+}

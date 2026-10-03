@@ -1,0 +1,27 @@
+{
+  "id": "sanguine_vigil",
+  "name": "Sanguine Vigil",
+  "description": "Damage up 20%, healing received up 20%.",
+  "kind": "buff",
+  "duration_s": 15,
+  "dispel_type": "magic",
+  "cc_category": "none",
+  "hud_priority": "major_offensive",
+  "icon": {
+    "symbol": "sanguine_vigil",
+    "school": "blood",
+    "image": "delapouite/vampire-dracula"
+  },
+  "modifiers": [
+    {
+      "stat": "damage_done",
+      "op": "multiply",
+      "value": 1.2
+    },
+    {
+      "stat": "healing_taken",
+      "op": "multiply",
+      "value": 1.2
+    }
+  ]
+}

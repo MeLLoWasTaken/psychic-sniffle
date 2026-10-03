@@ -1225,7 +1225,7 @@ def _check_kit(report: Report, rel: str, spec: dict, abilities: dict, auras: dic
                 cat = auras[e["aura"]]["cc_category"]
                 if cat != "none":
                     categories.add(cat)
-            if e["type"] == "knockback":
+            if e["type"] in ("knockback", "pull"):  # displacement: a pull counts like a knockback
                 categories.add("knockback")
     if len(categories) < 2:
         report.error(rel, f"kit CC covers {len(categories)} categories; template needs at least 2")

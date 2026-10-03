@@ -618,6 +618,54 @@
     "wraith_lunge_ab": {
       "release": "charge_rush",
       "impact": "charge_impact"
+    },
+    "sanguine_cleave": {
+      "release": "@weapon_swing",
+      "impact": "@weapon_hit"
+    },
+    "marrow_rend": {
+      "release": "@weapon_swing",
+      "impact": "binding_gavel_impact"
+    },
+    "crimson_reaping": {
+      "release": "@weapon_swing",
+      "impact": "@weapon_hit"
+    },
+    "blood_lash": {
+      "release": "winters_lash_release",
+      "impact": "winters_lash_impact"
+    },
+    "sanguine_vigil_ab": {
+      "release": "grave_winter"
+    },
+    "gorefield_grip": {
+      "release": "grave_tether_release",
+      "impact": "charge_impact"
+    },
+    "grave_strangle": {
+      "release": "chains_of_awe_release",
+      "impact": "chains_of_awe_impact"
+    },
+    "vampiric_pact_ab": {
+      "release": "gravecloak"
+    },
+    "crimson_stride_ab": {
+      "release": "winged_stride"
+    },
+    "bloodmark": {
+      "release": "holy_release",
+      "impact": "castigate_impact"
+    },
+    "veinburst_ab": {
+      "release": "rime_fan_release",
+      "impact": "hail_impact"
+    },
+    "bone_cage_ab": {
+      "release": "rimebind_release",
+      "impact": "root_ice_impact"
+    },
+    "sanguine_bulwark_ab": {
+      "release": "sanctum"
     }
   },
   "auras": {

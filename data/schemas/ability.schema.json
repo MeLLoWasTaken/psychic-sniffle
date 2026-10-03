@@ -364,6 +364,12 @@
         "distance_m": {
           "type": "number"
         },
+        "leech_pct": {
+          "type": "number",
+          "minimum": 0,
+          "maximum": 100,
+          "description": "damage: the caster heals for this percentage of the damage that reached health (not absorbed)."
+        },
         "radius_m": {
           "type": "number",
           "minimum": 0

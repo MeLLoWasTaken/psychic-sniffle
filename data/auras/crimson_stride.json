@@ -1,0 +1,22 @@
+{
+  "id": "crimson_stride",
+  "name": "Crimson Stride",
+  "description": "Movement up 40%.",
+  "kind": "buff",
+  "duration_s": 4,
+  "dispel_type": "magic",
+  "cc_category": "none",
+  "hud_priority": "normal",
+  "icon": {
+    "symbol": "crimson_stride",
+    "school": "blood",
+    "image": "lorc/run"
+  },
+  "modifiers": [
+    {
+      "stat": "move_speed",
+      "op": "multiply",
+      "value": 1.4
+    }
+  ]
+}

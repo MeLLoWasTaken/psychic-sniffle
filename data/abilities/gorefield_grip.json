@@ -1,0 +1,31 @@
+{
+  "id": "gorefield_grip",
+  "name": "Gorefield Grip",
+  "description": "Pull enemies within 12 m to you.",
+  "owner": "deathsworn_bloodbound",
+  "kit_slot": "cc",
+  "school": "shadow",
+  "cast_type": "instant",
+  "cooldown_s": 90,
+  "triggers_gcd": true,
+  "range_m": 0,
+  "requires_los": false,
+  "target": "self",
+  "effects": [
+    {
+      "type": "pull",
+      "distance_m": 2.5,
+      "affects": "enemies_in_radius",
+      "radius_m": 12
+    }
+  ],
+  "icon": {
+    "symbol": "gorefield_grip",
+    "school": "shadow",
+    "image": "lorc/interleaved-claws"
+  },
+  "cost": {
+    "resource": "runes",
+    "amount": 1
+  }
+}

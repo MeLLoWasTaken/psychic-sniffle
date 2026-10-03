@@ -1,0 +1,310 @@
+{
+  "id": "deathsworn_bloodbound",
+  "behavior": {
+    "preferred_range_m": [
+      2,
+      5
+    ],
+    "target_priority": "lowest_health",
+    "reaction_ms": [
+      250,
+      600
+    ],
+    "kite_melee": false,
+    "stay_near_allies_m": 18,
+    "take_pickup_below_pct": 70
+  },
+  "priorities": [
+    {
+      "ability": "oathsever",
+      "on": "enemy_caster",
+      "when": {
+        "target_casting": true
+      }
+    },
+    {
+      "ability": "break_free",
+      "on": "self",
+      "when": {
+        "self_hard_cc": true,
+        "self_health_below_pct": 70
+      }
+    },
+    {
+      "ability": "sanguine_bulwark_ab",
+      "on": "self",
+      "when": {
+        "self_health_below_pct": 55
+      }
+    },
+    {
+      "ability": "vampiric_pact_ab",
+      "on": "self",
+      "when": {
+        "self_health_below_pct": 45
+      }
+    },
+    {
+      "ability": "deathless_resolve_ab",
+      "on": "self",
+      "when": {
+        "self_health_below_pct": 30
+      }
+    },
+    {
+      "ability": "crimson_reaping",
+      "when": {
+        "self_health_below_pct": 70,
+        "target_distance_below_m": 5
+      }
+    },
+    {
+      "ability": "grave_tether",
+      "when": {
+        "target_distance_above_m": 10,
+        "target_distance_below_m": 30
+      }
+    },
+    {
+      "ability": "crimson_stride_ab",
+      "on": "self",
+      "when": {
+        "target_distance_above_m": 10
+      }
+    },
+    {
+      "ability": "gorefield_grip",
+      "on": "self",
+      "when": {
+        "enemies_within_m": [
+          12,
+          2
+        ]
+      }
+    },
+    {
+      "ability": "grave_strangle",
+      "when": {
+        "target_not_cc": true,
+        "target_health_below_pct": 70
+      }
+    },
+    {
+      "ability": "bone_cage_ab",
+      "on": "ally_attacker",
+      "when": {
+        "ally_health_below_pct": 50,
+        "target_not_cc": true
+      }
+    },
+    {
+      "ability": "bloodmark",
+      "on": "ally_attacker",
+      "when": {
+        "ally_health_below_pct": 60
+      }
+    },
+    {
+      "ability": "sanguine_vigil_ab",
+      "on": "self",
+      "when": {
+        "target_health_below_pct": 80,
+        "target_distance_below_m": 5
+      }
+    },
+    {
+      "ability": "marrow_rend",
+      "when": {
+        "target_distance_below_m": 5
+      }
+    },
+    {
+      "ability": "veinburst_ab",
+      "on": "self",
+      "when": {
+        "enemies_within_m": [
+          10,
+          1
+        ]
+      }
+    },
+    {
+      "ability": "sanguine_cleave",
+      "on": "self",
+      "when": {
+        "enemies_within_m": [
+          6,
+          1
+        ]
+      }
+    },
+    {
+      "ability": "crimson_reaping",
+      "when": {
+        "target_distance_below_m": 5
+      }
+    },
+    {
+      "ability": "blood_lash",
+      "when": {
+        "target_distance_below_m": 20
+      }
+    }
+  ],
+  "builds": [
+    {
+      "name": "crimson_tide",
+      "description": "Damage: Sanguine Vigil windows, heavy Crimson Reaping and Veinburst; damage and crit in the class tree.",
+      "class": {
+        "deep_hunger": 2,
+        "grave_hunger": 2,
+        "cold_eye": 2,
+        "grim_pace": 2,
+        "path_choice": 1,
+        "dread_conviction": 2,
+        "grim_tempo": 2,
+        "bottomless_hunger": 2,
+        "deathmarch": 2,
+        "swift_tether": 2,
+        "restless_oath": 2,
+        "unshackled_choice": 1,
+        "patient_grave": 2,
+        "endless_hunger": 1,
+        "crown_choice": 1,
+        "bone_vigor": 2,
+        "cold_heart": 2
+      },
+      "spec": {
+        "heavy_reaping": 2,
+        "thrifty_reaping": 1,
+        "long_strangle": 2,
+        "keen_cleave_b": 2,
+        "hungry_cleave_b": 2,
+        "thick_marrow": 1,
+        "rune_tithe_b": 1,
+        "long_vigil": 2,
+        "veinburst": 1,
+        "bright_vigil": 1,
+        "quick_rend": 2,
+        "bone_shards": 2,
+        "vigil_wellspring": 1,
+        "wide_veinburst": 1,
+        "lasting_vigil": 1,
+        "deep_veinburst": 1,
+        "blood_focus": 2,
+        "keen_blood": 2,
+        "crimson_tide": 1,
+        "hungry_rend": 2
+      },
+      "pvp": [
+        "festering_mark",
+        "hasty_vigil",
+        "unyielding_blood"
+      ]
+    },
+    {
+      "name": "bone_warden",
+      "description": "Control: Bone Cage, a long Grave Strangle, Blood Lash and its bleed.",
+      "class": {
+        "deathmarch": 2,
+        "swift_tether": 2,
+        "restless_oath": 2,
+        "long_tether": 1,
+        "unshackled_choice": 1,
+        "thick_cloak": 1,
+        "patient_grave": 2,
+        "sepulchral_howl": 1,
+        "quick_sever": 1,
+        "long_howl": 2,
+        "fixed_tether": 1,
+        "deep_sever": 2,
+        "howl_choice": 2,
+        "ready_cloak": 1,
+        "bone_vigor": 2,
+        "cold_heart": 2,
+        "grasping_howl": 1,
+        "soul_choice": 1,
+        "grave_plate": 2,
+        "grave_welcome": 2
+      },
+      "spec": {
+        "quick_rend": 2,
+        "hungry_rend": 2,
+        "bone_shards": 2,
+        "deep_lash": 2,
+        "long_bleed": 1,
+        "quick_lash_b": 2,
+        "bone_cage": 1,
+        "long_cage": 2,
+        "swift_cage": 1,
+        "open_veins": 1,
+        "heavy_reaping": 2,
+        "thrifty_reaping": 1,
+        "long_strangle": 2,
+        "ready_mark": 2,
+        "thick_mark": 1,
+        "marrow_feast": 1,
+        "keen_cleave_b": 2,
+        "thick_marrow": 2,
+        "hungry_cleave_b": 1
+      },
+      "pvp": [
+        "iron_tether_b",
+        "wide_grip",
+        "hasty_sever_b"
+      ]
+    },
+    {
+      "name": "undying",
+      "description": "Survival: Vampiric Pact, Sanguine Bulwark and a thick Marrow Ward.",
+      "class": {
+        "bone_vigor": 2,
+        "grave_plate": 2,
+        "cold_heart": 2,
+        "grave_welcome": 2,
+        "marrow_knit": 1,
+        "barrow_oath": 2,
+        "deathless_will": 2,
+        "deeper_resolve": 1,
+        "soulchill_brand": 1,
+        "swift_brand": 2,
+        "brand_choice": 1,
+        "lasting_brand": 1,
+        "deep_hunger": 2,
+        "unbroken": 1,
+        "barrow_mantle": 1,
+        "unbound_oath": 1,
+        "grave_hunger": 2,
+        "cold_eye": 2,
+        "grim_pace": 2
+      },
+      "spec": {
+        "quick_sever_b": 2,
+        "deep_sever_b": 1,
+        "long_sever_b": 1,
+        "ready_pact": 2,
+        "pact_choice": 2,
+        "swift_stride": 2,
+        "sanguine_bulwark": 1,
+        "sure_reaping": 1,
+        "swift_bulwark": 2,
+        "thick_bulwark": 1,
+        "undying_will": 1,
+        "purging_reap": 1,
+        "heavy_reaping": 2,
+        "thrifty_reaping": 1,
+        "long_strangle": 2,
+        "ready_mark": 2,
+        "thick_mark": 1,
+        "keen_cleave_b": 2,
+        "hungry_cleave_b": 2,
+        "thick_marrow": 2
+      },
+      "pvp": [
+        "blood_oath",
+        "long_strangle_pvp",
+        "gorging_reap"
+      ]
+    }
+  ]
+}

@@ -1,0 +1,29 @@
+{
+  "id": "bloodmark",
+  "name": "Bloodmark",
+  "description": "An enemy within 30 m deals 15% less damage for 8 s.",
+  "owner": "deathsworn_bloodbound",
+  "kit_slot": "utility",
+  "school": "blood",
+  "cast_type": "instant",
+  "cooldown_s": 30,
+  "triggers_gcd": true,
+  "range_m": 30,
+  "requires_los": true,
+  "target": "enemy",
+  "effects": [
+    {
+      "type": "apply_aura",
+      "aura": "bloodmarked"
+    }
+  ],
+  "icon": {
+    "symbol": "bloodmark",
+    "school": "blood",
+    "image": "lorc/cut-palm"
+  },
+  "cost": {
+    "resource": "runes",
+    "amount": 1
+  }
+}

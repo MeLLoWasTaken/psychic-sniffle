@@ -1,0 +1,29 @@
+{
+  "id": "grave_strangle",
+  "name": "Grave Strangle",
+  "description": "Choke an enemy within 15 m, stunning it for 3 s.",
+  "owner": "deathsworn_bloodbound",
+  "kit_slot": "cc",
+  "school": "shadow",
+  "cast_type": "instant",
+  "cooldown_s": 45,
+  "triggers_gcd": true,
+  "range_m": 15,
+  "requires_los": true,
+  "target": "enemy",
+  "effects": [
+    {
+      "type": "apply_aura",
+      "aura": "strangled"
+    }
+  ],
+  "icon": {
+    "symbol": "grave_strangle",
+    "school": "shadow",
+    "image": "delapouite/neck-bite"
+  },
+  "cost": {
+    "resource": "runes",
+    "amount": 1
+  }
+}

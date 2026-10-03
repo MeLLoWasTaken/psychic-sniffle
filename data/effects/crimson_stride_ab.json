@@ -1,0 +1,8 @@
+{
+  "id": "crimson_stride_ab",
+  "auras": {
+    "crimson_stride": {
+      "style": "speed"
+    }
+  }
+}

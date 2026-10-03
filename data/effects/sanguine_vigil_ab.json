@@ -1,0 +1,13 @@
+{
+  "id": "sanguine_vigil_ab",
+  "impact": {
+    "style": "ring",
+    "at": "self",
+    "size": 1.3
+  },
+  "auras": {
+    "sanguine_vigil": {
+      "style": "empower"
+    }
+  }
+}

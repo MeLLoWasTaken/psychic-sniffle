@@ -1,7 +1,7 @@
 # game-icons.net glyphs
 
 Icons from https://game-icons.net (git: github.com/game-icons/icons), used under the licence of
-each author. Icons made by Carl Olsen, Caro Asercion, Cathelineau, Delapouite, Lorc, Sbed, Skoll and Zeromancer (see the table). The SVGs here are
+each author. Icons made by Carl Olsen, Caro Asercion, Cathelineau, DarkZaitzev, Delapouite, Lorc, Sbed, Skoll and Zeromancer (see the table). The SVGs here are
 unmodified; the game renders them with its own colors, outline, shading and frame
 (tools/build_icons.py). Written by tools/build_icons.py; do not edit by hand.
 
@@ -21,6 +21,7 @@ unmodified; the game renders them with its own colors, outline, shading and fram
 | tarot-20-judgement | Caro Asercion | CC BY 3.0 | ability:zealous_verdict |
 | warlord-helmet | Caro Asercion | CC BY 3.0 | talent:iron_vanguard |
 | polar-bear | Cathelineau | CC BY 3.0 | talent:bitter_winter |
+| tabi-boot | DarkZaitzev | CC BY 3.0 | talent:swift_stride |
 | 3d-hammer | Delapouite | CC BY 3.0 | talent:hammer_weight |
 | abdominal-armor | Delapouite | CC BY 3.0 | talent:ironclad_prayer |
 | achilles-heel | Delapouite | CC BY 3.0 | ability:crippling_slash, aura:crippled |
@@ -46,6 +47,8 @@ unmodified; the game renders them with its own colors, outline, shading and fram
 | blindfold | Delapouite | CC BY 3.0 | ability:blinding_judgment_ab, aura:judgment_blinded, talent:blinding_judgment |
 | body-balance | Delapouite | CC BY 3.0 | aura:steady_footing |
 | bolt-cutter | Delapouite | CC BY 3.0 | talent:severing_reproach |
+| bone-knife | Delapouite | CC BY 3.0 | talent:quick_rend |
+| bone-mace | Delapouite | CC BY 3.0 | ability:marrow_rend, aura:marrow_ward |
 | book-pile | Delapouite | CC BY 3.0 | talent:practiced_prayer |
 | brass-knuckles | Delapouite | CC BY 3.0 | talent:hard_knuckles |
 | broken-wall | Delapouite | CC BY 3.0 | ability:sunder_ward |
@@ -59,10 +62,12 @@ unmodified; the game renders them with its own colors, outline, shading and fram
 | centaur-heart | Delapouite | CC BY 3.0 | talent:kinship_unbounded |
 | charging | Delapouite | CC BY 3.0 | talent:long_momentum |
 | charging-bull | Delapouite | CC BY 3.0 | ability:warpath_charge, aura:charge_dazed |
+| chelsea-boot | Delapouite | CC BY 3.0 | talent:unbound_stride |
 | chest-armor | Delapouite | CC BY 3.0 | talent:plated_vigor |
 | cleaver | Delapouite | CC BY 3.0 | ability:bonecleaver, talent:bonecleaver_choice |
 | clockwise-rotation | Delapouite | CC BY 3.0 | aura:templar_patient_oath, talent:patient_oath |
 | coins | Delapouite | CC BY 3.0 | talent:thrifty_blade |
+| contract | Delapouite | CC BY 3.0 | talent:ready_pact |
 | crenel-crown | Delapouite | CC BY 3.0 | talent:crown_choice |
 | cross-shield | Delapouite | CC BY 3.0 | talent:steadfast_aegis |
 | crypt-entrance | Delapouite | CC BY 3.0 | aura:frostgrave_oath, talent:hollow_oath |
@@ -150,10 +155,12 @@ unmodified; the game renders them with its own colors, outline, shading and fram
 | jewel-crown | Delapouite | CC BY 3.0 | talent:blazing_crown |
 | jump-across | Delapouite | CC BY 3.0 | ability:hurtling_bound, talent:hurtling_bound_talent |
 | key-lock | Delapouite | CC BY 3.0 | talent:unbowed_oath |
+| kidneys | Delapouite | CC BY 3.0 | talent:marrow_feast |
 | kneeling | Delapouite | CC BY 3.0 | ability:hallowed_stillness_ab, aura:stilled_in_reverence, talent:hallowed_stillness |
 | knight-banner | Delapouite | CC BY 3.0 | ability:iron_oath_ab, aura:iron_oath, talent:iron_oath |
 | knocked-out-stars | Delapouite | CC BY 3.0 | aura:pommel_cracked |
 | leather-armor | Delapouite | CC BY 3.0 | talent:guarding_step |
+| leg-armor | Delapouite | CC BY 3.0 | talent:dense_marrow |
 | liberty-wing | Delapouite | CC BY 3.0 | talent:unbroken_will |
 | light-helm | Delapouite | CC BY 3.0 | aura:templar_dawnforged_mantle, talent:dawnforged_mantle |
 | light-projector | Delapouite | CC BY 3.0 | talent:relentless_halo |
@@ -178,6 +185,7 @@ unmodified; the game renders them with its own colors, outline, shading and fram
 | musical-notes | Delapouite | CC BY 3.0 | talent:dread_cadence |
 | musical-score | Delapouite | CC BY 3.0 | talent:chorus_reach |
 | mute | Delapouite | CC BY 3.0 | talent:spellsever_drill |
+| neck-bite | Delapouite | CC BY 3.0 | ability:grave_strangle, aura:strangled |
 | nested-hearts | Delapouite | CC BY 3.0 | talent:mercy_unbounded |
 | night-sleep | Delapouite | CC BY 3.0 | ability:vesper_slumber_ab, aura:vesper_slumbered, talent:vesper_slumber |
 | notebook | Delapouite | CC BY 3.0 | talent:steadfast_dawnmend |
@@ -186,21 +194,26 @@ unmodified; the game renders them with its own colors, outline, shading and fram
 | overlord-helm | Delapouite | CC BY 3.0 | talent:dawns_bastion |
 | padlock-open | Delapouite | CC BY 3.0 | talent:unbroken_oath |
 | peace-dove | Delapouite | CC BY 3.0 | talent:ready_touch |
+| pelvis-bone | Delapouite | CC BY 3.0 | talent:thick_marrow |
 | pendulum-swing | Delapouite | CC BY 3.0 | talent:hours_weight |
 | plain-circle | Delapouite | CC BY 3.0 | talent:pulse_reach |
 | plain-padlock | Delapouite | CC BY 3.0 | talent:long_shackle |
 | polar-star | Delapouite | CC BY 3.0 | aura:templar_path_of_dawn, talent:path_of_dawn |
+| position-marker | Delapouite | CC BY 3.0 | talent:ready_mark |
 | pouring-pot | Delapouite | CC BY 3.0 | talent:thrifty_ward |
 | power-ring | Delapouite | CC BY 3.0 | talent:frugal_pulse |
 | prayer-beads | Delapouite | CC BY 3.0 | talent:fleet_devotion |
 | primitive-torch | Delapouite | CC BY 3.0 | talent:kindling |
 | prisoner | Delapouite | CC BY 3.0 | talent:iron_jailer |
 | pulley-hook | Delapouite | CC BY 3.0 | talent:swift_tether |
+| resting-vampire | Delapouite | CC BY 3.0 | ability:vampiric_pact_ab, aura:vampiric_pact |
 | ribbon-shield | Delapouite | CC BY 3.0 | talent:enduring_aegis |
 | ringing-alarm | Delapouite | CC BY 3.0 | talent:ringing_bulwark |
 | ringmaster | Delapouite | CC BY 3.0 | talent:ring_reach |
 | rock-golem | Delapouite | CC BY 3.0 | talent:long_daze |
 | roman-shield | Delapouite | CC BY 3.0 | talent:swift_aegis |
+| rope-coil | Delapouite | CC BY 3.0 | talent:long_strangle |
+| rope-dart | Delapouite | CC BY 3.0 | talent:iron_tether_b |
 | round-star | Delapouite | CC BY 3.0 | talent:earnest_word |
 | rule-book | Delapouite | CC BY 3.0 | aura:templar_swift_litany, talent:swift_litany |
 | running-shoe | Delapouite | CC BY 3.0 | talent:zealous_pace |
@@ -210,6 +223,7 @@ unmodified; the game renders them with its own colors, outline, shading and fram
 | scroll-quill | Delapouite | CC BY 3.0 | talent:scholars_bent |
 | secret-book | Delapouite | CC BY 3.0 | talent:glacier_lore |
 | seven-pointed-star | Delapouite | CC BY 3.0 | talent:halo_cadence |
+| shaking-hands | Delapouite | CC BY 3.0 | talent:sure_reaping |
 | sharp-axe | Delapouite | CC BY 3.0 | talent:bitter_edge |
 | sharp-halberd | Delapouite | CC BY 3.0 | talent:long_edge |
 | shattered-heart | Delapouite | CC BY 3.0 | talent:bitter_frostbite |
@@ -221,6 +235,7 @@ unmodified; the game renders them with its own colors, outline, shading and fram
 | silenced | Delapouite | CC BY 3.0 | aura:windpipe_crushed |
 | skeletal-hand | Delapouite | CC BY 3.0 | aura:deathsworn_grim_tempo, talent:grim_tempo |
 | ski-boot | Delapouite | CC BY 3.0 | ability:frostpath_ab, aura:frostpath |
+| skipping-rope | Delapouite | CC BY 3.0 | talent:long_strangle_pvp |
 | solar-time | Delapouite | CC BY 3.0 | talent:swift_penance |
 | soul | Delapouite | CC BY 3.0 | talent:radiant_soul, talent:radiant_soul_power |
 | soul-vessel | Delapouite | CC BY 3.0 | talent:vessel_of_life |
@@ -264,15 +279,19 @@ unmodified; the game renders them with its own colors, outline, shading and fram
 | tower-bridge | Delapouite | CC BY 3.0 | talent:lasting_bastion |
 | tower-flag | Delapouite | CC BY 3.0 | talent:long_bastion |
 | tree-growth | Delapouite | CC BY 3.0 | talent:eternal_morning |
+| tribal-pendant | Delapouite | CC BY 3.0 | aura:bloodbound_oath, talent:blood_oath |
 | tribal-shield | Delapouite | CC BY 3.0 | talent:sheltering_aegis |
 | trident-shield | Delapouite | CC BY 3.0 | ability:bulwark_strike |
 | trumpet-flag | Delapouite | CC BY 3.0 | talent:swift_kinward |
 | two-handed-sword | Delapouite | CC BY 3.0 | talent:heavy_swings |
 | unbalanced | Delapouite | CC BY 3.0 | talent:humbling_brand |
+| vampire-cape | Delapouite | CC BY 3.0 | talent:long_vigil |
+| vampire-dracula | Delapouite | CC BY 3.0 | ability:sanguine_vigil_ab, aura:sanguine_vigil, spec:deathsworn_bloodbound |
 | vertical-banner | Delapouite | CC BY 3.0 | talent:oath_unbroken |
 | vibrating-shield | Delapouite | CC BY 3.0 | ability:ironbound_prayer_ab, aura:ironbound_prayer, talent:prayer_of_iron |
 | viking-shield | Delapouite | CC BY 3.0 | aura:radiance_vow_of_iron, talent:vow_of_iron |
 | wall-light | Delapouite | CC BY 3.0 | talent:bright_daybreak |
+| wanted-reward | Delapouite | CC BY 3.0 | talent:pact_choice |
 | war-axe | Delapouite | CC BY 3.0 | talent:heavy_verdict |
 | warhammer | Delapouite | CC BY 3.0 | ability:hallowed_strike |
 | water-flask | Delapouite | CC BY 3.0 | talent:deep_reserves |
@@ -284,6 +303,7 @@ unmodified; the game renders them with its own colors, outline, shading and fram
 | winged-scepter | Delapouite | CC BY 3.0 | aura:templar_unchained_stride, talent:unchained_stride |
 | winter-gloves | Delapouite | CC BY 3.0 | talent:carapace_mend |
 | winter-hat | Delapouite | CC BY 3.0 | talent:lasting_winter |
+| alien-skull | Lorc | CC BY 3.0 | talent:swift_cage |
 | anchor | Lorc | CC BY 3.0 | talent:sapping_throw |
 | andromeda-chain | Lorc | CC BY 3.0 | talent:hasty_binding |
 | angel-outfit | Lorc | CC BY 3.0 | aura:oracle_sanctified_vestments, talent:sanctified_vestments |
@@ -292,6 +312,7 @@ unmodified; the game renders them with its own colors, outline, shading and fram
 | anvil-impact | Lorc | CC BY 3.0 | aura:bound_dazed, talent:landing, talent:shaking_landing |
 | armor-vest | Lorc | CC BY 3.0 | talent:thick_carapace |
 | arrows-shield | Lorc | CC BY 3.0 | talent:relentless_bulwark |
+| atomic-slashes | Lorc | CC BY 3.0 | ability:sanguine_cleave |
 | aura | Lorc | CC BY 3.0 | ability:sanctum_ab, aura:sanctum |
 | axe-in-stump | Lorc | CC BY 3.0 | talent:ravenous_edge |
 | axe-swing | Lorc | CC BY 3.0 | ability:wide_hew |
@@ -303,9 +324,13 @@ unmodified; the game renders them with its own colors, outline, shading and fram
 | barbed-star | Lorc | CC BY 3.0 | talent:bitter_winter |
 | barbed-sun | Lorc | CC BY 3.0 | aura:seared_by_judgment, talent:searing_judgment |
 | bat-wing | Lorc | CC BY 3.0 | talent:swift_lunge |
+| battle-axe | Lorc | CC BY 3.0 | talent:keen_cleave_b |
+| batwing-emblem | Lorc | CC BY 3.0 | talent:unyielding_blood |
 | beam-wake | Lorc | CC BY 3.0 | ability:dawnbolt |
 | beams-aura | Lorc | CC BY 3.0 | talent:exalted_surge |
+| beast-eye | Lorc | CC BY 3.0 | talent:thick_mark |
 | bell-shield | Lorc | CC BY 3.0 | ability:veil_of_faith_ab, aura:iron_hide, aura:veil_of_faith, talent:sheltering_veil, talent:iron_hide |
+| bestial-fangs | Lorc | CC BY 3.0 | talent:deep_lash |
 | beveled-star | Lorc | CC BY 3.0 | talent:clear_radiance |
 | black-hand-shield | Lorc | CC BY 3.0 | aura:mend_ward, talent:warding_mend |
 | blade-bite | Lorc | CC BY 3.0 | talent:quick_sever |
@@ -326,8 +351,10 @@ unmodified; the game renders them with its own colors, outline, shading and fram
 | boots | Lorc | CC BY 3.0 | ability:unbowed_faith_ab, aura:unbowed_faith |
 | bordered-shield | Lorc | CC BY 3.0 | talent:bitter_carapace |
 | bottle-vapors | Lorc | CC BY 3.0 | aura:arena_clarity |
+| bouncing-sword | Lorc | CC BY 3.0 | talent:quick_sever_b |
 | brain | Lorc | CC BY 3.0 | aura:unhurried_mind_passive, talent:unhurried_mind |
 | brain-freeze | Lorc | CC BY 3.0 | aura:frostbitten |
+| brandy-bottle | Lorc | CC BY 3.0 | talent:rune_tithe_b |
 | breastplate | Lorc | CC BY 3.0 | aura:plate_ward, talent:plate_ward |
 | bright-explosion | Lorc | CC BY 3.0 | talent:wide_crusade |
 | broadsword | Lorc | CC BY 3.0 | talent:full_swing |
@@ -337,12 +364,14 @@ unmodified; the game renders them with its own colors, outline, shading and fram
 | broken-shield | Lorc | CC BY 3.0 | ability:shield_breaker |
 | broken-skull | Lorc | CC BY 3.0 | talent:ringing_skull |
 | broken-tablet | Lorc | CC BY 3.0 | ability:spellsever |
+| bubbling-flask | Lorc | CC BY 3.0 | talent:vigil_wellspring |
 | bull-horns | Lorc | CC BY 3.0 | talent:headlong_rush |
 | burning-blobs | Lorc | CC BY 3.0 | ability:kindled_strike, aura:zealot_sundered |
 | burning-embers | Lorc | CC BY 3.0 | ability:brand_of_contrition_ab, aura:contrition, talent:brand_of_contrition, talent:contrition_choice, talent:swift_brand |
 | burning-eye | Lorc | CC BY 3.0 | talent:red_hunger |
 | burning-meteor | Lorc | CC BY 3.0 | talent:fury_unbound |
 | burning-passion | Lorc | CC BY 3.0 | talent:martyrs_mercy |
+| caged-ball | Lorc | CC BY 3.0 | ability:bone_cage_ab, aura:bone_caged, talent:bone_cage |
 | candle-flame | Lorc | CC BY 3.0 | aura:templar_hearthglow, talent:hearthglow |
 | candle-light | Lorc | CC BY 3.0 | aura:oracle_ember_of_faith, talent:ember_of_faith |
 | candle-skull | Lorc | CC BY 3.0 | talent:unbroken_dread |
@@ -351,6 +380,7 @@ unmodified; the game renders them with its own colors, outline, shading and fram
 | chained-heart | Lorc | CC BY 3.0 | talent:long_stillness |
 | chalice-drops | Lorc | CC BY 3.0 | aura:arena_renewal, talent:hidden_cistern |
 | checked-shield | Lorc | CC BY 3.0 | aura:guarded_posture, talent:sealed_ice, talent:guarded_posture |
+| chemical-drop | Lorc | CC BY 3.0 | talent:long_bleed |
 | chewed-heart | Lorc | CC BY 3.0 | talent:sheltering_kinward |
 | chewed-skull | Lorc | CC BY 3.0 | aura:frostgrave_gnawed, talent:gnawing_shackles |
 | chopped-skull | Lorc | CC BY 3.0 | talent:sentence, talent:early_sentence |
@@ -375,6 +405,8 @@ unmodified; the game renders them with its own colors, outline, shading and fram
 | crenulated-shield | Lorc | CC BY 3.0 | talent:firm_bulwark |
 | crescent-blade | Lorc | CC BY 3.0 | ability:silencing_edge |
 | crested-helmet | Lorc | CC BY 3.0 | aura:deathsworn_barrow_mantle, talent:barrow_mantle |
+| croc-jaws | Lorc | CC BY 3.0 | talent:hungry_rend |
+| croc-sword | Lorc | CC BY 3.0 | talent:heavy_reaping |
 | cross-flare | Lorc | CC BY 3.0 | ability:dawnfury_ab, aura:dawnfury, spec:templar_zealot |
 | cross-mark | Lorc | CC BY 3.0 | talent:deep_silence |
 | crossed-axes | Lorc | CC BY 3.0 | aura:warborn, talent:warborn |
@@ -384,6 +416,7 @@ unmodified; the game renders them with its own colors, outline, shading and fram
 | crossed-sabres | Lorc | CC BY 3.0 | ability:searing_crusade_ab, aura:crusade_seared, talent:searing_crusade |
 | crossed-slashes | Lorc | CC BY 3.0 | talent:strike_the_fallen |
 | crossed-swords | Lorc | CC BY 3.0 | ability:auto_attack |
+| crown-of-thorns | Lorc | CC BY 3.0 | talent:crimson_tide |
 | crowned-explosion | Lorc | CC BY 3.0 | talent:crusaders_verdict |
 | crowned-heart | Lorc | CC BY 3.0 | ability:final_mercy |
 | crowned-skull | Lorc | CC BY 3.0 | talent:dominion_of_dread |
@@ -397,6 +430,7 @@ unmodified; the game renders them with its own colors, outline, shading and fram
 | crystalize | Lorc | CC BY 3.0 | talent:clinging_hoarfrost |
 | curly-wing | Lorc | CC BY 3.0 | talent:lengthened_surge |
 | cut-diamond | Lorc | CC BY 3.0 | talent:glacial_clarity |
+| cut-palm | Lorc | CC BY 3.0 | ability:bloodmark, aura:bloodmarked |
 | daemon-skull | Lorc | CC BY 3.0 | talent:bone_deep_dread |
 | dead-eye | Lorc | CC BY 3.0 | talent:cold_eye |
 | deadly-strike | Lorc | CC BY 3.0 | ability:crusading_blow |
@@ -406,15 +440,18 @@ unmodified; the game renders them with its own colors, outline, shading and fram
 | dervish-swords | Lorc | CC BY 3.0 | talent:crimson_frenzy |
 | diablo-skull | Lorc | CC BY 3.0 | talent:ruin_soul |
 | diamond-hard | Lorc | CC BY 3.0 | talent:sepulcher_reflex |
+| dinosaur-bones | Lorc | CC BY 3.0 | talent:long_cage |
 | direwolf | Lorc | CC BY 3.0 | talent:wide_howl |
 | divided-spiral | Lorc | CC BY 3.0 | talent:twofold_unravel |
 | double-ringed-orb | Lorc | CC BY 3.0 | talent:ring_blaze |
 | dove | Lorc | CC BY 3.0 | ability:purifying_touch |
 | dread-skull | Lorc | CC BY 3.0 | talent:long_dread |
+| drink-me | Lorc | CC BY 3.0 | talent:thrifty_reaping |
 | dripping-blade | Lorc | CC BY 3.0 | talent:measured_fury |
 | dripping-star | Lorc | CC BY 3.0 | talent:mercy_of_the_hour |
 | dripping-sword | Lorc | CC BY 3.0 | talent:weeping_ruin |
 | drop | Lorc | CC BY 3.0 | aura:ruin_bleed |
+| droplet-splash | Lorc | CC BY 3.0 | ability:veinburst_ab, aura:veinburst_bleed, talent:veinburst |
 | droplets | Lorc | CC BY 3.0 | talent:restless_hail, talent:seeping_wound |
 | eagle-emblem | Lorc | CC BY 3.0 | talent:sure_sunder |
 | earth-crack | Lorc | CC BY 3.0 | talent:thorough_sunder |
@@ -427,16 +464,19 @@ unmodified; the game renders them with its own colors, outline, shading and fram
 | energy-shield | Lorc | CC BY 3.0 | ability:lightward |
 | engagement-ring | Lorc | CC BY 3.0 | talent:ring_cadence |
 | enlightenment | Lorc | CC BY 3.0 | talent:deep_conviction |
+| evil-bat | Lorc | CC BY 3.0 | talent:hasty_vigil |
 | evil-book | Lorc | CC BY 3.0 | talent:grim_study |
 | evil-hand | Lorc | CC BY 3.0 | talent:sure_mend |
 | expanded-rays | Lorc | CC BY 3.0 | ability:radiant_pulse |
 | explosion-rays | Lorc | CC BY 3.0 | ability:dazzling_halo, aura:dazzled, talent:wide_halo |
 | eye-shield | Lorc | CC BY 3.0 | talent:unbreakable_faith |
+| eyeball | Lorc | CC BY 3.0 | aura:bloodbound_focus, talent:blood_focus |
 | falling-blob | Lorc | CC BY 3.0 | talent:deep_rimefall |
 | falling-boulder | Lorc | CC BY 3.0 | ability:rimefall_ab, aura:rimefall_slowed, talent:rimefall |
 | falling-eye | Lorc | CC BY 3.0 | talent:long_blindness |
 | falling-ovoid | Lorc | CC BY 3.0 | talent:heavy_rimefall |
 | fanged-skull | Lorc | CC BY 3.0 | aura:deathsworn_endless_hunger, talent:endless_hunger |
+| fangs-circle | Lorc | CC BY 3.0 | talent:bright_vigil |
 | feather | Lorc | CC BY 3.0 | ability:winged_stride_ab, aura:winged_stride |
 | feather-wound | Lorc | CC BY 3.0 | talent:sundering_strike_z |
 | feathered-wing | Lorc | CC BY 3.0 | talent:soaring_stride |
@@ -447,6 +487,7 @@ unmodified; the game renders them with its own colors, outline, shading and fram
 | fire-shield | Lorc | CC BY 3.0 | talent:searing_sunder |
 | fire-wave | Lorc | CC BY 3.0 | talent:burning_crusade |
 | fire-zone | Lorc | CC BY 3.0 | talent:long_fury |
+| fishbone | Lorc | CC BY 3.0 | talent:bone_shards |
 | fishing-hook | Lorc | CC BY 3.0 | talent:long_tether |
 | fist | Lorc | CC BY 3.0 | talent:heavy_hand, talent:crushed_windpipe |
 | flame-spin | Lorc | CC BY 3.0 | talent:swift_fury |
@@ -468,12 +509,15 @@ unmodified; the game renders them with its own colors, outline, shading and fram
 | gavel | Lorc | CC BY 3.0 | ability:binding_gavel, aura:gavel_bound, talent:heavy_gavel |
 | gear-hammer | Lorc | CC BY 3.0 | talent:ironclad_zeal |
 | gem-chain | Lorc | CC BY 3.0 | talent:lingering_awe |
+| gem-necklace | Lorc | CC BY 3.0 | talent:keen_blood |
 | gem-pendant | Lorc | CC BY 3.0 | talent:great_mercy |
 | gems | Lorc | CC BY 3.0 | talent:keen_zeal |
 | ghost | Lorc | CC BY 3.0 | talent:haunting_psalm |
 | ghost-ally | Lorc | CC BY 3.0 | talent:ready_cloak |
 | glass-heart | Lorc | CC BY 3.0 | talent:stopped_heart |
 | glowing-hands | Lorc | CC BY 3.0 | ability:mending_light |
+| goo-skull | Lorc | CC BY 3.0 | aura:bloodbound_festering, talent:festering_mark |
+| gooey-impact | Lorc | CC BY 3.0 | talent:wide_veinburst |
 | gooey-sword | Lorc | CC BY 3.0 | talent:gangrenous_edge |
 | grasping-claws | Lorc | CC BY 3.0 | talent:gripping_frost |
 | grim-reaper | Lorc | CC BY 3.0 | talent:relentless_grave |
@@ -511,6 +555,8 @@ unmodified; the game renders them with its own colors, outline, shading and fram
 | imprisoned | Lorc | CC BY 3.0 | ability:frozen_shackles, aura:frozen_shackled |
 | ink-swirl | Lorc | CC BY 3.0 | talent:practiced_unraveling |
 | interdiction | Lorc | CC BY 3.0 | ability:hush, talent:severing_hush |
+| interleaved-claws | Lorc | CC BY 3.0 | ability:gorefield_grip |
+| internal-organ | Lorc | CC BY 3.0 | talent:open_veins |
 | jawbone | Lorc | CC BY 3.0 | talent:deep_sever |
 | jeweled-chalice | Lorc | CC BY 3.0 | talent:thrifty_benediction |
 | justice-star | Lorc | CC BY 3.0 | aura:oracle_path_of_judgment, talent:path_of_judgment |
@@ -545,6 +591,7 @@ unmodified; the game renders them with its own colors, outline, shading and fram
 | muscle-up | Lorc | CC BY 3.0 | talent:broad_frame |
 | music-spell | Lorc | CC BY 3.0 | talent:chorus_cadence |
 | nailed-foot | Lorc | CC BY 3.0 | talent:tendon_ripper |
+| needle-jaws | Lorc | CC BY 3.0 | talent:purging_reap |
 | octogonal-eye | Lorc | CC BY 3.0 | talent:swift_reverence |
 | one-eyed | Lorc | CC BY 3.0 | aura:frostgrave_focus, talent:frost_focus |
 | open-book | Lorc | CC BY 3.0 | talent:quick_study |
@@ -554,10 +601,12 @@ unmodified; the game renders them with its own colors, outline, shading and fram
 | person-in-blizzard | Lorc | CC BY 3.0 | talent:lengthening_winter |
 | pierced-heart | Lorc | CC BY 3.0 | talent:cold_verdict |
 | piercing-sword | Lorc | CC BY 3.0 | talent:whetted_edge |
+| pill-drop | Lorc | CC BY 3.0 | talent:deep_veinburst |
 | plate-claw | Lorc | CC BY 3.0 | talent:quick_hoarlash |
 | potion-ball | Lorc | CC BY 3.0 | talent:lucid_reserve |
 | pouring-chalice | Lorc | CC BY 3.0 | talent:absolution_choice, talent:thorough_absolution |
 | prayer | Lorc | CC BY 3.0 | ability:swift_benediction |
+| pretty-fangs | Lorc | CC BY 3.0 | talent:quick_lash_b |
 | psychic-waves | Lorc | CC BY 3.0 | talent:dread_reach |
 | punch | Lorc | CC BY 3.0 | ability:throat_punch |
 | quick-slash | Lorc | CC BY 3.0 | talent:lean_swings |
@@ -573,16 +622,21 @@ unmodified; the game renders them with its own colors, outline, shading and fram
 | riot-shield | Lorc | CC BY 3.0 | talent:steady_carapace |
 | robe | Lorc | CC BY 3.0 | talent:layered_robes |
 | rosa-shield | Lorc | CC BY 3.0 | talent:enfolding_veil |
+| rough-wound | Lorc | CC BY 3.0 | ability:blood_lash, aura:lash_bleed |
+| run | Lorc | CC BY 3.0 | ability:crimson_stride_ab, aura:crimson_stride |
 | rune-stone | Lorc | CC BY 3.0 | talent:deep_hunger |
 | rune-sword | Lorc | CC BY 3.0 | ability:gravefrost_strike |
+| saber-slash | Lorc | CC BY 3.0 | ability:crimson_reaping |
 | sands-of-time | Lorc | CC BY 3.0 | talent:ready_oath |
 | saw-claw | Lorc | CC BY 3.0 | talent:bitter_lash |
 | scar-wound | Lorc | CC BY 3.0 | aura:scarred_hide, talent:scarred_hide |
+| scarecrow | Lorc | CC BY 3.0 | talent:lingering_howl_b |
 | screaming | Lorc | CC BY 3.0 | ability:psalm_of_dread, aura:psalm_dread |
 | scroll-unfurled | Lorc | CC BY 3.0 | aura:oracle_fervent_litany, talent:fervent_litany |
 | semi-closed-eye | Lorc | CC BY 3.0 | talent:deep_stillness |
 | serrated-slash | Lorc | CC BY 3.0 | talent:butchers_rhythm |
 | shard-sword | Lorc | CC BY 3.0 | ability:rime_cleave |
+| shark-jaws | Lorc | CC BY 3.0 | talent:hungry_cleave_b |
 | sharped-teeth-skull | Lorc | CC BY 3.0 | talent:hungry_cleave |
 | shattered-glass | Lorc | CC BY 3.0 | talent:thin_shards |
 | shattered-sword | Lorc | CC BY 3.0 | talent:crushing_ruin |
@@ -602,6 +656,7 @@ unmodified; the game renders them with its own colors, outline, shading and fram
 | skull-shield | Lorc | CC BY 3.0 | ability:deathless_resolve_ab, aura:deathless_resolve |
 | skull-signet | Lorc | CC BY 3.0 | ability:soulchill_brand_ab, aura:soulchilled, talent:soulchill_brand, talent:brand_choice |
 | skull-slices | Lorc | CC BY 3.0 | talent:thrifty_gravefrost |
+| slashed-shield | Lorc | CC BY 3.0 | ability:sanguine_bulwark_ab, aura:sanguine_bulwark, talent:sanguine_bulwark |
 | smoking-orb | Lorc | CC BY 3.0 | talent:heart_of_winter |
 | snow-bottle | Lorc | CC BY 3.0 | talent:thrift_of_winter |
 | snowflake-1 | Lorc | CC BY 3.0 | talent:deepening_winter |
@@ -609,6 +664,7 @@ unmodified; the game renders them with its own colors, outline, shading and fram
 | snowing | Lorc | CC BY 3.0 | talent:lingering_chill |
 | snowman | Lorc | CC BY 3.0 | talent:swift_effigy |
 | sonic-shout | Lorc | CC BY 3.0 | talent:rolling_roar |
+| spade-skull | Lorc | CC BY 3.0 | talent:undying_will |
 | spark-spirit | Lorc | CC BY 3.0 | talent:earnest_benediction |
 | spear-hook | Lorc | CC BY 3.0 | aura:tether_dragged, talent:fixed_tether |
 | spectre | Lorc | CC BY 3.0 | ability:gravecloak_ab, aura:gravecloak |
@@ -622,6 +678,7 @@ unmodified; the game renders them with its own colors, outline, shading and fram
 | splashy-stream | Lorc | CC BY 3.0 | talent:broad_absolution |
 | spotted-wound | Lorc | CC BY 3.0 | talent:festering_cut |
 | sprint | Lorc | CC BY 3.0 | ability:frost_step |
+| standing-potion | Lorc | CC BY 3.0 | talent:lasting_vigil |
 | star-cycle | Lorc | CC BY 3.0 | talent:ceaseless_rite |
 | star-pupil | Lorc | CC BY 3.0 | talent:keen_insight |
 | star-skull | Lorc | CC BY 3.0 | talent:frozen_crown |
@@ -642,6 +699,7 @@ unmodified; the game renders them with its own colors, outline, shading and fram
 | surrounded-shield | Lorc | CC BY 3.0 | aura:oracle_peal_shelter, talent:pealing_shelter |
 | swirl-ring | Lorc | CC BY 3.0 | talent:quick_gale |
 | swirl-string | Lorc | CC BY 3.0 | talent:barbed_lash |
+| sword-array | Lorc | CC BY 3.0 | talent:deep_sever_b |
 | sword-break | Lorc | CC BY 3.0 | ability:oathsever |
 | sword-clash | Lorc | CC BY 3.0 | talent:close_quarters |
 | sword-hilt | Lorc | CC BY 3.0 | ability:pommel_crack |
@@ -662,11 +720,15 @@ unmodified; the game renders them with its own colors, outline, shading and fram
 | third-eye | Lorc | CC BY 3.0 | talent:keen_focus |
 | thor-fist | Lorc | CC BY 3.0 | talent:heavy_hand_z |
 | thrown-charcoal | Lorc | CC BY 3.0 | talent:quick_spear |
+| thunder-blade | Lorc | CC BY 3.0 | talent:hasty_sever_b |
 | thunder-skull | Lorc | CC BY 3.0 | talent:restless_crown |
+| tied-scroll | Lorc | CC BY 3.0 | talent:long_pact |
 | time-bomb | Lorc | CC BY 3.0 | talent:short_fuse |
+| toad-teeth | Lorc | CC BY 3.0 | talent:gorging_reap |
 | tombstone | Lorc | CC BY 3.0 | aura:deathsworn_patient_grave, talent:patient_grave |
 | trefoil-lily | Lorc | CC BY 3.0 | talent:everlasting_grace |
 | triorb | Lorc | CC BY 3.0 | talent:rune_tithe |
+| triple-claws | Lorc | CC BY 3.0 | talent:wide_grip |
 | triple-lock | Lorc | CC BY 3.0 | talent:unshackled_choice |
 | triple-skulls | Lorc | CC BY 3.0 | talent:soul_choice |
 | two-feathers | Lorc | CC BY 3.0 | talent:winged_haste |
@@ -688,20 +750,24 @@ unmodified; the game renders them with its own colors, outline, shading and fram
 | winged-emblem | Lorc | CC BY 3.0 | spec:oracle_grace |
 | winged-leg | Lorc | CC BY 3.0 | aura:unbowed_stride, talent:unbowed |
 | winged-shield | Lorc | CC BY 3.0 | talent:steadfast_veil |
+| winged-sword | Lorc | CC BY 3.0 | talent:long_sever_b |
 | wingfoot | Lorc | CC BY 3.0 | aura:light_tread_passive, talent:light_tread, talent:far_bound |
 | wolf-head | Lorc | CC BY 3.0 | talent:howl_choice |
 | wolf-howl | Lorc | CC BY 3.0 | ability:sepulchral_howl_ab, aura:howl_dread, talent:sepulchral_howl |
 | wolf-trap | Lorc | CC BY 3.0 | talent:lingering_howl |
 | wood-axe | Lorc | CC BY 3.0 | talent:hacking_rhythm |
 | wrapped-heart | Lorc | CC BY 3.0 | aura:deathsworn_cold_heart, talent:cold_heart |
+| zebra-shield | Lorc | CC BY 3.0 | talent:iron_pact |
 | zigzag-cage | Lorc | CC BY 3.0 | ability:glacial_tomb, aura:tomb_encased |
 | evil-wings | Sbed | CC BY 3.0 | talent:deep_chill |
 | health-increase | Sbed | CC BY 3.0 | talent:peal_of_grace, talent:pealing_mercy |
+| shield | Sbed | CC BY 3.0 | talent:swift_bulwark |
 | water-drop | Sbed | CC BY 3.0 | talent:thawing_sepulcher |
 | weight-crush | Sbed | CC BY 3.0 | talent:crushing_burden |
 | blood | Skoll | CC BY 3.0 | aura:thick_blood, talent:thick_blood |
 | breaking-chain | Skoll | CC BY 3.0 | ability:break_free, talent:slip_the_bonds, talent:unbowed, talent:grim_resolve |
 | drop-weapon | Skoll | CC BY 3.0 | ability:wrench_grip, aura:wrenched, talent:wrench_grip_talent |
 | hearts | Skoll | CC BY 3.0 | talent:thrifty_mend |
+| trench-body-armor | Skoll | CC BY 3.0 | talent:thick_bulwark |
 | heart-minus | Zeromancer | CC0 | talent:numb_flesh |
 | heart-plus | Zeromancer | CC0 | talent:mending_scars |

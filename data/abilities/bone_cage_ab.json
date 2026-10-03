@@ -1,0 +1,29 @@
+{
+  "id": "bone_cage_ab",
+  "name": "Bone Cage",
+  "description": "Root an enemy within 25 m in a cage of bone for 4 s. Heavy damage breaks it.",
+  "owner": "deathsworn_bloodbound",
+  "kit_slot": "cc",
+  "school": "physical",
+  "cast_type": "instant",
+  "cooldown_s": 30,
+  "triggers_gcd": true,
+  "range_m": 25,
+  "requires_los": true,
+  "target": "enemy",
+  "effects": [
+    {
+      "type": "apply_aura",
+      "aura": "bone_caged"
+    }
+  ],
+  "icon": {
+    "symbol": "bone_cage",
+    "school": "physical",
+    "image": "lorc/caged-ball"
+  },
+  "cost": {
+    "resource": "runes",
+    "amount": 1
+  }
+}

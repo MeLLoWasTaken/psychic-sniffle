@@ -1,0 +1,9 @@
+{
+  "id": "sanguine_bulwark_ab",
+  "auras": {
+    "sanguine_bulwark": {
+      "style": "shield",
+      "size": 1.2
+    }
+  }
+}

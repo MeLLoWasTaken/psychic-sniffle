@@ -1,0 +1,22 @@
+{
+  "id": "bloodbound_festering",
+  "name": "Festering",
+  "description": "Healing received down 25%.",
+  "kind": "debuff",
+  "duration_s": 8,
+  "dispel_type": "none",
+  "cc_category": "none",
+  "hud_priority": "normal",
+  "icon": {
+    "symbol": "bloodbound_festering",
+    "school": "blood",
+    "image": "lorc/goo-skull"
+  },
+  "modifiers": [
+    {
+      "stat": "healing_taken",
+      "op": "multiply",
+      "value": 0.75
+    }
+  ]
+}

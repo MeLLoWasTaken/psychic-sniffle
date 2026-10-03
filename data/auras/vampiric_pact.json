@@ -1,0 +1,27 @@
+{
+  "id": "vampiric_pact",
+  "name": "Vampiric Pact",
+  "description": "Damage taken down 10%, healing received up 30%.",
+  "kind": "buff",
+  "duration_s": 10,
+  "dispel_type": "magic",
+  "cc_category": "none",
+  "hud_priority": "major_defensive",
+  "icon": {
+    "symbol": "vampiric_pact",
+    "school": "blood",
+    "image": "delapouite/resting-vampire"
+  },
+  "modifiers": [
+    {
+      "stat": "damage_taken",
+      "op": "multiply",
+      "value": 0.9
+    },
+    {
+      "stat": "healing_taken",
+      "op": "multiply",
+      "value": 1.3
+    }
+  ]
+}

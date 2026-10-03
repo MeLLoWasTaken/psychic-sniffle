@@ -1,0 +1,15 @@
+{
+  "id": "strangled",
+  "name": "Grave Strangle",
+  "description": "Stunned.",
+  "kind": "debuff",
+  "duration_s": 3,
+  "dispel_type": "magic",
+  "cc_category": "stun",
+  "hud_priority": "cc",
+  "icon": {
+    "symbol": "strangled",
+    "school": "shadow",
+    "image": "delapouite/neck-bite"
+  }
+}

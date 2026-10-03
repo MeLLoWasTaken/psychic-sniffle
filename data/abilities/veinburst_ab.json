@@ -1,0 +1,35 @@
+{
+  "id": "veinburst_ab",
+  "name": "Veinburst",
+  "description": "Enemies within 10 m bleed for 500 every 2 s for 10 s.",
+  "owner": "deathsworn_bloodbound",
+  "kit_slot": "core",
+  "school": "blood",
+  "cast_type": "instant",
+  "cooldown_s": 15,
+  "triggers_gcd": true,
+  "range_m": 0,
+  "requires_los": false,
+  "target": "self",
+  "effects": [
+    {
+      "type": "apply_aura",
+      "aura": "veinburst_bleed",
+      "affects": "enemies_in_radius",
+      "radius_m": 10
+    }
+  ],
+  "icon": {
+    "symbol": "veinburst",
+    "school": "blood",
+    "image": "lorc/droplet-splash"
+  },
+  "cost": {
+    "resource": "runes",
+    "amount": 1
+  },
+  "generates": {
+    "resource": "runic_power",
+    "amount": 10
+  }
+}

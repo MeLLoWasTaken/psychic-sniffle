@@ -1,0 +1,14 @@
+{
+  "id": "veinburst_ab",
+  "ground": {
+    "style": "nova",
+    "center": "caster",
+    "lifetime_s": 0.8
+  },
+  "auras": {
+    "veinburst_bleed": {
+      "style": "dot",
+      "size": 0.8
+    }
+  }
+}
