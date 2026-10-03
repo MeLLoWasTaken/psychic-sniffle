@@ -2,6 +2,10 @@
 
 One entry per build-loop iteration, newest first. Format: date, backlog ID, what changed, how it was checked.
 
+## 2026-10-03 — M3-10 Deathsworn character
+- The Deathsworn has a character: dark iron and bone, a crown of glowing ice spikes on a skull-faced helm with burning eye slits, frost shards rising from its shoulders, bone ribs across the chest and a long tattered cape. It carries a new runeblade with saw teeth and glowing runes. At a distance the crown and the cape set it apart from the horned Warblade and the winged Templar.
+- Checked: asset validation, contact sheet and close-ups, lineups in three poses with all seven characters, the character in the arena.
+
 ## 2026-10-03 — Review pass 6
 - Balance with six specs: in 2v2 and 3v3 every spec wins 42 to 57% of 3,000 simulated matches. Duels are lopsided: the Templar tank and healer win most of them and the Warblade only 24%. The review asks the human whether 1v1 balance should cover tanks and healers.
 - The six characters side by side, the three arenas side by side (the rebuilt courtyard now matches the other two), and a 20-player profile on CI (server tick 1.6 ms on average).

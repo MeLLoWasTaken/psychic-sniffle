@@ -1,0 +1,29 @@
+{
+  "id": "weapon_runeblade",
+  "kind": "weapon",
+  "builder": "build_weapon.py",
+  "seed": 47,
+  "pivot": "grip",
+  "tri_budget": {
+    "min": 800,
+    "max": 5000
+  },
+  "texture_size": 1024,
+  "palette": {
+    "steel": "#7f8a96",
+    "dark": "#2b3038",
+    "iron": "#3c4048",
+    "leather": "#2a2230",
+    "bone": "#cdc4ad",
+    "frost": "#8fdcff"
+  },
+  "params": {
+    "type": "runeblade",
+    "blade_m": 1.2,
+    "grip_m": 0.36,
+    "blade_width_m": 0.06,
+    "hold": "two_handed"
+  },
+  "out": "game/assets/weapons/weapon_runeblade.glb",
+  "status": "draft"
+}

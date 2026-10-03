@@ -1,0 +1,38 @@
+{
+  "id": "char_deathsworn_frostgrave",
+  "kind": "character",
+  "builder": "build_character.py",
+  "seed": 53,
+  "spec": "deathsworn_frostgrave",
+  "body_build": "heavy",
+  "tri_budget": {
+    "min": 15000,
+    "max": 25000
+  },
+  "texture_size": 2048,
+  "palette": {
+    "plate": "#4c5563",
+    "trim": "#cdc4ad",
+    "gold": "#cdc4ad",
+    "holy": "#8fdcff",
+    "frost": "#8fdcff",
+    "eyes": "#a8ecff",
+    "leather": "#2a2230",
+    "trim_cloth": "#2b2435",
+    "cloth": "#2b2435",
+    "cloth_dark": "#231d2b",
+    "skin": "#8a8f99"
+  },
+  "params": {
+    "armor": "deathsworn_plate",
+    "body_tris": 4000,
+    "weapon": "weapon_runeblade",
+    "hands": [
+      "fist",
+      "fist"
+    ]
+  },
+  "out": "game/assets/characters/char_deathsworn_frostgrave.glb",
+  "status": "draft",
+  "pivot": "axis"
+}

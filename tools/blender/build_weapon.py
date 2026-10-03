@@ -297,7 +297,79 @@ def glaive(p: dict, m: dict, rng) -> list:
     return parts
 
 
-WEAPONS = {"greatsword": greatsword, "staff": staff, "mace": mace, "warhammer": warhammer, "glaive": glaive}
+def runeblade(p: dict, m: dict, rng) -> list:
+    """Deathsworn runeblade, about 1.8 m (M3-10): a two-handed blade that widens toward a clipped,
+    forward-leaning tip, saw teeth along its back (-X), glowing frost runes down both faces, a
+    guard of two prongs curving down round a skull-like boss, and a ring pommel."""
+    blade_len = p.get("blade_m", 1.2)
+    grip = p.get("grip_m", 0.36)
+    base_w = p.get("blade_width_m", 0.06)
+    parts = []
+    z0 = grip / 2 + 0.07
+    stations = [(z0, base_w * 0.85, 0.018), (z0 + 0.08, base_w, 0.017)]
+    n = 14
+    for i in range(1, n + 1):
+        t = i / n
+        stations.append((z0 + 0.08 + t * (blade_len - 0.24), base_w * (1.0 + 0.75 * t), 0.017 * (1 - 0.25 * t)))
+    stations += [(z0 + blade_len - 0.06, base_w * 1.5, 0.012), (z0 + blade_len, 0.0, 0.0)]
+    blade = loft("blade", stations, m["steel"], random_tint(rng, 0.04))
+    for v in blade.data.vertices:  # clip the tip: the last stretch leans toward the edge (+X)
+        t = max(0.0, (v.co.z - (z0 + blade_len - 0.22)) / 0.22)
+        v.co.x += 0.07 * t * t
+    parts.append(blade)
+    # saw teeth along the back edge
+    for k in range(6):
+        tz = z0 + 0.25 + k * (blade_len - 0.45) / 5
+        w = base_w * (1.0 + 0.75 * min(1.0, (tz - z0 - 0.08) / (blade_len - 0.24)))
+        parts.append(cylinder("tooth", 0.016, 0.055, (-w - 0.018, 0, tz), rot=(0, -math.radians(115), 0), sides=4,
+                              radius_top=0.002, mat=m["steel"]))
+    # glowing runes down the middle of both faces: short bars and hooks
+    for sy in (-1, 1):
+        for k in range(5):
+            rz = z0 + 0.16 + k * 0.17
+            parts.append(block("rune", (0.012, 0.004, 0.06), (0, sy * 0.016, rz), bevel=0.0, mat=m["frost"]))
+            parts.append(block("rune_branch", (0.03, 0.004, 0.01), (0.012 * (1 if k % 2 else -1), sy * 0.016, rz + 0.015),
+                               bevel=0.0, mat=m["frost"]))
+    # guard: a skull-like boss with two prongs curving down
+    cg_z = grip / 2 + 0.03
+    bpy.ops.mesh.primitive_ico_sphere_add(subdivisions=2, radius=0.06, location=(0, 0, cg_z + 0.01))
+    boss = bpy.context.active_object
+    kit.clear_uvs(boss)
+    boss.scale = (1.0, 0.75, 0.9)
+    boss.data.materials.append(m["bone"])
+    kit.set_tint(boss, (1, 1, 1))
+    parts.append(boss)
+    for sx in (-1, 1):
+        parts.append(kit.strut("prong", (sx * 0.04, 0, cg_z), (sx * 0.16, 0, cg_z + 0.03), 0.026, sides=6, mat=m["bone"]))
+        parts.append(kit.strut("prong_bend", (sx * 0.16, 0, cg_z + 0.03), (sx * 0.22, 0, cg_z - 0.04), 0.02, sides=6, mat=m["bone"]))
+        parts.append(cylinder("prong_tip", 0.02, 0.07, (sx * 0.235, 0, cg_z - 0.08), rot=(0, -sx * 0.3, 0), sides=6,
+                              radius_top=0.003, mat=m["bone"]))
+    for sx in (-1, 1):  # eye sockets on the boss, glowing
+        parts.append(block("socket", (0.016, 0.006, 0.012), (sx * 0.022, -0.045, cg_z + 0.02), bevel=0.0, mat=m["frost"]))
+    # grip and ring pommel
+    parts.append(cylinder("grip", 0.022, grip, (0, 0, 0), sides=10, mat=m["leather"], tint=random_tint(rng, 0.06)))
+    for i in range(6):
+        z = -grip / 2 + grip * (i + 0.5) / 6
+        bpy.ops.mesh.primitive_torus_add(major_radius=0.023, minor_radius=0.006, major_segments=10, minor_segments=4,
+                                         location=(0, 0, z))
+        band = bpy.context.active_object
+        kit.clear_uvs(band)
+        band.data.materials.append(m["leather"])
+        kit.set_tint(band, (0.85, 0.85, 0.85))
+        parts.append(band)
+    bpy.ops.mesh.primitive_torus_add(major_radius=0.045, minor_radius=0.013, major_segments=12, minor_segments=5,
+                                     location=(0, 0, -grip / 2 - 0.05), rotation=(math.pi / 2, 0, 0))
+    ring = bpy.context.active_object
+    kit.clear_uvs(ring)
+    ring.data.materials.append(m["iron"])
+    kit.set_tint(ring, (1, 1, 1))
+    parts.append(ring)
+    parts.append(cylinder("pommel_neck", 0.02, 0.03, (0, 0, -grip / 2 - 0.01), sides=8, mat=m["iron"]))
+    return parts
+
+
+WEAPONS = {"greatsword": greatsword, "staff": staff, "mace": mace, "warhammer": warhammer, "glaive": glaive,
+           "runeblade": runeblade}
 
 
 def main() -> None:
@@ -317,6 +389,7 @@ def main() -> None:
         "frost": kit.kit_material("frost", pal.get("frost", "#9fe6ff"), roughness=0.15, edge=0.5, cavity=0.2,
                                   emission=1.5),
         "gold": kit.kit_material("gold", pal.get("gold", "#b08a3e"), roughness=0.4, metallic=0.3, edge=0.6),
+        "bone": kit.kit_material("bone", pal.get("bone", "#cfc6b0"), roughness=0.65, edge=0.4, cavity=0.5),
     }
     parts = WEAPONS[spec["params"]["type"]](spec["params"], m, rng)
     kit.apply_transforms(parts)

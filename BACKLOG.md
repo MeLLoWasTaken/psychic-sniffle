@@ -22,7 +22,7 @@ Items further down keep their history; this list is the order to take them in. R
 
 1. M3-04 Templar balance. Team brackets are inside 40-60% for every spec; 1v1 is not (Vanguard 67%, Radiance 60%, Warblade 24%). Waiting on the human: should 1v1 balance cover tanks and healers (review 6 asks; recommendation: measure 1v1 among damage specs, report tanks and healers separately)? The criterion stands as written until then.
 2. Frostgrave balance (the nightly at cac5431 includes it).
-3. M3-10 Deathsworn character; M3-11 Frostgrave sounds and effects.
+3. M3-11 Frostgrave sounds and effects (M3-10 done).
 4. F-08 leftover: Oracle mirrors reaching the time limit (a dampening proposal waits on the human).
 
 ### P-01 Playtest build `[done]`
@@ -716,8 +716,10 @@ The other 10 classes, and the 6 remaining specs of the first three classes, in t
 - Not in the main menu: no character model (a capsule stands in), no sounds of its own.
 - Follow-ups: M3-10 Deathsworn character; M3-11 Frostgrave sounds and effects; Frostgrave balance joins the next nightly.
 
-### M3-10 Deathsworn character `[todo]`
-- [ ] A Deathsworn model on the heavy body build: a plate armor set distinct from the Warblade's and the Templar's (grave-cold, rimed, a hooded or crowned helm), a two-handed runed blade; passes the art checklist, including the silhouette test against the other plate classes.
+### M3-10 Deathsworn character `[done]`
+- [x] A Deathsworn model on the heavy body build: a plate armor set distinct from the Warblade's and the Templar's (grave-cold, rimed, a hooded or crowned helm), a two-handed runed blade; passes the art checklist, including the silhouette test against the other plate classes.
+- Done 2026-10-03: `deathsworn_plate` (tools/blender/armor.py): dark blue-grey iron with bone trim; bone ribs across the breastplate; angular pauldrons with three glowing frost shards rising from each; a narrow tattered loincloth with a glowing diamond mark; a long tattered cape from the shoulder blades to mid-calf that flares out behind the legs; a narrow skull-faced helm with glowing eye slits, a jaw grille and a crown of five jagged ice spikes (0.40 m in the middle); a high collar. A new `weapon_runeblade` (1.74 m, 1,334 triangles): a blade widening to a clipped tip, saw teeth along its back, glowing runes on both faces, bone prongs round a skull boss, a ring pommel. Character 23,908 triangles, pivot `axis` (the cape moves the bounding box 9 cm back).
+- Art checklist: asset validation passes; contact sheet and close-ups (`previews/m3_10/`); lineup in idle, cast and attack poses with the six other characters (`previews/m3_10/lineup/`); in the arena (`previews/m3_10/arena_lineup.png`). Silhouette overlap with the Warblade 0.82 standing, 0.80 casting, 0.79 attacking (0.85 before the crown was raised and the cape widened), with the Templars 0.66 to 0.79, with the cloth classes 0.55 to 0.61. In colour it is the only dark figure with cold light on it.
 
 ### M3-11 Frostgrave sounds and effects `[todo]`
 - [ ] Frostgrave's strong effects (Grave Winter, Hoarfrost Surge, Glacial Tomb, Grave Tether, Gravecloak) get their own sounds instead of the Arcanist's and the Templar's; every ability's effect reads on enemy frames.

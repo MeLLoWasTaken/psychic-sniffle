@@ -1076,7 +1076,284 @@ def templar_plate(j: dict, build: str = "heavy", hands: tuple[str, str] = ("rela
     return pieces
 
 
+def deathsworn_plate(j: dict, build: str = "heavy", hands: tuple[str, str] = ("fist", "fist")) -> list[Piece]:
+    """Deathsworn (M3-10): grave-cold dark iron, bone trim and frost. Read at a distance by a
+    crown of five glowing ice spikes on a narrow skull-faced helm (the Warblade has wide horns, the
+    Templar a V of wings) and a long tattered cape that flares out behind the legs. Ribbed
+    breastplate, angular pauldrons with frost shards rising from them, a narrow tattered loincloth
+    with a glowing rune, glowing eye slits."""
+    v = lambda *a: np.array(a, dtype=float)  # noqa: E731
+    body = body_sdf.body_shape(j, build, hands)
+    ev = lambda names: (lambda P, s=sdf.subset(body, names): sdf.eval_points(s, P))  # noqa: E731
+    torso = ev({"pelvis", "abdomen", "ribcage", "girdle", "pec", "lat", "trap", "glute"})
+    z = lambda name: float(j[name][2])  # noqa: E731
+    pieces: list[Piece] = []
+
+    # ---- breastplate with bone rib ridges --------------------------------------------------------
+    top = z("chest_top") + 0.035
+    breast_bottom = z("chest") - 0.12
+    sh_l, sh_r = j["shoulder_l"], j["shoulder_r"]
+    chest_round = lambda P: sdf.smin(torso(P), sdf.sd_ellipsoid(P, v(0, -0.02, z("chest") + 0.02), (0.19, 0.15, 0.16)), 0.08)  # noqa: E731
+
+    def breastplate(P):
+        d = sdf.shell(chest_round, P, 0.012, 0.048)
+        d = np.maximum(d, sdf.half_space(P, v(0, 0, top), (0, 0, 1)))
+        d = np.maximum(d, -sdf.half_space(P, v(0, 0, breast_bottom), (0, 0, 1)))
+        for s, sxa in ((sh_l, 1.0), (sh_r, -1.0)):
+            d = np.maximum(d, -(np.linalg.norm(P - (s + v(sxa * 0.05, 0, -0.03)), axis=1) - 0.11))
+        neck = np.linalg.norm(P[:, :2] - v(0, 0.01)[None, :2], axis=1) - 0.12
+        return np.maximum(d, -np.where(P[:, 2] > top - 0.08, neck, 1.0))
+    pieces.append(Piece("breastplate", "chest", "plate", breastplate, v(-0.4, -0.32, breast_bottom - 0.05),
+                        v(0.4, 0.3, top + 0.05), 2000, facet_deg=30))
+
+    rib_zs = [z("chest") - 0.075 + 0.048 * k for k in range(4)]
+
+    def ribs(P):
+        shellp = sdf.shell(chest_round, P, 0.044, 0.064)
+        front = sdf.half_space(P, v(0, -0.06, 0), (0, 1, 0))           # the front of the chest only
+        d = 10.0
+        for k, rz in enumerate(rib_zs):
+            half_w = 0.16 - 0.012 * abs(k - 1.5)
+            curve = rz - 0.06 * (P[:, 0] / half_w) ** 2                 # each rib dips toward the sides
+            d = np.minimum(d, np.maximum(np.abs(P[:, 2] - curve) - 0.011, np.abs(P[:, 0]) - half_w))
+        sternum = np.maximum(np.abs(P[:, 0]) - 0.016, np.abs(P[:, 2] - (rib_zs[0] + rib_zs[-1]) / 2) - 0.1)
+        return np.maximum(np.maximum(shellp, front), np.minimum(d, sternum))
+    pieces.append(Piece("ribs", "chest", "trim", ribs, v(-0.25, -0.32, rib_zs[0] - 0.12), v(0.25, 0.0, rib_zs[-1] + 0.06),
+                        700, facet_deg=35, voxel=0.004))
+
+    plack_top, plack_bottom = z("chest") - 0.1, z("spine") - 0.09
+
+    def plackart(P):
+        d = sdf.shell(torso, P, 0.02, 0.06)
+        d = np.maximum(d, sdf.half_space(P, v(0, 0, plack_top), (0, 0, 1)))
+        return np.maximum(d, -sdf.half_space(P, v(0, 0, plack_bottom), (0, 0, 1)))
+    pieces.append(Piece("plackart", "spine", "plate", plackart, v(-0.35, -0.3, plack_bottom - 0.05),
+                        v(0.35, 0.3, plack_top + 0.05), 900, facet_deg=30))
+
+    belt_z = z("spine") - 0.13
+
+    def belt(P):
+        d = sdf.shell(torso, P, 0.03, 0.075)
+        d = np.maximum(d, np.abs(P[:, 2] - belt_z) - 0.045)
+        buckle = sdf.sd_ellipsoid(P, v(0, -0.185, belt_z), (0.055, 0.03, 0.06))  # a rounded bone boss
+        return sdf.smin(d, buckle, 0.01)
+    pieces.append(Piece("belt", "pelvis", "leather", belt, v(-0.32, -0.28, belt_z - 0.1), v(0.32, 0.28, belt_z + 0.1),
+                        700, facet_deg=40, rivets=_rivet_ring(belt, v(0, 0, belt_z), 0.25, v(1, 0, 0), v(0, 1, 0), 10,
+                                                              arc=(0.3, np.pi * 2 - 0.3))))
+
+    # ---- a narrow tattered loincloth in front, with a glowing rune --------------------------------
+    tab_top, tab_bottom = belt_z + 0.02, z("knee_l") + 0.02
+    fy = _front_y(torso, belt_z) - 0.09
+
+    def cloth_y(Pz):
+        t = np.clip((tab_top - Pz) / (tab_top - tab_bottom), 0, 1)
+        return fy - 0.12 * t
+
+    def tatter(x, period, depth):
+        return depth * np.abs(((x / period) % 1.0) - 0.5) * 2.0       # a row of notches along a hem
+
+    def loincloth(P):
+        panel = np.maximum(np.abs(P[:, 0]) - 0.12, np.abs(P[:, 1] - cloth_y(P[:, 2])) - 0.01)
+        hem = tab_bottom + tatter(P[:, 0] + 0.02, 0.06, 0.07)
+        return np.maximum(panel, np.maximum(P[:, 2] - tab_top, hem - P[:, 2]))
+    pieces.append(Piece("loincloth", "pelvis", "cloth_dark", loincloth, v(-0.2, -0.5, tab_bottom - 0.05),
+                        v(0.2, 0.0, tab_top + 0.05), 450, facet_deg=40))
+
+    rune_z = tab_top - 0.15
+    rune_y = float(cloth_y(np.array([rune_z]))[0]) - 0.013
+
+    def rune(P):  # a grave mark: a hollow diamond over a short stave
+        q = P - v(0, rune_y, rune_z)
+        diamond = (np.abs(q[:, 0]) + np.abs(q[:, 2] - 0.025)) / np.sqrt(2.0)
+        ring = np.maximum(np.abs(diamond - 0.032) - 0.0065, np.abs(q[:, 1]) - 0.006)
+        stave = sdf.sd_round_box(q, v(0, 0, -0.045), (0.0075, 0.006, 0.028), 0.003)
+        return np.minimum(ring, stave)
+    rc = v(0, rune_y, rune_z)
+    pieces.append(Piece("rune", "pelvis", "frost", rune, rc - v(0.1, 0.04, 0.1), rc + v(0.1, 0.04, 0.1), 250,
+                        facet_deg=40, voxel=0.003))
+
+    # ---- the cape: from the shoulder blades to mid-calf, flaring out behind the legs -------------
+    cape_top = z("chest_top") + 0.02
+    cape_bottom = z("knee_l") - 0.22
+    back_y = _front_y(torso, z("chest"), back=True) + 0.035
+
+    def cape_shape(P, grow=0.0):
+        t = np.clip((cape_top - P[:, 2]) / (cape_top - cape_bottom), 0, 1)
+        y = back_y + 0.24 * t ** 1.4 + 0.05 * (P[:, 0] / 0.3) ** 2     # hangs back, curving round the sides
+        half_w = 0.23 + 0.19 * t ** 1.2
+        hem = cape_bottom + tatter(P[:, 0] + 0.03, 0.09, 0.12)
+        d = np.maximum(np.abs(P[:, 0]) - half_w - grow, np.abs(P[:, 1] - y) - 0.012 - grow)
+        return np.maximum(d, np.maximum(P[:, 2] - cape_top, hem - P[:, 2]))
+    pieces.append(Piece("cape", "chest", "cloth_dark", cape_shape, v(-0.47, back_y - 0.06, cape_bottom - 0.05),
+                        v(0.42, back_y + 0.38, cape_top + 0.04), 900, facet_deg=40, voxel=0.006))
+
+    # ---- per side -----------------------------------------------------------------------------
+    def one_side(side: str, sx: float) -> None:
+        M = np.array([sx, 1.0, 1.0])
+        hip, knee, ankle, toe = j[f"hip_{side}"], j[f"knee_{side}"], j[f"ankle_{side}"], j[f"toe_{side}"]
+        sh, el, wr, he = j[f"shoulder_{side}"], j[f"elbow_{side}"], j[f"wrist_{side}"], j[f"hand_end_{side}"]
+
+        def mirror(names):
+            left = sdf.Shape([p for p in body.prims if p.name in names])
+            f = lambda P, s=left: sdf.eval_points(s, P)  # noqa: E731
+            return (lambda P, f=f: f(P * M)) if sx < 0 else f
+        legf = mirror({"thigh", "quad", "adductor", "knee"})
+        shinf = mirror({"shin", "calf", "knee"})
+        footf = mirror({"foot", "instep"})
+        armf = mirror({"upperarm", "bicep", "tricep", "deltoid"})
+        foref = mirror({"forearm", "forearm_mass"})
+        handf = hand_field(body, side)
+
+        def cuisse(P):
+            d = sdf.shell(legf, P, 0.016, 0.042)
+            d = np.maximum(d, sdf.half_space(P, v(0, 0, belt_z - 0.12), (0, 0, 1)))
+            d = np.maximum(d, -sdf.half_space(P, knee + v(0, 0, 0.09), (0, 0, 1)))
+            return np.maximum(d, sdf.half_space(P, v(0, 0.04, 0), (0, 1, 0)))
+        pieces.append(Piece(f"cuisse_{side}", f"thigh_{side}", "plate", cuisse, np.minimum(hip, knee) - 0.2,
+                            np.maximum(hip, knee) + 0.2, 400, facet_deg=30))
+
+        def poleyn(P):  # a knee cop with a short forward spike
+            c = knee + v(0, -0.06, 0.0)
+            d = np.maximum(sdf.sd_ellipsoid(P, c, (0.085, 0.06, 0.085)), -sdf.sd_ellipsoid(P, c + v(0, 0.02, 0), (0.07, 0.05, 0.07)))
+            spike = sdf.sd_round_cone(P, c + v(0, -0.03, 0.0), c + v(0, -0.11, -0.03), 0.026, 0.004)
+            return sdf.smin(d, spike, 0.01)
+        pieces.append(Piece(f"poleyn_{side}", f"calf_{side}", "trim", poleyn, knee - 0.2, knee + 0.2, 280, voxel=0.004))
+
+        def greave(P):
+            d = sdf.shell(shinf, P, 0.014, 0.04)
+            d = np.maximum(d, sdf.half_space(P, knee - v(0, 0, 0.07), (0, 0, 1)))
+            return np.maximum(d, -sdf.half_space(P, ankle + v(0, 0, 0.05), (0, 0, 1)))
+        pieces.append(Piece(f"greave_{side}", f"calf_{side}", "plate", greave, np.minimum(knee, ankle) - 0.18,
+                            np.maximum(knee, ankle) + 0.18, 500, facet_deg=30))
+
+        def sabaton(P):
+            d = sdf.shell(footf, P, -0.02, 0.024)
+            return np.maximum(d, sdf.half_space(P, ankle + v(0, 0, 0.07), (0, 0, 1)))
+        pieces.append(Piece(f"sabaton_{side}", f"foot_{side}", "plate", sabaton,
+                            np.minimum(ankle, toe) - v(0.15, 0.15, 0.1), np.maximum(ankle, toe) + v(0.15, 0.15, 0.15), 500,
+                            facet_deg=30))
+
+        out = v(sx, 0, 0.35)
+        out = out / np.linalg.norm(out)
+        pc = sh + v(sx * 0.02, 0.0, 0.04)
+
+        def pauldron(P, pc=pc, out=out):  # an angular dome and three lames, edged in bone
+            d = np.maximum(sdf.sd_round_box(P, pc, (0.15, 0.16, 0.12), 0.06),
+                           -sdf.sd_round_box(P, pc - v(0, 0, 0.02), (0.125, 0.135, 0.11), 0.05))
+            d = np.maximum(d, -sdf.half_space(P, pc - out * 0.07, out))
+            for i in range(3):
+                c = pc - v(0, 0, 0.09 + 0.055 * i) + v(sx * 0.03 * (i + 1), 0, 0)
+                ring = np.maximum(sdf.sd_round_box(P, c, (0.15 - 0.012 * i, 0.155 - 0.012 * i, 0.09), 0.04),
+                                  -sdf.sd_round_box(P, c, (0.13 - 0.012 * i, 0.135 - 0.012 * i, 0.1), 0.03))
+                ring = np.maximum(ring, -sdf.half_space(P, c - out * 0.02, out))
+                ring = np.maximum(ring, np.abs(P[:, 2] - c[2]) - 0.024)
+                d = np.minimum(d, ring)
+            return d
+        pieces.append(Piece(f"pauldron_{side}", f"upperarm_{side}", "plate", pauldron, pc - 0.4, pc + 0.4, 900,
+                            voxel=0.005, facet_deg=30))
+
+        def shards(P, pc=pc):  # frost shards rising from the pauldron, leaning out
+            d = 10.0
+            for k, (ox, oy, h, r) in enumerate(((0.06, -0.04, 0.24, 0.034), (0.11, 0.03, 0.17, 0.028), (0.02, 0.06, 0.13, 0.024))):
+                base = pc + v(sx * ox, oy, 0.08)
+                tip = base + v(sx * h * 0.35, oy * 0.3, h)
+                d = np.minimum(d, sdf.sd_round_cone(P, base, tip, r, 0.003))
+            return d
+        pieces.append(Piece(f"shards_{side}", f"upperarm_{side}", "frost", shards, pc - v(0.3, 0.3, 0.1), pc + v(0.3, 0.3, 0.45),
+                            400, voxel=0.004, facet_deg=25))
+
+        def rerebrace(P):
+            d = sdf.shell(armf, P, 0.012, 0.036)
+            axis = (el - sh) / np.linalg.norm(el - sh)
+            t = (P - sh) @ axis
+            return np.maximum(d, np.maximum(0.13 - t, t - (np.linalg.norm(el - sh) - 0.06)))
+        pieces.append(Piece(f"rerebrace_{side}", f"upperarm_{side}", "plate", rerebrace, np.minimum(sh, el) - 0.15,
+                            np.maximum(sh, el) + 0.15, 450, facet_deg=30))
+
+        def couter(P):
+            c = el + v(0, 0.05, 0)
+            return np.maximum(sdf.sd_ellipsoid(P, c, (0.07, 0.055, 0.07)), -sdf.sd_ellipsoid(P, c + v(0, -0.02, 0), (0.058, 0.045, 0.058)))
+        pieces.append(Piece(f"couter_{side}", f"forearm_{side}", "trim", couter, el - 0.15, el + 0.15, 250, voxel=0.004))
+
+        def vambrace(P):
+            axis = (wr - el) / np.linalg.norm(wr - el)
+            t = (P - el) @ axis
+            L = np.linalg.norm(wr - el)
+            flare = np.clip((t - 0.6 * L) / (0.4 * L), 0, 1) * 0.025
+            d = sdf.shell(foref, P, 0.014, 0.04) - flare
+            return np.maximum(d, np.maximum(0.07 - t, t - (L + 0.02)))
+        pieces.append(Piece(f"vambrace_{side}", f"forearm_{side}", "plate", vambrace, np.minimum(el, wr) - 0.16,
+                            np.maximum(el, wr) + 0.16, 500, facet_deg=30))
+
+        cuff_axis = (wr - el) / np.linalg.norm(wr - el)
+
+        def gauntlet(P):
+            d = sdf.shell(handf, P, -0.004, 0.0075)
+            cuff = sdf.sd_round_cone(P, wr - cuff_axis * 0.075, wr + cuff_axis * 0.012, 0.075, 0.062)
+            cuff = np.maximum(cuff, -sdf.sd_round_cone(P, wr - cuff_axis * 0.09, wr + cuff_axis * 0.02, 0.066, 0.052))
+            return np.minimum(d, cuff)
+        pieces.append(Piece(f"gauntlet_{side}", f"hand_{side}", "plate", gauntlet, np.minimum(wr, he) - 0.14,
+                            np.maximum(wr, he) + 0.14, 900, facet_deg=35, voxel=0.003))
+
+    one_side("l", 1.0)
+    one_side("r", -1.0)
+
+    # ---- helm: narrow, skull-faced, glowing eye slits, a crown of five ice spikes ---------------
+    hz = z("head")
+    hc = v(0, 0.0, hz + 0.11)
+
+    def helm_outer(P):
+        return sdf.smin(sdf.sd_round_box(P, hc + v(0, -0.01, -0.02), (0.105, 0.125, 0.15), 0.09),
+                        sdf.sd_ellipsoid(P, hc + v(0, 0.01, 0.05), (0.115, 0.135, 0.13)), 0.04)
+
+    def helm(P):
+        outer = helm_outer(P)
+        inner = sdf.sd_round_box(P, hc + v(0, 0.0, -0.01), (0.087, 0.107, 0.15), 0.065)
+        d = np.maximum(outer, -inner)
+        d = np.maximum(d, -sdf.half_space(P, v(0, 0, hz - 0.075), (0, 0, 1)))
+        for sxe in (1, -1):  # eye sockets
+            d = np.maximum(d, -sdf.sd_ellipsoid(P, hc + v(sxe * 0.042, -0.135, 0.015), (0.03, 0.05, 0.018)))
+        for k in range(5):  # a grille of slits over the jaw
+            d = np.maximum(d, -sdf.sd_round_box(P, hc + v(-0.04 + 0.02 * k, -0.135, -0.06), (0.004, 0.05, 0.03), 0.002))
+        return d
+    pieces.append(Piece("helm", "head", "plate", helm, hc - v(0.3, 0.3, 0.3), hc + v(0.3, 0.3, 0.35), 1700, voxel=0.005,
+                        facet_deg=30))
+
+    def eyes(P):
+        return np.minimum(*[sdf.sd_ellipsoid(P, hc + v(sxe * 0.042, -0.11, 0.015), (0.024, 0.012, 0.012)) for sxe in (1, -1)])
+    pieces.append(Piece("eye_glow", "head", "eyes", eyes, hc - v(0.12, 0.2, 0.06), hc + v(0.12, 0.0, 0.08), 150, voxel=0.003))
+
+    def brow_band(P):
+        band = sdf.shell(helm_outer, P, -0.004, 0.01)
+        return np.maximum(band, np.abs(P[:, 2] - (hc[2] + 0.06)) - 0.017)
+    pieces.append(Piece("brow_band", "head", "trim", brow_band, hc - v(0.2, 0.2, 0.05), hc + v(0.2, 0.2, 0.15), 450,
+                        voxel=0.004, facet_deg=35))
+
+    def crown(P):  # five jagged ice spikes on the front arc of the brow, the tallest in the middle
+        d = 10.0
+        for ang, h, r in ((-1.05, 0.17, 0.026), (-0.52, 0.27, 0.03), (0.0, 0.4, 0.034), (0.52, 0.27, 0.03), (1.05, 0.17, 0.026)):
+            base = hc + v(np.sin(ang) * 0.11, -np.cos(ang) * 0.12, 0.07)
+            lean = v(np.sin(ang) * 0.12, -np.cos(ang) * 0.02, 0.0)
+            mid = base + lean * 0.5 + v(0, 0, h * 0.55)
+            tip = base + lean + v(0, 0, h)
+            d = np.minimum(d, sdf.sd_round_cone(P, base, mid, r, r * 0.6))
+            d = np.minimum(d, sdf.sd_round_cone(P, mid + v(0, 0.004, 0), tip, r * 0.62, 0.003))  # a kink: jagged, not smooth
+        return d
+    pieces.append(Piece("crown", "head", "frost", crown, hc - v(0.32, 0.25, -0.02), hc + v(0.32, 0.1, 0.55), 900,
+                        voxel=0.004, facet_deg=25))
+
+    def gorget(P):  # a high collar, taller at the back
+        c = v(0, 0.02, z("chest_top") + 0.05)
+        ring = np.maximum(sdf.sd_ellipsoid(P, c, (0.17, 0.15, 0.1)), -sdf.sd_ellipsoid(P, c, (0.13, 0.11, 0.12)))
+        ring = np.maximum(ring, -sdf.half_space(P, c - v(0, 0, 0.05), (0, 0, 1)))
+        return np.maximum(ring, P[:, 2] - (c[2] + 0.03 + 0.07 * np.clip(P[:, 1] / 0.15, 0, 1)))
+    pieces.append(Piece("gorget", "chest", "trim", gorget, v(-0.3, -0.3, z("chest_top") - 0.1),
+                        v(0.3, 0.3, z("chest_top") + 0.25), 450, facet_deg=30))
+    return pieces
+
+
 ARMOR_SETS = {"warblade_plate": warblade_plate, "arcanist_robe": arcanist_robe, "oracle_vestments": oracle_vestments,
+              "deathsworn_plate": deathsworn_plate,
               "templar_plate": templar_plate,
               # The Zealot (M3-07) swings a two-handed blade, so its plate has no shield.
               "templar_plate_unshielded": lambda j, build="heavy", hands=("relaxed", "fist"):
