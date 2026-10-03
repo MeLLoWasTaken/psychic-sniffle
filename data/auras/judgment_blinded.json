@@ -1,0 +1,16 @@
+{
+  "id": "judgment_blinded",
+  "name": "Blinding Judgment",
+  "description": "Incapacitated. Any damage ends it.",
+  "kind": "debuff",
+  "duration_s": 4,
+  "dispel_type": "magic",
+  "cc_category": "incapacitate",
+  "hud_priority": "cc",
+  "icon": {
+    "symbol": "judgment_blinded",
+    "school": "holy",
+    "image": "delapouite/blindfold"
+  },
+  "breaks_on_damage": "any"
+}

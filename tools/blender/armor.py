@@ -780,7 +780,8 @@ def _sun(P, c, normal_axis: int, r: float, rays: int, flat: float):
     return np.minimum(np.minimum(disc, ring), ray)
 
 
-def templar_plate(j: dict, build: str = "heavy", hands: tuple[str, str] = ("relaxed", "fist")) -> list[Piece]:
+def templar_plate(j: dict, build: str = "heavy", hands: tuple[str, str] = ("relaxed", "fist"),
+                  with_shield: bool = True) -> list[Piece]:
     """Templar (M3-02): bright polished plate with gold trim, the opposite of the Warblade's
     blackened spikes at a glance. A smooth breastplate with a raised gold sun, a cream tabard
     hanging front and back below the belt (gold border, sun sigil), rounded pauldrons with gold
@@ -985,7 +986,7 @@ def templar_plate(j: dict, build: str = "heavy", hands: tuple[str, str] = ("rela
         pieces.append(Piece(f"gauntlet_{side}", f"hand_{side}", "plate", gauntlet, np.minimum(wr, he) - 0.14,
                             np.maximum(wr, he) + 0.14, 900, facet_deg=35, voxel=0.003))
 
-        if side == "l":  # the heater shield, strapped to the outside of the left forearm
+        if side == "l" and with_shield:  # the heater shield, strapped to the outside of the left forearm
             up = (el - wr) / np.linalg.norm(el - wr)                 # along the forearm, toward the elbow
             face = v(0.75, -0.66, 0.0)                                 # out from the body and half forward
             nrm = face - up * (face @ up)
@@ -1076,4 +1077,7 @@ def templar_plate(j: dict, build: str = "heavy", hands: tuple[str, str] = ("rela
 
 
 ARMOR_SETS = {"warblade_plate": warblade_plate, "arcanist_robe": arcanist_robe, "oracle_vestments": oracle_vestments,
-              "templar_plate": templar_plate}
+              "templar_plate": templar_plate,
+              # The Zealot (M3-07) swings a two-handed blade, so its plate has no shield.
+              "templar_plate_unshielded": lambda j, build="heavy", hands=("relaxed", "fist"):
+                  templar_plate(j, build, hands, with_shield=False)}

@@ -1,0 +1,27 @@
+{
+  "id": "dawnfury",
+  "name": "Dawnfury",
+  "description": "Damage up 25%, critical chance up 10%.",
+  "kind": "buff",
+  "duration_s": 15,
+  "dispel_type": "magic",
+  "cc_category": "none",
+  "hud_priority": "major_offensive",
+  "icon": {
+    "symbol": "dawnfury",
+    "school": "holy",
+    "image": "lorc/cross-flare"
+  },
+  "modifiers": [
+    {
+      "stat": "damage_done",
+      "op": "multiply",
+      "value": 1.25
+    },
+    {
+      "stat": "crit_chance",
+      "op": "add",
+      "value": 0.1
+    }
+  ]
+}

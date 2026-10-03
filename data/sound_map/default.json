@@ -495,6 +495,55 @@
     "sunward_charge_ab": {
       "release": "charge_rush",
       "impact": "charge_impact"
+    },
+    "dawnblade_strike": {
+      "release": "@weapon_swing",
+      "impact": "@weapon_hit"
+    },
+    "radiant_lash": {
+      "release": "holy_release",
+      "impact": "castigate_impact"
+    },
+    "sun_spear": {
+      "release": "holy_release",
+      "impact": "castigate_impact"
+    },
+    "zealous_verdict": {
+      "release": "@weapon_swing",
+      "impact": "binding_gavel_impact"
+    },
+    "kindled_strike": {
+      "release": "@weapon_swing",
+      "impact": "@weapon_hit"
+    },
+    "dawnfury_ab": {
+      "release": "noonblaze"
+    },
+    "silencing_edge": {
+      "release": "@weapon_swing",
+      "impact": "interrupt_impact"
+    },
+    "martyrs_ward_ab": {
+      "release": "sanctum"
+    },
+    "unbowed_faith_ab": {
+      "release": "winged_stride"
+    },
+    "mercys_reach": {
+      "release": "heal_release",
+      "impact": "holy_heal"
+    },
+    "searing_crusade_ab": {
+      "release": "dazzling_halo",
+      "impact": "castigate_impact"
+    },
+    "blinding_judgment_ab": {
+      "release": "chains_of_awe_release",
+      "impact": "chains_of_awe_impact"
+    },
+    "righteous_leap_ab": {
+      "release": "charge_rush",
+      "impact": "charge_impact"
     }
   },
   "auras": {

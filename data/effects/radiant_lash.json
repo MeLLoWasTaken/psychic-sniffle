@@ -1,0 +1,11 @@
+{
+  "id": "radiant_lash",
+  "melee": {
+    "style": "arc"
+  },
+  "impact": {
+    "style": "rays",
+    "at": "target",
+    "size": 0.9
+  }
+}

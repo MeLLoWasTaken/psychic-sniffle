@@ -1,0 +1,13 @@
+{
+  "id": "dawnfury_ab",
+  "impact": {
+    "style": "rays",
+    "at": "self",
+    "size": 1.4
+  },
+  "auras": {
+    "dawnfury": {
+      "style": "empower"
+    }
+  }
+}

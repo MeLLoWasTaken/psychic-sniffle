@@ -1,0 +1,29 @@
+{
+  "id": "dawnblade_strike",
+  "name": "Dawnblade Strike",
+  "description": "Strike an enemy for 4,800.",
+  "owner": "templar_zealot",
+  "kit_slot": "core",
+  "school": "physical",
+  "cast_type": "instant",
+  "cooldown_s": 6,
+  "triggers_gcd": true,
+  "range_m": 5,
+  "requires_los": true,
+  "target": "enemy",
+  "effects": [
+    {
+      "type": "damage",
+      "base": 4800
+    }
+  ],
+  "icon": {
+    "symbol": "dawnblade_strike",
+    "school": "physical",
+    "image": "lorc/sword-slice"
+  },
+  "cost": {
+    "resource": "mana",
+    "amount": 700
+  }
+}

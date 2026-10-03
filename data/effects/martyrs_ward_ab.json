@@ -1,0 +1,9 @@
+{
+  "id": "martyrs_ward_ab",
+  "auras": {
+    "martyrs_ward": {
+      "style": "shield",
+      "size": 1.0
+    }
+  }
+}

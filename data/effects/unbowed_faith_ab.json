@@ -1,0 +1,8 @@
+{
+  "id": "unbowed_faith_ab",
+  "auras": {
+    "unbowed_faith": {
+      "style": "speed"
+    }
+  }
+}

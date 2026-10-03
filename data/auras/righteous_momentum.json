@@ -1,0 +1,22 @@
+{
+  "id": "righteous_momentum",
+  "name": "Righteous Momentum",
+  "description": "Damage up 10%.",
+  "kind": "buff",
+  "duration_s": 5,
+  "dispel_type": "magic",
+  "cc_category": "none",
+  "hud_priority": "normal",
+  "icon": {
+    "symbol": "righteous_momentum",
+    "school": "holy",
+    "image": "lorc/fire-dash"
+  },
+  "modifiers": [
+    {
+      "stat": "damage_done",
+      "op": "multiply",
+      "value": 1.1
+    }
+  ]
+}

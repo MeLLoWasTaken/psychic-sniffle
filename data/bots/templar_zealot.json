@@ -1,0 +1,306 @@
+{
+  "id": "templar_zealot",
+  "behavior": {
+    "preferred_range_m": [
+      0,
+      3.5
+    ],
+    "target_priority": "healer_first",
+    "reaction_ms": [
+      250,
+      600
+    ],
+    "break_los_below_pct": 25,
+    "kill_window_pct": 40,
+    "take_pickup_below_pct": 70
+  },
+  "priorities": [
+    {
+      "ability": "silencing_edge",
+      "on": "enemy_caster",
+      "when": {
+        "target_casting": true
+      }
+    },
+    {
+      "ability": "break_free",
+      "on": "self",
+      "when": {
+        "self_hard_cc": true,
+        "self_health_below_pct": 70
+      }
+    },
+    {
+      "ability": "martyrs_ward_ab",
+      "on": "self",
+      "when": {
+        "self_health_below_pct": 55
+      }
+    },
+    {
+      "ability": "ironbound_prayer_ab",
+      "on": "self",
+      "when": {
+        "self_health_below_pct": 35
+      }
+    },
+    {
+      "ability": "mercys_reach",
+      "on": "lowest_ally",
+      "when": {
+        "ally_health_below_pct": 35
+      }
+    },
+    {
+      "ability": "righteous_leap_ab",
+      "when": {
+        "target_distance_above_m": 8,
+        "target_distance_below_m": 25
+      }
+    },
+    {
+      "ability": "dawnstep",
+      "on": "lowest_ally",
+      "when": {
+        "ally_health_below_pct": 40,
+        "target_distance_above_m": 12
+      }
+    },
+    {
+      "ability": "unbowed_faith_ab",
+      "on": "self",
+      "when": {
+        "target_distance_above_m": 10
+      }
+    },
+    {
+      "ability": "binding_gavel",
+      "when": {
+        "target_not_cc": true,
+        "target_health_below_pct": 70
+      }
+    },
+    {
+      "ability": "blinding_judgment_ab",
+      "on": "ally_attacker",
+      "when": {
+        "ally_health_below_pct": 50,
+        "target_not_cc": true
+      }
+    },
+    {
+      "ability": "dawnfury_ab",
+      "on": "self",
+      "when": {
+        "target_health_below_pct": 80,
+        "target_distance_below_m": 5
+      }
+    },
+    {
+      "ability": "zealous_verdict",
+      "when": {
+        "target_distance_below_m": 5
+      }
+    },
+    {
+      "ability": "searing_crusade_ab",
+      "on": "self",
+      "when": {
+        "enemies_within_m": [
+          8,
+          1
+        ]
+      }
+    },
+    {
+      "ability": "dazzling_halo",
+      "on": "self",
+      "when": {
+        "enemies_within_m": [
+          8,
+          2
+        ]
+      }
+    },
+    {
+      "ability": "radiant_lash",
+      "when": {
+        "target_distance_below_m": 8
+      }
+    },
+    {
+      "ability": "dawnblade_strike",
+      "when": {
+        "target_distance_below_m": 5
+      }
+    },
+    {
+      "ability": "sun_spear",
+      "when": {
+        "target_distance_above_m": 5
+      }
+    },
+    {
+      "ability": "kindled_strike",
+      "when": {
+        "target_distance_below_m": 5
+      }
+    }
+  ],
+  "builds": [
+    {
+      "name": "dawn_crusader",
+      "description": "Burst: long, strong Dawnfury windows, a heavy Zealous Verdict and Searing Crusade; damage and crit in the class tree.",
+      "class": {
+        "deep_reserves": 2,
+        "quiet_vigil": 2,
+        "keen_eye": 2,
+        "zealous_pace": 2,
+        "path_choice": 1,
+        "conviction": 2,
+        "swift_litany": 2,
+        "brimming_faith": 2,
+        "sure_stride": 2,
+        "swift_dawnstep": 2,
+        "unbowed_oath": 2,
+        "unchained_choice": 1,
+        "patient_oath": 2,
+        "sunlit_calm": 1,
+        "crown_choice": 1,
+        "plated_vigor": 2,
+        "steadfast_heart": 2
+      },
+      "spec": {
+        "heavy_verdict": 2,
+        "swift_verdict": 1,
+        "thrifty_verdict": 2,
+        "keen_dawnblade": 2,
+        "thrifty_blade": 2,
+        "kindling": 1,
+        "tithe_of_zeal": 1,
+        "long_fury": 2,
+        "searing_crusade": 1,
+        "bright_fury": 1,
+        "quick_lash": 2,
+        "searing_lash": 2,
+        "fury_wellspring": 1,
+        "wide_crusade": 1,
+        "lasting_fury": 1,
+        "burning_crusade": 1,
+        "zealous_focus": 2,
+        "keen_zeal": 2,
+        "crusaders_verdict": 1,
+        "thrifty_lash": 2
+      },
+      "pvp": [
+        "sundering_strike_z",
+        "swift_fury",
+        "unbreakable_ward"
+      ]
+    },
+    {
+      "name": "judging_light",
+      "description": "Ranged pressure and control: Radiant Lash and Sun Spear from afar, Blinding Judgment; Shackle of Dawn and Dazzling Halo in the class tree.",
+      "class": {
+        "sure_stride": 2,
+        "swift_dawnstep": 2,
+        "unbowed_oath": 2,
+        "lingering_dawnstep": 1,
+        "unchained_choice": 1,
+        "wide_halo": 1,
+        "patient_oath": 2,
+        "shackle_of_dawn": 1,
+        "heavy_gavel": 1,
+        "long_shackle": 2,
+        "firm_shackle": 1,
+        "swift_reproach": 2,
+        "shackle_choice": 2,
+        "stunning_weight": 1,
+        "plated_vigor": 2,
+        "steadfast_heart": 2,
+        "searing_shackle": 1,
+        "soul_choice": 1,
+        "tempered_plate": 2,
+        "welcoming_light": 2
+      },
+      "spec": {
+        "quick_lash": 2,
+        "thrifty_lash": 2,
+        "searing_lash": 2,
+        "long_spear": 2,
+        "far_spear": 1,
+        "quick_spear": 2,
+        "blinding_judgment": 1,
+        "long_blindness": 2,
+        "swift_blindness": 1,
+        "dawn_ascendant": 1,
+        "heavy_verdict": 2,
+        "swift_verdict": 1,
+        "thrifty_verdict": 2,
+        "steady_ward": 2,
+        "thick_ward": 1,
+        "martyrs_mercy": 1,
+        "keen_dawnblade": 2,
+        "kindling": 2,
+        "thrifty_blade": 1
+      },
+      "pvp": [
+        "pinning_leap",
+        "lingering_halo_z",
+        "relentless_edge"
+      ]
+    },
+    {
+      "name": "mercy_blade",
+      "description": "A self-reliant fighter: Righteous Leap in, Mercy's Reach for the team, a strong Martyr's Ward; survival in the class tree.",
+      "class": {
+        "plated_vigor": 2,
+        "tempered_plate": 2,
+        "steadfast_heart": 2,
+        "welcoming_light": 2,
+        "hearthglow": 1,
+        "oathbound": 2,
+        "prayer_of_iron": 2,
+        "deeper_devotion": 1,
+        "brand_of_contrition": 1,
+        "swift_brand": 2,
+        "contrition_choice": 1,
+        "lasting_brand": 1,
+        "deep_reserves": 2,
+        "unyielding": 1,
+        "dawnforged_mantle": 1,
+        "unbroken_oath": 1,
+        "quiet_vigil": 2,
+        "keen_eye": 2,
+        "zealous_pace": 2
+      },
+      "spec": {
+        "quick_edge": 2,
+        "deep_silence": 1,
+        "long_edge": 1,
+        "ready_mercy": 2,
+        "mercy_choice": 2,
+        "far_mercy": 2,
+        "righteous_leap": 1,
+        "sure_mercy": 1,
+        "swift_leap": 2,
+        "long_momentum": 1,
+        "relentless_zealot": 1,
+        "purging_verdict": 1,
+        "heavy_verdict": 2,
+        "swift_verdict": 1,
+        "thrifty_verdict": 2,
+        "steady_ward": 2,
+        "thick_ward": 1,
+        "keen_dawnblade": 2,
+        "thrifty_blade": 2,
+        "kindling": 2
+      },
+      "pvp": [
+        "vow_of_zeal",
+        "mercy_of_the_hour",
+        "heavy_hand_z"
+      ]
+    }
+  ]
+}

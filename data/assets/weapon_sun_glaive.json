@@ -1,0 +1,28 @@
+{
+  "id": "weapon_sun_glaive",
+  "kind": "weapon",
+  "builder": "build_weapon.py",
+  "seed": 43,
+  "pivot": "grip",
+  "tri_budget": {
+    "min": 500,
+    "max": 4000
+  },
+  "texture_size": 1024,
+  "palette": {
+    "iron": "#4d5058",
+    "steel": "#a4aab2",
+    "gold": "#c49a45",
+    "leather": "#6b2420",
+    "dark": "#2d2f33"
+  },
+  "params": {
+    "type": "glaive",
+    "below_m": 0.75,
+    "above_m": 0.95,
+    "blade_m": 0.7,
+    "hold": "upright"
+  },
+  "out": "game/assets/weapons/weapon_sun_glaive.glb",
+  "status": "draft"
+}

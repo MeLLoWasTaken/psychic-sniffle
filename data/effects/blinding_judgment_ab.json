@@ -1,0 +1,13 @@
+{
+  "id": "blinding_judgment_ab",
+  "impact": {
+    "style": "ring",
+    "at": "target",
+    "size": 1.0
+  },
+  "auras": {
+    "judgment_blinded": {
+      "style": "disorient"
+    }
+  }
+}

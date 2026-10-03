@@ -1,0 +1,14 @@
+{
+  "id": "mercys_reach",
+  "impact": {
+    "style": "rays",
+    "at": "target",
+    "size": 1.2
+  },
+  "auras": {
+    "zealot_mercy_shield": {
+      "style": "shield",
+      "size": 0.9
+    }
+  }
+}

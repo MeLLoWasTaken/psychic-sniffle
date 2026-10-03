@@ -1,0 +1,29 @@
+{
+  "id": "blinding_judgment_ab",
+  "name": "Blinding Judgment",
+  "description": "An enemy is incapacitated for 4 s. Any damage ends it.",
+  "owner": "templar_zealot",
+  "kit_slot": "cc",
+  "school": "holy",
+  "cast_type": "instant",
+  "cooldown_s": 45,
+  "triggers_gcd": true,
+  "range_m": 20,
+  "requires_los": true,
+  "target": "enemy",
+  "effects": [
+    {
+      "type": "apply_aura",
+      "aura": "judgment_blinded"
+    }
+  ],
+  "icon": {
+    "symbol": "blinding_judgment",
+    "school": "holy",
+    "image": "delapouite/blindfold"
+  },
+  "cost": {
+    "resource": "mana",
+    "amount": 1200
+  }
+}

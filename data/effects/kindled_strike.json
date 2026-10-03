@@ -1,0 +1,17 @@
+{
+  "id": "kindled_strike",
+  "melee": {
+    "style": "thrust"
+  },
+  "impact": {
+    "style": "spark",
+    "at": "target",
+    "size": 0.8
+  },
+  "auras": {
+    "zealot_sundered": {
+      "style": "dot",
+      "size": 0.8
+    }
+  }
+}

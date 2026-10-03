@@ -237,7 +237,67 @@ def warhammer(p: dict, m: dict, rng) -> list:
     return parts
 
 
-WEAPONS = {"greatsword": greatsword, "staff": staff, "mace": mace, "warhammer": warhammer}
+def glaive(p: dict, m: dict, rng) -> list:
+    """Sun glaive, about 2.4 m (M3-07, the Zealot's), held upright like the Arcanist's staff so
+    the long blade stands above the helm: an iron haft with leather wraps and gold rings, a
+    butt spike, a gold sun ring with eight rays where the blade meets the haft, a back hook and
+    a broad blade that sweeps forward (+X, the edge) as it rises. The grip (origin) is a third
+    of the way up."""
+    below, above = p.get("below_m", 0.75), p.get("above_m", 0.95)
+    blade_m = p.get("blade_m", 0.7)
+    parts = [cylinder("haft", 0.029, below + above, (0, 0, (above - below) / 2), sides=8, mat=m["iron"],
+                      tint=random_tint(rng, 0.05))]
+    for z0, length in ((-0.14, 0.28), (above - 0.42, 0.22)):  # leather wraps where the hands go
+        parts.append(cylinder("wrap", 0.033, length, (0, 0, z0 + length / 2), sides=8, mat=m["leather"],
+                              tint=random_tint(rng, 0.05)))
+    for z in (-below + 0.06, -0.17, 0.17, above - 0.45, above - 0.17):
+        parts.append(cylinder("ring", 0.038, 0.035, (0, 0, z), sides=8, mat=m["gold"]))
+    parts.append(cylinder("butt_spike", 0.032, 0.14, (0, 0, -below - 0.07), rot=(math.pi, 0, 0), sides=8,
+                          radius_top=0.004, mat=m["iron"]))
+    # socket and the sun ring around it
+    parts.append(cylinder("socket", 0.04, 0.14, (0, 0, above + 0.02), sides=8, radius_top=0.032, mat=m["gold"]))
+    sz = above + 0.06
+    bpy.ops.mesh.primitive_torus_add(major_radius=0.11, minor_radius=0.018, major_segments=16, minor_segments=5,
+                                     location=(0, 0, sz), rotation=(math.pi / 2, 0, 0))
+    ring = bpy.context.active_object
+    kit.clear_uvs(ring)
+    ring.data.materials.append(m["gold"])
+    kit.set_tint(ring, (1, 1, 1))
+    parts.append(ring)
+    for k in range(8):  # rays pointing out from the ring, in the blade's plane
+        ang = k * math.tau / 8 + math.tau / 16
+        r0, r1 = 0.12, 0.19 if k % 2 == 0 else 0.165
+        parts.append(kit.strut("ray", (math.cos(ang) * r0, 0, sz + math.sin(ang) * r0),
+                               (math.cos(ang) * r1, 0, sz + math.sin(ang) * r1), 0.015, sides=4, mat=m["gold"]))
+    for sx in (-1, 1):  # spokes holding the ring to the socket
+        parts.append(kit.strut("spoke", (0, 0, sz), (sx * 0.1, 0, sz), 0.012, sides=4, mat=m["gold"]))
+    # back hook on -X, just above the ring
+    hz = sz + 0.13
+    parts.append(kit.strut("hook_root", (-0.02, 0, hz), (-0.13, 0, hz + 0.03), 0.018, sides=6, mat=m["iron"]))
+    parts.append(kit.strut("hook_tip", (-0.13, 0, hz + 0.03), (-0.17, 0, hz + 0.12), 0.014, sides=6, mat=m["iron"]))
+    # the blade: a broad leaf, curving forward toward the tip
+    z0 = above + 0.08
+    stations = [(z0, 0.04, 0.016), (z0 + 0.08, 0.1, 0.018), (z0 + blade_m * 0.35, 0.125, 0.017),
+                (z0 + blade_m * 0.65, 0.11, 0.014), (z0 + blade_m * 0.88, 0.065, 0.01), (z0 + blade_m, 0.0, 0.0)]
+    blade = loft("blade", stations, m["steel"], tint=random_tint(rng, 0.04))
+    for v in blade.data.vertices:
+        t = max(0.0, (v.co.z - z0) / blade_m)
+        v.co.x += 0.12 * t * t
+        if v.co.x < 0.12 * t * t - 0.02:  # a straighter spine on the back edge
+            v.co.x += 0.02 * t
+    parts.append(blade)
+    # a gold fuller line up the blade's middle on both faces
+    for sy in (-1, 1):
+        fuller = block("fuller", (0.015, 0.004, blade_m * 0.5), (0.014, sy * 0.016, z0 + blade_m * 0.33), bevel=0.0,
+                       mat=m["gold"])
+        for v in fuller.data.vertices:
+            t = max(0.0, (v.co.z - z0) / blade_m)
+            v.co.x += 0.12 * t * t
+        parts.append(fuller)
+    return parts
+
+
+WEAPONS = {"greatsword": greatsword, "staff": staff, "mace": mace, "warhammer": warhammer, "glaive": glaive}
 
 
 def main() -> None:

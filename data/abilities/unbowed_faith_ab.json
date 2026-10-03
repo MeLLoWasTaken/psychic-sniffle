@@ -1,0 +1,25 @@
+{
+  "id": "unbowed_faith_ab",
+  "name": "Unbowed Faith",
+  "description": "Move 40% faster for 4 s.",
+  "owner": "templar_zealot",
+  "kit_slot": "mobility",
+  "school": "holy",
+  "cast_type": "instant",
+  "cooldown_s": 30,
+  "triggers_gcd": false,
+  "range_m": 0,
+  "requires_los": false,
+  "target": "self",
+  "effects": [
+    {
+      "type": "apply_aura",
+      "aura": "unbowed_faith"
+    }
+  ],
+  "icon": {
+    "symbol": "unbowed_faith",
+    "school": "holy",
+    "image": "lorc/boots"
+  }
+}

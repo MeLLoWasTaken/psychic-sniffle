@@ -1,0 +1,23 @@
+{
+  "id": "zealot_focus",
+  "name": "Zealous Focus",
+  "description": "Talent: damage done increased.",
+  "kind": "buff",
+  "duration_s": 0,
+  "refresh": "refresh",
+  "dispel_type": "none",
+  "cc_category": "none",
+  "hud_priority": "hidden",
+  "modifiers": [
+    {
+      "stat": "damage_done",
+      "op": "multiply",
+      "value": 1.0
+    }
+  ],
+  "icon": {
+    "symbol": "zealot_focus",
+    "school": "holy",
+    "image": "lorc/focused-lightning"
+  }
+}

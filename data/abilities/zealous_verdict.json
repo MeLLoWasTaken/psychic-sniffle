@@ -1,0 +1,29 @@
+{
+  "id": "zealous_verdict",
+  "name": "Zealous Verdict",
+  "description": "A crushing blow for 7,500.",
+  "owner": "templar_zealot",
+  "kit_slot": "core",
+  "school": "physical",
+  "cast_type": "instant",
+  "cooldown_s": 15,
+  "triggers_gcd": true,
+  "range_m": 5,
+  "requires_los": true,
+  "target": "enemy",
+  "effects": [
+    {
+      "type": "damage",
+      "base": 7500
+    }
+  ],
+  "icon": {
+    "symbol": "zealous_verdict",
+    "school": "physical",
+    "image": "caro-asercion/tarot-20-judgement"
+  },
+  "cost": {
+    "resource": "mana",
+    "amount": 1400
+  }
+}

@@ -2,6 +2,12 @@
 
 One entry per build-loop iteration, newest first. Format: date, backlog ID, what changed, how it was checked.
 
+## 2026-10-03 — M3-06 Vanguard character, M3-07 Templar Zealot
+- The Templar's third spec, Zealot: a holy melee fighter with a 15 s burst window (Dawnfury), a full interrupt, a self-shield, a sprint and one emergency heal for an ally (Mercy's Reach). 14 abilities (4 shared with every Templar), a 42-node spec tree, 12 PvP talents, three bot builds.
+- Characters for both new specs. The Vanguard wears the Templar plate with a deep blue tabard; the Zealot wears it in crimson, without a shield, and carries a new sun glaive (a 2.6 m polearm with a gold sun wheel at the blade) held upright, so the glaive rises above its winged helm.
+- With the Warblade's greatsword the Zealot's silhouette overlapped the Warblade's 0.89 (0.87 counted as too close before). With the upright glaive: 0.82 standing, 0.71 casting, 0.70 attacking.
+- Checked: asset validation for both characters and the glaive, contact sheets, lineups in idle, cast and attack poses (`previews/m3_07/lineup/`); data validation, 666 Python rule tests; Zealot 1v1 bot matches against the Warblade and the Arcanist without errors.
+
 ## 2026-10-03 — M3-05 Templar Vanguard kit
 - The Templar's tank spec, Vanguard: holy damage around itself (Sun Ring, Dawnfall), a shield bash that shields, protective blessings on allies (Kinward, Hallowed Bulwark), a full interrupt and 72,000 health. 14 abilities, a 42-node spec tree, 12 PvP talents, three bot builds.
 - Binding Gavel, Dazzling Halo, Ironbound Prayer and Dawnstep are now Templar class abilities, shared by every Templar spec.

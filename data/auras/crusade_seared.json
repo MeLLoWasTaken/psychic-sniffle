@@ -1,0 +1,22 @@
+{
+  "id": "crusade_seared",
+  "name": "Seared",
+  "description": "Healing received down 20%.",
+  "kind": "debuff",
+  "duration_s": 6,
+  "dispel_type": "magic",
+  "cc_category": "none",
+  "hud_priority": "normal",
+  "icon": {
+    "symbol": "crusade_seared",
+    "school": "physical",
+    "image": "lorc/crossed-sabres"
+  },
+  "modifiers": [
+    {
+      "stat": "healing_taken",
+      "op": "multiply",
+      "value": 0.8
+    }
+  ]
+}

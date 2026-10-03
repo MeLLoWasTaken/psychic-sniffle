@@ -1,0 +1,22 @@
+{
+  "id": "zealot_mercy_shield",
+  "name": "Shielding Mercy",
+  "description": "Damage taken down 15%.",
+  "kind": "buff",
+  "duration_s": 4,
+  "dispel_type": "magic",
+  "cc_category": "none",
+  "hud_priority": "normal",
+  "icon": {
+    "symbol": "zealot_mercy_shield",
+    "school": "holy",
+    "image": "lorc/life-support"
+  },
+  "modifiers": [
+    {
+      "stat": "damage_taken",
+      "op": "multiply",
+      "value": 0.85
+    }
+  ]
+}

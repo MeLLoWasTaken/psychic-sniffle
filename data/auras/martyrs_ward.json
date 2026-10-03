@@ -1,0 +1,16 @@
+{
+  "id": "martyrs_ward",
+  "name": "Martyr's Ward",
+  "description": "Absorbs 10,000 damage.",
+  "kind": "buff",
+  "duration_s": 8,
+  "dispel_type": "magic",
+  "cc_category": "none",
+  "hud_priority": "major_defensive",
+  "icon": {
+    "symbol": "martyrs_ward",
+    "school": "holy",
+    "image": "lorc/templar-eye"
+  },
+  "absorb": 10000
+}

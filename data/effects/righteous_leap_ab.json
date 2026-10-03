@@ -1,0 +1,20 @@
+{
+  "id": "righteous_leap_ab",
+  "displacement": {
+    "style": "dust"
+  },
+  "impact": {
+    "style": "spark",
+    "at": "target",
+    "size": 1.1
+  },
+  "auras": {
+    "righteous_momentum": {
+      "style": "empower",
+      "size": 0.8
+    },
+    "spear_pinned": {
+      "style": "root"
+    }
+  }
+}

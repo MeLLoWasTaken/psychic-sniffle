@@ -1,0 +1,29 @@
+{
+  "id": "mercys_reach",
+  "name": "Mercy's Reach",
+  "description": "Instantly heal an ally for 9,000.",
+  "owner": "templar_zealot",
+  "kit_slot": "utility",
+  "school": "holy",
+  "cast_type": "instant",
+  "cooldown_s": 30,
+  "triggers_gcd": true,
+  "range_m": 40,
+  "requires_los": true,
+  "target": "ally",
+  "effects": [
+    {
+      "type": "heal",
+      "base": 9000
+    }
+  ],
+  "icon": {
+    "symbol": "mercys_reach",
+    "school": "holy",
+    "image": "lorc/life-support"
+  },
+  "cost": {
+    "resource": "mana",
+    "amount": 2000
+  }
+}

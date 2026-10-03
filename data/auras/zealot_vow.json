@@ -1,0 +1,23 @@
+{
+  "id": "zealot_vow",
+  "name": "Vow of Zeal",
+  "description": "Talent: damage taken down 8%.",
+  "kind": "buff",
+  "duration_s": 0,
+  "refresh": "refresh",
+  "dispel_type": "none",
+  "cc_category": "none",
+  "hud_priority": "hidden",
+  "modifiers": [
+    {
+      "stat": "damage_taken",
+      "op": "multiply",
+      "value": 0.92
+    }
+  ],
+  "icon": {
+    "symbol": "zealot_vow",
+    "school": "holy",
+    "image": "lorc/laurel-crown"
+  }
+}

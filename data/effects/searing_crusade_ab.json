@@ -1,0 +1,19 @@
+{
+  "id": "searing_crusade_ab",
+  "ground": {
+    "style": "nova",
+    "center": "caster",
+    "lifetime_s": 0.8
+  },
+  "impact": {
+    "style": "flash",
+    "at": "hits",
+    "size": 0.9
+  },
+  "auras": {
+    "crusade_seared": {
+      "style": "dot",
+      "size": 0.8
+    }
+  }
+}

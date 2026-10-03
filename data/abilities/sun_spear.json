@@ -1,0 +1,29 @@
+{
+  "id": "sun_spear",
+  "name": "Sun Spear",
+  "description": "Hurl a spear of light at an enemy for 4,000.",
+  "owner": "templar_zealot",
+  "kit_slot": "core",
+  "school": "holy",
+  "cast_type": "instant",
+  "cooldown_s": 10,
+  "triggers_gcd": true,
+  "range_m": 25,
+  "requires_los": true,
+  "target": "enemy",
+  "effects": [
+    {
+      "type": "damage",
+      "base": 4000
+    }
+  ],
+  "icon": {
+    "symbol": "sun_spear",
+    "school": "holy",
+    "image": "delapouite/spear-feather"
+  },
+  "cost": {
+    "resource": "mana",
+    "amount": 900
+  }
+}

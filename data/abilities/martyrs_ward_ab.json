@@ -1,0 +1,25 @@
+{
+  "id": "martyrs_ward_ab",
+  "name": "Martyr's Ward",
+  "description": "Shield yourself, absorbing 10,000 damage for 8 s.",
+  "owner": "templar_zealot",
+  "kit_slot": "defensive",
+  "school": "holy",
+  "cast_type": "instant",
+  "cooldown_s": 60,
+  "triggers_gcd": false,
+  "range_m": 0,
+  "requires_los": false,
+  "target": "self",
+  "effects": [
+    {
+      "type": "apply_aura",
+      "aura": "martyrs_ward"
+    }
+  ],
+  "icon": {
+    "symbol": "martyrs_ward",
+    "school": "holy",
+    "image": "lorc/templar-eye"
+  }
+}

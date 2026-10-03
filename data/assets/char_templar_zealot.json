@@ -1,0 +1,35 @@
+{
+  "id": "char_templar_zealot",
+  "kind": "character",
+  "builder": "build_character.py",
+  "seed": 31,
+  "spec": "templar_zealot",
+  "body_build": "heavy",
+  "tri_budget": {
+    "min": 15000,
+    "max": 25000
+  },
+  "texture_size": 2048,
+  "palette": {
+    "plate": "#a7a39b",
+    "trim": "#c9a050",
+    "gold": "#c9a050",
+    "holy": "#ffd98a",
+    "leather": "#3e2b1f",
+    "trim_cloth": "#8a2a26",
+    "cloth": "#8a2a26",
+    "skin": "#9a7a62"
+  },
+  "params": {
+    "armor": "templar_plate_unshielded",
+    "body_tris": 4000,
+    "weapon": "weapon_sun_glaive",
+    "hands": [
+      "fist",
+      "fist"
+    ]
+  },
+  "out": "game/assets/characters/char_templar_zealot.glb",
+  "status": "draft",
+  "pivot": "axis"
+}

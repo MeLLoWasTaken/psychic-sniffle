@@ -1,0 +1,37 @@
+{
+  "id": "searing_crusade_ab",
+  "name": "Searing Crusade",
+  "description": "Enemies within 8 m take 4,500 and their healing received is reduced by 20% for 6 s.",
+  "owner": "templar_zealot",
+  "kit_slot": "core",
+  "school": "physical",
+  "cast_type": "instant",
+  "cooldown_s": 30,
+  "triggers_gcd": true,
+  "range_m": 0,
+  "requires_los": false,
+  "target": "self",
+  "effects": [
+    {
+      "type": "damage",
+      "base": 4500,
+      "affects": "enemies_in_radius",
+      "radius_m": 8
+    },
+    {
+      "type": "apply_aura",
+      "aura": "crusade_seared",
+      "affects": "enemies_in_radius",
+      "radius_m": 8
+    }
+  ],
+  "icon": {
+    "symbol": "searing_crusade",
+    "school": "physical",
+    "image": "lorc/crossed-sabres"
+  },
+  "cost": {
+    "resource": "mana",
+    "amount": 2000
+  }
+}

@@ -1,0 +1,37 @@
+{
+  "id": "templar_zealot",
+  "name": "Zealot",
+  "class": "templar",
+  "description": "Burst windows, stuns, emergency heals on allies.",
+  "role": "dps",
+  "icon": {
+    "image": "lorc/cross-flare"
+  },
+  "range": "melee",
+  "primary_resource": "mana",
+  "abilities": [
+    "dawnblade_strike",
+    "radiant_lash",
+    "sun_spear",
+    "zealous_verdict",
+    "kindled_strike",
+    "dawnfury_ab",
+    "silencing_edge",
+    "martyrs_ward_ab",
+    "unbowed_faith_ab",
+    "mercys_reach",
+    "binding_gavel",
+    "dazzling_halo",
+    "ironbound_prayer_ab",
+    "dawnstep"
+  ],
+  "spec_tree": "templar_zealot",
+  "pvp_talents": "templar_zealot_pvp",
+  "kit_status": "complete",
+  "asset": "test_crate",
+  "weapon": {
+    "type": "sword",
+    "hands": 2
+  },
+  "stats": {}
+}

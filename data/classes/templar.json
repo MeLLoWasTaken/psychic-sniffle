@@ -6,7 +6,8 @@
   "color": "#f2c75c",
   "specs": [
     "templar_radiance",
-    "templar_vanguard"
+    "templar_vanguard",
+    "templar_zealot"
   ],
   "class_tree": "templar_class",
   "shared_abilities": [

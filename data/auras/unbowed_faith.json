@@ -1,0 +1,22 @@
+{
+  "id": "unbowed_faith",
+  "name": "Unbowed Faith",
+  "description": "Movement up 40%.",
+  "kind": "buff",
+  "duration_s": 4,
+  "dispel_type": "magic",
+  "cc_category": "none",
+  "hud_priority": "normal",
+  "icon": {
+    "symbol": "unbowed_faith",
+    "school": "holy",
+    "image": "lorc/boots"
+  },
+  "modifiers": [
+    {
+      "stat": "move_speed",
+      "op": "multiply",
+      "value": 1.4
+    }
+  ]
+}

@@ -1,0 +1,1120 @@
+{
+  "tree_id": "templar_zealot",
+  "kind": "spec",
+  "owner": "templar_zealot",
+  "points": 30,
+  "gates": [
+    8,
+    20
+  ],
+  "status": "complete",
+  "nodes": [
+    {
+      "id": "purging_verdict",
+      "name": "Purging Verdict",
+      "type": "passive",
+      "ranks": 1,
+      "pos": [
+        6,
+        6
+      ],
+      "requires_any": [
+        "far_mercy"
+      ],
+      "gate": 20,
+      "description": "Zealous Verdict also strips one magic effect from the enemy.",
+      "icon": {
+        "image": "lorc/fragmented-sword",
+        "school": "physical"
+      },
+      "effects": [
+        {
+          "modify": "zealous_verdict.effects",
+          "set": [
+            {
+              "type": "damage",
+              "base": 7500
+            },
+            {
+              "type": "dispel",
+              "dispel_types": [
+                "magic"
+              ],
+              "dispel_count": 1
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "keen_dawnblade",
+      "name": "Keen Dawnblade",
+      "type": "passive",
+      "ranks": 2,
+      "pos": [
+        0,
+        0
+      ],
+      "requires_any": [
+        "dawnblade_strike"
+      ],
+      "description": "Dawnblade Strike deals 400 more damage per rank.",
+      "icon": {
+        "image": "delapouite/ancient-sword",
+        "school": "physical"
+      },
+      "effects": [
+        {
+          "modify": "dawnblade_strike.effects.0.base",
+          "per_rank": 400
+        }
+      ]
+    },
+    {
+      "id": "quick_lash",
+      "name": "Quick Lash",
+      "type": "passive",
+      "ranks": 2,
+      "pos": [
+        2,
+        0
+      ],
+      "requires_any": [
+        "radiant_lash"
+      ],
+      "description": "Radiant Lash's cooldown is 1 s shorter per rank.",
+      "icon": {
+        "image": "lorc/heavy-lightning",
+        "school": "holy"
+      },
+      "effects": [
+        {
+          "modify": "radiant_lash.cooldown_s",
+          "per_rank": -1
+        }
+      ]
+    },
+    {
+      "id": "long_spear",
+      "name": "Long Spear",
+      "type": "passive",
+      "ranks": 2,
+      "pos": [
+        3,
+        0
+      ],
+      "requires_any": [
+        "sun_spear"
+      ],
+      "description": "Sun Spear deals 350 more damage per rank.",
+      "icon": {
+        "image": "delapouite/magic-trident",
+        "school": "holy"
+      },
+      "effects": [
+        {
+          "modify": "sun_spear.effects.0.base",
+          "per_rank": 350
+        }
+      ]
+    },
+    {
+      "id": "heavy_verdict",
+      "name": "Heavy Verdict",
+      "type": "passive",
+      "ranks": 2,
+      "pos": [
+        4,
+        0
+      ],
+      "requires_any": [
+        "zealous_verdict"
+      ],
+      "description": "Zealous Verdict deals 600 more damage per rank.",
+      "icon": {
+        "image": "lorc/claw-hammer",
+        "school": "physical"
+      },
+      "effects": [
+        {
+          "modify": "zealous_verdict.effects.0.base",
+          "per_rank": 600
+        }
+      ]
+    },
+    {
+      "id": "quick_edge",
+      "name": "Quick Edge",
+      "type": "passive",
+      "ranks": 2,
+      "pos": [
+        5,
+        0
+      ],
+      "requires_any": [
+        "silencing_edge"
+      ],
+      "description": "Silencing Edge's cooldown is 1 s shorter per rank.",
+      "icon": {
+        "image": "delapouite/dagger-rose",
+        "school": "physical"
+      },
+      "effects": [
+        {
+          "modify": "silencing_edge.cooldown_s",
+          "per_rank": -1
+        }
+      ]
+    },
+    {
+      "id": "ready_mercy",
+      "name": "Ready Mercy",
+      "type": "passive",
+      "ranks": 2,
+      "pos": [
+        6,
+        0
+      ],
+      "requires_any": [
+        "mercys_reach"
+      ],
+      "description": "Mercy's Reach's cooldown is 3 s shorter per rank.",
+      "icon": {
+        "image": "delapouite/feather-necklace",
+        "school": "holy"
+      },
+      "effects": [
+        {
+          "modify": "mercys_reach.cooldown_s",
+          "per_rank": -3
+        }
+      ]
+    },
+    {
+      "id": "thrifty_blade",
+      "name": "Thrifty Blade",
+      "type": "passive",
+      "ranks": 2,
+      "pos": [
+        0,
+        1
+      ],
+      "requires_any": [
+        "keen_dawnblade"
+      ],
+      "description": "Dawnblade Strike costs 120 less mana per rank.",
+      "icon": {
+        "image": "delapouite/coins",
+        "school": "holy"
+      },
+      "effects": [
+        {
+          "modify": "dawnblade_strike.cost.amount",
+          "per_rank": -120
+        }
+      ]
+    },
+    {
+      "id": "kindling",
+      "name": "Kindling",
+      "type": "passive",
+      "ranks": 2,
+      "pos": [
+        1,
+        1
+      ],
+      "requires_any": [
+        "keen_dawnblade",
+        "quick_lash"
+      ],
+      "description": "Kindled Strike costs 100 less mana per rank.",
+      "icon": {
+        "image": "delapouite/primitive-torch",
+        "school": "holy"
+      },
+      "effects": [
+        {
+          "modify": "kindled_strike.cost.amount",
+          "per_rank": -100
+        }
+      ]
+    },
+    {
+      "id": "thrifty_lash",
+      "name": "Thrifty Lash",
+      "type": "passive",
+      "ranks": 2,
+      "pos": [
+        2,
+        1
+      ],
+      "requires_any": [
+        "quick_lash"
+      ],
+      "description": "Radiant Lash costs 150 less mana per rank.",
+      "icon": {
+        "image": "lorc/shiny-purse",
+        "school": "holy"
+      },
+      "effects": [
+        {
+          "modify": "radiant_lash.cost.amount",
+          "per_rank": -150
+        }
+      ]
+    },
+    {
+      "id": "far_spear",
+      "name": "Far Spear",
+      "type": "passive",
+      "ranks": 1,
+      "pos": [
+        3,
+        1
+      ],
+      "requires_any": [
+        "long_spear"
+      ],
+      "description": "Sun Spear reaches 10 m further.",
+      "icon": {
+        "image": "lorc/barbed-spear",
+        "school": "holy"
+      },
+      "effects": [
+        {
+          "modify": "sun_spear.range_m",
+          "per_rank": 10
+        }
+      ]
+    },
+    {
+      "id": "swift_verdict",
+      "name": "Swift Verdict",
+      "type": "passive",
+      "ranks": 1,
+      "pos": [
+        4,
+        1
+      ],
+      "requires_any": [
+        "heavy_verdict"
+      ],
+      "description": "Zealous Verdict's cooldown is 3 s shorter.",
+      "icon": {
+        "image": "delapouite/time-synchronization",
+        "school": "holy"
+      },
+      "effects": [
+        {
+          "modify": "zealous_verdict.cooldown_s",
+          "per_rank": -3
+        }
+      ]
+    },
+    {
+      "id": "deep_silence",
+      "name": "Deep Silence",
+      "type": "passive",
+      "ranks": 1,
+      "pos": [
+        5,
+        1
+      ],
+      "requires_any": [
+        "quick_edge"
+      ],
+      "description": "Silencing Edge locks the school for 1 s longer.",
+      "icon": {
+        "image": "lorc/cross-mark",
+        "school": "physical"
+      },
+      "effects": [
+        {
+          "modify": "silencing_edge.effects.0.school_lock_s",
+          "per_rank": 1
+        }
+      ]
+    },
+    {
+      "id": "mercy_choice",
+      "name": "Gift of Mercy",
+      "type": "choice",
+      "pos": [
+        6,
+        1
+      ],
+      "requires_any": [
+        "ready_mercy"
+      ],
+      "description": "Choose how Mercy's Reach improves.",
+      "icon": {
+        "image": "lorc/heart-organ",
+        "school": "holy"
+      },
+      "choices": [
+        {
+          "id": "great_mercy",
+          "name": "Great Mercy",
+          "description": "Mercy's Reach heals 2,000 more.",
+          "icon": {
+            "image": "lorc/gem-pendant",
+            "school": "holy"
+          },
+          "effects": [
+            {
+              "modify": "mercys_reach.effects.0.base",
+              "per_rank": 2000
+            }
+          ]
+        },
+        {
+          "id": "shielding_mercy",
+          "name": "Shielding Mercy",
+          "description": "Mercy's Reach also makes the ally take 15% less damage for 4 s.",
+          "icon": {
+            "image": "lorc/edged-shield",
+            "school": "holy"
+          },
+          "effects": [
+            {
+              "modify": "mercys_reach.effects",
+              "set": [
+                {
+                  "type": "heal",
+                  "base": 9000
+                },
+                {
+                  "type": "apply_aura",
+                  "aura": "zealot_mercy_shield"
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "tithe_of_zeal",
+      "name": "Tithe of Zeal",
+      "type": "passive",
+      "ranks": 1,
+      "pos": [
+        0,
+        2
+      ],
+      "requires_any": [
+        "thrifty_blade",
+        "kindling"
+      ],
+      "description": "Dawnblade Strike restores 800 mana.",
+      "icon": {
+        "image": "lorc/fountain",
+        "school": "holy"
+      },
+      "effects": [
+        {
+          "modify": "dawnblade_strike.generates",
+          "set": {
+            "resource": "mana",
+            "amount": 800
+          }
+        }
+      ]
+    },
+    {
+      "id": "searing_lash",
+      "name": "Searing Lash",
+      "type": "passive",
+      "ranks": 2,
+      "pos": [
+        2,
+        2
+      ],
+      "requires_any": [
+        "thrifty_lash",
+        "kindling"
+      ],
+      "description": "Radiant Lash deals 450 more damage per rank.",
+      "icon": {
+        "image": "lorc/fire-ray",
+        "school": "holy"
+      },
+      "effects": [
+        {
+          "modify": "radiant_lash.effects.0.base",
+          "per_rank": 450
+        }
+      ]
+    },
+    {
+      "id": "quick_spear",
+      "name": "Quick Spear",
+      "type": "passive",
+      "ranks": 2,
+      "pos": [
+        3,
+        2
+      ],
+      "requires_any": [
+        "far_spear"
+      ],
+      "description": "Sun Spear's cooldown is 1 s shorter per rank.",
+      "icon": {
+        "image": "lorc/thrown-charcoal",
+        "school": "holy"
+      },
+      "effects": [
+        {
+          "modify": "sun_spear.cooldown_s",
+          "per_rank": -1
+        }
+      ]
+    },
+    {
+      "id": "thrifty_verdict",
+      "name": "Thrifty Verdict",
+      "type": "passive",
+      "ranks": 2,
+      "pos": [
+        4,
+        2
+      ],
+      "requires_any": [
+        "swift_verdict"
+      ],
+      "description": "Zealous Verdict costs 200 less mana per rank.",
+      "icon": {
+        "image": "lorc/law-star",
+        "school": "holy"
+      },
+      "effects": [
+        {
+          "modify": "zealous_verdict.cost.amount",
+          "per_rank": -200
+        }
+      ]
+    },
+    {
+      "id": "long_edge",
+      "name": "Long Edge",
+      "type": "passive",
+      "ranks": 1,
+      "pos": [
+        5,
+        2
+      ],
+      "requires_any": [
+        "deep_silence"
+      ],
+      "description": "Silencing Edge reaches 3 m further.",
+      "icon": {
+        "image": "delapouite/sharp-halberd",
+        "school": "physical"
+      },
+      "effects": [
+        {
+          "modify": "silencing_edge.range_m",
+          "per_rank": 3
+        }
+      ]
+    },
+    {
+      "id": "far_mercy",
+      "name": "Far Mercy",
+      "type": "passive",
+      "ranks": 2,
+      "pos": [
+        6,
+        2
+      ],
+      "requires_any": [
+        "mercy_choice"
+      ],
+      "description": "Mercy's Reach costs 300 less mana per rank.",
+      "icon": {
+        "image": "delapouite/caduceus",
+        "school": "holy"
+      },
+      "effects": [
+        {
+          "modify": "mercys_reach.cost.amount",
+          "per_rank": -300
+        }
+      ]
+    },
+    {
+      "id": "long_fury",
+      "name": "Long Fury",
+      "type": "passive",
+      "ranks": 2,
+      "pos": [
+        0,
+        3
+      ],
+      "requires_any": [
+        "tithe_of_zeal"
+      ],
+      "gate": 8,
+      "description": "Dawnfury's cooldown is 15 s shorter per rank.",
+      "icon": {
+        "image": "lorc/fire-zone",
+        "school": "holy"
+      },
+      "effects": [
+        {
+          "modify": "dawnfury_ab.cooldown_s",
+          "per_rank": -15
+        }
+      ]
+    },
+    {
+      "id": "searing_crusade",
+      "name": "Searing Crusade",
+      "type": "active",
+      "pos": [
+        1,
+        3
+      ],
+      "requires_any": [
+        "tithe_of_zeal",
+        "searing_lash"
+      ],
+      "gate": 8,
+      "description": "Grants Searing Crusade: enemies within 8 m take 4,500 and receive 20% less healing for 6 s. Costs 2,000 mana, 30 s cooldown.",
+      "icon": {
+        "image": "lorc/crossed-sabres",
+        "school": "physical"
+      },
+      "grants_ability": "searing_crusade_ab"
+    },
+    {
+      "id": "bright_fury",
+      "name": "Bright Fury",
+      "type": "passive",
+      "ranks": 1,
+      "pos": [
+        2,
+        3
+      ],
+      "requires_any": [
+        "searing_lash"
+      ],
+      "gate": 8,
+      "description": "Dawnfury increases damage by a further 10%.",
+      "icon": {
+        "image": "caro-asercion/tarot-19-the-sun",
+        "school": "holy"
+      },
+      "effects": [
+        {
+          "modify": "dawnfury.modifiers.0.value",
+          "per_rank": 0.1
+        }
+      ]
+    },
+    {
+      "id": "blinding_judgment",
+      "name": "Blinding Judgment",
+      "type": "active",
+      "pos": [
+        3,
+        3
+      ],
+      "requires_any": [
+        "quick_spear",
+        "thrifty_verdict"
+      ],
+      "gate": 8,
+      "description": "Grants Blinding Judgment: an enemy is incapacitated for 4 s; any damage ends it. Costs 1,200 mana, 45 s cooldown.",
+      "icon": {
+        "image": "delapouite/blindfold",
+        "school": "holy"
+      },
+      "grants_ability": "blinding_judgment_ab"
+    },
+    {
+      "id": "steady_ward",
+      "name": "Steady Ward",
+      "type": "passive",
+      "ranks": 2,
+      "pos": [
+        4,
+        3
+      ],
+      "requires_any": [
+        "thrifty_verdict"
+      ],
+      "gate": 8,
+      "description": "Martyr's Ward's cooldown is 10 s shorter per rank.",
+      "icon": {
+        "image": "lorc/lightning-shield",
+        "school": "holy"
+      },
+      "effects": [
+        {
+          "modify": "martyrs_ward_ab.cooldown_s",
+          "per_rank": -10
+        }
+      ]
+    },
+    {
+      "id": "righteous_leap",
+      "name": "Righteous Leap",
+      "type": "active",
+      "pos": [
+        5,
+        3
+      ],
+      "requires_any": [
+        "long_edge",
+        "far_mercy"
+      ],
+      "gate": 8,
+      "description": "Grants Righteous Leap: rush to an enemy 8 to 25 m away and hit 10% harder for 5 s (25 s cooldown).",
+      "icon": {
+        "image": "lorc/fire-dash",
+        "school": "holy"
+      },
+      "grants_ability": "righteous_leap_ab"
+    },
+    {
+      "id": "sure_mercy",
+      "name": "Sure Mercy",
+      "type": "passive",
+      "ranks": 1,
+      "pos": [
+        6,
+        3
+      ],
+      "requires_any": [
+        "far_mercy"
+      ],
+      "gate": 8,
+      "description": "Mercy's Reach can be cast while stunned, incapacitated or disoriented.",
+      "icon": {
+        "image": "lorc/half-heart",
+        "school": "holy"
+      },
+      "effects": [
+        {
+          "modify": "mercys_reach.usable_while_cc",
+          "set": [
+            "stun",
+            "incapacitate",
+            "disorient"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "fury_wellspring",
+      "name": "Fury Wellspring",
+      "type": "passive",
+      "ranks": 1,
+      "pos": [
+        0,
+        4
+      ],
+      "requires_any": [
+        "long_fury"
+      ],
+      "gate": 8,
+      "description": "Dawnfury restores 5,000 mana.",
+      "icon": {
+        "image": "lorc/grouped-drops",
+        "school": "holy"
+      },
+      "effects": [
+        {
+          "modify": "dawnfury_ab.generates",
+          "set": {
+            "resource": "mana",
+            "amount": 5000
+          }
+        }
+      ]
+    },
+    {
+      "id": "wide_crusade",
+      "name": "Wide Crusade",
+      "type": "passive",
+      "ranks": 1,
+      "pos": [
+        1,
+        4
+      ],
+      "requires_any": [
+        "searing_crusade"
+      ],
+      "gate": 8,
+      "description": "Searing Crusade reaches 3 m further.",
+      "icon": {
+        "image": "lorc/bright-explosion",
+        "school": "holy"
+      },
+      "effects": [
+        {
+          "modify": "searing_crusade_ab.effects.0.radius_m",
+          "per_rank": 3
+        },
+        {
+          "modify": "searing_crusade_ab.effects.1.radius_m",
+          "per_rank": 3
+        }
+      ]
+    },
+    {
+      "id": "lasting_fury",
+      "name": "Lasting Fury",
+      "type": "passive",
+      "ranks": 1,
+      "pos": [
+        2,
+        4
+      ],
+      "requires_any": [
+        "bright_fury"
+      ],
+      "gate": 8,
+      "description": "Dawnfury lasts 3 s longer.",
+      "icon": {
+        "image": "lorc/fluffy-flame",
+        "school": "holy"
+      },
+      "effects": [
+        {
+          "modify": "dawnfury.duration_s",
+          "per_rank": 3
+        }
+      ]
+    },
+    {
+      "id": "long_blindness",
+      "name": "Long Blindness",
+      "type": "passive",
+      "ranks": 2,
+      "pos": [
+        3,
+        4
+      ],
+      "requires_any": [
+        "blinding_judgment"
+      ],
+      "gate": 8,
+      "description": "Blinding Judgment lasts 1 s longer per rank.",
+      "icon": {
+        "image": "lorc/falling-eye",
+        "school": "holy"
+      },
+      "effects": [
+        {
+          "modify": "judgment_blinded.duration_s",
+          "per_rank": 1
+        }
+      ]
+    },
+    {
+      "id": "thick_ward",
+      "name": "Thick Ward",
+      "type": "passive",
+      "ranks": 1,
+      "pos": [
+        4,
+        4
+      ],
+      "requires_any": [
+        "steady_ward"
+      ],
+      "gate": 8,
+      "description": "Martyr's Ward absorbs 2,000 more.",
+      "icon": {
+        "image": "delapouite/armor-cuisses",
+        "school": "holy"
+      },
+      "effects": [
+        {
+          "modify": "martyrs_ward.absorb",
+          "per_rank": 2000
+        }
+      ]
+    },
+    {
+      "id": "swift_leap",
+      "name": "Swift Leap",
+      "type": "passive",
+      "ranks": 2,
+      "pos": [
+        5,
+        4
+      ],
+      "requires_any": [
+        "righteous_leap"
+      ],
+      "gate": 8,
+      "description": "Righteous Leap's cooldown is 4 s shorter per rank.",
+      "icon": {
+        "image": "lorc/leather-boot",
+        "school": "holy"
+      },
+      "effects": [
+        {
+          "modify": "righteous_leap_ab.cooldown_s",
+          "per_rank": -4
+        }
+      ]
+    },
+    {
+      "id": "burning_crusade",
+      "name": "Burning Crusade",
+      "type": "passive",
+      "ranks": 1,
+      "pos": [
+        1,
+        5
+      ],
+      "requires_any": [
+        "wide_crusade"
+      ],
+      "gate": 8,
+      "description": "Searing Crusade deals 1,000 more damage.",
+      "icon": {
+        "image": "lorc/fire-wave",
+        "school": "holy"
+      },
+      "effects": [
+        {
+          "modify": "searing_crusade_ab.effects.0.base",
+          "per_rank": 1000
+        }
+      ]
+    },
+    {
+      "id": "zealous_focus",
+      "name": "Zealous Focus",
+      "type": "passive",
+      "ranks": 2,
+      "pos": [
+        2,
+        5
+      ],
+      "requires_any": [
+        "lasting_fury",
+        "long_blindness"
+      ],
+      "gate": 8,
+      "description": "Your damage is increased by 2% per rank.",
+      "icon": {
+        "image": "lorc/focused-lightning",
+        "school": "holy"
+      },
+      "effects": [
+        {
+          "modify": "zealot_focus.modifiers.0.value",
+          "per_rank": 0.02
+        }
+      ],
+      "grants_aura": "zealot_focus"
+    },
+    {
+      "id": "swift_blindness",
+      "name": "Swift Judgment",
+      "type": "passive",
+      "ranks": 1,
+      "pos": [
+        3,
+        5
+      ],
+      "requires_any": [
+        "long_blindness"
+      ],
+      "gate": 8,
+      "description": "Blinding Judgment's cooldown is 10 s shorter.",
+      "icon": {
+        "image": "lorc/bolt-eye",
+        "school": "holy"
+      },
+      "effects": [
+        {
+          "modify": "blinding_judgment_ab.cooldown_s",
+          "per_rank": -10
+        }
+      ]
+    },
+    {
+      "id": "long_momentum",
+      "name": "Long Momentum",
+      "type": "passive",
+      "ranks": 1,
+      "pos": [
+        5,
+        5
+      ],
+      "requires_any": [
+        "swift_leap"
+      ],
+      "gate": 8,
+      "description": "Righteous Leap's momentum lasts 3 s longer.",
+      "icon": {
+        "image": "delapouite/charging",
+        "school": "physical"
+      },
+      "effects": [
+        {
+          "modify": "righteous_momentum.duration_s",
+          "per_rank": 3
+        }
+      ]
+    },
+    {
+      "id": "keen_zeal",
+      "name": "Keen Zeal",
+      "type": "passive",
+      "ranks": 2,
+      "pos": [
+        0,
+        6
+      ],
+      "requires_any": [
+        "fury_wellspring"
+      ],
+      "gate": 20,
+      "description": "Your critical strike chance is 3% higher per rank.",
+      "icon": {
+        "image": "lorc/gems",
+        "school": "holy"
+      },
+      "effects": [
+        {
+          "modify": "self.stats.crit_chance",
+          "per_rank": 0.03
+        }
+      ]
+    },
+    {
+      "id": "crusaders_verdict",
+      "name": "Crusader's Verdict",
+      "type": "capstone",
+      "pos": [
+        1,
+        6
+      ],
+      "requires_any": [
+        "burning_crusade"
+      ],
+      "gate": 20,
+      "description": "Dawnblade Strike deals 1,000 more damage, Zealous Verdict 1,500 more and Searing Crusade 1,000 more.",
+      "icon": {
+        "image": "lorc/crowned-explosion",
+        "school": "holy"
+      },
+      "effects": [
+        {
+          "modify": "dawnblade_strike.effects.0.base",
+          "per_rank": 1000
+        },
+        {
+          "modify": "zealous_verdict.effects.0.base",
+          "per_rank": 1500
+        },
+        {
+          "modify": "searing_crusade_ab.effects.0.base",
+          "per_rank": 1000
+        }
+      ]
+    },
+    {
+      "id": "dawn_ascendant",
+      "name": "Dawn Ascendant",
+      "type": "capstone",
+      "pos": [
+        3,
+        6
+      ],
+      "requires_any": [
+        "swift_blindness"
+      ],
+      "gate": 20,
+      "description": "Radiant Lash deals 1,000 more damage and Sun Spear 1,000 more.",
+      "icon": {
+        "image": "lorc/flat-star",
+        "school": "holy"
+      },
+      "effects": [
+        {
+          "modify": "radiant_lash.effects.0.base",
+          "per_rank": 1000
+        },
+        {
+          "modify": "sun_spear.effects.0.base",
+          "per_rank": 1000
+        }
+      ]
+    },
+    {
+      "id": "relentless_zealot",
+      "name": "Relentless Zealot",
+      "type": "capstone",
+      "pos": [
+        5,
+        6
+      ],
+      "requires_any": [
+        "long_momentum"
+      ],
+      "gate": 20,
+      "description": "Silencing Edge locks the school for 1 s longer, Binding Gavel stuns for 0.5 s longer and Righteous Leap's momentum is 5% stronger.",
+      "icon": {
+        "image": "lorc/fire-punch",
+        "school": "physical"
+      },
+      "effects": [
+        {
+          "modify": "silencing_edge.effects.0.school_lock_s",
+          "per_rank": 1
+        },
+        {
+          "modify": "gavel_bound.duration_s",
+          "per_rank": 0.5
+        },
+        {
+          "modify": "righteous_momentum.modifiers.0.value",
+          "per_rank": 0.05
+        }
+      ]
+    },
+    {
+      "id": "martyrs_mercy",
+      "name": "Martyr's Mercy",
+      "type": "passive",
+      "ranks": 1,
+      "pos": [
+        4,
+        6
+      ],
+      "requires_any": [
+        "thick_ward"
+      ],
+      "gate": 20,
+      "description": "Martyr's Ward also heals you for 6,000.",
+      "icon": {
+        "image": "lorc/burning-passion",
+        "school": "holy"
+      },
+      "effects": [
+        {
+          "modify": "martyrs_ward_ab.effects",
+          "set": [
+            {
+              "type": "apply_aura",
+              "aura": "martyrs_ward"
+            },
+            {
+              "type": "heal",
+              "base": 6000
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

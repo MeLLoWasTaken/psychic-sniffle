@@ -1,0 +1,11 @@
+{
+  "id": "dawnblade_strike",
+  "melee": {
+    "style": "arc"
+  },
+  "impact": {
+    "style": "flash",
+    "at": "target",
+    "size": 1.0
+  }
+}

@@ -1,0 +1,11 @@
+{
+  "id": "sun_spear",
+  "projectile": {
+    "style": "streak"
+  },
+  "impact": {
+    "style": "flash",
+    "at": "target",
+    "size": 1.0
+  }
+}

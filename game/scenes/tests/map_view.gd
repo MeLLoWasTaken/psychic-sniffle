@@ -124,7 +124,10 @@ func _camera(view: String) -> void:
 			cam.look_at(Vector3(s * 6.0, 2.2, 0.0))
 		"lineup":
 			cam.fov = 38.0
-			cam.position = Vector3(-10.2, 1.6, 0.0)
+			# back far enough that the whole line fits the width (16:9), never closer than 5.3 m
+			var half_w: float = lineup.size() * 0.8 + 0.6
+			var dist: float = maxf(5.3, half_w / (tan(deg_to_rad(cam.fov * 0.5)) * 16.0 / 9.0))
+			cam.position = Vector3(-15.5 + dist, 1.6, 0.0)
 			cam.look_at(Vector3(-15.5, 1.05, 0.0))
 		"character":
 			cam.fov = 40.0

@@ -1,0 +1,302 @@
+{
+  "tree_id": "templar_zealot_pvp",
+  "kind": "pvp",
+  "owner": "templar_zealot",
+  "points": 3,
+  "status": "complete",
+  "nodes": [
+    {
+      "id": "unbreakable_ward",
+      "name": "Unbreakable Ward",
+      "type": "passive",
+      "ranks": 1,
+      "description": "Enemy dispels can no longer remove your Martyr's Ward or Dawnfury.",
+      "icon": {
+        "image": "delapouite/black-knight-helm",
+        "school": "holy"
+      },
+      "effects": [
+        {
+          "modify": "martyrs_ward.dispel_type",
+          "set": "none"
+        },
+        {
+          "modify": "dawnfury.dispel_type",
+          "set": "none"
+        }
+      ]
+    },
+    {
+      "id": "swift_fury",
+      "name": "Swift Fury",
+      "type": "passive",
+      "ranks": 1,
+      "description": "Dawnfury's cooldown is 30 s shorter, but it lasts 5 s less.",
+      "icon": {
+        "image": "lorc/flame-spin",
+        "school": "holy"
+      },
+      "effects": [
+        {
+          "modify": "dawnfury_ab.cooldown_s",
+          "per_rank": -30
+        },
+        {
+          "modify": "dawnfury.duration_s",
+          "per_rank": -5
+        }
+      ]
+    },
+    {
+      "id": "relentless_edge",
+      "name": "Relentless Edge",
+      "type": "passive",
+      "ranks": 1,
+      "description": "Silencing Edge's cooldown is 5 s shorter, but it locks the school for 1 s less.",
+      "icon": {
+        "image": "delapouite/sickle",
+        "school": "physical"
+      },
+      "effects": [
+        {
+          "modify": "silencing_edge.cooldown_s",
+          "per_rank": -5
+        },
+        {
+          "modify": "silencing_edge.effects.0.school_lock_s",
+          "per_rank": -1
+        }
+      ]
+    },
+    {
+      "id": "sundering_strike_z",
+      "name": "Sundering Strike",
+      "type": "passive",
+      "ranks": 1,
+      "description": "Kindled Strike also reduces the healing its target receives by 25% for 6 s.",
+      "icon": {
+        "image": "lorc/feather-wound",
+        "school": "physical"
+      },
+      "effects": [
+        {
+          "modify": "kindled_strike.effects",
+          "set": [
+            {
+              "type": "damage",
+              "base": 3600
+            },
+            {
+              "type": "apply_aura",
+              "aura": "zealot_sundered"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "ironclad_zeal",
+      "name": "Ironclad Zeal",
+      "type": "passive",
+      "ranks": 1,
+      "description": "Ironbound Prayer lasts 4 s longer, but its cooldown is 30 s longer.",
+      "icon": {
+        "image": "lorc/gear-hammer",
+        "school": "holy"
+      },
+      "effects": [
+        {
+          "modify": "ironbound_prayer.duration_s",
+          "per_rank": 4
+        },
+        {
+          "modify": "ironbound_prayer_ab.cooldown_s",
+          "per_rank": 30
+        }
+      ]
+    },
+    {
+      "id": "vow_of_zeal",
+      "name": "Vow of Zeal",
+      "type": "passive",
+      "ranks": 1,
+      "description": "You take 8% less damage, but Break Free's cooldown is 45 s longer.",
+      "icon": {
+        "image": "lorc/laurel-crown",
+        "school": "holy"
+      },
+      "effects": [
+        {
+          "modify": "break_free.cooldown_s",
+          "per_rank": 45
+        }
+      ],
+      "grants_aura": "zealot_vow"
+    },
+    {
+      "id": "pinning_leap",
+      "name": "Pinning Leap",
+      "type": "passive",
+      "ranks": 1,
+      "description": "Righteous Leap also roots its target for 2 s, but its cooldown is 8 s longer.",
+      "icon": {
+        "image": "lorc/barbed-nails",
+        "school": "holy"
+      },
+      "effects": [
+        {
+          "modify": "righteous_leap_ab.effects",
+          "set": [
+            {
+              "type": "charge"
+            },
+            {
+              "type": "apply_aura",
+              "aura": "righteous_momentum",
+              "affects": "self"
+            },
+            {
+              "type": "apply_aura",
+              "aura": "spear_pinned"
+            }
+          ]
+        },
+        {
+          "modify": "righteous_leap_ab.cooldown_s",
+          "per_rank": 8
+        }
+      ]
+    },
+    {
+      "id": "mercy_of_the_hour",
+      "name": "Mercy of the Hour",
+      "type": "passive",
+      "ranks": 1,
+      "description": "Mercy's Reach's cooldown is 10 s shorter, but it heals 3,000 less.",
+      "icon": {
+        "image": "lorc/dripping-star",
+        "school": "holy"
+      },
+      "effects": [
+        {
+          "modify": "mercys_reach.cooldown_s",
+          "per_rank": -10
+        },
+        {
+          "modify": "mercys_reach.effects.0.base",
+          "per_rank": -3000
+        }
+      ]
+    },
+    {
+      "id": "steadfast_zeal",
+      "name": "Steadfast Zeal",
+      "type": "passive",
+      "ranks": 1,
+      "description": "You can use Unbowed Faith while rooted, and it frees you from roots.",
+      "icon": {
+        "image": "lorc/light-thorny-triskelion",
+        "school": "holy"
+      },
+      "effects": [
+        {
+          "modify": "unbowed_faith_ab.usable_while_cc",
+          "set": [
+            "root"
+          ]
+        },
+        {
+          "modify": "unbowed_faith_ab.effects",
+          "set": [
+            {
+              "type": "remove_cc"
+            },
+            {
+              "type": "apply_aura",
+              "aura": "unbowed_faith"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "fury_unbound",
+      "name": "Fury Unbound",
+      "type": "passive",
+      "ranks": 1,
+      "description": "Dawnfury also frees you from crowd control, but its cooldown is 30 s longer.",
+      "icon": {
+        "image": "lorc/burning-meteor",
+        "school": "holy"
+      },
+      "effects": [
+        {
+          "modify": "dawnfury_ab.effects",
+          "set": [
+            {
+              "type": "remove_cc"
+            },
+            {
+              "type": "apply_aura",
+              "aura": "dawnfury"
+            }
+          ]
+        },
+        {
+          "modify": "dawnfury_ab.cooldown_s",
+          "per_rank": 30
+        },
+        {
+          "modify": "dawnfury_ab.usable_while_cc",
+          "set": [
+            "stun",
+            "incapacitate",
+            "disorient"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "lingering_halo_z",
+      "name": "Lingering Halo",
+      "type": "passive",
+      "ranks": 1,
+      "description": "Dazzling Halo disorients for 2 s longer, but its cooldown is 20 s longer.",
+      "icon": {
+        "image": "lorc/spiked-halo",
+        "school": "holy"
+      },
+      "effects": [
+        {
+          "modify": "dazzled.duration_s",
+          "per_rank": 2
+        },
+        {
+          "modify": "dazzling_halo.cooldown_s",
+          "per_rank": 20
+        }
+      ]
+    },
+    {
+      "id": "heavy_hand_z",
+      "name": "Heavy Hand",
+      "type": "passive",
+      "ranks": 1,
+      "description": "Binding Gavel stuns for 1 s longer, but its cooldown is 15 s longer.",
+      "icon": {
+        "image": "lorc/thor-fist",
+        "school": "physical"
+      },
+      "effects": [
+        {
+          "modify": "gavel_bound.duration_s",
+          "per_rank": 1
+        },
+        {
+          "modify": "binding_gavel.cooldown_s",
+          "per_rank": 15
+        }
+      ]
+    }
+  ]
+}

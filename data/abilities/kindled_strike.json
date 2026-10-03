@@ -1,0 +1,29 @@
+{
+  "id": "kindled_strike",
+  "name": "Kindled Strike",
+  "description": "Strike an enemy for 3,600.",
+  "owner": "templar_zealot",
+  "kit_slot": "core",
+  "school": "physical",
+  "cast_type": "instant",
+  "cooldown_s": 0,
+  "triggers_gcd": true,
+  "range_m": 5,
+  "requires_los": true,
+  "target": "enemy",
+  "effects": [
+    {
+      "type": "damage",
+      "base": 3600
+    }
+  ],
+  "icon": {
+    "symbol": "kindled_strike",
+    "school": "holy",
+    "image": "lorc/burning-blobs"
+  },
+  "cost": {
+    "resource": "mana",
+    "amount": 500
+  }
+}

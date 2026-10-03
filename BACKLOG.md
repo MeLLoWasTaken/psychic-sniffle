@@ -21,7 +21,7 @@ Acceptance criteria are written before work starts. Refine them during step 2 of
 Items further down keep their history; this list is the order to take them in.
 
 1. F-08: duel balance done (specs 45-54%, match-ups 41-56% on fresh seeds, named and random builds); left: Oracle mirrors reaching the time limit (a dampening proposal waits on the human).
-2. M3-04 Radiance balance (a nightly run on CI with Radiance in it), then Templar Vanguard (the M3 section below has the wave plan).
+2. M3-04 Templar balance: Radiance, Vanguard and Zealot on one nightly run on CI (the M3 section below has the wave plan).
 
 ### P-01 Playtest build `[done]`
 - [x] A Windows (and Linux) package of the game the human downloads from a GitHub release, unzips and runs: built on CI from export templates compiled from the same Godot 4.7.2 source; the Linux package smoke-tested on CI (it starts as a headless server).
@@ -676,8 +676,8 @@ The other 10 classes, and the 6 remaining specs of the first three classes, in t
 - Done 2026-10-03: icons and effect files came with the kit (M3-01); every ability maps sounds for each of its stages. Four new sounds for the strong effects, which had borrowed the Oracle's: Sanctum (a bell strike into a swelling major chord), Noonblaze (a choir voice rising an octave into chimes), Dazzling Halo (a sharp glassy flash), Binding Gavel's impact (a heavy iron clang). All pass the audio rules (quieter than the CC warning, no sustained tone in an impact). The human should listen to them at the next review.
 - Radiance stays out of the main menu until its balance pass (M3-04).
 
-### M3-04 Radiance balance `[todo]`
-- [ ] Radiance wins 40 to 60% in 1v1, 2v2 and 3v3 bot simulations (named and random builds), with every other spec still inside 40 to 60%.
+### M3-04 Templar balance `[todo]`
+- [ ] Radiance, Vanguard and Zealot each win 40 to 60% in 1v1, 2v2 and 3v3 bot simulations (named and random builds), with every other spec still inside 40 to 60%. (Widened 2026-10-03 from Radiance alone: the three specs share class talents and abilities, so they are tuned together on one nightly run.)
 
 ### M3-05 Templar Vanguard kit `[done]`
 - [x] The Vanguard tank spec: 14 to 18 abilities (holy damage around itself, protective blessings on allies), auras, spec and PvP talent trees, a bot profile with three builds; plays in bot matches without errors; counterplay reviewed.
@@ -685,10 +685,19 @@ The other 10 classes, and the 6 remaining specs of the first three classes, in t
 - Counterplay: no full immunity; Bastion of Dawn (15 s) is answered by crowd control, a dispel (magic), kiting (melee) and line of sight.
 - Checked: data validation (kit complete), Python rule tests, six bot matches (with each healer, with the Arcanist, a tank mirror): all ended in a kill, no errors.
 
-### M3-06 Vanguard character `[doing]`
-- [ ] The Templar armor set in Vanguard colours (a deep blue tabard, darker steel), so the two specs read apart; asset validation and a lineup.
+### M3-06 Vanguard character `[done]`
+- [x] The Templar armor set in Vanguard colours (a deep blue tabard, darker steel), so the two specs read apart; asset validation and a lineup.
+- Done 2026-10-03: `char_templar_vanguard`, the Templar plate with a deep blue tabard and cloth (#2c4a82) over slightly darker steel, the same warhammer and shield. 24,796 triangles, no non-manifold edges; contact sheet in `previews/m3_05/`, lineup in `previews/m3_07/lineup/`. Its silhouette is the Radiance one (overlap 0.999): the specs of a class share a silhouette and differ by colour, as DESIGN.md asks only that classes read apart.
 
-Then, in order (split into items like M3-01 to M3-04 as each starts): Vanguard balance (with M3-04's run), Templar Zealot; Deathsworn Frostgrave, Bloodbound (tank) and Plague (minions); Stormcaller Tempest, Tidesinger (healer, totems) and Primal (wolves); Warblade Berserker; Arcanist Pyre and Aether; wave 1 gate.
+### M3-07 Templar Zealot kit and character `[done]`
+- [x] The Zealot melee damage spec: 14 to 18 abilities (burst windows, stuns, emergency heals on allies), auras, spec and PvP talent trees, a bot profile with three builds; plays in bot matches without errors; counterplay reviewed. A character in Zealot colours that still reads as a Templar and apart from the Warblade.
+- Kit (14 abilities, 4 of them the class's): Dawnblade Strike (4,800), Radiant Lash (5,500 holy, 8 m, 9 s), Sun Spear (4,000 at 25 m, 10 s), Zealous Verdict (7,500, 15 s), Kindled Strike (3,600, cheap); Dawnfury (burst: 25% more damage, 10% more critical hits for 15 s, 2 min); Silencing Edge (full interrupt, 4 s lock, 15 s); Martyr's Ward (10,000 shield, 1 min) and Unbowed Faith (40% faster for 4 s); Mercy's Reach (instant 9,000 heal on an ally, 30 s); plus Binding Gavel, Dazzling Halo, Ironbound Prayer, Dawnstep. Spec tree of 42 nodes with Searing Crusade, Blinding Judgment and Righteous Leap; 12 PvP talents (the healing-reduction one on Kindled Strike, the root on Righteous Leap: abilities no spec node changes); builds dawn_crusader, judging_light and mercy_blade. 66 new icons; existing effect styles and sounds; swing sounds of a two-handed blade.
+- Counterplay: no full immunity; Dawnfury (15 s) is answered by crowd control, a magic dispel, kiting and line of sight; Mercy's Reach is the only heal and has a 30 s cooldown.
+- Checked: data validation (kit complete), 666 Python rule tests, 1v1 bot matches against the Warblade (2 of 2 won, 17 s) and the Arcanist (4 of 4 won, 15 to 27 s, the same as the Warblade's 4 of 4 in 21 to 28 s), no errors. Whether it wins too much is for the balance item.
+- Character: `char_templar_zealot`, the Templar plate in crimson (#8a2a26) without the shield (`templar_plate_unshielded`), with a new `weapon_sun_glaive` (2.6 m, 658 triangles): an iron haft with crimson wraps, a gold sun wheel where the broad forward-sweeping blade meets the haft, held upright like the Arcanist's staff. 22,996 triangles. With the Warblade's greatsword instead, its silhouette overlapped the Warblade's 0.89 (0.87 was judged too close in M3-02); the upright glaive is the fix (figures in CHANGELOG).
+- Follow-up: Zealot balance joins M3-04 (Templar balance).
+
+Then, in order (split into items like M3-01 to M3-04 as each starts): Deathsworn Frostgrave, Bloodbound (tank) and Plague (minions); Stormcaller Tempest, Tidesinger (healer, totems) and Primal (wolves); Warblade Berserker; Arcanist Pyre and Aether; wave 1 gate.
 
 ## Later milestones (split into items when the milestone starts)
 

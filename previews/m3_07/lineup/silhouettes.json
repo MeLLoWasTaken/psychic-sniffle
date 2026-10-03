@@ -1,0 +1,67 @@
+{
+ "distance_m": 30.0,
+ "fov_deg": 75.0,
+ "px_per_m_at_distance": 23.46,
+ "clips": {
+  "idle": {
+   "iou": {
+    "char_arcanist_rime/char_oracle_grace": 0.745,
+    "char_arcanist_rime/char_templar_radiance": 0.521,
+    "char_arcanist_rime/char_templar_vanguard": 0.521,
+    "char_arcanist_rime/char_templar_zealot": 0.521,
+    "char_arcanist_rime/char_warblade_carnage": 0.542,
+    "char_oracle_grace/char_templar_radiance": 0.547,
+    "char_oracle_grace/char_templar_vanguard": 0.547,
+    "char_oracle_grace/char_templar_zealot": 0.529,
+    "char_oracle_grace/char_warblade_carnage": 0.542,
+    "char_templar_radiance/char_templar_vanguard": 0.999,
+    "char_templar_radiance/char_templar_zealot": 0.833,
+    "char_templar_radiance/char_warblade_carnage": 0.817,
+    "char_templar_vanguard/char_templar_zealot": 0.834,
+    "char_templar_vanguard/char_warblade_carnage": 0.818,
+    "char_templar_zealot/char_warblade_carnage": 0.818
+   },
+   "height_px_at_distance": 60.3
+  },
+  "cast_release": {
+   "iou": {
+    "char_arcanist_rime/char_oracle_grace": 0.724,
+    "char_arcanist_rime/char_templar_radiance": 0.581,
+    "char_arcanist_rime/char_templar_vanguard": 0.581,
+    "char_arcanist_rime/char_templar_zealot": 0.592,
+    "char_arcanist_rime/char_warblade_carnage": 0.553,
+    "char_oracle_grace/char_templar_radiance": 0.653,
+    "char_oracle_grace/char_templar_vanguard": 0.653,
+    "char_oracle_grace/char_templar_zealot": 0.57,
+    "char_oracle_grace/char_warblade_carnage": 0.589,
+    "char_templar_radiance/char_templar_vanguard": 0.999,
+    "char_templar_radiance/char_templar_zealot": 0.778,
+    "char_templar_radiance/char_warblade_carnage": 0.8,
+    "char_templar_vanguard/char_templar_zealot": 0.779,
+    "char_templar_vanguard/char_warblade_carnage": 0.8,
+    "char_templar_zealot/char_warblade_carnage": 0.707
+   },
+   "height_px_at_distance": 74.3
+  },
+  "attack_1": {
+   "iou": {
+    "char_arcanist_rime/char_oracle_grace": 0.733,
+    "char_arcanist_rime/char_templar_radiance": 0.625,
+    "char_arcanist_rime/char_templar_vanguard": 0.625,
+    "char_arcanist_rime/char_templar_zealot": 0.673,
+    "char_arcanist_rime/char_warblade_carnage": 0.579,
+    "char_oracle_grace/char_templar_radiance": 0.669,
+    "char_oracle_grace/char_templar_vanguard": 0.669,
+    "char_oracle_grace/char_templar_zealot": 0.618,
+    "char_oracle_grace/char_warblade_carnage": 0.619,
+    "char_templar_radiance/char_templar_vanguard": 0.999,
+    "char_templar_radiance/char_templar_zealot": 0.816,
+    "char_templar_radiance/char_warblade_carnage": 0.734,
+    "char_templar_vanguard/char_templar_zealot": 0.817,
+    "char_templar_vanguard/char_warblade_carnage": 0.734,
+    "char_templar_zealot/char_warblade_carnage": 0.702
+   },
+   "height_px_at_distance": 65.7
+  }
+ }
+}
