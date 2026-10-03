@@ -20,7 +20,7 @@ Acceptance criteria are written before work starts. Refine them during step 2 of
 
 Items further down keep their history; this list is the order to take them in. Review 6: `docs/reports/review_06/review_06.md`.
 
-1. M3-04 Templar balance. Team brackets are inside 40-60% for every spec; 1v1 is not (Vanguard 67%, Radiance 60%, Warblade 24%). Waiting on the human: should 1v1 balance cover tanks and healers (review 6 asks; recommendation: measure 1v1 among damage specs, report tanks and healers separately)? The criterion stands as written until then.
+1. M3-04 Templar balance. After two passes every spec is inside 40-60% in 2v2 and 3v3; 1v1 is not (Vanguard 66%, Warblade 28%, Oracle 38%). Waiting on the human: should 1v1 balance cover tanks and healers (review 6 asks; recommendation: measure 1v1 among damage specs, report tanks and healers separately)? The criterion stands as written until then.
 2. Frostgrave balance: done by the nightly at cac5431 (1v1 43%, 2v2 44%, 3v3 46%).
 3. Wave 1 continues: Deathsworn Plague (minions; `summon` needs its engine work).
 4. F-08 leftover: Oracle mirrors reaching the time limit (a dampening proposal waits on the human).
@@ -685,6 +685,7 @@ The other 10 classes, and the 6 remaining specs of the first three classes, in t
 - Nightly 2026-10-03 at ad00bac (Vanguard and Zealot in, before the first pass): 2v2 and 3v3 every spec inside 40-60%; 1v1 Vanguard 67%, Radiance 60%, Warblade 24%.
 - Nightly 2026-10-03 at cac5431 (first pass, Frostgrave in): 1v1 Arcanist 52%, Frostgrave 43%, Oracle 36%, Radiance 55%, Vanguard 76%, Zealot 42%, Warblade 27%; 2v2 Arcanist 46%, Frostgrave 44%, Oracle 44%, Radiance 48%, Vanguard 63%, Zealot 61%, Warblade 50%; 3v3 Arcanist 47%, Frostgrave 46%, Oracle 49%, Radiance 56%, Vanguard 58%, Zealot 56%, Warblade 49%. Radiance came down in every bracket. The Vanguard is too strong in team brackets too: in a traced 2v2 the tank dealt 269k damage to the Warblade's 366k.
 - Second pass: the Vanguard's attacks about 20% softer (Crusading Blow 3,800 to 3,000, Aegis Bash 4,500 to 3,600, Sun Ring 2,800 to 2,200, Hurled Aegis 3,600 to 2,900); the Zealot's about 5% (Dawnblade Strike 4,800 to 4,500, Zealous Verdict 7,500 to 7,000, Radiant Lash 5,500 to 5,200). Next: the nightly with this pass.
+- Nightly 2026-10-03 at 8a08c54 (second pass): 2v2 and 3v3 every spec inside 40-60% (2v2 Arcanist 48%, Frostgrave 46%, Oracle 42%, Radiance 51%, Vanguard 57%, Zealot 60%, Warblade 52%; 3v3 46%, 47%, 48%, 57%, 52%, 57%, 50%). 1v1 still outside: Vanguard 66%, Warblade 28%, Oracle 38% (Arcanist 54%, Frostgrave 44%, Radiance 56%, Zealot 42%). The team-bracket part of this item is met; the 1v1 part waits on the human's answer about tanks and healers in duels (review 6).
 
 ### M3-05 Templar Vanguard kit `[done]`
 - [x] The Vanguard tank spec: 14 to 18 abilities (holy damage around itself, protective blessings on allies), auras, spec and PvP talent trees, a bot profile with three builds; plays in bot matches without errors; counterplay reviewed.
