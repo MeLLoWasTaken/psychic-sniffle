@@ -109,7 +109,9 @@ static func slot_state(ability_id: String, view: Dictionary, target: Dictionary,
 		st["gcd_frac"] = clampf(float(tick - gstart) / maxf(1.0, gcd_ready - gstart), 0.0, 1.0)
 	# resource
 	var cost: Dictionary = ab.get("cost", {})
-	if not cost.is_empty() and str(me.get("resource_kind", _primary_resource(str(me.get("spec", ""))))) == str(cost["resource"]):
+	if not cost.is_empty() and view.get("resources", {}).has(str(cost["resource"])):  # every own resource (M3-08)
+		st["resource_ok"] = float(view["resources"][str(cost["resource"])]) >= float(cost["amount"])
+	elif not cost.is_empty() and str(me.get("resource_kind", _primary_resource(str(me.get("spec", ""))))) == str(cost["resource"]):
 		st["resource_ok"] = float(me.get("resource", 0.0)) >= float(cost["amount"])
 	# usability: dead, crowd control, school lock, conditions
 	if int(me.get("health", 1)) <= 0:

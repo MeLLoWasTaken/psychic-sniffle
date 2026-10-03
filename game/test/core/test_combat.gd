@@ -34,6 +34,10 @@ func before_test() -> void:
 		"beam": _ab("beam", {"cast_type": "channel", "cast_time_s": 3.0, "channel_ticks": 3, "effects": [{"type": "damage", "base": 700}]}),
 		"strike": _ab("strike", {"school": "physical", "range_m": 5, "effects": [{"type": "damage", "base": 1000}]}),
 		"costly": _ab("costly", {"cost": {"resource": "mana", "amount": 60000}, "effects": []}),
+		"rune_strike": _ab("rune_strike", {"triggers_gcd": false, "cost": {"resource": "runes", "amount": 2},
+			"generates": {"resource": "runic_power", "amount": 20}, "effects": [{"type": "damage", "base": 100}]}),
+		"rune_tap": _ab("rune_tap", {"triggers_gcd": false, "target": "self",
+			"effects": [{"type": "resource", "resource": "runes", "amount": 1}]}),
 		"kick": _ab("kick", {"school": "physical", "triggers_gcd": false, "cooldown_s": 15, "effects": [{"type": "interrupt", "school_lock_s": 4}]}),
 		"stun": _ab("stun", {"school": "physical", "triggers_gcd": false, "effects": [{"type": "apply_aura", "aura": "stunned"}]}),
 		"poly": _ab("poly", {"triggers_gcd": false, "effects": [{"type": "apply_aura", "aura": "sheeped"}]}),
@@ -180,6 +184,57 @@ func test_rage_builds_from_damage_and_decays_out_of_combat() -> void:
 	assert_float(foe.resources["rage"]).is_equal_approx(6.0, 0.001)
 	_run(TR * 6)  # combat ends after 5 s, then decays 2 per second
 	assert_float(foe.resources["rage"]).is_equal_approx(6.0 - 2.0, 0.05)
+
+
+func _rune_user() -> void:
+	me.resource_max = {"runic_power": 100.0, "runes": 6.0}
+	me.resources = {"runic_power": 0.0, "runes": 6.0}
+
+
+func test_runes_recharge_three_at_a_time_and_build_runic_power() -> void:
+	_rune_user()  # M3-08: six runes, 10 s each, three recharging at once
+	cb.press(me, "rune_strike", 2)
+	assert_float(me.resources["runes"]).is_equal(4.0)
+	assert_float(me.resources["runic_power"]).is_equal(20.0)
+	cb.press(me, "rune_strike", 2)
+	cb.press(me, "rune_strike", 2)
+	assert_float(me.resources["runes"]).is_equal(0.0)
+	cb.press(me, "rune_strike", 2)
+	assert_str(_last_fail()).is_equal("no_resource")
+	assert_int(me.recharges["runes"].size()).is_equal(6)
+	_run(TR * 10 - 1)
+	assert_float(me.resources["runes"]).is_equal(0.0)
+	_run(1)  # the first three come back together after 10 s, the other three start then
+	assert_float(me.resources["runes"]).is_equal(3.0)
+	_run(TR * 5)
+	assert_float(me.resources["runes"]).is_equal(3.0)
+	assert_float(float(me.recharges["runes"][0])).is_equal_approx(5.0, 0.02)
+	_run(TR * 5)
+	assert_float(me.resources["runes"]).is_equal(6.0)
+	assert_bool((me.recharges["runes"] as Array).is_empty()).is_true()
+
+
+func test_two_runes_spent_from_full_come_back_together() -> void:
+	_rune_user()
+	cb.press(me, "rune_strike", 2)
+	_run(TR * 5)
+	assert_float(me.resources["runes"]).is_equal(4.0)  # whole runes only, both halfway
+	_run(TR * 5)
+	assert_float(me.resources["runes"]).is_equal(6.0)
+
+
+func test_a_rune_refund_keeps_running_recharges() -> void:
+	_rune_user()
+	cb.press(me, "rune_strike", 2)
+	cb.press(me, "rune_strike", 2)
+	cb.press(me, "rune_strike", 2)
+	_run(TR * 4)
+	cb.press(me, "rune_tap", -1)  # one rune back: the last queued recharge goes, the running ones keep 6 s left
+	assert_float(me.resources["runes"]).is_equal(1.0)
+	assert_int(me.recharges["runes"].size()).is_equal(5)
+	assert_float(float(me.recharges["runes"][0])).is_equal_approx(6.0, 0.02)
+	_run(TR * 6)
+	assert_float(me.resources["runes"]).is_equal(4.0)
 
 
 # ------------------------------------------------------------ M1-04 auras

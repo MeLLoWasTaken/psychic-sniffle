@@ -88,6 +88,7 @@ func init_unit(u: Unit) -> void:
 		var r: Dictionary = tuning["resources"][res]
 		u.resource_max[res] = float(r["max"])
 		u.resources[res] = 0.0 if res in ["rage", "runic_power", "fury", "combo_points"] else float(r["max"])
+		u.recharges.erase(res)
 	u.known_abilities.clear()
 	for a: String in spec["abilities"] + cls.get("shared_abilities", []):
 		if not a in u.known_abilities:
@@ -144,6 +145,7 @@ func _apply_talents(u: Unit) -> void:
 	u.health = u.max_health
 	for r: String in full:
 		u.resources[r] = float(u.resource_max[r])
+		u.recharges.erase(r)
 
 
 ## The unit's version of an ability: its talented copy when its talents change it.
@@ -263,7 +265,7 @@ func _haste_mult(u: Unit) -> float:
 func _pay_and_cooldown(u: Unit, ab: Dictionary) -> int:
 	var cost: Dictionary = ab.get("cost", {})
 	if not cost.is_empty():
-		u.resources[cost["resource"]] = float(u.resources.get(cost["resource"], 0.0)) - float(cost["amount"])
+		_add_resource(u, cost["resource"], -float(cost["amount"]))
 	var gen: Dictionary = ab.get("generates", {})
 	if not gen.is_empty():
 		_add_resource(u, gen["resource"], float(gen["amount"]))
@@ -663,6 +665,18 @@ func _condition(u: Unit, t: Unit, c: Dictionary) -> bool:
 func _add_resource(u: Unit, res: String, amount: float) -> void:
 	if not u.resource_max.has(res):
 		return
+	var r: Dictionary = tuning["resources"][res]
+	if r.has("recharge_s"):  # whole units: one recharge timer per missing unit
+		var have: int = clampi(int(float(u.resources.get(res, 0.0))) + roundi(amount), 0, int(u.resource_max[res]))
+		u.resources[res] = float(have)
+		var timers: Array = u.recharges.get(res, [])
+		var missing: int = int(u.resource_max[res]) - have
+		while timers.size() < missing:  # spent: a new recharge waits behind the running ones
+			timers.append(float(r["recharge_s"]))
+		while timers.size() > missing:  # refunded: drop the latest, so running recharges keep their progress
+			timers.pop_back()
+		u.recharges[res] = timers
+		return
 	u.resources[res] = clampf(float(u.resources.get(res, 0.0)) + amount, 0.0, float(u.resource_max[res]))
 
 
@@ -960,10 +974,25 @@ func _update_resources(u: Unit) -> void:
 	var in_combat: bool = sim.tick < u.combat_until_tick
 	for res: String in u.resource_max.keys():
 		var r: Dictionary = tuning["resources"][res]
+		if r.has("recharge_s"):
+			_recharge(u, res, int(r.get("recharging_at_once", 1)), dt)
 		if r.has("regen_per_s"):
 			_add_resource(u, res, float(r["regen_per_s"]) * dt)
 		if not in_combat and r.has("decay_per_s_out_of_combat"):
 			_add_resource(u, res, -float(r["decay_per_s_out_of_combat"]) * dt)
+
+
+## Counts down the first `at_once` recharge timers of a whole-unit resource; each that runs out
+## gives back one unit (runes: six, three recharging at a time, DESIGN.md resources).
+func _recharge(u: Unit, res: String, at_once: int, dt: float) -> void:
+	var timers: Array = u.recharges.get(res, [])
+	if timers.is_empty():
+		return
+	for i: int in mini(at_once, timers.size()):
+		timers[i] = float(timers[i]) - dt
+	while not timers.is_empty() and float(timers[0]) <= 1e-9:
+		timers.pop_front()
+		u.resources[res] = minf(float(u.resources.get(res, 0.0)) + 1.0, float(u.resource_max[res]))
 
 
 func sees(a: Unit, b: Unit) -> bool:

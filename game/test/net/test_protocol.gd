@@ -147,3 +147,25 @@ func test_snapshots_carry_talented_aura_speeds_so_prediction_matches_the_server(
 	# untalented auras send nothing
 	me.auras[0].erase("v")
 	assert_dict(runner.combat.talented_speeds(me)).is_empty()
+
+
+func test_snapshots_carry_every_own_resource_with_its_recharges() -> void:
+	# M3-08: a second resource (runes) and its recharge timers reach the player for the HUD and bots
+	var runner: MatchRunner = MatchRunner.new(Data.maps["gallows_courtyard"], "arena", "2v2", 0.0, 5)
+	var me: Unit = runner.add_unit("warblade_carnage", 0)
+	var ora: Unit = runner.add_unit("oracle_grace", 1)
+	me.resource_max["runes"] = 6.0
+	me.resources["runes"] = 4.0
+	me.recharges["runes"] = [2.5, 10.0]
+	me.resources["rage"] = 37.0
+	var snap: Dictionary = Protocol.decode(Protocol.snapshot(10, 1, [me, ora], {}, me, {}))
+	var own: Dictionary = snap["own"]
+	assert_float(float(own["resources"]["runes"])).is_equal(4.0)
+	assert_float(float(own["resource_max"]["runes"])).is_equal(6.0)
+	assert_array(own["recharges"]["runes"]).is_equal([2.5, 10.0])
+	assert_float(float(own["resources"]["rage"])).is_equal(37.0)
+	assert_array(own["recharges"]["rage"]).is_empty()
+	# a bot or HUD reading the view checks a rune cost against the runes, not the primary resource
+	var view: Dictionary = runner.view_for(me)
+	assert_float(MatchRunner.view_resource(view, "runes")).is_equal(4.0)
+	assert_float(MatchRunner.view_resource(view, "rage")).is_equal(37.0)

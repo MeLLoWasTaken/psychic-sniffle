@@ -487,7 +487,9 @@ func bot_view() -> Dictionary:
 	var own: Dictionary = snap.get("own", {})
 	return {"tick": snap["tick"], "tick_rate": Data.tick_rate(), "me": me, "units": units,
 		"gcd_ready_tick": int(own.get("gcd_ready_tick", 0)), "cooldowns": own.get("cooldowns", {}),
-		"school_locks": own.get("school_locks", {}), "match": snap["match"], "map": map_id}
+		"school_locks": own.get("school_locks", {}), "resources": own.get("resources", {}),
+		"resource_max": own.get("resource_max", {}), "recharges": own.get("recharges", {}),
+		"match": snap["match"], "map": map_id}
 
 
 ## The world for drawing (M1-28): bot_view() with the other units at their interpolated positions

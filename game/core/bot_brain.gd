@@ -255,7 +255,7 @@ func _ready(view: Dictionary, me: Dictionary, ab: Dictionary, tick: int) -> bool
 	if not off_gcd and (not me["cast"].is_empty() or tick < _hold_until):
 		return false
 	var cost: Dictionary = ab.get("cost", {})
-	if not cost.is_empty() and float(me["resource"]) < float(cost["amount"]):
+	if not cost.is_empty() and MatchRunner.view_resource(view, str(cost["resource"])) < float(cost["amount"]):
 		return false
 	return true
 

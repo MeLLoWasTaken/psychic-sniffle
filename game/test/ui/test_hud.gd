@@ -648,3 +648,27 @@ func test_practice_talents_change_during_preparation_and_lock_after() -> void:
 		scene.run_ticks(1)
 	assert_bool(scene.talents_locked()).is_true()
 	assert_str(scene.change_talents("")).is_equal("talents_locked")
+
+
+func test_player_frame_shows_runes_as_pips_that_fill_while_recharging() -> void:
+	# M3-08: the player's second resource under the frame; recharging runes fill up
+	var spec: Dictionary = Data.specs["warblade_carnage"]
+	spec["secondary_resource"] = "runes"
+	var v: Dictionary = _view().duplicate(true)
+	v["resources"] = {"rage": 10.0, "runes": 3.0}
+	v["resource_max"] = {"rage": 100.0, "runes": 6.0}
+	v["recharges"] = {"runes": [2.5, 7.5, 10.0]}
+	var frame: UnitFrame = (hud.elements["player_frame"] as Array)[0]
+	frame.set_unit(v["me"], v, false, false, {}, 0.0)
+	await await_idle_frame()
+	await await_idle_frame()
+	spec.erase("secondary_resource")
+	assert_array(frame.drawn_secondary).is_equal([1.0, 1.0, 1.0, 0.75, 0.25, 0.0])
+	# a unit that is not the player gets no row
+	var other: Dictionary = (v["units"] as Array).filter(func(u: Dictionary) -> bool: return int(u["id"]) != int(v["me"]["id"]))[0]
+	spec["secondary_resource"] = "runes"
+	frame.set_unit(other, v, true, false, {}, 0.0)
+	await await_idle_frame()
+	await await_idle_frame()
+	spec.erase("secondary_resource")
+	assert_array(frame.drawn_secondary).is_empty()

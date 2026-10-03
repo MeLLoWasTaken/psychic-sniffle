@@ -25,6 +25,7 @@ var break_free: Dictionary = {}  ## {ready_tick, total_ticks} for the arena fram
 var aura_px: float = 26.0
 var aura_scale: float = 1.0  ## settings: buff and debuff size (M2-13)
 var drawn_auras: Array = []  ## the auras drawn last, in order (for tests): {id, size_px, cc}
+var drawn_secondary: Array = []  ## the second resource drawn last (for tests): pip fills 0..1, or [bar fraction]
 var portrait_glyph: bool = false  ## the last portrait drew the spec's glyph (not initials)
 
 
@@ -61,6 +62,8 @@ func extent() -> Rect2:
 	var biggest: float = roundf(aura_px * float(HudLogic.AURA_SIZE["cc"]))
 	if bool(element.get("cast_bar", false)):
 		bottom += 5.0 + roundf(h * 0.32)
+	if bool(element.get("secondary_resource", false)):
+		bottom += 4.0 + roundf(h * 0.2)
 	if int(element.get("max_auras", 0)) > 0:
 		if str(element.get("aura_side", "below")) == "above":
 			top = -biggest - 5.0
@@ -158,8 +161,12 @@ func _draw() -> void:
 	var res_kind: String = str(Data.specs.get(str(unit.get("spec", "")), {}).get("primary_resource", ""))
 	if res_max > 0.0:
 		style.bar(self, res_r, float(unit.get("resource", 0.0)) / res_max, style.resource_colors.get(res_kind, Color.GRAY))
-	# cast bar below the frame, auras above the frame or below the cast bar
+	# the player's second resource under the frame, then the cast bar, auras above the frame or below
 	var below: float = h + 5.0
+	if bool(element.get("secondary_resource", false)):
+		var sr: Rect2 = Rect2(Vector2(x0, h + 4.0), Vector2(inner_w, roundf(h * 0.2)))
+		_draw_secondary(sr)
+		below = sr.end.y + 5.0
 	if bool(element.get("cast_bar", false)):
 		var cb: Rect2 = Rect2(Vector2(0, below), Vector2(w, roundf(h * 0.32)))
 		CastBar.draw_cast(self, style, cb, unit, view, failure, clock)
@@ -169,6 +176,47 @@ func _draw() -> void:
 		_draw_break_free()
 	if bool(element.get("dr_tracker", false)):
 		_draw_dr()
+
+
+## The spec's second resource (M3-08), from the view's own resources: whole units with a
+## recharge (runes) as pips, the running recharges filling up; anything else as a thin bar.
+## Draws nothing for a spec without one, or for a unit that is not the viewing player.
+func _draw_secondary(r: Rect2) -> void:
+	var spec: Dictionary = Data.specs.get(str(unit.get("spec", "")), {})
+	var kind: String = str(spec.get("secondary_resource", ""))
+	drawn_secondary = []
+	if kind == "" or int(view.get("me", {}).get("id", -2)) != unit_id():
+		return
+	var amount: float = float(view.get("resources", {}).get(kind, 0.0))
+	var most: float = float(view.get("resource_max", {}).get(kind, 0.0))
+	if most <= 0.0:
+		return
+	var col: Color = style.resource_colors.get(kind, Color.GRAY)
+	var tune: Dictionary = Data.tuning.get("resources", {}).get(kind, {})
+	if not tune.has("recharge_s") or most > 12.0:
+		style.bar(self, r, amount / most, col)
+		drawn_secondary = [amount / most]
+		return
+	var n: int = int(most)
+	var gap: float = 3.0
+	var pw: float = (r.size.x - gap * (n - 1)) / n
+	var timers: Array = view.get("recharges", {}).get(kind, [])
+	var at_once: int = int(tune.get("recharging_at_once", 1))
+	for i: int in n:
+		var pr: Rect2 = Rect2(r.position + Vector2(i * (pw + gap), 0.0), Vector2(pw, r.size.y))
+		draw_rect(pr, Color(0, 0, 0, 0.55))
+		var fill: float = 1.0
+		if i >= int(amount):
+			var j: int = i - int(amount)  # this pip's place among the recharging ones
+			fill = 0.0
+			if j < mini(at_once, timers.size()):
+				fill = clampf(1.0 - float(timers[j]) / float(tune["recharge_s"]), 0.0, 1.0)
+		drawn_secondary.append(fill)
+		if fill >= 1.0:
+			draw_rect(pr.grow(-1.0), col)
+		elif fill > 0.0:
+			draw_rect(Rect2(pr.position + Vector2(1, 1), Vector2((pr.size.x - 2.0) * fill, pr.size.y - 2.0)), Color(col, 0.45))
+		draw_rect(pr, Color(col, 0.8), false, 1.0)
 
 
 func _spec_portrait(r: Rect2, dead: bool) -> void:

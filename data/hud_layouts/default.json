@@ -332,7 +332,8 @@
       ],
       "cast_bar": false,
       "aura_side": "above",
-      "max_auras": 8
+      "max_auras": 8,
+      "secondary_resource": true
     },
     "target_frame": {
       "type": "unit_frame",

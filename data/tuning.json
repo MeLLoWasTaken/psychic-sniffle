@@ -62,7 +62,8 @@
     },
     "runes": {
       "max": 6,
-      "recharge_s": 10
+      "recharge_s": 10,
+      "recharging_at_once": 3
     },
     "runic_power": {
       "max": 100,
@@ -74,7 +75,8 @@
     },
     "essence": {
       "max": 5,
-      "recharge_s": 5
+      "recharge_s": 5,
+      "recharging_at_once": 1
     }
   },
   "crowd_control": {

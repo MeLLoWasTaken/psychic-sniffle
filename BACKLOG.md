@@ -697,6 +697,12 @@ The other 10 classes, and the 6 remaining specs of the first three classes, in t
 - Character: `char_templar_zealot`, the Templar plate in crimson (#8a2a26) without the shield (`templar_plate_unshielded`), with a new `weapon_sun_glaive` (2.6 m, 658 triangles): an iron haft with crimson wraps, a gold sun wheel where the broad forward-sweeping blade meets the haft, held upright like the Arcanist's staff. 22,996 triangles. With the Warblade's greatsword instead, its silhouette overlapped the Warblade's 0.89 (0.87 was judged too close in M3-02); the upright glaive is the fix (figures in CHANGELOG).
 - Follow-up: Zealot balance joins M3-04 (Templar balance).
 
+### M3-08 Runes and a second resource on the HUD `[done]`
+- [x] Runes work as DESIGN.md describes ("six recharging runes; spending them builds a second resource"): each spent rune recharges on its own (10 s), three at a time; a refund keeps running recharges; spending builds runic power (`generates`, which already existed).
+- [x] The player's own snapshot carries every resource of their unit with its recharge timers (protocol version 12); bots and the action buttons check a cost against the resource it names, not only the primary one.
+- [x] The player frame shows a second resource in a row under the frame: whole units with a recharge as pips that fill while recharging, anything else as a thin bar (`secondary_resource` in the HUD layout).
+- Done 2026-10-03, before the Deathsworn kit that needs it. Checked: three rule tests (recharge three at a time, two spent from full come back together, a refund), a protocol round trip, a HUD test of the pip fills, the HUD layout tests at every resolution, a screenshot (`previews/m3_08/hud_runes.png`: three full runes, two recharging at 75% and 25%, one waiting). Essence (Scalebinder, wave 3) uses the same rule with one recharging at a time.
+
 Then, in order (split into items like M3-01 to M3-04 as each starts): Deathsworn Frostgrave, Bloodbound (tank) and Plague (minions); Stormcaller Tempest, Tidesinger (healer, totems) and Primal (wolves); Warblade Berserker; Arcanist Pyre and Aether; wave 1 gate.
 
 ## Later milestones (split into items when the milestone starts)

@@ -40,6 +40,24 @@ func _ready() -> void:
 			hud.editor.selected = "player_frame"
 			hud.editor._refresh()
 			screen = Control.new()
+		"hud":  # the in-match HUD on a plain background; --runes shows demo runes on the player frame (M3-08)
+			var bg: ColorRect = ColorRect.new()
+			bg.color = Color(0.16, 0.15, 0.14)
+			bg.size = Vector2(1920, 1080)
+			get_tree().root.add_child(bg)
+			var hud: Hud = Hud.new(Data.settings["default"])
+			get_tree().root.add_child(hud)
+			var m: LocalMatch = LocalMatch.new("gallows_courtyard", "warblade_carnage", ["oracle_grace"], ["arcanist_rime", "oracle_grace"])
+			var v: Dictionary = m.view()
+			if "--runes" in args:
+				Data.specs["warblade_carnage"]["secondary_resource"] = "runes"
+				v["resources"]["runes"] = 3.0
+				v["resource_max"]["runes"] = 6.0
+				v["recharges"]["runes"] = [2.5, 7.5, 10.0]
+			hud.push(v)
+			hud.update(0.0)
+			screen = Control.new()
+			screen.mouse_filter = Control.MOUSE_FILTER_IGNORE
 		"settings":
 			Settings.use_data()
 			var ss: SettingsScreen = SettingsScreen.new()

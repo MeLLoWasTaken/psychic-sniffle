@@ -35,6 +35,7 @@
         "max_auras": {"type": "integer", "minimum": 0, "maximum": 16},
         "break_free": {"type": "boolean", "description": "arena frames: Break Free cooldown indicator (DESIGN.md)"},
         "dr_tracker": {"type": "boolean", "description": "arena frames: diminishing-returns tracker per CC category"},
+        "secondary_resource": {"type": "boolean", "description": "player frame: a row under the frame for the player's second resource (runes as pips, others as a bar; M3-08)"},
         "max_live": {"type": "integer", "minimum": 1, "maximum": 200},
         "lifetime_s": {"type": "number", "exclusiveMinimum": 0},
         "rise_px": {"type": "number"},

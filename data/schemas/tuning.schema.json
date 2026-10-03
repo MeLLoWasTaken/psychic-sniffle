@@ -208,7 +208,13 @@
             "type": "number"
           },
           "recharge_s": {
-            "type": "number"
+            "type": "number",
+            "description": "Whole units (runes, essence) come back one at a time: each spent unit takes this long to recharge."
+          },
+          "recharging_at_once": {
+            "type": "integer",
+            "minimum": 1,
+            "description": "How many spent units recharge at the same time (default 1); the rest wait their turn."
           }
         }
       }

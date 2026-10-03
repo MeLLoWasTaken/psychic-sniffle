@@ -214,8 +214,19 @@ func view_for(unit: Unit) -> Dictionary:
 	return {"tick": sim.tick, "tick_rate": sim.tick_rate, "me": unit_view(unit), "units": units,
 		"gcd_ready_tick": unit.gcd_ready_tick, "cooldowns": unit.cooldowns.duplicate(),
 		"school_locks": unit.school_locks.duplicate(), "known": unit.known_abilities.duplicate(),
+		"resources": unit.resources.duplicate(), "resource_max": unit.resource_max.duplicate(),
+		"recharges": unit.recharges.duplicate(true),
 		"talent_abilities": unit.talent_abilities,
 		"match": match_state(), "map": map["id"]}
+
+
+## How much of a resource the viewing player has: from the view's own resources (every resource
+## of the player's unit, M3-08), else the unit's primary resource as every unit view carries it.
+static func view_resource(view: Dictionary, res: String) -> float:
+	var own: Dictionary = view.get("resources", {})
+	if own.has(res):
+		return float(own[res])
+	return float(view.get("me", {}).get("resource", 0.0))
 
 
 static func unit_view(u: Unit) -> Dictionary:

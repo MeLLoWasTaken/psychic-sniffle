@@ -17,6 +17,9 @@ var max_health: int = 1
 var resources: Dictionary = {}  ## resource name -> current amount
 var resource_max: Dictionary = {}  ## resource name -> maximum
 var primary_resource: String = ""
+## Whole-unit resources (runes): resource name -> seconds left on each spent unit's recharge, in
+## the order they recharge; the first `recharging_at_once` count down together (Combat).
+var recharges: Dictionary = {}
 var auras: Array[Dictionary] = []  ## active aura instances (see Combat.apply_aura)
 var target_id: int = -1
 var swing_timer: float = 0.0
@@ -64,6 +67,8 @@ func snapshot_string() -> String:
 	var res_parts: PackedStringArray = []
 	for k: String in res_keys:
 		res_parts.append("%s=%.4f" % [k, resources[k]])
+		if not (recharges.get(k, []) as Array).is_empty():
+			res_parts.append("%s~%s" % [k, ",".join((recharges[k] as Array).map(func(t: float) -> String: return "%.4f" % t))])
 	var aura_parts: PackedStringArray = []
 	for a: Dictionary in auras:
 		aura_parts.append("%s:%d:%d:%d" % [a["id"], a["source"], a["expires_tick"], a["stacks"]])

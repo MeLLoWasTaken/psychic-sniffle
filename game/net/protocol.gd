@@ -6,7 +6,7 @@ extends RefCounted
 ## Abilities, auras and specs travel as small indexes into their sorted id lists (both sides
 ## load the same data, and the protocol version changes whenever that could differ).
 
-const VERSION: int = 11
+const VERSION: int = 12
 const CH_RELIABLE: int = 0
 const CH_UNRELIABLE: int = 1
 const CHANNELS: int = 2
@@ -35,7 +35,8 @@ static func id_at(table: String, index: int) -> String:
 
 static func _ids(table: String) -> Array:
 	if not _index_cache.has(table):
-		var keys: Array = (Data.get(table) as Dictionary).keys()
+		var src: Dictionary = Data.tuning.get("resources", {}) if table == "resources" else Data.get(table)
+		var keys: Array = src.keys()
 		keys.sort()
 		_index_cache[table] = keys
 	return _index_cache[table]
@@ -210,6 +211,18 @@ static func snapshot(tick: int, ack_seq: int, units: Array, match_state: Diction
 		for i: int in flees:
 			b.put_u8(i)
 			b.put_float(float(own.auras[i]["flee_yaw"]))
+		# every resource of our unit, a second one (runes) included, with its recharge timers (M3-08)
+		var res_keys: Array = own.resource_max.keys()
+		res_keys.sort()
+		b.put_u8(res_keys.size())
+		for k: String in res_keys:
+			b.put_u8(index_of("resources", k))
+			b.put_float(float(own.resources.get(k, 0.0)))
+			b.put_float(float(own.resource_max[k]))
+			var timers: Array = own.recharges.get(k, [])
+			b.put_u8(mini(timers.size(), 32))
+			for t: float in timers.slice(0, 32):
+				b.put_float(t)
 	else:
 		b.put_u8(0)
 	return b.data_array
@@ -371,6 +384,17 @@ static func decode(data: PackedByteArray) -> Dictionary:
 				for j: int in b.get_u8():
 					var fpos: int = b.get_u8()
 					own["aura_flee"][fpos] = b.get_float()
+				own["resources"] = {}
+				own["resource_max"] = {}
+				own["recharges"] = {}
+				for j: int in b.get_u8():
+					var rk: String = id_at("resources", b.get_u8())
+					own["resources"][rk] = b.get_float()
+					own["resource_max"][rk] = b.get_float()
+					var timers: Array = []
+					for k: int in b.get_u8():
+						timers.append(b.get_float())
+					own["recharges"][rk] = timers
 				snap["own"] = own
 			return snap
 		Msg.PING, Msg.PONG:

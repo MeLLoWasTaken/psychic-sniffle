@@ -2,6 +2,11 @@
 
 One entry per build-loop iteration, newest first. Format: date, backlog ID, what changed, how it was checked.
 
+## 2026-10-03 — M3-08 Runes and a second resource on the HUD
+- Runes, the resource of the coming Deathsworn class, now work: six runes, each spent rune recharging on its own in 10 s, three at a time, and spending them builds runic power. Before, runes were listed in the tuning but never came back.
+- The player's own game now receives all of their resources, not only the main one, so the HUD and bots can use a second resource. The player frame shows runes as six pips under it that fill as they recharge.
+- Checked: new rule, network and HUD tests; the HUD at every supported resolution; a screenshot of the pips.
+
 ## 2026-10-03 — M3-06 Vanguard character, M3-07 Templar Zealot
 - The Templar's third spec, Zealot: a holy melee fighter with a 15 s burst window (Dawnfury), a full interrupt, a self-shield, a sprint and one emergency heal for an ally (Mercy's Reach). 14 abilities (4 shared with every Templar), a 42-node spec tree, 12 PvP talents, three bot builds.
 - Characters for both new specs. The Vanguard wears the Templar plate with a deep blue tabard; the Zealot wears it in crimson, without a shield, and carries a new sun glaive (a 2.6 m polearm with a gold sun wheel at the blade) held upright, so the glaive rises above its winged helm.
