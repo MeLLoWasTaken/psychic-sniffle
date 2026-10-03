@@ -1,0 +1,29 @@
+{
+  "id": "gravefrost_strike",
+  "name": "Gravefrost Strike",
+  "description": "A heavy blow of grave cold for 4,400.",
+  "owner": "deathsworn_frostgrave",
+  "kit_slot": "core",
+  "school": "frost",
+  "cast_type": "instant",
+  "cooldown_s": 0,
+  "triggers_gcd": true,
+  "range_m": 5,
+  "requires_los": true,
+  "target": "enemy",
+  "effects": [
+    {
+      "type": "damage",
+      "base": 4400
+    }
+  ],
+  "icon": {
+    "symbol": "gravefrost_strike",
+    "school": "frost",
+    "image": "lorc/rune-sword"
+  },
+  "cost": {
+    "resource": "runic_power",
+    "amount": 40
+  }
+}

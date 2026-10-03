@@ -1,0 +1,39 @@
+{
+  "id": "deathsworn_frostgrave",
+  "name": "Frostgrave",
+  "class": "deathsworn",
+  "description": "Frost burst, heavy slows; spends runes to build runic power for its big hits.",
+  "role": "dps",
+  "icon": {
+    "image": "delapouite/antarctica"
+  },
+  "range": "melee",
+  "primary_resource": "runic_power",
+  "secondary_resource": "runes",
+  "abilities": [
+    "rime_cleave",
+    "gravefrost_strike",
+    "hoarlash",
+    "wintering_gale",
+    "frozen_shackles",
+    "glacial_tomb",
+    "grave_winter_ab",
+    "hoarfrost_surge_ab",
+    "rime_carapace_ab",
+    "frostpath_ab",
+    "coldblood_mend",
+    "grave_tether",
+    "oathsever",
+    "deathless_resolve_ab",
+    "gravecloak_ab"
+  ],
+  "spec_tree": "deathsworn_frostgrave",
+  "pvp_talents": "deathsworn_frostgrave_pvp",
+  "kit_status": "complete",
+  "asset": "test_crate",
+  "weapon": {
+    "type": "sword",
+    "hands": 2
+  },
+  "stats": {}
+}

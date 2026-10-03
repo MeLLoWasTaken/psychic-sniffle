@@ -1,0 +1,28 @@
+{
+  "id": "deathsworn_barrow_mantle",
+  "name": "Barrow Mantle",
+  "description": "Talent: armor up 4%, healing received up 3%.",
+  "kind": "buff",
+  "duration_s": 0,
+  "refresh": "refresh",
+  "dispel_type": "none",
+  "cc_category": "none",
+  "hud_priority": "hidden",
+  "icon": {
+    "symbol": "barrow_mantle",
+    "school": "shadow",
+    "image": "lorc/crested-helmet"
+  },
+  "modifiers": [
+    {
+      "stat": "armor",
+      "op": "add",
+      "value": 0.04
+    },
+    {
+      "stat": "healing_taken",
+      "op": "multiply",
+      "value": 1.03
+    }
+  ]
+}

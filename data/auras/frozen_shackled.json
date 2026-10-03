@@ -1,0 +1,17 @@
+{
+  "id": "frozen_shackled",
+  "name": "Frozen Shackles",
+  "description": "Rooted in place.",
+  "kind": "debuff",
+  "duration_s": 4,
+  "dispel_type": "magic",
+  "cc_category": "root",
+  "hud_priority": "cc",
+  "icon": {
+    "symbol": "frozen_shackled",
+    "school": "frost",
+    "image": "lorc/imprisoned"
+  },
+  "breaks_on_damage": "threshold",
+  "damage_threshold_pct": 15
+}

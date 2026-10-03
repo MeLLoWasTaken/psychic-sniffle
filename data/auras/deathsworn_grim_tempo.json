@@ -1,0 +1,23 @@
+{
+  "id": "deathsworn_grim_tempo",
+  "name": "Grim Tempo",
+  "description": "Talent: haste increased.",
+  "kind": "buff",
+  "duration_s": 0,
+  "refresh": "refresh",
+  "dispel_type": "none",
+  "cc_category": "none",
+  "hud_priority": "hidden",
+  "icon": {
+    "symbol": "grim_tempo",
+    "school": "shadow",
+    "image": "delapouite/skeletal-hand"
+  },
+  "modifiers": [
+    {
+      "stat": "haste",
+      "op": "add",
+      "value": 0
+    }
+  ]
+}

@@ -1,0 +1,8 @@
+{
+  "id": "frostpath_ab",
+  "auras": {
+    "frostpath": {
+      "style": "speed"
+    }
+  }
+}

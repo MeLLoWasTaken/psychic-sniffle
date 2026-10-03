@@ -1,0 +1,13 @@
+{
+  "id": "grave_winter_ab",
+  "impact": {
+    "style": "ring",
+    "at": "self",
+    "size": 1.4
+  },
+  "auras": {
+    "grave_winter": {
+      "style": "empower"
+    }
+  }
+}

@@ -1,0 +1,8 @@
+{
+  "id": "hoarfrost_surge_ab",
+  "impact": {
+    "style": "burst",
+    "at": "self",
+    "size": 1.2
+  }
+}

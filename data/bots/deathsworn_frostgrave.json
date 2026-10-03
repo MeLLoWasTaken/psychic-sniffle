@@ -1,0 +1,312 @@
+{
+  "id": "deathsworn_frostgrave",
+  "behavior": {
+    "preferred_range_m": [
+      0,
+      3.5
+    ],
+    "target_priority": "healer_first",
+    "reaction_ms": [
+      250,
+      600
+    ],
+    "break_los_below_pct": 25,
+    "kill_window_pct": 40,
+    "take_pickup_below_pct": 70
+  },
+  "priorities": [
+    {
+      "ability": "oathsever",
+      "on": "enemy_caster",
+      "when": {
+        "target_casting": true
+      }
+    },
+    {
+      "ability": "break_free",
+      "on": "self",
+      "when": {
+        "self_hard_cc": true,
+        "self_health_below_pct": 70
+      }
+    },
+    {
+      "ability": "rime_carapace_ab",
+      "on": "self",
+      "when": {
+        "self_health_below_pct": 55
+      }
+    },
+    {
+      "ability": "deathless_resolve_ab",
+      "on": "self",
+      "when": {
+        "self_health_below_pct": 35
+      }
+    },
+    {
+      "ability": "coldblood_mend",
+      "on": "self",
+      "when": {
+        "self_health_below_pct": 50
+      }
+    },
+    {
+      "ability": "wraith_lunge_ab",
+      "when": {
+        "target_distance_above_m": 8,
+        "target_distance_below_m": 25
+      }
+    },
+    {
+      "ability": "grave_tether",
+      "when": {
+        "target_distance_above_m": 10,
+        "target_distance_below_m": 30
+      }
+    },
+    {
+      "ability": "frostpath_ab",
+      "on": "self",
+      "when": {
+        "target_distance_above_m": 10
+      }
+    },
+    {
+      "ability": "glacial_tomb",
+      "when": {
+        "target_not_cc": true,
+        "target_health_below_pct": 70
+      }
+    },
+    {
+      "ability": "hoarfrost_prison_ab",
+      "on": "ally_attacker",
+      "when": {
+        "ally_health_below_pct": 50,
+        "target_not_cc": true
+      }
+    },
+    {
+      "ability": "grave_winter_ab",
+      "on": "self",
+      "when": {
+        "target_health_below_pct": 80,
+        "target_distance_below_m": 5
+      }
+    },
+    {
+      "ability": "hoarfrost_surge_ab",
+      "on": "self",
+      "when": {
+        "secondary_below": 2,
+        "target_distance_below_m": 8
+      }
+    },
+    {
+      "ability": "gravefrost_strike",
+      "when": {
+        "target_distance_below_m": 5
+      }
+    },
+    {
+      "ability": "rimefall_ab",
+      "when": {}
+    },
+    {
+      "ability": "sepulchral_howl_ab",
+      "on": "self",
+      "when": {
+        "enemies_within_m": [
+          8,
+          2
+        ]
+      }
+    },
+    {
+      "ability": "wintering_gale",
+      "on": "self",
+      "when": {
+        "enemies_within_m": [
+          10,
+          2
+        ]
+      }
+    },
+    {
+      "ability": "rime_cleave",
+      "when": {
+        "target_distance_below_m": 5
+      }
+    },
+    {
+      "ability": "hoarlash",
+      "when": {
+        "target_distance_below_m": 20
+      }
+    },
+    {
+      "ability": "frozen_shackles",
+      "when": {
+        "target_distance_above_m": 6,
+        "target_not_cc": true
+      }
+    }
+  ],
+  "builds": [
+    {
+      "name": "winters_edge",
+      "description": "Burst: long, strong Grave Winter windows, a heavy Gravefrost Strike and Rimefall; damage and crit in the class tree.",
+      "class": {
+        "deep_hunger": 2,
+        "grave_hunger": 2,
+        "cold_eye": 2,
+        "grim_pace": 2,
+        "path_choice": 1,
+        "dread_conviction": 2,
+        "grim_tempo": 2,
+        "bottomless_hunger": 2,
+        "deathmarch": 2,
+        "swift_tether": 2,
+        "restless_oath": 2,
+        "unshackled_choice": 1,
+        "patient_grave": 2,
+        "endless_hunger": 1,
+        "crown_choice": 1,
+        "bone_vigor": 2,
+        "cold_heart": 2
+      },
+      "spec": {
+        "heavy_gravefrost": 2,
+        "thrifty_gravefrost": 1,
+        "long_shackles": 2,
+        "keen_cleave": 2,
+        "hungry_cleave": 2,
+        "biting_rime": 1,
+        "rune_tithe": 1,
+        "long_winter": 2,
+        "rimefall": 1,
+        "bitter_winter": 1,
+        "quick_hoarlash": 2,
+        "bitter_lash": 2,
+        "winter_wellspring": 1,
+        "deep_rimefall": 1,
+        "lasting_winter": 1,
+        "heavy_rimefall": 1,
+        "frost_focus": 2,
+        "keen_frost": 2,
+        "heart_of_winter": 1,
+        "hungry_lash": 2
+      },
+      "pvp": [
+        "gnawing_shackles",
+        "unending_winter",
+        "unyielding_grave"
+      ]
+    },
+    {
+      "name": "bitter_north",
+      "description": "Control: Hoarfrost Prison, long Frozen Shackles, Hoarlash and Wintering Gale damage.",
+      "class": {
+        "deathmarch": 2,
+        "swift_tether": 2,
+        "restless_oath": 2,
+        "long_tether": 1,
+        "unshackled_choice": 1,
+        "thick_cloak": 1,
+        "patient_grave": 2,
+        "sepulchral_howl": 1,
+        "quick_sever": 1,
+        "long_howl": 2,
+        "fixed_tether": 1,
+        "deep_sever": 2,
+        "howl_choice": 2,
+        "ready_cloak": 1,
+        "bone_vigor": 2,
+        "cold_heart": 2,
+        "grasping_howl": 1,
+        "soul_choice": 1,
+        "grave_plate": 2,
+        "grave_welcome": 2
+      },
+      "spec": {
+        "quick_hoarlash": 2,
+        "hungry_lash": 2,
+        "bitter_lash": 2,
+        "heavy_gale": 2,
+        "wide_gale": 1,
+        "quick_gale": 2,
+        "hoarfrost_prison": 1,
+        "long_prison": 2,
+        "swift_prison": 1,
+        "bitter_north": 1,
+        "heavy_gravefrost": 2,
+        "thrifty_gravefrost": 1,
+        "long_shackles": 2,
+        "steady_carapace": 2,
+        "thick_carapace": 1,
+        "carapace_mend": 1,
+        "keen_cleave": 2,
+        "biting_rime": 2,
+        "hungry_cleave": 1
+      },
+      "pvp": [
+        "iron_tether",
+        "coldblood_pact",
+        "quick_oathsever"
+      ]
+    },
+    {
+      "name": "deathless_blade",
+      "description": "Survival: Coldblood Mend, Rime Carapace and Wraith Lunge to stay on a target.",
+      "class": {
+        "bone_vigor": 2,
+        "grave_plate": 2,
+        "cold_heart": 2,
+        "grave_welcome": 2,
+        "marrow_knit": 1,
+        "barrow_oath": 2,
+        "deathless_will": 2,
+        "deeper_resolve": 1,
+        "soulchill_brand": 1,
+        "swift_brand": 2,
+        "brand_choice": 1,
+        "lasting_brand": 1,
+        "deep_hunger": 2,
+        "unbroken": 1,
+        "barrow_mantle": 1,
+        "unbound_oath": 1,
+        "grave_hunger": 2,
+        "cold_eye": 2,
+        "grim_pace": 2
+      },
+      "spec": {
+        "quick_sever_f": 2,
+        "deep_sever_f": 1,
+        "long_sever": 1,
+        "ready_mend": 2,
+        "mend_choice": 2,
+        "thrifty_mend": 2,
+        "wraith_lunge": 1,
+        "sure_mend": 1,
+        "swift_lunge": 2,
+        "deep_chill": 1,
+        "relentless_grave": 1,
+        "shattering_strike": 1,
+        "heavy_gravefrost": 2,
+        "thrifty_gravefrost": 1,
+        "long_shackles": 2,
+        "steady_carapace": 2,
+        "thick_carapace": 1,
+        "keen_cleave": 2,
+        "hungry_cleave": 2,
+        "biting_rime": 2
+      },
+      "pvp": [
+        "hollow_oath",
+        "shattering_tomb",
+        "surging_hoarfrost"
+      ]
+    }
+  ]
+}

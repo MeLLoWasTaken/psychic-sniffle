@@ -1,0 +1,15 @@
+{
+  "id": "tomb_encased",
+  "name": "Glacial Tomb",
+  "description": "Stunned.",
+  "kind": "debuff",
+  "duration_s": 3,
+  "dispel_type": "magic",
+  "cc_category": "stun",
+  "hud_priority": "cc",
+  "icon": {
+    "symbol": "tomb_encased",
+    "school": "frost",
+    "image": "lorc/zigzag-cage"
+  }
+}

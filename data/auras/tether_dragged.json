@@ -1,0 +1,22 @@
+{
+  "id": "tether_dragged",
+  "name": "Dragged",
+  "description": "Movement down 30%.",
+  "kind": "debuff",
+  "duration_s": 4,
+  "dispel_type": "magic",
+  "cc_category": "none",
+  "hud_priority": "normal",
+  "icon": {
+    "symbol": "tether_dragged",
+    "school": "shadow",
+    "image": "lorc/spear-hook"
+  },
+  "modifiers": [
+    {
+      "stat": "move_speed",
+      "op": "multiply",
+      "value": 0.7
+    }
+  ]
+}

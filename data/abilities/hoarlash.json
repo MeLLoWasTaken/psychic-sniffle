@@ -1,0 +1,37 @@
+{
+  "id": "hoarlash",
+  "name": "Hoarlash",
+  "description": "Lash an enemy within 20 m with frost for 2,600 and slow it by 30% for 4 s.",
+  "owner": "deathsworn_frostgrave",
+  "kit_slot": "core",
+  "school": "frost",
+  "cast_type": "instant",
+  "cooldown_s": 6,
+  "triggers_gcd": true,
+  "range_m": 20,
+  "requires_los": true,
+  "target": "enemy",
+  "effects": [
+    {
+      "type": "damage",
+      "base": 2600
+    },
+    {
+      "type": "apply_aura",
+      "aura": "hoarbitten"
+    }
+  ],
+  "icon": {
+    "symbol": "hoarlash",
+    "school": "frost",
+    "image": "lorc/claw-slashes"
+  },
+  "cost": {
+    "resource": "runes",
+    "amount": 1
+  },
+  "generates": {
+    "resource": "runic_power",
+    "amount": 10
+  }
+}

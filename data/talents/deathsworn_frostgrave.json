@@ -1,0 +1,1120 @@
+{
+  "tree_id": "deathsworn_frostgrave",
+  "kind": "spec",
+  "owner": "deathsworn_frostgrave",
+  "points": 30,
+  "gates": [
+    8,
+    20
+  ],
+  "status": "complete",
+  "nodes": [
+    {
+      "id": "shattering_strike",
+      "name": "Shattering Strike",
+      "type": "passive",
+      "ranks": 1,
+      "pos": [
+        6,
+        6
+      ],
+      "requires_any": [
+        "thrifty_mend"
+      ],
+      "gate": 20,
+      "description": "Gravefrost Strike also strips one magic effect from the enemy.",
+      "icon": {
+        "image": "lorc/stone-sphere",
+        "school": "frost"
+      },
+      "effects": [
+        {
+          "modify": "gravefrost_strike.effects",
+          "set": [
+            {
+              "type": "damage",
+              "base": 4400
+            },
+            {
+              "type": "dispel",
+              "dispel_types": [
+                "magic"
+              ],
+              "dispel_count": 1
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "keen_cleave",
+      "name": "Keen Cleave",
+      "type": "passive",
+      "ranks": 2,
+      "pos": [
+        0,
+        0
+      ],
+      "requires_any": [
+        "rime_cleave"
+      ],
+      "description": "Rime Cleave deals 400 more damage per rank.",
+      "icon": {
+        "image": "lorc/razor-blade",
+        "school": "physical"
+      },
+      "effects": [
+        {
+          "modify": "rime_cleave.effects.0.base",
+          "per_rank": 400
+        }
+      ]
+    },
+    {
+      "id": "quick_hoarlash",
+      "name": "Quick Hoarlash",
+      "type": "passive",
+      "ranks": 2,
+      "pos": [
+        2,
+        0
+      ],
+      "requires_any": [
+        "hoarlash"
+      ],
+      "description": "Hoarlash's cooldown is 1 s shorter per rank.",
+      "icon": {
+        "image": "lorc/plate-claw",
+        "school": "frost"
+      },
+      "effects": [
+        {
+          "modify": "hoarlash.cooldown_s",
+          "per_rank": -1
+        }
+      ]
+    },
+    {
+      "id": "heavy_gale",
+      "name": "Heavy Gale",
+      "type": "passive",
+      "ranks": 2,
+      "pos": [
+        3,
+        0
+      ],
+      "requires_any": [
+        "wintering_gale"
+      ],
+      "description": "Wintering Gale deals 300 more damage per rank.",
+      "icon": {
+        "image": "delapouite/fog",
+        "school": "frost"
+      },
+      "effects": [
+        {
+          "modify": "wintering_gale.effects.0.base",
+          "per_rank": 300
+        }
+      ]
+    },
+    {
+      "id": "heavy_gravefrost",
+      "name": "Heavy Gravefrost",
+      "type": "passive",
+      "ranks": 2,
+      "pos": [
+        4,
+        0
+      ],
+      "requires_any": [
+        "gravefrost_strike"
+      ],
+      "description": "Gravefrost Strike deals 400 more damage per rank.",
+      "icon": {
+        "image": "lorc/relic-blade",
+        "school": "frost"
+      },
+      "effects": [
+        {
+          "modify": "gravefrost_strike.effects.0.base",
+          "per_rank": 400
+        }
+      ]
+    },
+    {
+      "id": "quick_sever_f",
+      "name": "Quick Sever",
+      "type": "passive",
+      "ranks": 2,
+      "pos": [
+        5,
+        0
+      ],
+      "requires_any": [
+        "oathsever"
+      ],
+      "description": "Oathsever's cooldown is 1 s shorter per rank.",
+      "icon": {
+        "image": "lorc/sword-tie",
+        "school": "physical"
+      },
+      "effects": [
+        {
+          "modify": "oathsever.cooldown_s",
+          "per_rank": -1
+        }
+      ]
+    },
+    {
+      "id": "ready_mend",
+      "name": "Ready Mend",
+      "type": "passive",
+      "ranks": 2,
+      "pos": [
+        6,
+        0
+      ],
+      "requires_any": [
+        "coldblood_mend"
+      ],
+      "description": "Coldblood Mend's cooldown is 2 s shorter per rank.",
+      "icon": {
+        "image": "lorc/techno-heart",
+        "school": "shadow"
+      },
+      "effects": [
+        {
+          "modify": "coldblood_mend.cooldown_s",
+          "per_rank": -2
+        }
+      ]
+    },
+    {
+      "id": "hungry_cleave",
+      "name": "Hungry Cleave",
+      "type": "passive",
+      "ranks": 2,
+      "pos": [
+        0,
+        1
+      ],
+      "requires_any": [
+        "keen_cleave"
+      ],
+      "description": "Rime Cleave builds 5 more runic power per rank.",
+      "icon": {
+        "image": "lorc/sharped-teeth-skull",
+        "school": "frost"
+      },
+      "effects": [
+        {
+          "modify": "rime_cleave.generates.amount",
+          "per_rank": 5
+        }
+      ]
+    },
+    {
+      "id": "biting_rime",
+      "name": "Biting Rime",
+      "type": "passive",
+      "ranks": 2,
+      "pos": [
+        1,
+        1
+      ],
+      "requires_any": [
+        "keen_cleave",
+        "quick_hoarlash"
+      ],
+      "description": "Hoarlash slows by a further 10% per rank.",
+      "icon": {
+        "image": "lorc/midnight-claw",
+        "school": "frost"
+      },
+      "effects": [
+        {
+          "modify": "hoarbitten.modifiers.0.value",
+          "per_rank": -0.1
+        }
+      ]
+    },
+    {
+      "id": "hungry_lash",
+      "name": "Hungry Lash",
+      "type": "passive",
+      "ranks": 2,
+      "pos": [
+        2,
+        1
+      ],
+      "requires_any": [
+        "quick_hoarlash"
+      ],
+      "description": "Hoarlash builds 5 more runic power per rank.",
+      "icon": {
+        "image": "lorc/crossed-claws",
+        "school": "frost"
+      },
+      "effects": [
+        {
+          "modify": "hoarlash.generates.amount",
+          "per_rank": 5
+        }
+      ]
+    },
+    {
+      "id": "wide_gale",
+      "name": "Wide Gale",
+      "type": "passive",
+      "ranks": 1,
+      "pos": [
+        3,
+        1
+      ],
+      "requires_any": [
+        "heavy_gale"
+      ],
+      "description": "Wintering Gale reaches 3 m further.",
+      "icon": {
+        "image": "lorc/cloud-ring",
+        "school": "frost"
+      },
+      "effects": [
+        {
+          "modify": "wintering_gale.effects.0.radius_m",
+          "per_rank": 3
+        },
+        {
+          "modify": "wintering_gale.effects.1.radius_m",
+          "per_rank": 3
+        }
+      ]
+    },
+    {
+      "id": "thrifty_gravefrost",
+      "name": "Thrifty Gravefrost",
+      "type": "passive",
+      "ranks": 1,
+      "pos": [
+        4,
+        1
+      ],
+      "requires_any": [
+        "heavy_gravefrost"
+      ],
+      "description": "Gravefrost Strike costs 5 less runic power.",
+      "icon": {
+        "image": "lorc/skull-slices",
+        "school": "frost"
+      },
+      "effects": [
+        {
+          "modify": "gravefrost_strike.cost.amount",
+          "per_rank": -5
+        }
+      ]
+    },
+    {
+      "id": "deep_sever_f",
+      "name": "Deeper Sever",
+      "type": "passive",
+      "ranks": 1,
+      "pos": [
+        5,
+        1
+      ],
+      "requires_any": [
+        "quick_sever_f"
+      ],
+      "description": "Oathsever locks the school for 1 s longer.",
+      "icon": {
+        "image": "lorc/striped-sword",
+        "school": "physical"
+      },
+      "effects": [
+        {
+          "modify": "oathsever.effects.0.school_lock_s",
+          "per_rank": 1
+        }
+      ]
+    },
+    {
+      "id": "mend_choice",
+      "name": "Gift of the Grave",
+      "type": "choice",
+      "pos": [
+        6,
+        1
+      ],
+      "requires_any": [
+        "ready_mend"
+      ],
+      "description": "Choose how Coldblood Mend improves.",
+      "icon": {
+        "image": "lorc/paw-heart",
+        "school": "shadow"
+      },
+      "choices": [
+        {
+          "id": "great_mend",
+          "name": "Great Mend",
+          "description": "Coldblood Mend heals 2,000 more.",
+          "icon": {
+            "image": "lorc/templar-heart",
+            "school": "shadow"
+          },
+          "effects": [
+            {
+              "modify": "coldblood_mend.effects.0.base",
+              "per_rank": 2000
+            }
+          ]
+        },
+        {
+          "id": "warding_mend",
+          "name": "Warding Mend",
+          "description": "Coldblood Mend also makes you take 15% less damage for 4 s.",
+          "icon": {
+            "image": "lorc/black-hand-shield",
+            "school": "shadow"
+          },
+          "effects": [
+            {
+              "modify": "coldblood_mend.effects",
+              "set": [
+                {
+                  "type": "heal",
+                  "base": 7000
+                },
+                {
+                  "type": "apply_aura",
+                  "aura": "mend_ward"
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "rune_tithe",
+      "name": "Rune Tithe",
+      "type": "passive",
+      "ranks": 1,
+      "pos": [
+        0,
+        2
+      ],
+      "requires_any": [
+        "hungry_cleave",
+        "biting_rime"
+      ],
+      "description": "Gravefrost Strike gives back a rune.",
+      "icon": {
+        "image": "lorc/triorb",
+        "school": "frost"
+      },
+      "effects": [
+        {
+          "modify": "gravefrost_strike.generates",
+          "set": {
+            "resource": "runes",
+            "amount": 1
+          }
+        }
+      ]
+    },
+    {
+      "id": "bitter_lash",
+      "name": "Bitter Lash",
+      "type": "passive",
+      "ranks": 2,
+      "pos": [
+        2,
+        2
+      ],
+      "requires_any": [
+        "hungry_lash",
+        "biting_rime"
+      ],
+      "description": "Hoarlash deals 450 more damage per rank.",
+      "icon": {
+        "image": "lorc/saw-claw",
+        "school": "frost"
+      },
+      "effects": [
+        {
+          "modify": "hoarlash.effects.0.base",
+          "per_rank": 450
+        }
+      ]
+    },
+    {
+      "id": "quick_gale",
+      "name": "Quick Gale",
+      "type": "passive",
+      "ranks": 2,
+      "pos": [
+        3,
+        2
+      ],
+      "requires_any": [
+        "wide_gale"
+      ],
+      "description": "Wintering Gale's cooldown is 1 s shorter per rank.",
+      "icon": {
+        "image": "lorc/swirl-ring",
+        "school": "frost"
+      },
+      "effects": [
+        {
+          "modify": "wintering_gale.cooldown_s",
+          "per_rank": -1
+        }
+      ]
+    },
+    {
+      "id": "long_shackles",
+      "name": "Long Shackles",
+      "type": "passive",
+      "ranks": 2,
+      "pos": [
+        4,
+        2
+      ],
+      "requires_any": [
+        "thrifty_gravefrost"
+      ],
+      "description": "Frozen Shackles lasts 0.5 s longer per rank.",
+      "icon": {
+        "image": "lorc/cog-lock",
+        "school": "frost"
+      },
+      "effects": [
+        {
+          "modify": "frozen_shackled.duration_s",
+          "per_rank": 0.5
+        }
+      ]
+    },
+    {
+      "id": "long_sever",
+      "name": "Long Sever",
+      "type": "passive",
+      "ranks": 1,
+      "pos": [
+        5,
+        2
+      ],
+      "requires_any": [
+        "deep_sever_f"
+      ],
+      "description": "Oathsever reaches 3 m further.",
+      "icon": {
+        "image": "lorc/spinning-sword",
+        "school": "physical"
+      },
+      "effects": [
+        {
+          "modify": "oathsever.range_m",
+          "per_rank": 3
+        }
+      ]
+    },
+    {
+      "id": "thrifty_mend",
+      "name": "Thrifty Mend",
+      "type": "passive",
+      "ranks": 2,
+      "pos": [
+        6,
+        2
+      ],
+      "requires_any": [
+        "mend_choice"
+      ],
+      "description": "Coldblood Mend costs 5 less runic power per rank.",
+      "icon": {
+        "image": "skoll/hearts",
+        "school": "shadow"
+      },
+      "effects": [
+        {
+          "modify": "coldblood_mend.cost.amount",
+          "per_rank": -5
+        }
+      ]
+    },
+    {
+      "id": "long_winter",
+      "name": "Long Winter",
+      "type": "passive",
+      "ranks": 2,
+      "pos": [
+        0,
+        3
+      ],
+      "requires_any": [
+        "rune_tithe"
+      ],
+      "gate": 8,
+      "description": "Grave Winter's cooldown is 15 s shorter per rank.",
+      "icon": {
+        "image": "delapouite/igloo",
+        "school": "frost"
+      },
+      "effects": [
+        {
+          "modify": "grave_winter_ab.cooldown_s",
+          "per_rank": -15
+        }
+      ]
+    },
+    {
+      "id": "rimefall",
+      "name": "Rimefall",
+      "type": "active",
+      "pos": [
+        1,
+        3
+      ],
+      "requires_any": [
+        "rune_tithe",
+        "bitter_lash"
+      ],
+      "gate": 8,
+      "description": "Grants Rimefall: call down ice on an enemy within 30 m for 5,200 and slow it by 50% for 4 s. Costs 2 runes, 20 s cooldown.",
+      "icon": {
+        "image": "lorc/falling-boulder",
+        "school": "frost"
+      },
+      "grants_ability": "rimefall_ab"
+    },
+    {
+      "id": "bitter_winter",
+      "name": "Bitter Winter",
+      "type": "passive",
+      "ranks": 1,
+      "pos": [
+        2,
+        3
+      ],
+      "requires_any": [
+        "bitter_lash"
+      ],
+      "gate": 8,
+      "description": "Grave Winter increases damage by a further 10%.",
+      "icon": {
+        "image": "cathelineau/polar-bear",
+        "school": "frost"
+      },
+      "effects": [
+        {
+          "modify": "grave_winter.modifiers.0.value",
+          "per_rank": 0.1
+        }
+      ]
+    },
+    {
+      "id": "hoarfrost_prison",
+      "name": "Hoarfrost Prison",
+      "type": "active",
+      "pos": [
+        3,
+        3
+      ],
+      "requires_any": [
+        "quick_gale",
+        "long_shackles"
+      ],
+      "gate": 8,
+      "description": "Grants Hoarfrost Prison: an enemy within 20 m is incapacitated for 5 s; any damage ends it. Costs 1 rune, 45 s cooldown.",
+      "icon": {
+        "image": "lorc/circle-cage",
+        "school": "frost"
+      },
+      "grants_ability": "hoarfrost_prison_ab"
+    },
+    {
+      "id": "steady_carapace",
+      "name": "Steady Carapace",
+      "type": "passive",
+      "ranks": 2,
+      "pos": [
+        4,
+        3
+      ],
+      "requires_any": [
+        "long_shackles"
+      ],
+      "gate": 8,
+      "description": "Rime Carapace's cooldown is 10 s shorter per rank.",
+      "icon": {
+        "image": "lorc/riot-shield",
+        "school": "frost"
+      },
+      "effects": [
+        {
+          "modify": "rime_carapace_ab.cooldown_s",
+          "per_rank": -10
+        }
+      ]
+    },
+    {
+      "id": "wraith_lunge",
+      "name": "Wraith Lunge",
+      "type": "active",
+      "pos": [
+        5,
+        3
+      ],
+      "requires_any": [
+        "long_sever",
+        "thrifty_mend"
+      ],
+      "gate": 8,
+      "description": "Grants Wraith Lunge: rush to an enemy 8 to 25 m away and slow it by 40% for 3 s (25 s cooldown).",
+      "icon": {
+        "image": "delapouite/floating-ghost",
+        "school": "frost"
+      },
+      "grants_ability": "wraith_lunge_ab"
+    },
+    {
+      "id": "sure_mend",
+      "name": "Sure Mend",
+      "type": "passive",
+      "ranks": 1,
+      "pos": [
+        6,
+        3
+      ],
+      "requires_any": [
+        "thrifty_mend"
+      ],
+      "gate": 8,
+      "description": "Coldblood Mend can be used while stunned, incapacitated or disoriented.",
+      "icon": {
+        "image": "lorc/evil-hand",
+        "school": "shadow"
+      },
+      "effects": [
+        {
+          "modify": "coldblood_mend.usable_while_cc",
+          "set": [
+            "stun",
+            "incapacitate",
+            "disorient"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "winter_wellspring",
+      "name": "Winter Wellspring",
+      "type": "passive",
+      "ranks": 1,
+      "pos": [
+        0,
+        4
+      ],
+      "requires_any": [
+        "long_winter"
+      ],
+      "gate": 8,
+      "description": "Grave Winter gives 30 runic power.",
+      "icon": {
+        "image": "delapouite/mammoth",
+        "school": "frost"
+      },
+      "effects": [
+        {
+          "modify": "grave_winter_ab.generates",
+          "set": {
+            "resource": "runic_power",
+            "amount": 30
+          }
+        }
+      ]
+    },
+    {
+      "id": "deep_rimefall",
+      "name": "Deep Rimefall",
+      "type": "passive",
+      "ranks": 1,
+      "pos": [
+        1,
+        4
+      ],
+      "requires_any": [
+        "rimefall"
+      ],
+      "gate": 8,
+      "description": "Rimefall's slow lasts 2 s longer.",
+      "icon": {
+        "image": "lorc/falling-blob",
+        "school": "frost"
+      },
+      "effects": [
+        {
+          "modify": "rimefall_slowed.duration_s",
+          "per_rank": 2
+        }
+      ]
+    },
+    {
+      "id": "lasting_winter",
+      "name": "Lasting Winter",
+      "type": "passive",
+      "ranks": 1,
+      "pos": [
+        2,
+        4
+      ],
+      "requires_any": [
+        "bitter_winter"
+      ],
+      "gate": 8,
+      "description": "Grave Winter lasts 3 s longer.",
+      "icon": {
+        "image": "delapouite/winter-hat",
+        "school": "frost"
+      },
+      "effects": [
+        {
+          "modify": "grave_winter.duration_s",
+          "per_rank": 3
+        }
+      ]
+    },
+    {
+      "id": "long_prison",
+      "name": "Long Prison",
+      "type": "passive",
+      "ranks": 2,
+      "pos": [
+        3,
+        4
+      ],
+      "requires_any": [
+        "hoarfrost_prison"
+      ],
+      "gate": 8,
+      "description": "Hoarfrost Prison lasts 1 s longer per rank.",
+      "icon": {
+        "image": "delapouite/bird-cage",
+        "school": "frost"
+      },
+      "effects": [
+        {
+          "modify": "hoarfrost_imprisoned.duration_s",
+          "per_rank": 1
+        }
+      ]
+    },
+    {
+      "id": "thick_carapace",
+      "name": "Thick Carapace",
+      "type": "passive",
+      "ranks": 1,
+      "pos": [
+        4,
+        4
+      ],
+      "requires_any": [
+        "steady_carapace"
+      ],
+      "gate": 8,
+      "description": "Rime Carapace absorbs 2,000 more.",
+      "icon": {
+        "image": "lorc/armor-vest",
+        "school": "frost"
+      },
+      "effects": [
+        {
+          "modify": "rime_carapace.absorb",
+          "per_rank": 2000
+        }
+      ]
+    },
+    {
+      "id": "swift_lunge",
+      "name": "Swift Lunge",
+      "type": "passive",
+      "ranks": 2,
+      "pos": [
+        5,
+        4
+      ],
+      "requires_any": [
+        "wraith_lunge"
+      ],
+      "gate": 8,
+      "description": "Wraith Lunge's cooldown is 4 s shorter per rank.",
+      "icon": {
+        "image": "lorc/bat-wing",
+        "school": "shadow"
+      },
+      "effects": [
+        {
+          "modify": "wraith_lunge_ab.cooldown_s",
+          "per_rank": -4
+        }
+      ]
+    },
+    {
+      "id": "heavy_rimefall",
+      "name": "Heavy Rimefall",
+      "type": "passive",
+      "ranks": 1,
+      "pos": [
+        1,
+        5
+      ],
+      "requires_any": [
+        "deep_rimefall"
+      ],
+      "gate": 8,
+      "description": "Rimefall deals 1,000 more damage.",
+      "icon": {
+        "image": "lorc/falling-ovoid",
+        "school": "frost"
+      },
+      "effects": [
+        {
+          "modify": "rimefall_ab.effects.0.base",
+          "per_rank": 1000
+        }
+      ]
+    },
+    {
+      "id": "frost_focus",
+      "name": "Frozen Focus",
+      "type": "passive",
+      "ranks": 2,
+      "pos": [
+        2,
+        5
+      ],
+      "requires_any": [
+        "lasting_winter",
+        "long_prison"
+      ],
+      "gate": 8,
+      "description": "Your damage is increased by 2% per rank.",
+      "icon": {
+        "image": "lorc/one-eyed",
+        "school": "frost"
+      },
+      "effects": [
+        {
+          "modify": "frostgrave_focus.modifiers.0.value",
+          "per_rank": 0.02
+        }
+      ],
+      "grants_aura": "frostgrave_focus"
+    },
+    {
+      "id": "swift_prison",
+      "name": "Swift Prison",
+      "type": "passive",
+      "ranks": 1,
+      "pos": [
+        3,
+        5
+      ],
+      "requires_any": [
+        "long_prison"
+      ],
+      "gate": 8,
+      "description": "Hoarfrost Prison's cooldown is 10 s shorter.",
+      "icon": {
+        "image": "delapouite/cage",
+        "school": "frost"
+      },
+      "effects": [
+        {
+          "modify": "hoarfrost_prison_ab.cooldown_s",
+          "per_rank": -10
+        }
+      ]
+    },
+    {
+      "id": "deep_chill",
+      "name": "Deep Chill",
+      "type": "passive",
+      "ranks": 1,
+      "pos": [
+        5,
+        5
+      ],
+      "requires_any": [
+        "swift_lunge"
+      ],
+      "gate": 8,
+      "description": "Wraith Lunge's slow lasts 2 s longer.",
+      "icon": {
+        "image": "sbed/evil-wings",
+        "school": "shadow"
+      },
+      "effects": [
+        {
+          "modify": "lunge_chilled.duration_s",
+          "per_rank": 2
+        }
+      ]
+    },
+    {
+      "id": "keen_frost",
+      "name": "Keen Frost",
+      "type": "passive",
+      "ranks": 2,
+      "pos": [
+        0,
+        6
+      ],
+      "requires_any": [
+        "winter_wellspring"
+      ],
+      "gate": 20,
+      "description": "Your critical strike chance is 3% higher per rank.",
+      "icon": {
+        "image": "lorc/striking-diamonds",
+        "school": "frost"
+      },
+      "effects": [
+        {
+          "modify": "self.stats.crit_chance",
+          "per_rank": 0.03
+        }
+      ]
+    },
+    {
+      "id": "heart_of_winter",
+      "name": "Heart of Winter",
+      "type": "capstone",
+      "pos": [
+        1,
+        6
+      ],
+      "requires_any": [
+        "heavy_rimefall"
+      ],
+      "gate": 20,
+      "description": "Rime Cleave deals 1,000 more damage, Gravefrost Strike 800 more and Rimefall 1,000 more.",
+      "icon": {
+        "image": "lorc/smoking-orb",
+        "school": "frost"
+      },
+      "effects": [
+        {
+          "modify": "rime_cleave.effects.0.base",
+          "per_rank": 1000
+        },
+        {
+          "modify": "gravefrost_strike.effects.0.base",
+          "per_rank": 800
+        },
+        {
+          "modify": "rimefall_ab.effects.0.base",
+          "per_rank": 1000
+        }
+      ]
+    },
+    {
+      "id": "bitter_north",
+      "name": "Bitter North",
+      "type": "capstone",
+      "pos": [
+        3,
+        6
+      ],
+      "requires_any": [
+        "swift_prison"
+      ],
+      "gate": 20,
+      "description": "Hoarlash deals 1,000 more damage and Wintering Gale 800 more.",
+      "icon": {
+        "image": "delapouite/iceland",
+        "school": "frost"
+      },
+      "effects": [
+        {
+          "modify": "hoarlash.effects.0.base",
+          "per_rank": 1000
+        },
+        {
+          "modify": "wintering_gale.effects.0.base",
+          "per_rank": 800
+        }
+      ]
+    },
+    {
+      "id": "relentless_grave",
+      "name": "Relentless Grave",
+      "type": "capstone",
+      "pos": [
+        5,
+        6
+      ],
+      "requires_any": [
+        "deep_chill"
+      ],
+      "gate": 20,
+      "description": "Oathsever locks the school for 1 s longer, Glacial Tomb stuns for 0.5 s longer and Wraith Lunge slows by a further 10%.",
+      "icon": {
+        "image": "lorc/grim-reaper",
+        "school": "shadow"
+      },
+      "effects": [
+        {
+          "modify": "oathsever.effects.0.school_lock_s",
+          "per_rank": 1
+        },
+        {
+          "modify": "tomb_encased.duration_s",
+          "per_rank": 0.5
+        },
+        {
+          "modify": "lunge_chilled.modifiers.0.value",
+          "per_rank": -0.1
+        }
+      ]
+    },
+    {
+      "id": "carapace_mend",
+      "name": "Carapace Mend",
+      "type": "passive",
+      "ranks": 1,
+      "pos": [
+        4,
+        6
+      ],
+      "requires_any": [
+        "thick_carapace"
+      ],
+      "gate": 20,
+      "description": "Rime Carapace also heals you for 6,000.",
+      "icon": {
+        "image": "delapouite/winter-gloves",
+        "school": "frost"
+      },
+      "effects": [
+        {
+          "modify": "rime_carapace_ab.effects",
+          "set": [
+            {
+              "type": "apply_aura",
+              "aura": "rime_carapace"
+            },
+            {
+              "type": "heal",
+              "base": 6000
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

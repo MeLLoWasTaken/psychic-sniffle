@@ -1,0 +1,25 @@
+{
+  "id": "grave_winter_ab",
+  "name": "Grave Winter",
+  "description": "For 15 s, deal 20% more damage.",
+  "owner": "deathsworn_frostgrave",
+  "kit_slot": "burst",
+  "school": "frost",
+  "cast_type": "instant",
+  "cooldown_s": 120,
+  "triggers_gcd": false,
+  "range_m": 0,
+  "requires_los": false,
+  "target": "self",
+  "effects": [
+    {
+      "type": "apply_aura",
+      "aura": "grave_winter"
+    }
+  ],
+  "icon": {
+    "symbol": "grave_winter",
+    "school": "frost",
+    "image": "delapouite/antarctica"
+  }
+}

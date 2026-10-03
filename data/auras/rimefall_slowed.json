@@ -1,0 +1,22 @@
+{
+  "id": "rimefall_slowed",
+  "name": "Rimefall",
+  "description": "Movement down 50%.",
+  "kind": "debuff",
+  "duration_s": 4,
+  "dispel_type": "magic",
+  "cc_category": "none",
+  "hud_priority": "normal",
+  "icon": {
+    "symbol": "rimefall_slowed",
+    "school": "frost",
+    "image": "lorc/falling-boulder"
+  },
+  "modifiers": [
+    {
+      "stat": "move_speed",
+      "op": "multiply",
+      "value": 0.5
+    }
+  ]
+}

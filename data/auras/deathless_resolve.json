@@ -1,0 +1,22 @@
+{
+  "id": "deathless_resolve",
+  "name": "Deathless Resolve",
+  "description": "Damage taken down 30%.",
+  "kind": "buff",
+  "duration_s": 8,
+  "dispel_type": "none",
+  "cc_category": "none",
+  "hud_priority": "major_defensive",
+  "icon": {
+    "symbol": "deathless_resolve",
+    "school": "shadow",
+    "image": "lorc/skull-shield"
+  },
+  "modifiers": [
+    {
+      "stat": "damage_taken",
+      "op": "multiply",
+      "value": 0.7
+    }
+  ]
+}

@@ -1,0 +1,22 @@
+{
+  "id": "lunge_chilled",
+  "name": "Wraith Chill",
+  "description": "Movement down 40%.",
+  "kind": "debuff",
+  "duration_s": 3,
+  "dispel_type": "magic",
+  "cc_category": "none",
+  "hud_priority": "normal",
+  "icon": {
+    "symbol": "lunge_chilled",
+    "school": "shadow",
+    "image": "delapouite/floating-ghost"
+  },
+  "modifiers": [
+    {
+      "stat": "move_speed",
+      "op": "multiply",
+      "value": 0.6
+    }
+  ]
+}

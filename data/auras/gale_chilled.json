@@ -1,0 +1,22 @@
+{
+  "id": "gale_chilled",
+  "name": "Chilled by the Gale",
+  "description": "Movement down 30%.",
+  "kind": "debuff",
+  "duration_s": 4,
+  "dispel_type": "magic",
+  "cc_category": "none",
+  "hud_priority": "normal",
+  "icon": {
+    "symbol": "gale_chilled",
+    "school": "frost",
+    "image": "delapouite/sandstorm"
+  },
+  "modifiers": [
+    {
+      "stat": "move_speed",
+      "op": "multiply",
+      "value": 0.7
+    }
+  ]
+}

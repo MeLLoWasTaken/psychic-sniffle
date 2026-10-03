@@ -132,6 +132,8 @@ func effects(ab: Dictionary) -> Dictionary:
 				lines.append("Charges to the target")
 			"knockback":
 				lines.append("Knocks back %s m" % _g(float(e.get("distance_m", 8.0))) + area)
+			"pull":
+				lines.append("Pulls the target to you")
 			_:
 				lines.append(t.replace("_", " ").capitalize())
 	return {"lines": lines, "numbers": numbers}

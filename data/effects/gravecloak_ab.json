@@ -1,0 +1,14 @@
+{
+  "id": "gravecloak_ab",
+  "impact": {
+    "style": "ring",
+    "at": "self",
+    "size": 1.2
+  },
+  "auras": {
+    "gravecloak": {
+      "style": "shield",
+      "size": 1.2
+    }
+  }
+}

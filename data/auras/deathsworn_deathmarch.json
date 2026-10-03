@@ -1,0 +1,23 @@
+{
+  "id": "deathsworn_deathmarch",
+  "name": "Deathmarch",
+  "description": "Talent: movement speed increased.",
+  "kind": "buff",
+  "duration_s": 0,
+  "refresh": "refresh",
+  "dispel_type": "none",
+  "cc_category": "none",
+  "hud_priority": "hidden",
+  "icon": {
+    "symbol": "deathmarch",
+    "school": "shadow",
+    "image": "lorc/steeltoe-boots"
+  },
+  "modifiers": [
+    {
+      "stat": "move_speed",
+      "op": "multiply",
+      "value": 1.0
+    }
+  ]
+}

@@ -1,0 +1,14 @@
+{
+  "id": "coldblood_mend",
+  "impact": {
+    "style": "ring",
+    "at": "self",
+    "size": 1.0
+  },
+  "auras": {
+    "mend_ward": {
+      "style": "shield",
+      "size": 0.9
+    }
+  }
+}

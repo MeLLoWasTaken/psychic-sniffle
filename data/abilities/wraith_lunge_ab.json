@@ -1,0 +1,29 @@
+{
+  "id": "wraith_lunge_ab",
+  "name": "Wraith Lunge",
+  "description": "Rush to an enemy 8 to 25 m away and slow it by 40% for 3 s.",
+  "owner": "deathsworn_frostgrave",
+  "kit_slot": "mobility",
+  "school": "shadow",
+  "cast_type": "instant",
+  "cooldown_s": 25,
+  "triggers_gcd": false,
+  "range_m": 25,
+  "requires_los": true,
+  "target": "enemy",
+  "effects": [
+    {
+      "type": "charge"
+    },
+    {
+      "type": "apply_aura",
+      "aura": "lunge_chilled"
+    }
+  ],
+  "icon": {
+    "symbol": "wraith_lunge",
+    "school": "shadow",
+    "image": "delapouite/floating-ghost"
+  },
+  "min_range_m": 8
+}

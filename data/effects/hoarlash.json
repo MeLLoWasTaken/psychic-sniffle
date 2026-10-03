@@ -1,0 +1,16 @@
+{
+  "id": "hoarlash",
+  "projectile": {
+    "style": "streak"
+  },
+  "impact": {
+    "style": "spark",
+    "at": "target",
+    "size": 0.9
+  },
+  "auras": {
+    "hoarbitten": {
+      "style": "slow"
+    }
+  }
+}

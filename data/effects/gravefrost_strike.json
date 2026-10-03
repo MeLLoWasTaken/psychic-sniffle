@@ -1,0 +1,11 @@
+{
+  "id": "gravefrost_strike",
+  "melee": {
+    "style": "overhead"
+  },
+  "impact": {
+    "style": "burst",
+    "at": "target",
+    "size": 1.3
+  }
+}

@@ -1,0 +1,13 @@
+{
+  "id": "sepulchral_howl_ab",
+  "ground": {
+    "style": "nova",
+    "center": "caster",
+    "lifetime_s": 0.8
+  },
+  "auras": {
+    "howl_dread": {
+      "style": "disorient"
+    }
+  }
+}

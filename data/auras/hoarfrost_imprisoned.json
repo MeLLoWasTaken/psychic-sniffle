@@ -1,0 +1,16 @@
+{
+  "id": "hoarfrost_imprisoned",
+  "name": "Hoarfrost Prison",
+  "description": "Incapacitated. Any damage ends it.",
+  "kind": "debuff",
+  "duration_s": 5,
+  "dispel_type": "magic",
+  "cc_category": "incapacitate",
+  "hud_priority": "cc",
+  "icon": {
+    "symbol": "hoarfrost_imprisoned",
+    "school": "frost",
+    "image": "lorc/circle-cage"
+  },
+  "breaks_on_damage": "any"
+}

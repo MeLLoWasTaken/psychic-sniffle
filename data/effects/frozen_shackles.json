@@ -1,0 +1,17 @@
+{
+  "id": "frozen_shackles",
+  "impact": {
+    "style": "ring",
+    "at": "target",
+    "size": 1.0
+  },
+  "auras": {
+    "frozen_shackled": {
+      "style": "root"
+    },
+    "frostgrave_gnawed": {
+      "style": "dot",
+      "size": 0.8
+    }
+  }
+}

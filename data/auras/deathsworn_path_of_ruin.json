@@ -1,0 +1,23 @@
+{
+  "id": "deathsworn_path_of_ruin",
+  "name": "Path of Ruin",
+  "description": "Talent: damage done up 4%.",
+  "kind": "buff",
+  "duration_s": 0,
+  "refresh": "refresh",
+  "dispel_type": "none",
+  "cc_category": "none",
+  "hud_priority": "hidden",
+  "icon": {
+    "symbol": "path_of_ruin",
+    "school": "shadow",
+    "image": "lorc/reaper-scythe"
+  },
+  "modifiers": [
+    {
+      "stat": "damage_done",
+      "op": "multiply",
+      "value": 1.04
+    }
+  ]
+}

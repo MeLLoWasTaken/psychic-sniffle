@@ -1,0 +1,13 @@
+{
+  "id": "glacial_tomb",
+  "impact": {
+    "style": "burst",
+    "at": "target",
+    "size": 1.2
+  },
+  "auras": {
+    "tomb_encased": {
+      "style": "stun"
+    }
+  }
+}

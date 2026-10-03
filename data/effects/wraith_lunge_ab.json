@@ -1,0 +1,16 @@
+{
+  "id": "wraith_lunge_ab",
+  "displacement": {
+    "style": "dust"
+  },
+  "impact": {
+    "style": "spark",
+    "at": "target",
+    "size": 1.1
+  },
+  "auras": {
+    "lunge_chilled": {
+      "style": "slow"
+    }
+  }
+}

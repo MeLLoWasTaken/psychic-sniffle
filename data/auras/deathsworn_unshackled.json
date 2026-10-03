@@ -1,0 +1,22 @@
+{
+  "id": "deathsworn_unshackled",
+  "name": "Unshackled",
+  "description": "Movement up 30%.",
+  "kind": "buff",
+  "duration_s": 3,
+  "dispel_type": "magic",
+  "cc_category": "none",
+  "hud_priority": "normal",
+  "icon": {
+    "symbol": "deathsworn_unshackled",
+    "school": "shadow",
+    "image": "lorc/unlocking"
+  },
+  "modifiers": [
+    {
+      "stat": "move_speed",
+      "op": "multiply",
+      "value": 1.3
+    }
+  ]
+}

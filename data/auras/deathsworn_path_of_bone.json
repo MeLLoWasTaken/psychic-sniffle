@@ -1,0 +1,23 @@
+{
+  "id": "deathsworn_path_of_bone",
+  "name": "Path of Bone",
+  "description": "Talent: damage taken down 4%.",
+  "kind": "buff",
+  "duration_s": 0,
+  "refresh": "refresh",
+  "dispel_type": "none",
+  "cc_category": "none",
+  "hud_priority": "hidden",
+  "icon": {
+    "symbol": "path_of_bone",
+    "school": "shadow",
+    "image": "lorc/backbone-shell"
+  },
+  "modifiers": [
+    {
+      "stat": "damage_taken",
+      "op": "multiply",
+      "value": 0.96
+    }
+  ]
+}

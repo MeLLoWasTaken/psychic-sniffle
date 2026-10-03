@@ -315,7 +315,8 @@
             "summon",
             "absorb",
             "remove_cc",
-            "charge"
+            "charge",
+            "pull"
           ]
         },
         "base": {

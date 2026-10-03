@@ -1,0 +1,29 @@
+{
+  "id": "hoarfrost_prison_ab",
+  "name": "Hoarfrost Prison",
+  "description": "An enemy within 20 m is incapacitated for 5 s. Any damage ends it.",
+  "owner": "deathsworn_frostgrave",
+  "kit_slot": "cc",
+  "school": "frost",
+  "cast_type": "instant",
+  "cooldown_s": 45,
+  "triggers_gcd": true,
+  "range_m": 20,
+  "requires_los": true,
+  "target": "enemy",
+  "effects": [
+    {
+      "type": "apply_aura",
+      "aura": "hoarfrost_imprisoned"
+    }
+  ],
+  "icon": {
+    "symbol": "hoarfrost_prison",
+    "school": "frost",
+    "image": "lorc/circle-cage"
+  },
+  "cost": {
+    "resource": "runes",
+    "amount": 1
+  }
+}

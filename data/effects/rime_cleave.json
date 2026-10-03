@@ -1,0 +1,11 @@
+{
+  "id": "rime_cleave",
+  "melee": {
+    "style": "arc"
+  },
+  "impact": {
+    "style": "burst",
+    "at": "target",
+    "size": 1.0
+  }
+}

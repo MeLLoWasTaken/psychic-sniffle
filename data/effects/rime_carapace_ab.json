@@ -1,0 +1,9 @@
+{
+  "id": "rime_carapace_ab",
+  "auras": {
+    "rime_carapace": {
+      "style": "shield",
+      "size": 1.0
+    }
+  }
+}

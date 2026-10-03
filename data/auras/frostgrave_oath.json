@@ -1,0 +1,23 @@
+{
+  "id": "frostgrave_oath",
+  "name": "Hollow Oath",
+  "description": "Talent: damage taken down 8%.",
+  "kind": "buff",
+  "duration_s": 0,
+  "refresh": "refresh",
+  "dispel_type": "none",
+  "cc_category": "none",
+  "hud_priority": "hidden",
+  "modifiers": [
+    {
+      "stat": "damage_taken",
+      "op": "multiply",
+      "value": 0.92
+    }
+  ],
+  "icon": {
+    "symbol": "frostgrave_oath",
+    "school": "frost",
+    "image": "delapouite/crypt-entrance"
+  }
+}

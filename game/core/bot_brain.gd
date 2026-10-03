@@ -343,6 +343,10 @@ func _conditions(w: Dictionary, view: Dictionary, me: Dictionary, on: Dictionary
 		return false
 	if w.has("resource_at_least") and float(me["resource"]) < float(w["resource_at_least"]):
 		return false
+	if w.has("secondary_below"):  # the spec's second resource (runes), from the view's own resources (M3-08)
+		var sec: String = str(Data.specs.get(str(me.get("spec", "")), {}).get("secondary_resource", ""))
+		if sec == "" or MatchRunner.view_resource(view, sec) >= float(w["secondary_below"]):
+			return false
 	var dispel_rule: Variant = w.get("has_dispellable", false)
 	if (dispel_rule is String or dispel_rule == true) and not _has_dispellable(on, me, ab, dispel_rule is String):
 		return false

@@ -1,0 +1,25 @@
+{
+  "id": "rime_carapace_ab",
+  "name": "Rime Carapace",
+  "description": "Shield yourself in ice, absorbing 10,000 damage for 8 s.",
+  "owner": "deathsworn_frostgrave",
+  "kit_slot": "defensive",
+  "school": "frost",
+  "cast_type": "instant",
+  "cooldown_s": 60,
+  "triggers_gcd": false,
+  "range_m": 0,
+  "requires_los": false,
+  "target": "self",
+  "effects": [
+    {
+      "type": "apply_aura",
+      "aura": "rime_carapace"
+    }
+  ],
+  "icon": {
+    "symbol": "rime_carapace",
+    "school": "frost",
+    "image": "lorc/shieldcomb"
+  }
+}

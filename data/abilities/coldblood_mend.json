@@ -1,0 +1,29 @@
+{
+  "id": "coldblood_mend",
+  "name": "Coldblood Mend",
+  "description": "Heal yourself for 7,000.",
+  "owner": "deathsworn_frostgrave",
+  "kit_slot": "utility",
+  "school": "shadow",
+  "cast_type": "instant",
+  "cooldown_s": 15,
+  "triggers_gcd": true,
+  "range_m": 0,
+  "requires_los": false,
+  "target": "self",
+  "effects": [
+    {
+      "type": "heal",
+      "base": 7000
+    }
+  ],
+  "icon": {
+    "symbol": "coldblood_mend",
+    "school": "shadow",
+    "image": "lorc/tentacle-heart"
+  },
+  "cost": {
+    "resource": "runic_power",
+    "amount": 35
+  }
+}

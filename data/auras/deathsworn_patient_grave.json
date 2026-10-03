@@ -1,0 +1,23 @@
+{
+  "id": "deathsworn_patient_grave",
+  "name": "Patient Grave",
+  "description": "Talent: cooldowns recover faster.",
+  "kind": "buff",
+  "duration_s": 0,
+  "refresh": "refresh",
+  "dispel_type": "none",
+  "cc_category": "none",
+  "hud_priority": "hidden",
+  "icon": {
+    "symbol": "patient_grave",
+    "school": "shadow",
+    "image": "lorc/tombstone"
+  },
+  "modifiers": [
+    {
+      "stat": "cooldown_rate",
+      "op": "multiply",
+      "value": 1.0
+    }
+  ]
+}

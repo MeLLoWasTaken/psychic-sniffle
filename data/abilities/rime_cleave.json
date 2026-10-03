@@ -1,0 +1,33 @@
+{
+  "id": "rime_cleave",
+  "name": "Rime Cleave",
+  "description": "Cleave an enemy with a frost-bitten blade for 3,600.",
+  "owner": "deathsworn_frostgrave",
+  "kit_slot": "core",
+  "school": "frost",
+  "cast_type": "instant",
+  "cooldown_s": 0,
+  "triggers_gcd": true,
+  "range_m": 5,
+  "requires_los": true,
+  "target": "enemy",
+  "effects": [
+    {
+      "type": "damage",
+      "base": 3600
+    }
+  ],
+  "icon": {
+    "symbol": "rime_cleave",
+    "school": "frost",
+    "image": "lorc/shard-sword"
+  },
+  "cost": {
+    "resource": "runes",
+    "amount": 2
+  },
+  "generates": {
+    "resource": "runic_power",
+    "amount": 20
+  }
+}

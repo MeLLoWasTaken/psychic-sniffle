@@ -1,0 +1,18 @@
+{
+  "id": "wintering_gale",
+  "ground": {
+    "style": "nova",
+    "center": "caster",
+    "lifetime_s": 0.8
+  },
+  "impact": {
+    "style": "spark",
+    "at": "hits",
+    "size": 0.8
+  },
+  "auras": {
+    "gale_chilled": {
+      "style": "slow"
+    }
+  }
+}

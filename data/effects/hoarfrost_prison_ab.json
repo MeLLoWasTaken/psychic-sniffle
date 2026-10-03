@@ -1,0 +1,13 @@
+{
+  "id": "hoarfrost_prison_ab",
+  "impact": {
+    "style": "ring",
+    "at": "target",
+    "size": 1.1
+  },
+  "auras": {
+    "hoarfrost_imprisoned": {
+      "style": "disorient"
+    }
+  }
+}

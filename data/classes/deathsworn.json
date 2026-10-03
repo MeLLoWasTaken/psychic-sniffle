@@ -1,0 +1,15 @@
+{
+  "id": "deathsworn",
+  "name": "Deathsworn",
+  "description": "Oathbound knight returned from the grave, its cold in their veins.",
+  "armor": "plate",
+  "color": "#8f7ad6",
+  "specs": [
+    "deathsworn_frostgrave"
+  ],
+  "class_tree": "deathsworn_class",
+  "shared_abilities": [
+    "auto_attack",
+    "break_free"
+  ]
+}

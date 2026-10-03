@@ -2,6 +2,12 @@
 
 One entry per build-loop iteration, newest first. Format: date, backlog ID, what changed, how it was checked.
 
+## 2026-10-03 — M3-09 Deathsworn class and Frostgrave kit, M3-04 Radiance first balance pass
+- A second new class: the Deathsworn, plate-armoured knights returned from the grave, who spend runes to build runic power and runic power on their heaviest blows. Every Deathsworn can pull an enemy to it (Grave Tether), interrupt, shrug off damage while stunned, and turn magic damage aside for 4 s. Its first spec, Frostgrave, hits hard with frost and slows heavily; it can refill all its runes once a minute and a half.
+- A new kind of effect, the pull, and a bot rule for a second resource.
+- Radiance hit too hard and healed itself too easily for a healer: the nightly run had it winning every duel against the Warblade. Its attacks and instant heal are weaker now, and its cast heal stronger.
+- Checked: data validation, new rule tests, bot matches without errors.
+
 ## 2026-10-03 — M3-08 Runes and a second resource on the HUD
 - Runes, the resource of the coming Deathsworn class, now work: six runes, each spent rune recharging on its own in 10 s, three at a time, and spending them builds runic power. Before, runes were listed in the tuning but never came back.
 - The player's own game now receives all of their resources, not only the main one, so the HUD and bots can use a second resource. The player frame shows runes as six pips under it that fill as they recharge.

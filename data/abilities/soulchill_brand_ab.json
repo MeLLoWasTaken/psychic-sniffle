@@ -1,0 +1,29 @@
+{
+  "id": "soulchill_brand_ab",
+  "name": "Soulchill Brand",
+  "description": "An enemy moves 25% slower and deals 10% less damage for 10 s.",
+  "owner": "deathsworn",
+  "kit_slot": "utility",
+  "school": "frost",
+  "cast_type": "instant",
+  "cooldown_s": 30,
+  "triggers_gcd": true,
+  "range_m": 30,
+  "requires_los": true,
+  "target": "enemy",
+  "effects": [
+    {
+      "type": "apply_aura",
+      "aura": "soulchilled"
+    }
+  ],
+  "icon": {
+    "symbol": "soulchill_brand",
+    "school": "frost",
+    "image": "lorc/skull-signet"
+  },
+  "cost": {
+    "resource": "runes",
+    "amount": 1
+  }
+}

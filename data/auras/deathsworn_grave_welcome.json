@@ -1,0 +1,23 @@
+{
+  "id": "deathsworn_grave_welcome",
+  "name": "Grave Welcome",
+  "description": "Talent: healing received up.",
+  "kind": "buff",
+  "duration_s": 0,
+  "refresh": "refresh",
+  "dispel_type": "none",
+  "cc_category": "none",
+  "hud_priority": "hidden",
+  "icon": {
+    "symbol": "grave_welcome",
+    "school": "shadow",
+    "image": "delapouite/grave-flowers"
+  },
+  "modifiers": [
+    {
+      "stat": "healing_taken",
+      "op": "multiply",
+      "value": 1.0
+    }
+  ]
+}

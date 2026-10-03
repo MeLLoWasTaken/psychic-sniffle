@@ -490,6 +490,19 @@ func apply_effect(u: Unit, t: Unit, eff: Dictionary, ab: Dictionary, scale: floa
 			t.displaced_tick = sim.tick
 			_cancel_if_casting(t, "knocked_back")
 			_log({"type": "knockback", "source": u.id, "target": t.id})
+		"pull":
+			# drag the target to stand distance_m in front of the caster, on the line between them
+			# (M3: the Deathsworn's tether); the ability's line-of-sight check keeps the path clear
+			if _immune(t, "cc"):
+				return
+			var back: Vector3 = _flat3(t.position - u.position)
+			if back.length() < 0.01:
+				return
+			var land: Vector3 = u.position + back.normalized() * minf(float(eff.get("distance_m", 2.0)), back.length())
+			t.position = geometry.resolve(land) if geometry else land
+			t.displaced_tick = sim.tick
+			_cancel_if_casting(t, "pulled")
+			_log({"type": "pull", "source": u.id, "target": t.id})
 		"charge":
 			# rush the caster to the target, stopping 1.5 m short; pillars and walls stop it
 			var goal: Vector3 = t.position - _flat3(t.position - u.position).normalized() * 1.5

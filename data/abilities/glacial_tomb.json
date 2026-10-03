@@ -1,0 +1,29 @@
+{
+  "id": "glacial_tomb",
+  "name": "Glacial Tomb",
+  "description": "Encase an enemy within 15 m in ice, stunning it for 3 s.",
+  "owner": "deathsworn_frostgrave",
+  "kit_slot": "cc",
+  "school": "frost",
+  "cast_type": "instant",
+  "cooldown_s": 45,
+  "triggers_gcd": true,
+  "range_m": 15,
+  "requires_los": true,
+  "target": "enemy",
+  "effects": [
+    {
+      "type": "apply_aura",
+      "aura": "tomb_encased"
+    }
+  ],
+  "icon": {
+    "symbol": "glacial_tomb",
+    "school": "frost",
+    "image": "lorc/zigzag-cage"
+  },
+  "cost": {
+    "resource": "runes",
+    "amount": 1
+  }
+}

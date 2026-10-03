@@ -36,6 +36,7 @@ func before_test() -> void:
 		"costly": _ab("costly", {"cost": {"resource": "mana", "amount": 60000}, "effects": []}),
 		"rune_strike": _ab("rune_strike", {"triggers_gcd": false, "cost": {"resource": "runes", "amount": 2},
 			"generates": {"resource": "runic_power", "amount": 20}, "effects": [{"type": "damage", "base": 100}]}),
+		"tether": _ab("tether", {"school": "shadow", "triggers_gcd": false, "range_m": 30, "effects": [{"type": "pull", "distance_m": 2.0}]}),
 		"rune_tap": _ab("rune_tap", {"triggers_gcd": false, "target": "self",
 			"effects": [{"type": "resource", "resource": "runes", "amount": 1}]}),
 		"kick": _ab("kick", {"school": "physical", "triggers_gcd": false, "cooldown_s": 15, "effects": [{"type": "interrupt", "school_lock_s": 4}]}),
@@ -235,6 +236,27 @@ func test_a_rune_refund_keeps_running_recharges() -> void:
 	assert_float(float(me.recharges["runes"][0])).is_equal_approx(6.0, 0.02)
 	_run(TR * 6)
 	assert_float(me.resources["runes"]).is_equal(4.0)
+
+
+func test_a_pull_drags_the_target_in_front_of_the_caster_and_stops_its_cast() -> void:
+	foe.position = Vector3(0, 0, -20)  # M3: the Deathsworn's tether
+	foe.known_abilities.assign(abilities.keys())
+	foe.target_id = me.id
+	cb.press(foe, "slow_bolt", me.id)
+	assert_bool(foe.is_casting()).is_true()
+	cb.press(me, "tether", foe.id)
+	assert_float(foe.position.distance_to(Vector3(0, 0, -2))).is_less(0.01)
+	assert_bool(foe.is_casting()).is_false()
+	assert_int(foe.displaced_tick).is_equal(sim.tick)
+	assert_int(_count("pull")).is_equal(1)
+
+
+func test_crowd_control_immunity_stops_a_pull() -> void:
+	foe.position = Vector3(0, 0, -20)
+	auras["unshakable"] = _aura("unshakable", {"kind": "buff", "dispel_type": "none", "immune": ["cc"]})
+	cb.apply_aura(foe, foe, "unshakable")
+	cb.press(me, "tether", foe.id)
+	assert_float(foe.position.z).is_equal(-20.0)
 
 
 # ------------------------------------------------------------ M1-04 auras

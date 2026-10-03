@@ -1,0 +1,25 @@
+{
+  "id": "deathsworn_marrow_knit",
+  "name": "Marrow Knit",
+  "description": "Talent: healing 300 every 5 s.",
+  "kind": "buff",
+  "duration_s": 0,
+  "refresh": "refresh",
+  "dispel_type": "none",
+  "cc_category": "none",
+  "hud_priority": "hidden",
+  "icon": {
+    "symbol": "marrow_knit",
+    "school": "shadow",
+    "image": "lorc/marrow-drain"
+  },
+  "periodic": {
+    "interval_s": 5,
+    "effect": {
+      "type": "heal",
+      "base": 300,
+      "can_crit": false,
+      "school": "shadow"
+    }
+  }
+}

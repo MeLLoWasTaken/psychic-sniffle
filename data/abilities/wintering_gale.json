@@ -1,0 +1,41 @@
+{
+  "id": "wintering_gale",
+  "name": "Wintering Gale",
+  "description": "Enemies within 10 m take 2,100 and are slowed by 30% for 4 s.",
+  "owner": "deathsworn_frostgrave",
+  "kit_slot": "core",
+  "school": "frost",
+  "cast_type": "instant",
+  "cooldown_s": 8,
+  "triggers_gcd": true,
+  "range_m": 0,
+  "requires_los": false,
+  "target": "self",
+  "effects": [
+    {
+      "type": "damage",
+      "base": 2100,
+      "affects": "enemies_in_radius",
+      "radius_m": 10
+    },
+    {
+      "type": "apply_aura",
+      "aura": "gale_chilled",
+      "affects": "enemies_in_radius",
+      "radius_m": 10
+    }
+  ],
+  "icon": {
+    "symbol": "wintering_gale",
+    "school": "frost",
+    "image": "delapouite/sandstorm"
+  },
+  "cost": {
+    "resource": "runes",
+    "amount": 1
+  },
+  "generates": {
+    "resource": "runic_power",
+    "amount": 10
+  }
+}

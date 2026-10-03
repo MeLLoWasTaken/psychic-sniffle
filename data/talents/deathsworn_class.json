@@ -1,0 +1,1196 @@
+{
+  "tree_id": "deathsworn_class",
+  "kind": "class",
+  "owner": "deathsworn",
+  "points": 30,
+  "gates": [
+    8,
+    20
+  ],
+  "status": "complete",
+  "nodes": [
+    {
+      "id": "bone_vigor",
+      "name": "Bone Vigor",
+      "type": "passive",
+      "ranks": 2,
+      "pos": [
+        1,
+        0
+      ],
+      "description": "Your maximum health is 1,200 higher per rank.",
+      "icon": {
+        "image": "lorc/crossed-bones",
+        "school": "shadow"
+      },
+      "effects": [
+        {
+          "modify": "self.max_health",
+          "per_rank": 1200
+        }
+      ]
+    },
+    {
+      "id": "grave_plate",
+      "name": "Grave Plate",
+      "type": "passive",
+      "ranks": 2,
+      "pos": [
+        0,
+        1
+      ],
+      "requires_any": [
+        "bone_vigor"
+      ],
+      "description": "Your armor turns aside 3% more physical damage per rank.",
+      "icon": {
+        "image": "lorc/ribcage",
+        "school": "shadow"
+      },
+      "effects": [
+        {
+          "modify": "deathsworn_grave_plate.modifiers.0.value",
+          "per_rank": 0.03
+        }
+      ],
+      "grants_aura": "deathsworn_grave_plate"
+    },
+    {
+      "id": "cold_heart",
+      "name": "Cold Heart",
+      "type": "passive",
+      "ranks": 2,
+      "pos": [
+        2,
+        1
+      ],
+      "requires_any": [
+        "bone_vigor"
+      ],
+      "description": "You take 2% less damage per rank.",
+      "icon": {
+        "image": "lorc/wrapped-heart",
+        "school": "shadow"
+      },
+      "effects": [
+        {
+          "modify": "deathsworn_cold_heart.modifiers.0.value",
+          "per_rank": -0.02
+        }
+      ],
+      "grants_aura": "deathsworn_cold_heart"
+    },
+    {
+      "id": "marrow_knit",
+      "name": "Marrow Knit",
+      "type": "passive",
+      "ranks": 1,
+      "pos": [
+        0,
+        2
+      ],
+      "requires_any": [
+        "grave_plate"
+      ],
+      "description": "You heal yourself for 300 every 5 s.",
+      "icon": {
+        "image": "lorc/marrow-drain",
+        "school": "shadow"
+      },
+      "grants_aura": "deathsworn_marrow_knit"
+    },
+    {
+      "id": "grave_welcome",
+      "name": "Grave Welcome",
+      "type": "passive",
+      "ranks": 2,
+      "pos": [
+        1,
+        2
+      ],
+      "requires_any": [
+        "grave_plate",
+        "cold_heart"
+      ],
+      "description": "Healing you receive is increased by 3% per rank.",
+      "icon": {
+        "image": "delapouite/grave-flowers",
+        "school": "shadow"
+      },
+      "effects": [
+        {
+          "modify": "deathsworn_grave_welcome.modifiers.0.value",
+          "per_rank": 0.03
+        }
+      ],
+      "grants_aura": "deathsworn_grave_welcome"
+    },
+    {
+      "id": "deathless_will",
+      "name": "Deathless Will",
+      "type": "passive",
+      "ranks": 2,
+      "pos": [
+        2,
+        2
+      ],
+      "requires_any": [
+        "cold_heart"
+      ],
+      "description": "Deathless Resolve's cooldown is 10 s shorter per rank.",
+      "icon": {
+        "image": "lorc/skull-mask",
+        "school": "shadow"
+      },
+      "effects": [
+        {
+          "modify": "deathless_resolve_ab.cooldown_s",
+          "per_rank": -10
+        }
+      ]
+    },
+    {
+      "id": "barrow_oath",
+      "name": "Barrow Oath",
+      "type": "passive",
+      "ranks": 2,
+      "pos": [
+        0,
+        3
+      ],
+      "requires_any": [
+        "marrow_knit",
+        "grave_welcome"
+      ],
+      "description": "Your maximum health is 1,500 higher per rank.",
+      "icon": {
+        "image": "lorc/coffin",
+        "school": "shadow"
+      },
+      "effects": [
+        {
+          "modify": "self.max_health",
+          "per_rank": 1500
+        }
+      ]
+    },
+    {
+      "id": "deeper_resolve",
+      "name": "Deeper Resolve",
+      "type": "passive",
+      "ranks": 1,
+      "pos": [
+        2,
+        3
+      ],
+      "requires_any": [
+        "deathless_will"
+      ],
+      "description": "Deathless Resolve makes you take a further 5% less damage.",
+      "icon": {
+        "image": "lorc/skull-ring",
+        "school": "shadow"
+      },
+      "effects": [
+        {
+          "modify": "deathless_resolve.modifiers.0.value",
+          "per_rank": -0.05
+        }
+      ]
+    },
+    {
+      "id": "soulchill_brand",
+      "name": "Soulchill Brand",
+      "type": "active",
+      "pos": [
+        1,
+        4
+      ],
+      "requires_any": [
+        "barrow_oath",
+        "deeper_resolve"
+      ],
+      "gate": 8,
+      "description": "Learn Soulchill Brand: an enemy moves 25% slower and deals 10% less damage for 10 s (30 s cooldown).",
+      "icon": {
+        "image": "lorc/skull-signet",
+        "school": "frost"
+      },
+      "grants_ability": "soulchill_brand_ab"
+    },
+    {
+      "id": "brand_choice",
+      "name": "Weight of the Brand",
+      "type": "choice",
+      "pos": [
+        1,
+        5
+      ],
+      "requires_any": [
+        "soulchill_brand"
+      ],
+      "gate": 8,
+      "description": "Choose what else Soulchill Brand does.",
+      "icon": {
+        "image": "lorc/skull-signet",
+        "school": "shadow"
+      },
+      "choices": [
+        {
+          "id": "searing_cold",
+          "name": "Searing Cold",
+          "description": "Soulchill Brand also deals 3,000 frost damage.",
+          "icon": {
+            "image": "lorc/frostfire",
+            "school": "shadow"
+          },
+          "effects": [
+            {
+              "modify": "soulchill_brand_ab.effects",
+              "set": [
+                {
+                  "type": "apply_aura",
+                  "aura": "soulchilled"
+                },
+                {
+                  "type": "damage",
+                  "base": 3000
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "id": "withering_brand",
+          "name": "Withering Brand",
+          "description": "Soulchill Brand also reduces the healing the enemy receives by 15%.",
+          "icon": {
+            "image": "lorc/death-zone",
+            "school": "shadow"
+          },
+          "effects": [
+            {
+              "modify": "soulchilled.modifiers",
+              "set": [
+                {
+                  "stat": "move_speed",
+                  "op": "multiply",
+                  "value": 0.75
+                },
+                {
+                  "stat": "damage_done",
+                  "op": "multiply",
+                  "value": 0.9
+                },
+                {
+                  "stat": "healing_taken",
+                  "op": "multiply",
+                  "value": 0.85
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "swift_brand",
+      "name": "Swift Brand",
+      "type": "passive",
+      "ranks": 2,
+      "pos": [
+        0,
+        5
+      ],
+      "requires_any": [
+        "soulchill_brand"
+      ],
+      "gate": 8,
+      "description": "Soulchill Brand's cooldown is 4 s shorter per rank.",
+      "icon": {
+        "image": "lorc/skull-bolt",
+        "school": "shadow"
+      },
+      "effects": [
+        {
+          "modify": "soulchill_brand_ab.cooldown_s",
+          "per_rank": -4
+        }
+      ]
+    },
+    {
+      "id": "lasting_brand",
+      "name": "Lasting Brand",
+      "type": "passive",
+      "ranks": 1,
+      "pos": [
+        2,
+        5
+      ],
+      "requires_any": [
+        "soulchill_brand"
+      ],
+      "gate": 8,
+      "description": "Soulchill Brand lasts 3 s longer.",
+      "icon": {
+        "image": "lorc/stoned-skull",
+        "school": "shadow"
+      },
+      "effects": [
+        {
+          "modify": "soulchilled.duration_s",
+          "per_rank": 3
+        }
+      ]
+    },
+    {
+      "id": "unbound_oath",
+      "name": "Unbound Oath",
+      "type": "passive",
+      "ranks": 1,
+      "pos": [
+        0,
+        7
+      ],
+      "requires_any": [
+        "swift_brand"
+      ],
+      "gate": 20,
+      "description": "Break Free's cooldown is 8 s shorter.",
+      "icon": {
+        "image": "lorc/padlock",
+        "school": "shadow"
+      },
+      "effects": [
+        {
+          "modify": "break_free.cooldown_s",
+          "per_rank": -8
+        }
+      ]
+    },
+    {
+      "id": "unbroken",
+      "name": "Unbroken",
+      "type": "passive",
+      "ranks": 1,
+      "pos": [
+        1,
+        7
+      ],
+      "requires_any": [
+        "brand_choice"
+      ],
+      "gate": 20,
+      "description": "You take 4% less damage.",
+      "icon": {
+        "image": "lorc/visored-helm",
+        "school": "shadow"
+      },
+      "grants_aura": "deathsworn_unbroken"
+    },
+    {
+      "id": "barrow_mantle",
+      "name": "Barrow Mantle",
+      "type": "passive",
+      "ranks": 1,
+      "pos": [
+        2,
+        7
+      ],
+      "requires_any": [
+        "lasting_brand"
+      ],
+      "gate": 20,
+      "description": "Your armor turns aside 4% more physical damage and healing you receive is increased by 3%.",
+      "icon": {
+        "image": "lorc/crested-helmet",
+        "school": "shadow"
+      },
+      "grants_aura": "deathsworn_barrow_mantle"
+    },
+    {
+      "id": "deep_hunger",
+      "name": "Deep Hunger",
+      "type": "passive",
+      "ranks": 2,
+      "pos": [
+        3,
+        0
+      ],
+      "description": "Your maximum runic power is 10 higher per rank.",
+      "icon": {
+        "image": "lorc/rune-stone",
+        "school": "shadow"
+      },
+      "effects": [
+        {
+          "modify": "self.resource_max.runic_power",
+          "per_rank": 10
+        }
+      ]
+    },
+    {
+      "id": "grave_hunger",
+      "name": "Grave Hunger",
+      "type": "passive",
+      "ranks": 2,
+      "pos": [
+        3,
+        1
+      ],
+      "requires_any": [
+        "deep_hunger"
+      ],
+      "description": "You gain 2 runic power every 3 s per rank.",
+      "icon": {
+        "image": "lorc/bone-gnawer",
+        "school": "shadow"
+      },
+      "effects": [
+        {
+          "modify": "deathsworn_grave_hunger.periodic.effect.amount",
+          "per_rank": 2
+        }
+      ],
+      "grants_aura": "deathsworn_grave_hunger"
+    },
+    {
+      "id": "cold_eye",
+      "name": "Cold Eye",
+      "type": "passive",
+      "ranks": 2,
+      "pos": [
+        4,
+        1
+      ],
+      "requires_any": [
+        "deep_hunger"
+      ],
+      "description": "Your critical strike chance is 2% higher per rank.",
+      "icon": {
+        "image": "lorc/sunken-eye",
+        "school": "shadow"
+      },
+      "effects": [
+        {
+          "modify": "self.stats.crit_chance",
+          "per_rank": 0.02
+        }
+      ]
+    },
+    {
+      "id": "grim_pace",
+      "name": "Grim Pace",
+      "type": "passive",
+      "ranks": 2,
+      "pos": [
+        3,
+        2
+      ],
+      "requires_any": [
+        "grave_hunger",
+        "cold_eye"
+      ],
+      "description": "Your haste is 2% higher per rank.",
+      "icon": {
+        "image": "lorc/boot-kick",
+        "school": "shadow"
+      },
+      "effects": [
+        {
+          "modify": "self.stats.haste",
+          "per_rank": 0.02
+        }
+      ]
+    },
+    {
+      "id": "path_choice",
+      "name": "Ruin or Bone",
+      "type": "choice",
+      "pos": [
+        3,
+        3
+      ],
+      "requires_any": [
+        "grim_pace"
+      ],
+      "description": "Choose to strike harder or to endure.",
+      "icon": {
+        "image": "caro-asercion/tarot-13-death",
+        "school": "shadow"
+      },
+      "choices": [
+        {
+          "id": "path_of_ruin",
+          "name": "Path of Ruin",
+          "description": "Your damage is increased by 4%.",
+          "icon": {
+            "image": "lorc/reaper-scythe",
+            "school": "shadow"
+          },
+          "grants_aura": "deathsworn_path_of_ruin"
+        },
+        {
+          "id": "path_of_bone",
+          "name": "Path of Bone",
+          "description": "You take 4% less damage.",
+          "icon": {
+            "image": "lorc/backbone-shell",
+            "school": "shadow"
+          },
+          "grants_aura": "deathsworn_path_of_bone"
+        }
+      ]
+    },
+    {
+      "id": "dread_conviction",
+      "name": "Dread Conviction",
+      "type": "passive",
+      "ranks": 2,
+      "pos": [
+        4,
+        3
+      ],
+      "requires_any": [
+        "grim_pace"
+      ],
+      "description": "Your damage and healing are 2% stronger per rank.",
+      "icon": {
+        "image": "lorc/medal-skull",
+        "school": "shadow"
+      },
+      "effects": [
+        {
+          "modify": "self.stats.power_bonus",
+          "per_rank": 0.02
+        }
+      ]
+    },
+    {
+      "id": "grim_tempo",
+      "name": "Grim Tempo",
+      "type": "passive",
+      "ranks": 2,
+      "pos": [
+        3,
+        4
+      ],
+      "requires_any": [
+        "path_choice",
+        "dread_conviction"
+      ],
+      "gate": 8,
+      "description": "Your haste is a further 1% higher per rank.",
+      "icon": {
+        "image": "delapouite/skeletal-hand",
+        "school": "shadow"
+      },
+      "effects": [
+        {
+          "modify": "self.stats.haste",
+          "per_rank": 0.01
+        }
+      ]
+    },
+    {
+      "id": "bottomless_hunger",
+      "name": "Bottomless Hunger",
+      "type": "passive",
+      "ranks": 2,
+      "pos": [
+        3,
+        5
+      ],
+      "requires_any": [
+        "grim_tempo"
+      ],
+      "gate": 8,
+      "description": "Your maximum runic power is 10 higher per rank.",
+      "icon": {
+        "image": "lorc/skull-in-jar",
+        "school": "shadow"
+      },
+      "effects": [
+        {
+          "modify": "self.resource_max.runic_power",
+          "per_rank": 10
+        }
+      ]
+    },
+    {
+      "id": "endless_hunger",
+      "name": "Endless Hunger",
+      "type": "passive",
+      "ranks": 1,
+      "pos": [
+        3,
+        7
+      ],
+      "requires_any": [
+        "bottomless_hunger"
+      ],
+      "gate": 20,
+      "description": "You gain 5 runic power every 3 s.",
+      "icon": {
+        "image": "lorc/fanged-skull",
+        "school": "shadow"
+      },
+      "grants_aura": "deathsworn_endless_hunger"
+    },
+    {
+      "id": "crown_choice",
+      "name": "Crown of the Barrow",
+      "type": "choice",
+      "pos": [
+        4,
+        7
+      ],
+      "requires_any": [
+        "bottomless_hunger",
+        "fixed_tether"
+      ],
+      "gate": 20,
+      "description": "Choose a lasting edge.",
+      "icon": {
+        "image": "lorc/horned-skull",
+        "school": "shadow"
+      },
+      "choices": [
+        {
+          "id": "frozen_crown",
+          "name": "Frozen Crown",
+          "description": "Your critical strike chance is 4% higher.",
+          "icon": {
+            "image": "lorc/star-skull",
+            "school": "shadow"
+          },
+          "effects": [
+            {
+              "modify": "self.stats.crit_chance",
+              "per_rank": 0.04
+            }
+          ]
+        },
+        {
+          "id": "restless_crown",
+          "name": "Restless Crown",
+          "description": "Your haste is 4% higher.",
+          "icon": {
+            "image": "lorc/thunder-skull",
+            "school": "shadow"
+          },
+          "effects": [
+            {
+              "modify": "self.stats.haste",
+              "per_rank": 0.04
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "deathmarch",
+      "name": "Deathmarch",
+      "type": "passive",
+      "ranks": 2,
+      "pos": [
+        5,
+        0
+      ],
+      "description": "You move 4% faster per rank.",
+      "icon": {
+        "image": "lorc/steeltoe-boots",
+        "school": "shadow"
+      },
+      "effects": [
+        {
+          "modify": "deathsworn_deathmarch.modifiers.0.value",
+          "per_rank": 0.04
+        }
+      ],
+      "grants_aura": "deathsworn_deathmarch"
+    },
+    {
+      "id": "swift_tether",
+      "name": "Swift Tether",
+      "type": "passive",
+      "ranks": 2,
+      "pos": [
+        5,
+        1
+      ],
+      "requires_any": [
+        "deathmarch"
+      ],
+      "description": "Grave Tether's cooldown is 3 s shorter per rank.",
+      "icon": {
+        "image": "delapouite/pulley-hook",
+        "school": "shadow"
+      },
+      "effects": [
+        {
+          "modify": "grave_tether.cooldown_s",
+          "per_rank": -3
+        }
+      ]
+    },
+    {
+      "id": "restless_oath",
+      "name": "Restless Oath",
+      "type": "passive",
+      "ranks": 2,
+      "pos": [
+        6,
+        1
+      ],
+      "requires_any": [
+        "deathmarch"
+      ],
+      "description": "Break Free's cooldown is 6 s shorter per rank.",
+      "icon": {
+        "image": "lorc/unlocking",
+        "school": "shadow"
+      },
+      "effects": [
+        {
+          "modify": "break_free.cooldown_s",
+          "per_rank": -6
+        }
+      ]
+    },
+    {
+      "id": "long_tether",
+      "name": "Long Tether",
+      "type": "passive",
+      "ranks": 1,
+      "pos": [
+        5,
+        2
+      ],
+      "requires_any": [
+        "swift_tether"
+      ],
+      "description": "Grave Tether reaches 5 m further.",
+      "icon": {
+        "image": "lorc/fishing-hook",
+        "school": "shadow"
+      },
+      "effects": [
+        {
+          "modify": "grave_tether.range_m",
+          "per_rank": 5
+        }
+      ]
+    },
+    {
+      "id": "unshackled_choice",
+      "name": "Unshackled",
+      "type": "choice",
+      "pos": [
+        6,
+        2
+      ],
+      "requires_any": [
+        "restless_oath"
+      ],
+      "description": "Choose what Break Free also does.",
+      "icon": {
+        "image": "lorc/triple-lock",
+        "school": "shadow"
+      },
+      "choices": [
+        {
+          "id": "unshackled_stride",
+          "name": "Unshackled Stride",
+          "description": "Break Free also makes you move 30% faster for 3 s.",
+          "icon": {
+            "image": "lorc/steeltoe-boots",
+            "school": "shadow"
+          },
+          "effects": [
+            {
+              "modify": "break_free.effects",
+              "set": [
+                {
+                  "type": "remove_cc"
+                },
+                {
+                  "type": "apply_aura",
+                  "aura": "deathsworn_unshackled"
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "id": "unshackled_marrow",
+          "name": "Unshackled Marrow",
+          "description": "Break Free also heals you for 4,000.",
+          "icon": {
+            "image": "lorc/broken-bone",
+            "school": "shadow"
+          },
+          "effects": [
+            {
+              "modify": "break_free.effects",
+              "set": [
+                {
+                  "type": "remove_cc"
+                },
+                {
+                  "type": "heal",
+                  "base": 4000,
+                  "can_crit": false,
+                  "school": "shadow"
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "thick_cloak",
+      "name": "Thick Cloak",
+      "type": "passive",
+      "ranks": 1,
+      "pos": [
+        5,
+        3
+      ],
+      "requires_any": [
+        "long_tether",
+        "unshackled_choice"
+      ],
+      "description": "Gravecloak lasts 1 s longer.",
+      "icon": {
+        "image": "lorc/cloak-dagger",
+        "school": "shadow"
+      },
+      "effects": [
+        {
+          "modify": "gravecloak.duration_s",
+          "per_rank": 1
+        }
+      ]
+    },
+    {
+      "id": "patient_grave",
+      "name": "Patient Grave",
+      "type": "passive",
+      "ranks": 2,
+      "pos": [
+        6,
+        3
+      ],
+      "requires_any": [
+        "unshackled_choice"
+      ],
+      "description": "Your cooldowns recover 3% faster per rank.",
+      "icon": {
+        "image": "lorc/tombstone",
+        "school": "shadow"
+      },
+      "effects": [
+        {
+          "modify": "deathsworn_patient_grave.modifiers.0.value",
+          "per_rank": 0.03
+        }
+      ],
+      "grants_aura": "deathsworn_patient_grave"
+    },
+    {
+      "id": "sepulchral_howl",
+      "name": "Sepulchral Howl",
+      "type": "active",
+      "pos": [
+        5,
+        4
+      ],
+      "requires_any": [
+        "thick_cloak",
+        "patient_grave"
+      ],
+      "gate": 8,
+      "description": "Learn Sepulchral Howl: enemies within 8 m are disoriented for 4 s; heavy damage breaks it (60 s cooldown, 1 rune).",
+      "icon": {
+        "image": "lorc/wolf-howl",
+        "school": "shadow"
+      },
+      "grants_ability": "sepulchral_howl_ab"
+    },
+    {
+      "id": "quick_sever",
+      "name": "Quick Sever",
+      "type": "passive",
+      "ranks": 1,
+      "pos": [
+        6,
+        4
+      ],
+      "requires_any": [
+        "patient_grave"
+      ],
+      "gate": 8,
+      "description": "Oathsever's cooldown is 3 s shorter.",
+      "icon": {
+        "image": "lorc/blade-bite",
+        "school": "physical"
+      },
+      "effects": [
+        {
+          "modify": "oathsever.cooldown_s",
+          "per_rank": -3
+        }
+      ]
+    },
+    {
+      "id": "grasping_howl",
+      "name": "Grasping Howl",
+      "type": "passive",
+      "ranks": 1,
+      "pos": [
+        5,
+        7
+      ],
+      "requires_any": [
+        "howl_choice"
+      ],
+      "gate": 20,
+      "description": "Sepulchral Howl also deals 2,000 shadow damage.",
+      "icon": {
+        "image": "lorc/death-note",
+        "school": "shadow"
+      },
+      "effects": [
+        {
+          "modify": "sepulchral_howl_ab.effects",
+          "set": [
+            {
+              "type": "apply_aura",
+              "aura": "howl_dread",
+              "affects": "enemies_in_radius",
+              "radius_m": 8
+            },
+            {
+              "type": "damage",
+              "base": 2000,
+              "affects": "enemies_in_radius",
+              "radius_m": 8
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "long_howl",
+      "name": "Long Howl",
+      "type": "passive",
+      "ranks": 2,
+      "pos": [
+        5,
+        5
+      ],
+      "requires_any": [
+        "sepulchral_howl"
+      ],
+      "gate": 8,
+      "description": "Sepulchral Howl lasts 0.5 s longer per rank.",
+      "icon": {
+        "image": "lorc/love-howl",
+        "school": "shadow"
+      },
+      "effects": [
+        {
+          "modify": "howl_dread.duration_s",
+          "per_rank": 0.5
+        }
+      ]
+    },
+    {
+      "id": "fixed_tether",
+      "name": "Fixed Tether",
+      "type": "passive",
+      "ranks": 1,
+      "pos": [
+        4,
+        5
+      ],
+      "requires_any": [
+        "sepulchral_howl"
+      ],
+      "gate": 8,
+      "description": "Grave Tether also slows the enemy by 30% for 4 s.",
+      "icon": {
+        "image": "lorc/spear-hook",
+        "school": "shadow"
+      },
+      "effects": [
+        {
+          "modify": "grave_tether.effects",
+          "set": [
+            {
+              "type": "pull",
+              "distance_m": 2.5
+            },
+            {
+              "type": "apply_aura",
+              "aura": "tether_dragged"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "deep_sever",
+      "name": "Deep Sever",
+      "type": "passive",
+      "ranks": 2,
+      "pos": [
+        6,
+        5
+      ],
+      "requires_any": [
+        "quick_sever"
+      ],
+      "gate": 8,
+      "description": "Oathsever locks the school for 0.5 s longer per rank.",
+      "icon": {
+        "image": "lorc/jawbone",
+        "school": "physical"
+      },
+      "effects": [
+        {
+          "modify": "oathsever.effects.0.school_lock_s",
+          "per_rank": 0.5
+        }
+      ]
+    },
+    {
+      "id": "howl_choice",
+      "name": "Reach of the Howl",
+      "type": "choice",
+      "pos": [
+        5,
+        6
+      ],
+      "requires_any": [
+        "long_howl"
+      ],
+      "gate": 8,
+      "description": "Choose how Sepulchral Howl improves.",
+      "icon": {
+        "image": "lorc/wolf-head",
+        "school": "shadow"
+      },
+      "choices": [
+        {
+          "id": "wide_howl",
+          "name": "Wide Howl",
+          "description": "Sepulchral Howl reaches 3 m further.",
+          "icon": {
+            "image": "lorc/direwolf",
+            "school": "shadow"
+          },
+          "effects": [
+            {
+              "modify": "sepulchral_howl_ab.effects.0.radius_m",
+              "per_rank": 3
+            }
+          ]
+        },
+        {
+          "id": "swift_howl",
+          "name": "Swift Howl",
+          "description": "Sepulchral Howl's cooldown is 15 s shorter.",
+          "icon": {
+            "image": "lorc/werewolf",
+            "school": "shadow"
+          },
+          "effects": [
+            {
+              "modify": "sepulchral_howl_ab.cooldown_s",
+              "per_rank": -15
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "ready_cloak",
+      "name": "Ready Cloak",
+      "type": "passive",
+      "ranks": 1,
+      "pos": [
+        6,
+        6
+      ],
+      "requires_any": [
+        "deep_sever"
+      ],
+      "gate": 8,
+      "description": "Gravecloak's cooldown is 15 s shorter.",
+      "icon": {
+        "image": "lorc/ghost-ally",
+        "school": "shadow"
+      },
+      "effects": [
+        {
+          "modify": "gravecloak_ab.cooldown_s",
+          "per_rank": -15
+        }
+      ]
+    },
+    {
+      "id": "soul_choice",
+      "name": "Soul of the Barrow",
+      "type": "choice",
+      "pos": [
+        6,
+        7
+      ],
+      "requires_any": [
+        "ready_cloak",
+        "howl_choice"
+      ],
+      "gate": 20,
+      "description": "Choose a lasting strength.",
+      "icon": {
+        "image": "lorc/triple-skulls",
+        "school": "shadow"
+      },
+      "choices": [
+        {
+          "id": "ruin_soul",
+          "name": "Ruin Soul",
+          "description": "Your damage and healing are 4% stronger.",
+          "icon": {
+            "image": "lorc/diablo-skull",
+            "school": "shadow"
+          },
+          "effects": [
+            {
+              "modify": "self.stats.power_bonus",
+              "per_rank": 0.04
+            }
+          ]
+        },
+        {
+          "id": "iron_soul",
+          "name": "Barrow Soul",
+          "description": "Your maximum health is 3,000 higher.",
+          "icon": {
+            "image": "lorc/skull-crossed-bones",
+            "school": "shadow"
+          },
+          "effects": [
+            {
+              "modify": "self.max_health",
+              "per_rank": 3000
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

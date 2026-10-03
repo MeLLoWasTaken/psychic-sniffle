@@ -164,6 +164,10 @@
               "resource_at_least": {
                 "type": "number"
               },
+              "secondary_below": {
+                "type": "number",
+                "description": "The spec's second resource (runes) is below this amount."
+              },
               "has_dispellable": {
                 "enum": [
                   true,

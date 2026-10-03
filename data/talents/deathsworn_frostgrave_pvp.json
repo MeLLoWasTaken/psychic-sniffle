@@ -1,0 +1,273 @@
+{
+  "tree_id": "deathsworn_frostgrave_pvp",
+  "kind": "pvp",
+  "owner": "deathsworn_frostgrave",
+  "points": 3,
+  "status": "complete",
+  "nodes": [
+    {
+      "id": "unyielding_grave",
+      "name": "Unyielding Grave",
+      "type": "passive",
+      "ranks": 1,
+      "description": "Enemy dispels can no longer remove your Rime Carapace or Grave Winter.",
+      "icon": {
+        "image": "lorc/stone-block",
+        "school": "frost"
+      },
+      "effects": [
+        {
+          "modify": "rime_carapace.dispel_type",
+          "set": "none"
+        },
+        {
+          "modify": "grave_winter.dispel_type",
+          "set": "none"
+        }
+      ]
+    },
+    {
+      "id": "unending_winter",
+      "name": "Unending Winter",
+      "type": "passive",
+      "ranks": 1,
+      "description": "Grave Winter's cooldown is 30 s shorter, but it lasts 5 s less.",
+      "icon": {
+        "image": "lorc/white-tower",
+        "school": "frost"
+      },
+      "effects": [
+        {
+          "modify": "grave_winter_ab.cooldown_s",
+          "per_rank": -30
+        },
+        {
+          "modify": "grave_winter.duration_s",
+          "per_rank": -5
+        }
+      ]
+    },
+    {
+      "id": "quick_oathsever",
+      "name": "Hasty Sever",
+      "type": "passive",
+      "ranks": 1,
+      "description": "Oathsever's cooldown is 5 s shorter, but it locks the school for 1 s less.",
+      "icon": {
+        "image": "lorc/sword-spade",
+        "school": "physical"
+      },
+      "effects": [
+        {
+          "modify": "oathsever.cooldown_s",
+          "per_rank": -5
+        },
+        {
+          "modify": "oathsever.effects.0.school_lock_s",
+          "per_rank": -1
+        }
+      ]
+    },
+    {
+      "id": "gnawing_shackles",
+      "name": "Gnawing Shackles",
+      "type": "passive",
+      "ranks": 1,
+      "description": "Frozen Shackles also reduces the healing its target receives by 25% for 6 s.",
+      "icon": {
+        "image": "lorc/chewed-skull",
+        "school": "frost"
+      },
+      "effects": [
+        {
+          "modify": "frozen_shackles.effects",
+          "set": [
+            {
+              "type": "apply_aura",
+              "aura": "frozen_shackled"
+            },
+            {
+              "type": "apply_aura",
+              "aura": "frostgrave_gnawed"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "bitter_carapace",
+      "name": "Bitter Carapace",
+      "type": "passive",
+      "ranks": 1,
+      "description": "Rime Carapace absorbs 4,000 more, but its cooldown is 20 s longer.",
+      "icon": {
+        "image": "lorc/bordered-shield",
+        "school": "frost"
+      },
+      "effects": [
+        {
+          "modify": "rime_carapace.absorb",
+          "per_rank": 4000
+        },
+        {
+          "modify": "rime_carapace_ab.cooldown_s",
+          "per_rank": 20
+        }
+      ]
+    },
+    {
+      "id": "hollow_oath",
+      "name": "Hollow Oath",
+      "type": "passive",
+      "ranks": 1,
+      "description": "You take 8% less damage, but Break Free's cooldown is 45 s longer.",
+      "icon": {
+        "image": "delapouite/crypt-entrance",
+        "school": "frost"
+      },
+      "effects": [
+        {
+          "modify": "break_free.cooldown_s",
+          "per_rank": 45
+        }
+      ],
+      "grants_aura": "frostgrave_oath"
+    },
+    {
+      "id": "iron_tether",
+      "name": "Iron Tether",
+      "type": "passive",
+      "ranks": 1,
+      "description": "Grave Tether's cooldown is 8 s shorter, but it reaches 5 m less.",
+      "icon": {
+        "image": "delapouite/hook",
+        "school": "shadow"
+      },
+      "effects": [
+        {
+          "modify": "grave_tether.cooldown_s",
+          "per_rank": -8
+        },
+        {
+          "modify": "grave_tether.range_m",
+          "per_rank": -5
+        }
+      ]
+    },
+    {
+      "id": "shattering_tomb",
+      "name": "Lasting Tomb",
+      "type": "passive",
+      "ranks": 1,
+      "description": "Glacial Tomb stuns for 1 s longer, but its cooldown is 15 s longer.",
+      "icon": {
+        "image": "lorc/locked-fortress",
+        "school": "frost"
+      },
+      "effects": [
+        {
+          "modify": "tomb_encased.duration_s",
+          "per_rank": 1
+        },
+        {
+          "modify": "glacial_tomb.cooldown_s",
+          "per_rank": 15
+        }
+      ]
+    },
+    {
+      "id": "grasping_rime",
+      "name": "Grasping Rime",
+      "type": "passive",
+      "ranks": 1,
+      "description": "You can use Frostpath while rooted, and it frees you from roots and slows.",
+      "icon": {
+        "image": "lorc/linked-rings",
+        "school": "frost"
+      },
+      "effects": [
+        {
+          "modify": "frostpath_ab.usable_while_cc",
+          "set": [
+            "root"
+          ]
+        },
+        {
+          "modify": "frostpath_ab.effects",
+          "set": [
+            {
+              "type": "remove_cc"
+            },
+            {
+              "type": "apply_aura",
+              "aura": "frostpath"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "lingering_howl",
+      "name": "Lingering Howl",
+      "type": "passive",
+      "ranks": 1,
+      "description": "Sepulchral Howl disorients for 2 s longer, but its cooldown is 20 s longer.",
+      "icon": {
+        "image": "lorc/wolf-trap",
+        "school": "shadow"
+      },
+      "effects": [
+        {
+          "modify": "howl_dread.duration_s",
+          "per_rank": 2
+        },
+        {
+          "modify": "sepulchral_howl_ab.cooldown_s",
+          "per_rank": 20
+        }
+      ]
+    },
+    {
+      "id": "coldblood_pact",
+      "name": "Coldblood Pact",
+      "type": "passive",
+      "ranks": 1,
+      "description": "Coldblood Mend heals 3,000 more, but costs 15 more runic power.",
+      "icon": {
+        "image": "lorc/tentacles-skull",
+        "school": "shadow"
+      },
+      "effects": [
+        {
+          "modify": "coldblood_mend.effects.0.base",
+          "per_rank": 3000
+        },
+        {
+          "modify": "coldblood_mend.cost.amount",
+          "per_rank": 15
+        }
+      ]
+    },
+    {
+      "id": "surging_hoarfrost",
+      "name": "Hurried Hoarfrost",
+      "type": "passive",
+      "ranks": 1,
+      "description": "Hoarfrost Surge's cooldown is 30 s shorter, but it restores 3 runes.",
+      "icon": {
+        "image": "lorc/ringed-beam",
+        "school": "frost"
+      },
+      "effects": [
+        {
+          "modify": "hoarfrost_surge_ab.cooldown_s",
+          "per_rank": -30
+        },
+        {
+          "modify": "hoarfrost_surge_ab.effects.0.amount",
+          "per_rank": -3
+        }
+      ]
+    }
+  ]
+}

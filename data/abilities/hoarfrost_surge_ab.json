@@ -1,0 +1,33 @@
+{
+  "id": "hoarfrost_surge_ab",
+  "name": "Hoarfrost Surge",
+  "description": "Restore all your runes and 30 runic power.",
+  "owner": "deathsworn_frostgrave",
+  "kit_slot": "burst",
+  "school": "frost",
+  "cast_type": "instant",
+  "cooldown_s": 90,
+  "triggers_gcd": false,
+  "range_m": 0,
+  "requires_los": false,
+  "target": "self",
+  "effects": [
+    {
+      "type": "resource",
+      "resource": "runes",
+      "amount": 6,
+      "affects": "self"
+    },
+    {
+      "type": "resource",
+      "resource": "runic_power",
+      "amount": 30,
+      "affects": "self"
+    }
+  ],
+  "icon": {
+    "symbol": "hoarfrost_surge",
+    "school": "frost",
+    "image": "lorc/frostfire"
+  }
+}

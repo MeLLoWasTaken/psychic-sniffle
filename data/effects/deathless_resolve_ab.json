@@ -1,0 +1,9 @@
+{
+  "id": "deathless_resolve_ab",
+  "auras": {
+    "deathless_resolve": {
+      "style": "shield",
+      "size": 1.1
+    }
+  }
+}

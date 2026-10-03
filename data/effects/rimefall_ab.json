@@ -1,0 +1,13 @@
+{
+  "id": "rimefall_ab",
+  "impact": {
+    "style": "burst",
+    "at": "target",
+    "size": 1.4
+  },
+  "auras": {
+    "rimefall_slowed": {
+      "style": "slow"
+    }
+  }
+}

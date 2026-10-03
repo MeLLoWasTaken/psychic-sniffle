@@ -1,0 +1,22 @@
+{
+  "id": "mend_ward",
+  "name": "Warding Mend",
+  "description": "Damage taken down 15%.",
+  "kind": "buff",
+  "duration_s": 4,
+  "dispel_type": "magic",
+  "cc_category": "none",
+  "hud_priority": "normal",
+  "icon": {
+    "symbol": "mend_ward",
+    "school": "shadow",
+    "image": "lorc/black-hand-shield"
+  },
+  "modifiers": [
+    {
+      "stat": "damage_taken",
+      "op": "multiply",
+      "value": 0.85
+    }
+  ]
+}

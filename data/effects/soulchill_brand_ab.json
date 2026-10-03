@@ -1,0 +1,13 @@
+{
+  "id": "soulchill_brand_ab",
+  "impact": {
+    "style": "burst",
+    "at": "target",
+    "size": 0.9
+  },
+  "auras": {
+    "soulchilled": {
+      "style": "slow"
+    }
+  }
+}

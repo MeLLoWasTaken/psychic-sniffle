@@ -1,0 +1,16 @@
+{
+  "id": "rime_carapace",
+  "name": "Rime Carapace",
+  "description": "Absorbs 10,000 damage.",
+  "kind": "buff",
+  "duration_s": 8,
+  "dispel_type": "magic",
+  "cc_category": "none",
+  "hud_priority": "major_defensive",
+  "icon": {
+    "symbol": "rime_carapace",
+    "school": "frost",
+    "image": "lorc/shieldcomb"
+  },
+  "absorb": 10000
+}

@@ -1,0 +1,25 @@
+{
+  "id": "gravecloak_ab",
+  "name": "Gravecloak",
+  "description": "Become immune to magic damage for 4 s.",
+  "owner": "deathsworn",
+  "kit_slot": "defensive",
+  "school": "shadow",
+  "cast_type": "instant",
+  "cooldown_s": 90,
+  "triggers_gcd": false,
+  "range_m": 0,
+  "requires_los": false,
+  "target": "self",
+  "effects": [
+    {
+      "type": "apply_aura",
+      "aura": "gravecloak"
+    }
+  ],
+  "icon": {
+    "symbol": "gravecloak",
+    "school": "shadow",
+    "image": "lorc/spectre"
+  }
+}

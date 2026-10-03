@@ -1,0 +1,23 @@
+{
+  "id": "deathsworn_unbroken",
+  "name": "Unbroken",
+  "description": "Talent: damage taken down 4%.",
+  "kind": "buff",
+  "duration_s": 0,
+  "refresh": "refresh",
+  "dispel_type": "none",
+  "cc_category": "none",
+  "hud_priority": "hidden",
+  "icon": {
+    "symbol": "unbroken",
+    "school": "shadow",
+    "image": "lorc/visored-helm"
+  },
+  "modifiers": [
+    {
+      "stat": "damage_taken",
+      "op": "multiply",
+      "value": 0.96
+    }
+  ]
+}

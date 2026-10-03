@@ -1,0 +1,18 @@
+{
+  "id": "gravecloak",
+  "name": "Gravecloak",
+  "description": "Immune to magic damage.",
+  "kind": "buff",
+  "duration_s": 4,
+  "dispel_type": "magic",
+  "cc_category": "none",
+  "hud_priority": "major_defensive",
+  "icon": {
+    "symbol": "gravecloak",
+    "school": "shadow",
+    "image": "lorc/spectre"
+  },
+  "immune": [
+    "magic"
+  ]
+}

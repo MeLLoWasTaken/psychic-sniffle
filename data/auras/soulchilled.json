@@ -1,0 +1,27 @@
+{
+  "id": "soulchilled",
+  "name": "Soulchilled",
+  "description": "Movement down 25%, damage done down 10%.",
+  "kind": "debuff",
+  "duration_s": 10,
+  "dispel_type": "magic",
+  "cc_category": "none",
+  "hud_priority": "normal",
+  "icon": {
+    "symbol": "soulchilled",
+    "school": "frost",
+    "image": "lorc/skull-signet"
+  },
+  "modifiers": [
+    {
+      "stat": "move_speed",
+      "op": "multiply",
+      "value": 0.75
+    },
+    {
+      "stat": "damage_done",
+      "op": "multiply",
+      "value": 0.9
+    }
+  ]
+}

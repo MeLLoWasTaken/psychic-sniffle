@@ -1,0 +1,22 @@
+{
+  "id": "frostpath",
+  "name": "Frostpath",
+  "description": "Movement up 40%.",
+  "kind": "buff",
+  "duration_s": 5,
+  "dispel_type": "magic",
+  "cc_category": "none",
+  "hud_priority": "normal",
+  "icon": {
+    "symbol": "frostpath",
+    "school": "frost",
+    "image": "delapouite/ski-boot"
+  },
+  "modifiers": [
+    {
+      "stat": "move_speed",
+      "op": "multiply",
+      "value": 1.4
+    }
+  ]
+}

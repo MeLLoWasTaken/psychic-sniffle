@@ -1,0 +1,16 @@
+{
+  "id": "grave_tether",
+  "projectile": {
+    "style": "streak"
+  },
+  "impact": {
+    "style": "ring",
+    "at": "target",
+    "size": 1.0
+  },
+  "auras": {
+    "tether_dragged": {
+      "style": "slow"
+    }
+  }
+}

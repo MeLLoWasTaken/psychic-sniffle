@@ -544,6 +544,80 @@
     "righteous_leap_ab": {
       "release": "charge_rush",
       "impact": "charge_impact"
+    },
+    "grave_tether": {
+      "release": "charge_rush",
+      "impact": "charge_impact"
+    },
+    "oathsever": {
+      "release": "@weapon_swing",
+      "impact": "interrupt_impact"
+    },
+    "deathless_resolve_ab": {
+      "release": "sanctum"
+    },
+    "gravecloak_ab": {
+      "release": "sanctum"
+    },
+    "sepulchral_howl_ab": {
+      "release": "chains_of_awe_release",
+      "impact": "chains_of_awe_impact"
+    },
+    "soulchill_brand_ab": {
+      "release": "holy_release",
+      "impact": "castigate_impact"
+    },
+    "rime_cleave": {
+      "release": "@weapon_swing",
+      "impact": "@weapon_hit"
+    },
+    "gravefrost_strike": {
+      "release": "@weapon_swing",
+      "impact": "binding_gavel_impact"
+    },
+    "hoarlash": {
+      "release": "winters_lash_release",
+      "impact": "winters_lash_impact"
+    },
+    "wintering_gale": {
+      "release": "rime_fan_release",
+      "impact": "hail_impact"
+    },
+    "frozen_shackles": {
+      "release": "rimebind_release",
+      "impact": "root_ice_impact"
+    },
+    "glacial_tomb": {
+      "release": "shiver_lance_release",
+      "impact": "frost_effigy_impact"
+    },
+    "grave_winter_ab": {
+      "release": "noonblaze"
+    },
+    "hoarfrost_surge_ab": {
+      "release": "heartfreeze_release"
+    },
+    "rime_carapace_ab": {
+      "release": "sanctum"
+    },
+    "frostpath_ab": {
+      "release": "winged_stride"
+    },
+    "coldblood_mend": {
+      "release": "heal_release",
+      "impact": "holy_heal"
+    },
+    "rimefall_ab": {
+      "release": "shiver_lance_release",
+      "impact": "heartfreeze_impact"
+    },
+    "hoarfrost_prison_ab": {
+      "release": "chains_of_awe_release",
+      "impact": "chains_of_awe_impact"
+    },
+    "wraith_lunge_ab": {
+      "release": "charge_rush",
+      "impact": "charge_impact"
     }
   },
   "auras": {

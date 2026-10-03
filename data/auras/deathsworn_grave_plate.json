@@ -1,0 +1,23 @@
+{
+  "id": "deathsworn_grave_plate",
+  "name": "Grave Plate",
+  "description": "Talent: armor turns aside more physical damage.",
+  "kind": "buff",
+  "duration_s": 0,
+  "refresh": "refresh",
+  "dispel_type": "none",
+  "cc_category": "none",
+  "hud_priority": "hidden",
+  "icon": {
+    "symbol": "grave_plate",
+    "school": "shadow",
+    "image": "lorc/ribcage"
+  },
+  "modifiers": [
+    {
+      "stat": "armor",
+      "op": "add",
+      "value": 0
+    }
+  ]
+}

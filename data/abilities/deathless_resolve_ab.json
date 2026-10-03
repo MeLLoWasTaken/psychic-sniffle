@@ -1,0 +1,28 @@
+{
+  "id": "deathless_resolve_ab",
+  "name": "Deathless Resolve",
+  "description": "Take 30% less damage for 8 s. Usable while stunned.",
+  "owner": "deathsworn",
+  "kit_slot": "defensive",
+  "school": "shadow",
+  "cast_type": "instant",
+  "cooldown_s": 120,
+  "triggers_gcd": false,
+  "range_m": 0,
+  "requires_los": false,
+  "target": "self",
+  "effects": [
+    {
+      "type": "apply_aura",
+      "aura": "deathless_resolve"
+    }
+  ],
+  "icon": {
+    "symbol": "deathless_resolve",
+    "school": "shadow",
+    "image": "lorc/skull-shield"
+  },
+  "usable_while_cc": [
+    "stun"
+  ]
+}

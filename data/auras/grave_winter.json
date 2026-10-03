@@ -1,0 +1,22 @@
+{
+  "id": "grave_winter",
+  "name": "Grave Winter",
+  "description": "Damage up 20%.",
+  "kind": "buff",
+  "duration_s": 15,
+  "dispel_type": "magic",
+  "cc_category": "none",
+  "hud_priority": "major_offensive",
+  "icon": {
+    "symbol": "grave_winter",
+    "school": "frost",
+    "image": "delapouite/antarctica"
+  },
+  "modifiers": [
+    {
+      "stat": "damage_done",
+      "op": "multiply",
+      "value": 1.2
+    }
+  ]
+}

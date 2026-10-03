@@ -1,0 +1,26 @@
+{
+  "id": "grave_tether",
+  "name": "Grave Tether",
+  "description": "Pull an enemy 8 to 30 m away to you.",
+  "owner": "deathsworn",
+  "kit_slot": "utility",
+  "school": "shadow",
+  "cast_type": "instant",
+  "cooldown_s": 25,
+  "triggers_gcd": true,
+  "range_m": 30,
+  "requires_los": true,
+  "target": "enemy",
+  "effects": [
+    {
+      "type": "pull",
+      "distance_m": 2.5
+    }
+  ],
+  "icon": {
+    "symbol": "grave_tether",
+    "school": "shadow",
+    "image": "lorc/meat-hook"
+  },
+  "min_range_m": 8
+}

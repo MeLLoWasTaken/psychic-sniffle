@@ -1,0 +1,33 @@
+{
+  "id": "rimefall_ab",
+  "name": "Rimefall",
+  "description": "Call down ice on an enemy within 30 m: 5,200 and slowed by 50% for 4 s.",
+  "owner": "deathsworn_frostgrave",
+  "kit_slot": "core",
+  "school": "frost",
+  "cast_type": "instant",
+  "cooldown_s": 20,
+  "triggers_gcd": true,
+  "range_m": 30,
+  "requires_los": true,
+  "target": "enemy",
+  "effects": [
+    {
+      "type": "damage",
+      "base": 5200
+    },
+    {
+      "type": "apply_aura",
+      "aura": "rimefall_slowed"
+    }
+  ],
+  "icon": {
+    "symbol": "rimefall",
+    "school": "frost",
+    "image": "lorc/falling-boulder"
+  },
+  "cost": {
+    "resource": "runes",
+    "amount": 2
+  }
+}
