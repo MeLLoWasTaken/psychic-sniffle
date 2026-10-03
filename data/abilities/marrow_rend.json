@@ -1,7 +1,7 @@
 {
   "id": "marrow_rend",
   "name": "Marrow Rend",
-  "description": "Strike an enemy for 4,000 and wrap yourself in bone, absorbing 5,000 for 8 s.",
+  "description": "Strike an enemy for 4,200 and wrap yourself in bone, absorbing 5,000 for 8 s.",
   "owner": "deathsworn_bloodbound",
   "kit_slot": "core",
   "school": "physical",
@@ -14,7 +14,7 @@
   "effects": [
     {
       "type": "damage",
-      "base": 4000
+      "base": 4200
     },
     {
       "type": "apply_aura",

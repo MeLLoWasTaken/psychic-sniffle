@@ -1,7 +1,7 @@
 {
   "id": "blood_lash",
   "name": "Blood Lash",
-  "description": "Lash an enemy within 20 m for 2,300; it bleeds for 500 every 2 s for 10 s.",
+  "description": "Lash an enemy within 20 m for 2,450; it bleeds for 500 every 2 s for 10 s.",
   "owner": "deathsworn_bloodbound",
   "kit_slot": "core",
   "school": "blood",
@@ -14,7 +14,7 @@
   "effects": [
     {
       "type": "damage",
-      "base": 2300
+      "base": 2450
     },
     {
       "type": "apply_aura",

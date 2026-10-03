@@ -33,7 +33,7 @@
           "set": [
             {
               "type": "damage",
-              "base": 4900,
+              "base": 5200,
               "leech_pct": 60
             },
             {
