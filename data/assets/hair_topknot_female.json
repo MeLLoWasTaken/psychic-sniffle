@@ -1,0 +1,22 @@
+{
+  "id": "hair_topknot_female",
+  "kind": "piece",
+  "builder": "build_piece.py",
+  "seed": 1,
+  "body_build": "female",
+  "tri_budget": {
+    "min": 2240,
+    "max": 3080
+  },
+  "texture_size": 1024,
+  "palette": {
+    "hair": "#b4aa9e"
+  },
+  "params": {
+    "slot": "hair",
+    "style": "topknot",
+    "target_tris": 2800
+  },
+  "out": "game/assets/appearance/hair_topknot_female.glb",
+  "status": "draft"
+}

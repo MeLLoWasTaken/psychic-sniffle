@@ -2,6 +2,12 @@
 
 One entry per build-loop iteration, newest first. Format: date, backlog ID, what changed, how it was checked.
 
+## 2026-10-04 — G-02 Faces, hair, beards and colours for the character creator
+- The head was rebuilt with proper facial structure (brow, cheekbones, jaw, eyes with lids, nose, lips, ears) and six face presets: Steady, Stern, Gaunt, Broad, Sharp and Weathered. Six hairstyles plus shaved for both bodies, four beards that follow the face presets, ten skin tones, nine hair colours, seven eye colours, and three scars and three war paints.
+- All the options are data files, so adding a hairstyle or a skin tone does not touch code. Hair and beards are built as separate wearable pieces, the same way armor will be.
+- Not in the game yet: the creator screen (G-06) and in-game assembly (G-05) come later. Faces and hair work but still need a quality pass; it happens once they can be judged in the game.
+- Checked: asset validation, clipping checks on both bodies' animations, review sheets of every option.
+
 ## 2026-10-03 — G-01 New male and female bodies (graphics overhaul begins)
 - The human asked for a major step up in graphics: more detail, armor customization, a character creator, less exaggerated proportions and a crusader-style Templar. The plan is in the backlog as G-01 to G-10, and DESIGN.md has the new budgets: 40,000 to 60,000 triangles per character and about one 4096 px texture set.
 - First step: two new bodies, male and female, open to every class. They are built from real anatomy (collarbones, chest and stomach muscles, shoulder blades, kneecaps, calves, ankle bones) at more natural proportions: about 7.5 heads tall, with hands and shoulders close to life size. Each has 14,000 triangles plus a normal map baked from a version about 40 times denser, and its own animation set with no limbs passing through the body.

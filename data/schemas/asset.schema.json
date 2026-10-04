@@ -25,7 +25,8 @@
     "environment_kit",
     "icon",
     "test",
-    "animation"
+    "animation",
+    "piece"
    ]
   },
   "builder": {

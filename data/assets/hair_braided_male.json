@@ -1,0 +1,22 @@
+{
+  "id": "hair_braided_male",
+  "kind": "piece",
+  "builder": "build_piece.py",
+  "seed": 1,
+  "body_build": "male",
+  "tri_budget": {
+    "min": 2880,
+    "max": 3960
+  },
+  "texture_size": 1024,
+  "palette": {
+    "hair": "#b4aa9e"
+  },
+  "params": {
+    "slot": "hair",
+    "style": "braided",
+    "target_tris": 3600
+  },
+  "out": "game/assets/appearance/hair_braided_male.glb",
+  "status": "draft"
+}

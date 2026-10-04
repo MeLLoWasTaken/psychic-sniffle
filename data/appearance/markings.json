@@ -1,0 +1,39 @@
+{
+ "id": "markings",
+ "kind": "markings",
+ "name": "Scars and paint",
+ "description": "Scars and war paint, drawn as layers over the face by the character shader (masks baked by tools/blender/build_appearance.py). Scars use their own colour (healed skin, slightly raised); war paint takes a colour from the dye palette.",
+ "options": [
+  {
+   "id": "none",
+   "name": "None"
+  },
+  {
+   "id": "brow_scar",
+   "name": "Brow scar",
+   "color": "#9a5650"
+  },
+  {
+   "id": "cheek_scar",
+   "name": "Cheek scar",
+   "color": "#9a5650"
+  },
+  {
+   "id": "lip_scar",
+   "name": "Split lip",
+   "color": "#9a5650"
+  },
+  {
+   "id": "stripes",
+   "name": "Three stripes"
+  },
+  {
+   "id": "eye_band",
+   "name": "Eye band"
+  },
+  {
+   "id": "jaw_lines",
+   "name": "Jaw lines"
+  }
+ ]
+}

@@ -1,0 +1,22 @@
+{
+  "id": "hair_ridge_male",
+  "kind": "piece",
+  "builder": "build_piece.py",
+  "seed": 1,
+  "body_build": "male",
+  "tri_budget": {
+    "min": 1760,
+    "max": 2420
+  },
+  "texture_size": 1024,
+  "palette": {
+    "hair": "#b4aa9e"
+  },
+  "params": {
+    "slot": "hair",
+    "style": "ridge",
+    "target_tris": 2200
+  },
+  "out": "game/assets/appearance/hair_ridge_male.glb",
+  "status": "draft"
+}

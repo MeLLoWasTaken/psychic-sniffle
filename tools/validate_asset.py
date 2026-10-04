@@ -29,6 +29,7 @@ REPO = Path(__file__).resolve().parent.parent
 
 SIZE_LIMITS_M = {  # max bounding-box edge per kind
     "character": 3.5, "weapon": 3.0, "prop": 12.0, "environment_kit": 60.0, "icon": 5.0, "test": 5.0,
+    "piece": 2.5,
 }
 sys.path.insert(0, str(REPO / "tools" / "blender"))
 import humanoid  # noqa: E402  (standard skeleton, docs/ART_BIBLE.md)
@@ -92,7 +93,11 @@ def check(spec: dict) -> list[str]:
         errors.append(f"largest dimension {size:.3f} m is implausibly small (check scale)")
 
     grip_pivot = spec.get("pivot", "centre") == "grip"
-    if grip_pivot:
+    piece = spec["kind"] == "piece"   # armor and appearance pieces sit where they are worn (G-02, G-03)
+    if piece:
+        if min(zs) < -0.01 or max(zs) > 2.1:
+            errors.append(f"piece spans z {min(zs):.2f}..{max(zs):.2f}; it should sit on a standing character")
+    elif grip_pivot:
         if not (min(zs) < 0 < max(zs)):
             errors.append(f"grip pivot: the origin should be inside the weapon, but z spans {min(zs):.2f}..{max(zs):.2f}")
     elif abs(min(zs)) > 0.01:
@@ -102,6 +107,8 @@ def check(spec: dict) -> list[str]:
     # pivot "axis": built around its collider's axis (the origin), so asymmetric details (shackles,
     # a ladder, a hanging cage) may move the bounding box a little off it
     tol = 0.15 if spec.get("pivot", "centre") == "axis" else 0.05
+    if piece:
+        tol = 0.4
     if abs(cx) > tol or (abs(cy) > tol and not face_pivot):
         errors.append(f"not centred: bounding-box centre at x={cx:.3f}, y={cy:.3f}")
     if face_pivot and not (min(ys) <= 0.15 and max(ys) >= -0.15):
@@ -115,6 +122,10 @@ def check(spec: dict) -> list[str]:
         if w and h and not (_is_pow2(w) and _is_pow2(h)):
             errors.append(f"texture '{img.name}' is {w}x{h}; sizes must be powers of two")
 
+    if piece:  # skinned to the standard skeleton, so the game can put it on any body of its build
+        bones = {b.name for o in bpy.data.objects if o.type == "ARMATURE" for b in o.data.bones}
+        if not bones.issubset(set(REQUIRED_BONES)) or not bones:
+            errors.append("a piece needs the standard skeleton (and no other bones)")
     if spec["kind"] == "character":
         bones = {b.name for o in bpy.data.objects if o.type == "ARMATURE" for b in o.data.bones}
         for b in REQUIRED_BONES:

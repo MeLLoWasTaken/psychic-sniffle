@@ -1,0 +1,18 @@
+{
+ "id": "skin_tones",
+ "kind": "skin_tones",
+ "name": "Skin",
+ "description": "Skin tones: multiplied over the body's neutral baked skin texture in the character shader.",
+ "options": [
+  {"id": "pale", "name": "Pale", "color": "#f1d2bf"},
+  {"id": "fair", "name": "Fair", "color": "#e3b897"},
+  {"id": "light", "name": "Light", "color": "#d3a27d"},
+  {"id": "olive", "name": "Olive", "color": "#b98a62"},
+  {"id": "tan", "name": "Tan", "color": "#a87650"},
+  {"id": "bronze", "name": "Bronze", "color": "#8f5f3d"},
+  {"id": "brown", "name": "Brown", "color": "#74482c"},
+  {"id": "umber", "name": "Umber", "color": "#5a3520"},
+  {"id": "deep", "name": "Deep", "color": "#3f2416"},
+  {"id": "ashen", "name": "Ashen", "color": "#b7aea6"}
+ ]
+}

@@ -1,0 +1,15 @@
+{
+ "id": "hair",
+ "kind": "hair",
+ "name": "Hair",
+ "description": "Hair styles (geometry in tools/blender/hair.py, one mesh per style and body type). Hidden under helms that cover the head.",
+ "options": [
+  {"id": "none", "name": "Shaved"},
+  {"id": "cropped", "name": "Cropped"},
+  {"id": "swept", "name": "Swept back"},
+  {"id": "long", "name": "Long and loose"},
+  {"id": "topknot", "name": "Warrior's knot"},
+  {"id": "braided", "name": "Back braid"},
+  {"id": "ridge", "name": "Ridge"}
+ ]
+}

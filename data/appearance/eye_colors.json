@@ -1,0 +1,15 @@
+{
+ "id": "eye_colors",
+ "kind": "eye_colors",
+ "name": "Eyes",
+ "description": "Iris colours, painted into the eyes' mask region of the body texture by the character shader.",
+ "options": [
+  {"id": "brown", "name": "Brown", "color": "#4a2c18"},
+  {"id": "hazel", "name": "Hazel", "color": "#6b5228"},
+  {"id": "green", "name": "Green", "color": "#4d6a3a"},
+  {"id": "blue", "name": "Blue", "color": "#3f6a8f"},
+  {"id": "grey", "name": "Grey", "color": "#7b8590"},
+  {"id": "amber", "name": "Amber", "color": "#a36a1c"},
+  {"id": "pale", "name": "Pale", "color": "#b9c8cf"}
+ ]
+}

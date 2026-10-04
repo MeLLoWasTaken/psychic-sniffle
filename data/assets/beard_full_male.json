@@ -1,0 +1,22 @@
+{
+  "id": "beard_full_male",
+  "kind": "piece",
+  "builder": "build_piece.py",
+  "seed": 1,
+  "body_build": "male",
+  "tri_budget": {
+    "min": 1760,
+    "max": 2420
+  },
+  "texture_size": 512,
+  "palette": {
+    "hair": "#b4aa9e"
+  },
+  "params": {
+    "slot": "beard",
+    "style": "full",
+    "target_tris": 2200
+  },
+  "out": "game/assets/appearance/beard_full_male.glb",
+  "status": "draft"
+}

@@ -1,0 +1,17 @@
+{
+ "id": "hair_colors",
+ "kind": "hair_colors",
+ "name": "Hair colour",
+ "description": "Hair and beard colours: multiplied over the hair's neutral baked texture.",
+ "options": [
+  {"id": "black", "name": "Black", "color": "#1c1714"},
+  {"id": "dark_brown", "name": "Dark brown", "color": "#3a261a"},
+  {"id": "brown", "name": "Brown", "color": "#5e3d26"},
+  {"id": "auburn", "name": "Auburn", "color": "#7a3820"},
+  {"id": "red", "name": "Red", "color": "#a24a22"},
+  {"id": "blond", "name": "Blond", "color": "#b8925a"},
+  {"id": "ash", "name": "Ash blond", "color": "#a29a84"},
+  {"id": "grey", "name": "Grey", "color": "#8a8580"},
+  {"id": "white", "name": "White", "color": "#d6d2cb"}
+ ]
+}

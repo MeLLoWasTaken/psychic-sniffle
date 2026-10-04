@@ -1,0 +1,22 @@
+{
+  "id": "hair_cropped_male",
+  "kind": "piece",
+  "builder": "build_piece.py",
+  "seed": 1,
+  "body_build": "male",
+  "tri_budget": {
+    "min": 1600,
+    "max": 2200
+  },
+  "texture_size": 1024,
+  "palette": {
+    "hair": "#b4aa9e"
+  },
+  "params": {
+    "slot": "hair",
+    "style": "cropped",
+    "target_tris": 2000
+  },
+  "out": "game/assets/appearance/hair_cropped_male.glb",
+  "status": "draft"
+}

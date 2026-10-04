@@ -178,6 +178,33 @@ def evaluate(shape: Shape, voxel: float, floor_z: float | None = 0.0):
     return f, lo
 
 
+def eval_grid(shape: Shape, lo, n, voxel: float, fill: float = 10.0) -> np.ndarray:
+    """Sample a shape on a given grid (origin `lo`, `n` samples per axis), each primitive only
+    near itself, like `evaluate`, so several fields can be combined sample by sample."""
+    lo = np.asarray(lo, float)
+    n = np.asarray(n, int)
+    f = np.full(tuple(n), fill, dtype=np.float32)
+    for p in shape.prims:
+        margin = 2.0 * p.k + 3 * voxel
+        i0 = np.clip(np.floor((p.lo - margin - lo) / voxel).astype(int), 0, n)
+        i1 = np.clip(np.ceil((p.hi + margin - lo) / voxel).astype(int) + 1, 0, n)
+        if np.any(i1 <= i0):
+            continue
+        axes = [lo[d] + voxel * np.arange(i0[d], i1[d]) for d in range(3)]
+        gx, gy, gz = np.meshgrid(*axes, indexing="ij")
+        P = np.stack([gx.ravel(), gy.ravel(), gz.ravel()], axis=1)
+        d = p.fn(P).reshape(gx.shape).astype(np.float32)
+        block = f[i0[0]:i1[0], i0[1]:i1[1], i0[2]:i1[2]]
+        block[...] = smax(block, -d, p.k) if p.subtract else smin(block, d, p.k)
+    return f
+
+
+def grid_points(lo, n, voxel: float) -> np.ndarray:
+    """Coordinates of every grid sample, shape (nx, ny, nz, 3)."""
+    axes = [np.asarray(lo, float)[d] + voxel * np.arange(int(n[d])) for d in range(3)]
+    return np.stack(np.meshgrid(*axes, indexing="ij"), axis=-1)
+
+
 def extract(shape: Shape, voxel: float = 0.006, floor_z: float | None = 0.0):
     """Closed triangle mesh of the shape's surface: (vertices N x 3, faces M x 3)."""
     f, origin = evaluate(shape, voxel, floor_z)

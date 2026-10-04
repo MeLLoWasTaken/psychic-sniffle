@@ -1,0 +1,22 @@
+{
+  "id": "beard_moustache_male",
+  "kind": "piece",
+  "builder": "build_piece.py",
+  "seed": 1,
+  "body_build": "male",
+  "tri_budget": {
+    "min": 480,
+    "max": 660
+  },
+  "texture_size": 512,
+  "palette": {
+    "hair": "#b4aa9e"
+  },
+  "params": {
+    "slot": "beard",
+    "style": "moustache",
+    "target_tris": 600
+  },
+  "out": "game/assets/appearance/beard_moustache_male.glb",
+  "status": "draft"
+}

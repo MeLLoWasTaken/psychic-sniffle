@@ -59,6 +59,7 @@ FOLDERS = {
     "captures": ("capture.schema.json", "id"),
     "menus": ("menu.schema.json", "id"),
     "ambient_effects": ("ambient_effect.schema.json", "id"),
+    "appearance": ("appearance_options.schema.json", "id"),
 }
 
 # Ability kit template (docs/DESIGN.md, "Ability kit template"): slot -> (min, max)

@@ -1,0 +1,22 @@
+{
+  "id": "beard_long_male",
+  "kind": "piece",
+  "builder": "build_piece.py",
+  "seed": 1,
+  "body_build": "male",
+  "tri_budget": {
+    "min": 2400,
+    "max": 3300
+  },
+  "texture_size": 512,
+  "palette": {
+    "hair": "#b4aa9e"
+  },
+  "params": {
+    "slot": "beard",
+    "style": "long",
+    "target_tris": 3000
+  },
+  "out": "game/assets/appearance/beard_long_male.glb",
+  "status": "draft"
+}

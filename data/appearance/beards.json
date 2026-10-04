@@ -1,0 +1,13 @@
+{
+ "id": "beards",
+ "kind": "beards",
+ "name": "Beard",
+ "description": "Beards for the male body type (geometry in tools/blender/hair.py). Each follows the face presets with its own shape keys.",
+ "options": [
+  {"id": "none", "name": "Clean", "body_types": ["male"]},
+  {"id": "full", "name": "Full", "body_types": ["male"]},
+  {"id": "long", "name": "Long", "body_types": ["male"]},
+  {"id": "goatee", "name": "Goatee", "body_types": ["male"]},
+  {"id": "moustache", "name": "Moustache", "body_types": ["male"]}
+ ]
+}

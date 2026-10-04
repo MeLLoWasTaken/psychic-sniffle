@@ -1,0 +1,22 @@
+{
+  "id": "beard_goatee_male",
+  "kind": "piece",
+  "builder": "build_piece.py",
+  "seed": 1,
+  "body_build": "male",
+  "tri_budget": {
+    "min": 800,
+    "max": 1100
+  },
+  "texture_size": 512,
+  "palette": {
+    "hair": "#b4aa9e"
+  },
+  "params": {
+    "slot": "beard",
+    "style": "goatee",
+    "target_tris": 1000
+  },
+  "out": "game/assets/appearance/beard_goatee_male.glb",
+  "status": "draft"
+}
