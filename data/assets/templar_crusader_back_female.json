@@ -1,0 +1,20 @@
+{
+  "id": "templar_crusader_back_female",
+  "kind": "piece",
+  "builder": "build_piece.py",
+  "seed": 1,
+  "body_build": "female",
+  "tri_budget": {
+    "min": 2240,
+    "max": 3080
+  },
+  "texture_size": 2048,
+  "params": {
+    "slot": "back",
+    "design": "templar_cape",
+    "set": "templar_crusader",
+    "armor_type": "plate"
+  },
+  "out": "game/assets/armor/templar_crusader_back_female.gltf",
+  "status": "draft"
+}

@@ -1,0 +1,20 @@
+{
+  "id": "templar_crusader_chest_male",
+  "kind": "piece",
+  "builder": "build_piece.py",
+  "seed": 1,
+  "body_build": "male",
+  "tri_budget": {
+    "min": 8720,
+    "max": 11990
+  },
+  "texture_size": 4096,
+  "params": {
+    "slot": "chest",
+    "design": "templar_surcoat",
+    "set": "templar_crusader",
+    "armor_type": "plate"
+  },
+  "out": "game/assets/armor/templar_crusader_chest_male.gltf",
+  "status": "draft"
+}

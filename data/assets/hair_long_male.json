@@ -17,6 +17,6 @@
     "style": "long",
     "target_tris": 5000
   },
-  "out": "game/assets/appearance/hair_long_male.glb",
+  "out": "game/assets/appearance/hair_long_male.gltf",
   "status": "draft"
 }

@@ -17,6 +17,6 @@
     "style": "cropped",
     "target_tris": 2000
   },
-  "out": "game/assets/appearance/hair_cropped_female.glb",
+  "out": "game/assets/appearance/hair_cropped_female.gltf",
   "status": "draft"
 }

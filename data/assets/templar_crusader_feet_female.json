@@ -1,0 +1,20 @@
+{
+  "id": "templar_crusader_feet_female",
+  "kind": "piece",
+  "builder": "build_piece.py",
+  "seed": 1,
+  "body_build": "female",
+  "tri_budget": {
+    "min": 1760,
+    "max": 2420
+  },
+  "texture_size": 2048,
+  "params": {
+    "slot": "feet",
+    "design": "templar_sabatons",
+    "set": "templar_crusader",
+    "armor_type": "plate"
+  },
+  "out": "game/assets/armor/templar_crusader_feet_female.gltf",
+  "status": "draft"
+}

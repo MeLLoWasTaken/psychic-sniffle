@@ -240,7 +240,8 @@
               "quit",
               "talents",
               "play_1v1",
-              "play_3v3"
+              "play_3v3",
+              "character"
             ],
             "description": "What the button does; the client routes each action (GameFlow)"
           },

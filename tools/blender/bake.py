@@ -163,6 +163,18 @@ def bake_asset(low: bpy.types.Object, high: bpy.types.Object | None, out_dir: Pa
         normal.save()
         high.hide_render = True  # it overlaps the low surface: left visible it shadows the albedo's occlusion
     kit.bake_piece(low, out_dir, name, size=size, samples=samples, bevel_normal=0.0, keep_uvs=True)
+    for suffix in ("albedo", "orm"):   # colour and roughness as JPEG: a quarter of the PNG's size
+        img = bpy.data.images.get(f"{name}_{suffix}")
+        png = out_dir / f"{name}_{suffix}.png"
+        if img is None or not png.exists():
+            continue
+        from PIL import Image
+        jpg = png.with_suffix(".jpg")
+        Image.open(png).convert("RGB").save(jpg, quality=92, subsampling=0)
+        png.unlink()
+        img.filepath = str(jpg)
+        img.source = "FILE"
+        img.reload()
     mat = low.data.materials[0]
     if normal is not None:
         nt = mat.node_tree

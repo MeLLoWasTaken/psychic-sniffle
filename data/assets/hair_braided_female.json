@@ -17,6 +17,6 @@
     "style": "braided",
     "target_tris": 3600
   },
-  "out": "game/assets/appearance/hair_braided_female.glb",
+  "out": "game/assets/appearance/hair_braided_female.gltf",
   "status": "draft"
 }

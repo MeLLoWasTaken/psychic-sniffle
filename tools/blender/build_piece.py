@@ -18,7 +18,10 @@ import bpy  # noqa: E402
 import numpy as np  # noqa: E402
 
 import anatomy  # noqa: E402
+import armor_kit  # noqa: E402
 import bake  # noqa: E402
+import kit  # noqa: E402
+import sdf  # noqa: E402
 import common  # noqa: E402
 import hair  # noqa: E402
 import humanoid  # noqa: E402
@@ -107,23 +110,273 @@ def follow_face_keys(o: bpy.types.Object, j: dict, body_type: str) -> None:
         key.data.foreach_set("co", (co + off).astype(np.float32).ravel())
 
 
+# material -> (dye channel, neutral colour, kit_material settings, surface detail for the normal map)
+MATERIALS = {
+    "plate": ("metal", "#a9adb3", dict(roughness=0.35, metallic=0.3, edge=0.65, cavity=0.6, top_light=0.12, mottle=0.08), "hammered"),
+    "mail": ("metal", "#8e9298", dict(roughness=0.45, metallic=0.3, edge=0.3, cavity=0.7, top_light=0.1), "mail"),
+    "gold": ("secondary", "#d2c4a0", dict(roughness=0.35, metallic=0.3, edge=0.6, cavity=0.55), None),
+    "trim": ("secondary", "#d2c4a0", dict(roughness=0.85, edge=0.15, cavity=0.5), "cloth"),
+    "cloth": ("primary", "#cfc8bc", dict(roughness=0.9, edge=0.1, cavity=0.55, top_light=0.15), "cloth"),
+    "leather": ("leather", "#4a3424", dict(roughness=0.75, edge=0.3, cavity=0.5), "leather"),
+}
+CHANNEL_RGB = {"primary": (1, 0, 0), "secondary": (0, 1, 0), "metal": (0, 0, 1), "leather": (0, 0, 0)}
+
+
+def detail_material(name: str, kind: str | None) -> bpy.types.Material:
+    """A material for the dense mesh whose only job is surface detail baked into the normal map:
+    mail rings, cloth weave, leather grain, faint hammer marks on plate."""
+    mat = bpy.data.materials.new(name)
+    mat.use_nodes = True
+    nt = mat.node_tree
+    bsdf = nt.nodes["Principled BSDF"]
+    if kind is None:
+        return mat
+    tc = nt.nodes.new("ShaderNodeTexCoord")
+    bump = nt.nodes.new("ShaderNodeBump")
+    if kind == "mail":
+        tex = nt.nodes.new("ShaderNodeTexVoronoi")
+        tex.inputs["Scale"].default_value = 115.0
+        nt.links.new(tc.outputs["Object"], tex.inputs["Vector"])
+        ring = nt.nodes.new("ShaderNodeMath")
+        ring.operation = "PINGPONG"   # a ring around each cell centre
+        ring.inputs[1].default_value = 0.3
+        nt.links.new(tex.outputs["Distance"], ring.inputs[0])
+        nt.links.new(ring.outputs[0], bump.inputs["Height"])
+        bump.inputs["Strength"].default_value = 0.8
+        bump.inputs["Distance"].default_value = 0.0015
+    elif kind == "cloth":
+        tex = nt.nodes.new("ShaderNodeTexWave")
+        tex.inputs["Scale"].default_value = 300.0
+        tex.inputs["Distortion"].default_value = 2.0
+        nt.links.new(tc.outputs["Object"], tex.inputs["Vector"])
+        nt.links.new(tex.outputs["Fac"], bump.inputs["Height"])
+        bump.inputs["Strength"].default_value = 0.25
+        bump.inputs["Distance"].default_value = 0.0006
+    elif kind == "leather":
+        tex = nt.nodes.new("ShaderNodeTexNoise")
+        tex.inputs["Scale"].default_value = 180.0
+        tex.inputs["Detail"].default_value = 4.0
+        nt.links.new(tc.outputs["Object"], tex.inputs["Vector"])
+        nt.links.new(tex.outputs["Fac"], bump.inputs["Height"])
+        bump.inputs["Strength"].default_value = 0.3
+        bump.inputs["Distance"].default_value = 0.0008
+    elif kind == "hammered":
+        tex = nt.nodes.new("ShaderNodeTexVoronoi")
+        tex.inputs["Scale"].default_value = 35.0
+        nt.links.new(tc.outputs["Object"], tex.inputs["Vector"])
+        nt.links.new(tex.outputs["Distance"], bump.inputs["Height"])
+        bump.inputs["Strength"].default_value = 0.08
+        bump.inputs["Distance"].default_value = 0.001
+    nt.links.new(bump.outputs["Normal"], bsdf.inputs["Normal"])
+    return mat
+
+
+def reference_body(body_type: str) -> tuple[bpy.types.Object, bpy.types.Object]:
+    """A quick, coarse skinned body to copy weights from (cloth and mail follow it)."""
+    j = {k: np.array(v) for k, v in humanoid.joints(humanoid.BUILDS[body_type]).items()}
+    verts, faces = anatomy.body_mesh(j, body_type, voxel=0.008)
+    o = mesh_obj("_weights_body", verts, faces)
+    reduce_to(o, 9000)
+    rig = humanoid.build_armature(body_type, "_weights_rig")
+    humanoid.bind(o, rig)
+    return o, rig
+
+
+def transfer_weights(o: bpy.types.Object, src: bpy.types.Object) -> None:
+    for g in src.vertex_groups:
+        if g.name not in o.vertex_groups:
+            o.vertex_groups.new(name=g.name)
+    bpy.ops.object.select_all(action="DESELECT")
+    o.select_set(True)
+    bpy.context.view_layer.objects.active = o
+    m = o.modifiers.new("dt", "DATA_TRANSFER")
+    m.object = src
+    m.use_vert_data = True
+    m.data_types_verts = {"VGROUP_WEIGHTS"}
+    m.vert_mapping = "POLYINTERP_NEAREST"
+    m.layers_vgroup_select_src = "ALL"
+    m.layers_vgroup_select_dst = "NAME"
+    bpy.ops.object.modifier_apply(modifier="dt")
+
+
+def skirt_weights(o: bpy.types.Object, j: dict, names: set[str], z_top: float, behind: bool = False) -> None:
+    """Panels hanging below the waist (surcoat, cape) follow the pelvis, with a little of each
+    thigh, instead of tearing between the legs."""
+    groups = {g.name: g for g in o.vertex_groups}
+    for n in ("pelvis", "thigh_l", "thigh_r", "spine"):
+        if n not in groups:
+            groups[n] = o.vertex_groups.new(name=n)
+    for v in o.data.vertices:
+        if v.co.z >= z_top or v.index not in names:
+            continue
+        t = min(1.0, (z_top - v.co.z) / 0.25)
+        for g in o.vertex_groups:
+            try:
+                w = g.weight(v.index)
+            except RuntimeError:
+                continue
+            g.add([v.index], w * (1 - t), "REPLACE")
+        side = 0.5 + 0.5 * np.clip(v.co.x / 0.02, -1, 1)        # a split skirt: each half with its own leg
+        leg = 0.0 if behind else 0.65 * t
+        groups["pelvis"].add([v.index], t * (1 - leg), "ADD")
+        groups["thigh_l"].add([v.index], t * leg * side, "ADD")
+        groups["thigh_r"].add([v.index], t * leg * (1 - side), "ADD")
+
+
+def build_armor(spec: dict, previews: Path | None) -> None:
+    body_type = spec["body_build"]
+    params = spec["params"]
+    b = armor_kit.Body(body_type)
+    parts = armor_kit.DESIGNS[params["design"]](b)
+    lows, highs, part_verts = [], [], {}
+    mats: dict[str, bpy.types.Material] = {}
+    dmats: dict[str, bpy.types.Material] = {}
+    for part in parts:
+        G = armor_kit.Grid(part.lo, part.hi, part.voxel, b.shape)
+        f = part.fn(G).astype(np.float32)
+        f = np.maximum(f, -(G.Z + 0.0 * G.X + 0.0 * G.Y))            # nothing below the floor
+        f[0], f[-1], f[:, 0], f[:, -1], f[:, :, 0], f[:, :, -1] = 1.0, 1.0, 1.0, 1.0, 1.0, 1.0
+        verts, faces = sdf.surface(f, part.voxel)
+        if len(faces) == 0:
+            print(f"  WARNING {part.name}: empty", flush=True)
+            continue
+        verts = verts + G.lo
+        hi_o = mesh_obj(f"{part.name}_high", verts, faces)
+        lo_o = mesh_obj(part.name, verts, faces)
+        reduce_to(lo_o, part.tris)
+        if part.facet_deg > 0:
+            kit.shade_smooth_by_angle(lo_o, part.facet_deg)
+        chan, neutral, kw, detail = MATERIALS[part.material]
+        if part.material not in mats:
+            mats[part.material] = kit.kit_material(f"{spec['id']}_{part.material}", neutral, **kw)
+            mats[part.material]["dye_channel"] = chan
+            dmats[part.material] = detail_material(f"{spec['id']}_{part.material}_detail", detail)
+        lo_o.data.materials.append(mats[part.material])
+        hi_o.data.materials.append(dmats[part.material])
+        kit.set_tint(lo_o, (1.0, 1.0, 1.0))
+        for centre, r in part.rivets:   # rivet heads: detail for the normal map only
+            bpy.ops.mesh.primitive_uv_sphere_add(radius=r, location=tuple(centre), segments=12, ring_count=6)
+            rv = bpy.context.active_object
+            rv.data.materials.append(dmats[part.material])
+            highs.append(rv)
+        rgb = CHANNEL_RGB[chan]
+        a = lo_o.data.attributes.new("dye_rgb", "FLOAT_COLOR", "CORNER")
+        a.data.foreach_set("color", [c for _ in range(len(lo_o.data.loops)) for c in (*rgb, 1.0)])
+        lo_o["skin"] = part.skin
+        lo_o["skirt"] = part.name in ("surcoat", "surcoat_trim", "cape")
+        lows.append(lo_o)
+        highs.append(hi_o)
+        print(f"  {part.name}: {len(faces)} dense -> {len(lo_o.data.polygons)} tris ({part.material}, {part.skin})",
+              flush=True)
+    # weights per part before joining (rigid parts on one bone, the rest copied from a body)
+    ref, ref_rig = reference_body(body_type)
+    belt_z = b.z("pelvis") + 0.06
+    for o in lows:
+        skin = o["skin"]
+        if skin == "transfer":
+            transfer_weights(o, ref)
+            if o["skirt"]:
+                skirt_weights(o, b.j, set(range(len(o.data.vertices))), belt_z, behind=o.name.startswith("cape"))
+        else:
+            g = o.vertex_groups.new(name=skin)
+            g.add(list(range(len(o.data.vertices))), 1.0, "REPLACE")
+    bpy.data.objects.remove(ref)
+    bpy.data.objects.remove(ref_rig)
+    low = _join(lows, spec["id"])
+    high = _join(highs, f"{spec['id']}_high")
+    size = int(spec.get("texture_size", 2048))
+    out_dir = (common.REPO / spec["out"]).parent
+    bake.bake_asset(low, high, out_dir, spec["id"], size=size, samples=16 if size <= 2048 else 8)
+    bpy.data.objects.remove(high)
+    bake_dye_mask(low, [m for m in mats.values()], out_dir / f"{spec['id']}_dye.png", size // 2)
+    rig = humanoid.build_armature(body_type, f"{spec['id']}_rig")
+    low.parent = rig
+    mod = low.modifiers.new("armature", "ARMATURE")
+    mod.object = rig
+    tris = common.triangle_count([low])
+    print(f"PIECE {spec['id']} slot={params['slot']} design={params['design']} tris={tris}", flush=True)
+    if previews:
+        common.render_contact_sheet([low], previews / f"{spec['id']}_sheet.png", cell=360, title=f"{spec['id']} {tris} tris")
+    out = common.export_glb(Path(spec["out"]), [low, rig])
+    print(f"BUILT {spec['id']} -> {out}")
+
+
+def _join(objs: list, name: str) -> bpy.types.Object:
+    bpy.ops.object.select_all(action="DESELECT")
+    for o in objs:
+        o.select_set(True)
+    bpy.context.view_layer.objects.active = objs[0]
+    bpy.ops.object.join()
+    o = bpy.context.view_layer.objects.active
+    o.name = name
+    return o
+
+
+def bake_dye_mask(low: bpy.types.Object, kit_mats: list, path: Path, size: int) -> None:
+    """The dye mask: R primary, G secondary, B metal, black for undyed (from each part's material,
+    which bake_asset has merged into one; the material channels are recovered from the face's
+    original material index, kept in the 'dye' face attribute)."""
+    import numpy as np
+    from PIL import Image
+    attr = low.data.attributes.get("dye_channel")
+    img = bpy.data.images.new(path.stem, size, size, alpha=False)
+    mat = bpy.data.materials.new("_dye_bake")
+    mat.use_nodes = True
+    nt = mat.node_tree
+    out = next(n for n in nt.nodes if n.type == "OUTPUT_MATERIAL")
+    col = nt.nodes.new("ShaderNodeAttribute")
+    col.attribute_type = "GEOMETRY"
+    col.attribute_name = "dye_rgb"
+    emit = nt.nodes.new("ShaderNodeEmission")
+    nt.links.new(col.outputs["Color"], emit.inputs["Color"])
+    nt.links.new(emit.outputs["Emission"], out.inputs["Surface"])
+    tex = nt.nodes.new("ShaderNodeTexImage")
+    tex.image = img
+    nt.nodes.active = tex
+    saved = list(low.data.materials)
+    low.data.materials.clear()
+    low.data.materials.append(mat)
+    for p in low.data.polygons:
+        p.material_index = 0
+    scene = bpy.context.scene
+    samples = scene.cycles.samples
+    scene.cycles.samples = 1
+    bpy.ops.object.select_all(action="DESELECT")
+    low.select_set(True)
+    bpy.context.view_layer.objects.active = low
+    bpy.ops.object.bake(type="EMIT")
+    scene.cycles.samples = samples
+    low.data.materials.clear()
+    for m in saved:
+        low.data.materials.append(m)
+    px = np.empty(size * size * 4, dtype=np.float32)
+    img.pixels.foreach_get(px)
+    rgb = (np.clip(px.reshape(size, size, 4)[::-1, :, :3], 0, 1) * 255).astype(np.uint8)
+    path.parent.mkdir(parents=True, exist_ok=True)
+    Image.fromarray(rgb, "RGB").save(path)
+    if low.data.attributes.get("dye_rgb"):
+        low.data.attributes.remove(low.data.attributes["dye_rgb"])
+    print(f"  dye mask {path.name}", flush=True)
+
+
 def main() -> None:
     args = common.parse_args("Build a wearable piece")
     spec = common.load_spec(args.spec)
     common.reset_scene()
     body_type = spec["body_build"]
     params = spec["params"]
-    slot, style = params["slot"], params["style"]
+    slot, style = params["slot"], params.get("style", "")
     j = {k: np.array(v) for k, v in humanoid.joints(humanoid.BUILDS[body_type]).items()}
     if slot not in ("hair", "beard"):
-        raise SystemExit(f"{spec['id']}: slot {slot} has no builder yet")
+        build_armor(spec, args.previews)
+        return
     verts, faces = hair.build_mesh(j, body_type, style, beard=slot == "beard", voxel=float(params.get("voxel", 0.002)))
     high = mesh_obj(f"{spec['id']}_high", verts, faces)
     low = mesh_obj(spec["id"], verts, faces)
     reduce_to(low, int(params.get("target_tris", 3000)))
     low.data.materials.append(hair_material(f"{spec['id']}_hair", spec["palette"]["hair"]))
     size = int(spec.get("texture_size", 1024))
-    bake.bake_asset(low, high, common.REPO / "previews" / "kit_textures", spec["id"], size=size)
+    bake.bake_asset(low, high, (common.REPO / spec["out"]).parent, spec["id"], size=size)
     bpy.data.objects.remove(high)
     hang = (slot == "hair" and style in ("long", "braided")) or (slot == "beard" and style == "long")
     rig = humanoid.build_armature(body_type, f"{spec['id']}_rig")

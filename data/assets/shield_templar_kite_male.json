@@ -1,0 +1,19 @@
+{
+  "id": "shield_templar_kite_male",
+  "kind": "piece",
+  "builder": "build_piece.py",
+  "seed": 1,
+  "body_build": "male",
+  "tri_budget": {
+    "min": 1700,
+    "max": 2400
+  },
+  "texture_size": 1024,
+  "params": {
+    "slot": "offhand",
+    "design": "templar_kite_shield",
+    "armor_type": "plate"
+  },
+  "out": "game/assets/armor/shield_templar_kite_male.gltf",
+  "status": "draft"
+}

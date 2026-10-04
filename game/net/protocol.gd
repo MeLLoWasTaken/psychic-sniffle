@@ -6,14 +6,15 @@ extends RefCounted
 ## Abilities, auras and specs travel as small indexes into their sorted id lists (both sides
 ## load the same data, and the protocol version changes whenever that could differ).
 
-const VERSION: int = 12
+const VERSION: int = 13  ## 13: appearances (G-05)
 const CH_RELIABLE: int = 0
 const CH_UNRELIABLE: int = 1
 const CHANNELS: int = 2
 const INPUT_REDUNDANCY: int = 3  ## each input packet repeats the last N inputs to survive loss
 const NO_ID: int = 0xFFFF
 
-enum Msg { HELLO = 1, WELCOME = 2, INPUT = 3, SNAPSHOT = 4, PING = 5, PONG = 6, EVENTS = 7, REJECT = 8, PREFS = 9, TALENTS = 10 }
+enum Msg { HELLO = 1, WELCOME = 2, INPUT = 3, SNAPSHOT = 4, PING = 5, PONG = 6, EVENTS = 7, REJECT = 8, PREFS = 9, TALENTS = 10,
+	APPEARANCE = 11 }
 
 const CC_CATEGORIES: Array[String] = ["stun", "incapacitate", "disorient", "silence", "root", "disarm"]
 const FLAG_JUMP: int = 1
@@ -50,7 +51,8 @@ static func _buf() -> StreamPeerBuffer:
 
 # ------------------------------------------------------------------ handshake
 
-static func hello(player_name: String, spec_id: String, talents: String = "", prefs: Dictionary = {}) -> PackedByteArray:
+static func hello(player_name: String, spec_id: String, talents: String = "", prefs: Dictionary = {},
+		appearance: String = "") -> PackedByteArray:
 	var b: StreamPeerBuffer = _buf()
 	b.put_u8(Msg.HELLO)
 	b.put_u16(VERSION)
@@ -58,6 +60,17 @@ static func hello(player_name: String, spec_id: String, talents: String = "", pr
 	b.put_utf8_string(spec_id)
 	b.put_utf8_string(talents)
 	_put_prefs(b, prefs)
+	b.put_utf8_string(appearance)  # the player's look (Appearance.to_text), "" for the default
+	return b.data_array
+
+
+## A unit's look (G-05), sent once by the server to every client when the unit joins (and all
+## known looks to a client that joins later). Cosmetic: never part of the simulation.
+static func appearance(unit_id: int, text: String) -> PackedByteArray:
+	var b: StreamPeerBuffer = _buf()
+	b.put_u8(Msg.APPEARANCE)
+	b.put_u16(unit_id)
+	b.put_utf8_string(text)
 	return b.data_array
 
 
@@ -300,7 +313,10 @@ static func decode(data: PackedByteArray) -> Dictionary:
 				return hello_msg  # the server answers with a version mismatch; the rest may differ
 			hello_msg.merge({"name": b.get_utf8_string(), "spec": b.get_utf8_string(), "talents": b.get_utf8_string()})
 			hello_msg["prefs"] = _get_prefs(b)
+			hello_msg["appearance"] = b.get_utf8_string() if b.get_available_bytes() > 0 else ""
 			return hello_msg
+		Msg.APPEARANCE:
+			return {"type": t, "unit_id": b.get_u16(), "text": b.get_utf8_string()}
 		Msg.WELCOME:
 			return {"type": t, "unit_id": b.get_u16(), "tick": b.get_u32(), "tick_rate": b.get_u8(),
 				"map": b.get_utf8_string()}

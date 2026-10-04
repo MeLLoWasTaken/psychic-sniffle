@@ -17,6 +17,6 @@
     "style": "swept",
     "target_tris": 3000
   },
-  "out": "game/assets/appearance/hair_swept_female.glb",
+  "out": "game/assets/appearance/hair_swept_female.gltf",
   "status": "draft"
 }

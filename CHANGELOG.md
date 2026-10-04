@@ -2,6 +2,14 @@
 
 One entry per build-loop iteration, newest first. Format: date, backlog ID, what changed, how it was checked.
 
+## 2026-10-04 — G-03 to G-06: modular armor, the crusader Templar, assembled characters and the character creator
+- Armor is now built in pieces, one per slot (head, shoulders, chest, hands, waist, legs, feet, back), for both body types, so any piece can be worn with any other of the same armor type. Each piece gets fine surface detail (mail rings, cloth weave, rivets, engraving) and a dye mask for primary, secondary and metal colours.
+- The first set is the Templar's crusader look: a flat-topped great helm with an eye slit and breathing holes over a mail coif, a mail hauberk under a long surcoat with the order's sun, rounded spaulders, gauntlets, mail leggings with knee cops, sabatons, a sword belt and a cape. Radiance wears bone and gold, the Vanguard royal blue with a kite shield, and the Zealot crimson and black. A full character is about 48,000 to 50,000 triangles.
+- The game assembles a character from a body, hair, beard and armor pieces on one skeleton and recolours it with new shaders. Each player's look travels to the server when joining, and the server passes everyone's look to everyone. Bots get varied looks. In matches, team colour replaces the cape's and surcoat's main colour.
+- A Character screen in the main menu, beside Talents: a turning preview and tabs for body, face, hair, armor pieces and dyes, saved per specialization.
+- Not on by default: the new characters show only with Settings, Graphics, "New character models (preview)", and only for the Templar so far. The other classes keep their current models until their sets exist.
+- Checked: an armor fit check (no body showing through in idle, run, cast and attack poses on either body), appearance and creator tests, a full networked match from the menu with looks, screenshots in the game engine, reference sheets and a 30 m grayscale check.
+
 ## 2026-10-04 — G-02 Faces, hair, beards and colours for the character creator
 - The head was rebuilt with proper facial structure (brow, cheekbones, jaw, eyes with lids, nose, lips, ears) and six face presets: Steady, Stern, Gaunt, Broad, Sharp and Weathered. Six hairstyles plus shaved for both bodies, four beards that follow the face presets, ten skin tones, nine hair colours, seven eye colours, and three scars and three war paints.
 - All the options are data files, so adding a hairstyle or a skin tone does not touch code. Hair and beards are built as separate wearable pieces, the same way armor will be.

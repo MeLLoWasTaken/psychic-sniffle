@@ -17,6 +17,6 @@
     "style": "ridge",
     "target_tris": 2200
   },
-  "out": "game/assets/appearance/hair_ridge_female.glb",
+  "out": "game/assets/appearance/hair_ridge_female.gltf",
   "status": "draft"
 }

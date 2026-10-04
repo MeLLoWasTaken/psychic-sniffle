@@ -61,7 +61,8 @@
     "others_effect_opacity": 1.0,
     "glow": true,
     "ssao": true,
-    "fog": true
+    "fog": true,
+    "new_characters": false
   },
   "gameplay": {
     "spell_queue_ms": 400,

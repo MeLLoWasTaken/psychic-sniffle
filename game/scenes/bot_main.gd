@@ -12,6 +12,10 @@ func _ready() -> void:
 	super._ready()
 	if talents == "":
 		talents = BotBrain.build_talents(spec_id)["talents"]  # its default build unless --talents names one
+	if appearance == "":  # bots vary in looks (body, face, hair, colours), seeded by their name
+		var rng: RandomNumberGenerator = RandomNumberGenerator.new()
+		rng.seed = hash(player_name + spec_id)
+		appearance = Appearance.to_text(Appearance.random_for(spec_id, rng))
 	quit_on_match_end = true
 	welcomed.connect(_on_welcomed)
 	input_source = _next_input

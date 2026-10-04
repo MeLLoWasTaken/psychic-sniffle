@@ -33,6 +33,12 @@ def hex_rgb(h: str):
     return common.hex_to_linear(h)
 
 
+def asset_path(asset_id: str) -> Path:
+    """Where an asset's built model is (its spec's "out")."""
+    spec = json.loads((REPO / "data" / "assets" / f"{asset_id}.json").read_text())
+    return REPO / spec["out"]
+
+
 def import_glb(path: Path):
     before = set(bpy.data.objects)
     bpy.ops.import_scene.gltf(filepath=str(path))
@@ -42,7 +48,7 @@ def import_glb(path: Path):
 class Body:
     def __init__(self, body_type: str):
         self.type = body_type
-        objs = import_glb(REPO / "game" / "assets" / "characters" / f"body_{body_type}.glb")
+        objs = import_glb(asset_path(f"body_{body_type}"))
         self.mesh = next(o for o in objs if o.type == "MESH")
         self.rig = next(o for o in objs if o.type == "ARMATURE")
         self.pieces: dict[str, list] = {}
@@ -141,7 +147,7 @@ class Body:
             bpy.data.objects.remove(o, do_unlink=True)
         if not piece_id:
             return
-        path = REPO / "game" / "assets" / "appearance" / f"{piece_id}.glb"
+        path = asset_path(piece_id)
         if not path.exists():
             print(f"  missing {path.name}")
             return

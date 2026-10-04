@@ -12,7 +12,7 @@
   "palette": {
     "skin": "#b08a70"
   },
-  "out": "game/assets/characters/body_female.glb",
+  "out": "game/assets/characters/body_female.gltf",
   "status": "draft",
   "params": {
     "target_tris": 14000,

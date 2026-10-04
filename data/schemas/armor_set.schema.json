@@ -1,0 +1,53 @@
+{
+ "$schema": "https://json-schema.org/draft/2020-12/schema",
+ "$id": "armor_set.schema.json",
+ "title": "Armor set",
+ "description": "A set of armor pieces of one armor type, one design per slot (backlog G-03). Pieces mix freely with other sets of the same armor type (docs/DESIGN.md, Appearance and armor customization). Each piece is built per body type as assets <set>_<slot>_<body type> (tools/gen_piece_specs.py).",
+ "type": "object",
+ "required": ["id", "name", "armor_type", "pieces", "dyes"],
+ "additionalProperties": false,
+ "properties": {
+  "id": {"type": "string", "pattern": "^[a-z][a-z0-9_]*$"},
+  "name": {"type": "string"},
+  "description": {"type": "string"},
+  "armor_type": {"enum": ["cloth", "leather", "mail", "plate"]},
+  "default_for": {"type": "array", "items": {"type": "string"}, "description": "Classes whose default look this set is."},
+  "pieces": {
+   "type": "object",
+   "additionalProperties": false,
+   "properties": {
+    "head": {"$ref": "#/$defs/piece"}, "shoulders": {"$ref": "#/$defs/piece"}, "chest": {"$ref": "#/$defs/piece"},
+    "hands": {"$ref": "#/$defs/piece"}, "waist": {"$ref": "#/$defs/piece"}, "legs": {"$ref": "#/$defs/piece"},
+    "feet": {"$ref": "#/$defs/piece"}, "back": {"$ref": "#/$defs/piece"}
+   }
+  },
+  "dyes": {
+   "type": "object",
+   "description": "Default dye colours per spec (or 'default'): primary cloth, secondary trim and emblems, metal.",
+   "additionalProperties": {
+    "type": "object",
+    "required": ["primary", "secondary", "metal"],
+    "additionalProperties": false,
+    "properties": {
+     "primary": {"type": "string", "pattern": "^#[0-9a-fA-F]{6}$"},
+     "secondary": {"type": "string", "pattern": "^#[0-9a-fA-F]{6}$"},
+     "metal": {"type": "string", "pattern": "^#[0-9a-fA-F]{6}$"}
+    }
+   }
+  }
+ },
+ "$defs": {
+  "piece": {
+   "type": "object",
+   "required": ["design", "name", "tris"],
+   "additionalProperties": false,
+   "properties": {
+    "design": {"type": "string", "description": "Geometry function in tools/blender/armor_kit.py DESIGNS."},
+    "name": {"type": "string"},
+    "tris": {"type": "integer", "minimum": 100},
+    "texture_size": {"type": "integer"},
+    "hides": {"type": "array", "items": {"enum": ["hair", "beard", "face"]}}
+   }
+  }
+ }
+}

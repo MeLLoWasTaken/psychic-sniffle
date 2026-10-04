@@ -17,6 +17,6 @@
     "style": "topknot",
     "target_tris": 2800
   },
-  "out": "game/assets/appearance/hair_topknot_male.glb",
+  "out": "game/assets/appearance/hair_topknot_male.gltf",
   "status": "draft"
 }

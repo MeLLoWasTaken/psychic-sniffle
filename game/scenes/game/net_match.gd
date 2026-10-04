@@ -74,6 +74,7 @@ var _playback: RecordingFile
 var _playback_ready: bool = false
 var _playback_done: bool = false
 var _cam_override: Array = []  ## [yaw, pitch] recorded with the tick being drawn (playback)
+var _appearances_seen: int = 0  ## the client's appearances_version last put in a view
 var _pending_record: Variant = null  ## an older recording's first tick, read while looking for a header
 
 
@@ -238,6 +239,7 @@ func _connect() -> void:
 	net.player_name = str(preset["host_name"])
 	net.spec_id = spec_id
 	net.talents = str(options["talents"])
+	net.appearance = Appearance.to_text(Appearance.load_saved(spec_id))
 	if float(options["lag_ms"]) > 0.0 or float(options["jitter_ms"]) > 0.0 or float(options["loss"]) > 0.0:
 		net.transport.configure_conditions(float(options["lag_ms"]), float(options["jitter_ms"]), float(options["loss"]), 7)
 	net.welcomed.connect(_on_welcomed)
@@ -279,6 +281,9 @@ func _on_ticked() -> void:
 	var v: Dictionary = net.render_view()
 	if v.is_empty():
 		return
+	if net.appearances_version != _appearances_seen:  # looks travel in the view (and so in recordings)
+		_appearances_seen = net.appearances_version
+		v["appearances"] = net.appearances.duplicate(true)
 	var evs: Array = _pending_events
 	_pending_events = []
 	_apply_tick(v, evs)

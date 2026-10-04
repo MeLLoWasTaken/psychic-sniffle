@@ -17,6 +17,6 @@
     "style": "moustache",
     "target_tris": 600
   },
-  "out": "game/assets/appearance/beard_moustache_male.glb",
+  "out": "game/assets/appearance/beard_moustache_male.gltf",
   "status": "draft"
 }

@@ -42,6 +42,8 @@ func _ready() -> void:
 	var spec: String = _arg(args, "--spec", "warblade_carnage")
 	if mode == "ground":
 		_ground(spec, _arg(args, "--view", "front"), args)
+	elif mode == "looks":
+		_looks(args)
 	elif mode == "perf":
 		_perf_setup(_arg(args, "--floor", "flat"), int(_arg(args, "--count", "20")))
 	else:
@@ -88,6 +90,65 @@ func _character(spec: String, pos: Vector3, facing: float, id: int) -> Dictionar
 	var c: Dictionary = {"root": root, "animator": anim, "unit": u, "view": {"tick": 1, "units": [u], "match": {"phase": 1}}}
 	chars.append(c)
 	return c
+
+
+# ------------------------------------------------------------------ looks (G-05)
+
+func _character_look(spec: String, look: Dictionary, id: int) -> Dictionary:
+	var root: Node3D = Node3D.new()
+	root.name = "Char%d" % id
+	add_child(root)
+	var model: Node3D = CharacterAssembler.build(look, spec, id % 2)
+	model.rotation.y = PI
+	root.add_child(model)
+	var anim: CharacterAnimator = CharacterAnimator.create(CharacterRig.setup(CharacterAssembler.rig_asset(look, spec), model), id, 0)
+	var u: Dictionary = {"id": id, "team": 0, "spec": spec, "position": Vector3.ZERO, "facing": 0.0,
+		"health": 100, "max_health": 100, "target_id": -1, "cast": {}, "auras": []}
+	var c: Dictionary = {"root": root, "animator": anim, "unit": u, "view": {"tick": 1, "units": [u], "match": {"phase": 1}}}
+	chars.append(c)
+	return c
+
+
+## A row of assembled overhaul characters (CharacterAssembler): each spec in --specs in its default
+## look, then --random more with varied bot looks, facing the camera.
+##   tools/screenshot.sh res://scenes/tests/rig_view.tscn previews/g_05/looks.png 1600 900 30 \
+##     --mode looks --specs templar_vanguard,templar_radiance,templar_zealot --random 2 [--team 0]
+func _looks(args: PackedStringArray) -> void:
+	var specs: PackedStringArray = _arg(args, "--specs", "templar_vanguard,templar_radiance,templar_zealot").split(",")
+	var looks: Array = []
+	for sp: String in specs:
+		looks.append([sp, Appearance.default_for(sp)])
+	var extra: int = int(_arg(args, "--random", "2"))
+	for i: int in extra:
+		var rng: RandomNumberGenerator = RandomNumberGenerator.new()
+		rng.seed = 100 + i
+		var sp: String = specs[i % specs.size()]
+		var rl: Dictionary = Appearance.random_for(sp, rng)
+		rl["pieces"]["head"] = ""   # bare-headed, so faces and hair show
+		looks.append([sp, rl])
+	var team: int = int(_arg(args, "--team", "-1"))
+	var n: int = looks.size()
+	for i: int in n:
+		var pos: Vector3 = Vector3((i - (n - 1) * 0.5) * 1.7, 0.0, 0.0)
+		var root: Node3D = Node3D.new()
+		add_child(root)
+		root.position = pos
+		root.rotation.y = PI
+		var look: Dictionary = looks[i][1]
+		var model: Node3D = CharacterAssembler.build(look, looks[i][0], team)
+		model.rotation.y = PI
+		if "--debug-dye" in args:
+			for mi: MeshInstance3D in model.find_children("*", "MeshInstance3D", true, false):
+				if mi.material_override is ShaderMaterial and (mi.material_override as ShaderMaterial).shader == CharacterAssembler.PIECE_SHADER:
+					(mi.material_override as ShaderMaterial).set_shader_parameter("debug_dye", true)
+		root.add_child(model)
+		var player: AnimationPlayer = CharacterRig.setup(CharacterAssembler.rig_asset(look, looks[i][0]), model)
+		var anim: CharacterAnimator = CharacterAnimator.create(player, 10 + i, 0)
+		var u: Dictionary = {"id": 10 + i, "team": 0, "spec": looks[i][0], "position": pos, "facing": PI,
+			"health": 100, "max_health": 100, "target_id": -1, "cast": {}, "auras": []}
+		chars.append({"root": root, "animator": anim, "unit": u, "view": {"tick": 1, "units": [u], "match": {"phase": 1}}})
+		_label("%s / %s" % [str(looks[i][0]).replace("templar_", ""), look["body"]], pos + Vector3(0, 0.02, 0.8))
+	_frame(args, Vector3(0, 1.0, 0), 0.0, 8.0, 10.0)
 
 
 # ------------------------------------------------------------------ look
@@ -172,10 +233,24 @@ func _perf_setup(floor_kind: String, count: int) -> void:
 	if floor_kind == "slope":
 		_block(Vector3(0, 2.0, 0), Vector3(40, 0.2, 40), Vector3(deg_to_rad(10.0), 0, 0))  # above the floor everywhere they run
 	var specs: Array[String] = ["warblade_carnage", "arcanist_rime", "oracle_grace"]
+	var assembled: bool = "--looks" in OS.get_cmdline_user_args()   # overhaul characters (G-05)
+	if assembled:
+		specs = ["templar_vanguard", "templar_radiance", "templar_zealot"]
+	var tris: int = 0
 	for i: int in count:
-		var c: Dictionary = _character(specs[i % specs.size()], Vector3.ZERO, 0.0, 200 + i)
+		var c: Dictionary
+		if assembled:
+			var rng: RandomNumberGenerator = RandomNumberGenerator.new()
+			rng.seed = 300 + i
+			c = _character_look(specs[i % specs.size()], Appearance.random_for(specs[i % specs.size()], rng), 200 + i)
+		else:
+			c = _character(specs[i % specs.size()], Vector3.ZERO, 0.0, 200 + i)
+		for mi: MeshInstance3D in (c["root"] as Node3D).find_children("*", "MeshInstance3D", true, false):
+			for sidx: int in mi.mesh.get_surface_count():
+				tris += mi.mesh.surface_get_array_index_len(sidx) / 3
 		c["phase"] = TAU * i / count
 		c["radius"] = 3.0 + (i % 4) * 1.5
+	print("rig_perf: %d characters, %d triangles at full detail (%d each)" % [count, tris, tris / maxi(count, 1)])
 	for i: int in count:
 		var c: Dictionary = chars[i]
 		var other: Dictionary = chars[(i + 1) % count]

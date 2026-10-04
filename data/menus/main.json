@@ -45,7 +45,15 @@
       "id": "talents",
       "label": "Talents",
       "action": "talents",
-      "hint": "Your talent loadouts for the chosen specialization: class tree, spec tree and PvP talents."
+      "hint": "Your talent loadouts for the chosen specialization: class tree, spec tree and PvP talents.",
+      "row": "loadout"
+    },
+    {
+      "id": "character",
+      "label": "Character",
+      "action": "character",
+      "hint": "Your look for the chosen specialization: body, face, hair, armor pieces and dyes (graphics overhaul preview).",
+      "row": "loadout"
     },
     {
       "id": "settings",
@@ -354,7 +362,44 @@
     "settings_on": "On",
     "settings_off": "Off",
     "settings_profile_label": "Profile: {name}",
-    "settings_device_default": "System default"
+    "settings_device_default": "System default",
+    "creator_title": "{spec} · Character",
+    "creator_tab_body": "Body",
+    "creator_tab_face": "Face",
+    "creator_tab_hair": "Hair",
+    "creator_tab_armor": "Armor",
+    "creator_tab_dyes": "Dyes",
+    "creator_body": "Body",
+    "creator_height": "Height",
+    "creator_skin": "Skin",
+    "creator_face": "Face",
+    "creator_eyes": "Eyes",
+    "creator_marking": "Scars and paint",
+    "creator_paint": "Paint colour",
+    "creator_hair": "Hair",
+    "creator_hair_color": "Hair colour",
+    "creator_beard": "Beard",
+    "creator_dye_piece": "Piece",
+    "dye_primary": "Primary (cloth)",
+    "dye_secondary": "Secondary (trim)",
+    "dye_metal": "Metal",
+    "slot_head": "Head",
+    "slot_shoulders": "Shoulders",
+    "slot_chest": "Chest",
+    "slot_hands": "Hands",
+    "slot_waist": "Waist",
+    "slot_legs": "Legs",
+    "slot_feet": "Feet",
+    "slot_back": "Back",
+    "body_male": "Male",
+    "body_female": "Female",
+    "creator_none": "None (hidden)",
+    "creator_random": "Randomize",
+    "creator_reset": "Reset",
+    "creator_save": "Save",
+    "creator_back": "Back",
+    "creator_saved": "Saved. Your next match uses this look (with \"New character models\" on in Settings, Graphics).",
+    "creator_no_set": "This class's armor is not rebuilt yet: in matches it keeps its current model."
   },
   "scoreboard_columns": [
     {
@@ -927,6 +972,11 @@
           {
             "path": "graphics.fog",
             "label": "Volumetric fog",
+            "type": "toggle"
+          },
+          {
+            "path": "graphics.new_characters",
+            "label": "New character models (preview)",
             "type": "toggle"
           },
           {

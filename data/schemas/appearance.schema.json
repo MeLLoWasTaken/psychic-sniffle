@@ -1,0 +1,35 @@
+{
+ "$schema": "https://json-schema.org/draft/2020-12/schema",
+ "$id": "appearance.schema.json",
+ "title": "Character look",
+ "description": "A player's look for one spec (backlog G-05), saved by the creator in user://appearance/<spec>.json and sent in the hello. Option ids come from data/appearance, pieces are '<armor set>:<slot>' or '' (hidden, except chest, legs and feet). The server sanitizes every look (game/core/appearance.gd): unknown options fall back to the spec's default and pieces must be of the class's armor type.",
+ "type": "object",
+ "required": ["body", "height", "face", "skin", "hair", "hair_color", "beard", "eyes", "marking", "paint", "pieces", "dyes"],
+ "additionalProperties": false,
+ "properties": {
+  "body": {"enum": ["male", "female"]},
+  "height": {"type": "number", "minimum": 0.96, "maximum": 1.04},
+  "face": {"type": "string"},
+  "skin": {"type": "string"},
+  "hair": {"type": "string"},
+  "hair_color": {"type": "string"},
+  "beard": {"type": "string"},
+  "eyes": {"type": "string"},
+  "marking": {"type": "string"},
+  "paint": {"$ref": "#/$defs/colour"},
+  "pieces": {
+   "type": "object",
+   "required": ["head", "shoulders", "chest", "hands", "waist", "legs", "feet", "back"],
+   "additionalProperties": false,
+   "patternProperties": {"^(head|shoulders|chest|hands|waist|legs|feet|back)$": {"type": "string", "pattern": "^([a-z][a-z0-9_]*:[a-z]+)?$"}}
+  },
+  "dyes": {
+   "type": "object",
+   "additionalProperties": false,
+   "patternProperties": {"^(head|shoulders|chest|hands|waist|legs|feet|back)$": {
+    "type": "object", "required": ["primary", "secondary", "metal"], "additionalProperties": false,
+    "properties": {"primary": {"$ref": "#/$defs/colour"}, "secondary": {"$ref": "#/$defs/colour"}, "metal": {"$ref": "#/$defs/colour"}}}}
+  }
+ },
+ "$defs": {"colour": {"type": "string", "pattern": "^#[0-9a-fA-F]{6}$"}}
+}

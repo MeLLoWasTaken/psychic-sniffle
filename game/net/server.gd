@@ -43,6 +43,7 @@ var respawn: bool = false
 var summary_path: String = ""
 
 var clients: Dictionary = {}  ## peer instance id -> client record
+var appearances: Dictionary = {}  ## unit id -> look as text (Appearance.to_text), cosmetic only (G-05)
 var _end_states: Dictionary = {}  ## tick -> unit id -> health, from the match end on (M1-30)
 var input_log_path: String = ""  ## --input-log: write the match's input log here on finish (M1-29)
 var _tick_usec: PackedInt64Array = []
@@ -228,7 +229,7 @@ func _on_packet(peer: ENetPacketPeer, key: int, msg: Dictionary) -> void:
 					transport.send(peer, Protocol.CH_RELIABLE, Protocol.reject("not in the roster"), true)
 					Log.warn("server: rejected %s (not in the roster, or already joined)" % msg["name"])
 					return
-			_add_client(peer, key, msg["name"], msg["spec"], msg["talents"], msg.get("prefs", {}))
+			_add_client(peer, key, msg["name"], msg["spec"], msg["talents"], msg.get("prefs", {}), str(msg.get("appearance", "")))
 		Protocol.Msg.INPUT:
 			var c: Dictionary = clients.get(key, {})
 			if c.is_empty():
@@ -276,7 +277,7 @@ func _client_stats(c: Dictionary) -> Dictionary:
 
 
 func _add_client(peer: ENetPacketPeer, key: int, player_name: String, spec_id: String, talents: String = "",
-		prefs: Dictionary = {}) -> void:
+		prefs: Dictionary = {}, appearance_text: String = "") -> void:
 	var team: int = int(roster.get(player_name, clients.size() % 2))
 	var unit: Unit = runner.add_unit(spec_id, team, talents, prefs)
 	_unit_names[player_name] = unit.id
@@ -284,6 +285,14 @@ func _add_client(peer: ENetPacketPeer, key: int, player_name: String, spec_id: S
 		"last_received_seq": 0, "ack_seq": 0, "snapshots": 0, "starved_ticks": 0, "lost_inputs": 0,
 		"joined_tick": sim.tick}
 	transport.send(peer, Protocol.CH_RELIABLE, Protocol.welcome(unit.id, sim.tick, sim.tick_rate, map["id"]), true)
+	# looks (G-05): sanitized here, so every client draws only real options; the newcomer gets
+	# everyone's, everyone gets the newcomer's
+	appearances[unit.id] = Appearance.to_text(Appearance.from_text(appearance_text, spec_id))
+	for uid: int in appearances:
+		if uid != unit.id:
+			transport.send(peer, Protocol.CH_RELIABLE, Protocol.appearance(uid, appearances[uid]), true)
+	for c: Dictionary in clients.values():
+		transport.send(c["peer"], Protocol.CH_RELIABLE, Protocol.appearance(unit.id, appearances[unit.id]), true)
 	Log.info("server: %s joined as unit %d (%s) on team %d" % [player_name, unit.id, spec_id, team])
 	if player_name == host_name:
 		_host_seen = true

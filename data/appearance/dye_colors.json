@@ -1,0 +1,26 @@
+{
+ "id": "dye_colors",
+ "kind": "dye_colors",
+ "name": "Dyes",
+ "description": "The fixed dye palette for armor channels (primary, secondary, metal) and war paint (docs/DESIGN.md: dyes are chosen from a fixed palette). The sets' default dyes need not be in it.",
+ "options": [
+  {"id": "bone", "name": "Bone", "color": "#ece5d6"},
+  {"id": "ash", "name": "Ash", "color": "#8d8a86"},
+  {"id": "coal", "name": "Coal", "color": "#1d1b1e"},
+  {"id": "crimson", "name": "Crimson", "color": "#8e1f1f"},
+  {"id": "rust", "name": "Rust", "color": "#8a4a26"},
+  {"id": "ochre", "name": "Ochre", "color": "#b5862f"},
+  {"id": "gold", "name": "Gold", "color": "#c9a050"},
+  {"id": "moss", "name": "Moss", "color": "#4f5e2e"},
+  {"id": "pine", "name": "Pine", "color": "#25463a"},
+  {"id": "sea", "name": "Sea", "color": "#2f5f6b"},
+  {"id": "royal", "name": "Royal blue", "color": "#2c4a82"},
+  {"id": "night", "name": "Night", "color": "#1c2540"},
+  {"id": "violet", "name": "Violet", "color": "#4a2f63"},
+  {"id": "steel", "name": "Steel", "color": "#a8adb4"},
+  {"id": "silver", "name": "Silver", "color": "#c9cfd6"},
+  {"id": "iron", "name": "Blackened iron", "color": "#4a4d55"},
+  {"id": "bronze", "name": "Bronze", "color": "#8c6a3f"},
+  {"id": "woad", "name": "Woad", "color": "#2b3a52"}
+ ]
+}

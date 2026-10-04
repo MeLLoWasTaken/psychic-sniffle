@@ -17,6 +17,6 @@
     "style": "goatee",
     "target_tris": 1000
   },
-  "out": "game/assets/appearance/beard_goatee_male.glb",
+  "out": "game/assets/appearance/beard_goatee_male.gltf",
   "status": "draft"
 }

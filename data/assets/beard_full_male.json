@@ -17,6 +17,6 @@
     "style": "full",
     "target_tris": 2200
   },
-  "out": "game/assets/appearance/beard_full_male.glb",
+  "out": "game/assets/appearance/beard_full_male.gltf",
   "status": "draft"
 }

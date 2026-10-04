@@ -17,6 +17,6 @@
     "style": "cropped",
     "target_tris": 2000
   },
-  "out": "game/assets/appearance/hair_cropped_male.glb",
+  "out": "game/assets/appearance/hair_cropped_male.gltf",
   "status": "draft"
 }

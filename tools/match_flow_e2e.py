@@ -103,6 +103,10 @@ def main() -> int:
         failures.append(f"client reported failure: {rep.get('failure') or 'errors in its log'}")
     if res.get("history") != FLOW:
         failures.append(f"flow went {res.get('history')}, expected {FLOW}")
+    # looks (G-05): the server passes every unit's look to the player's client, bots' included
+    looks = {int(m) for m in re.findall(r"\[client\] client: look for unit (\d+)", text)}
+    if rep and len(looks) != 4:
+        failures.append(f"the client received looks for units {sorted(looks)}, expected all 4")
     for c in rep.get("clicks", []):
         if not c.get("hit"):
             failures.append(f"click on {c['control']} did not reach it")

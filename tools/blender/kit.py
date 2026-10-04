@@ -474,7 +474,9 @@ def bake_piece(obj: bpy.types.Object, out_dir: Path, name: str, size: int = 1024
             img_node.image = pass_img
             nt.nodes.active = img_node
             saved.append((mat, out, prev, emit, img_node))
+        scene.cycles.samples = samples if channel == "color" else 1   # roughness and metal are flat colours
         bpy.ops.object.bake(type="EMIT")
+        scene.cycles.samples = samples
         for mat, out, prev, emit, img_node in saved:
             mat.node_tree.links.new(prev, out.inputs["Surface"])
             mat.node_tree.nodes.remove(emit)

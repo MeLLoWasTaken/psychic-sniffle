@@ -21,6 +21,7 @@ const CAPSULE_HEIGHT: float = 1.8
 var tick_rate: int = 60
 var view: Dictionary = {}  ## the newest view
 var units: Dictionary = {}  ## unit id -> entry (see _entry)
+var appearances: Dictionary = {}  ## unit id -> look (G-05), from views that carry "appearances"
 var target_id: int = -1
 var ring: MeshInstance3D
 var effects: EffectsDirector  ## spell effects from the same views and events (M1-25)
@@ -50,6 +51,14 @@ func _init() -> void:
 func push_view(v: Dictionary) -> void:
 	if v.is_empty():
 		return
+	if v.has("appearances"):   # looks arrive once per join (net_match puts them in the view)
+		for k: Variant in v["appearances"]:
+			appearances[int(k)] = v["appearances"][k]
+		if new_characters():
+			for id: int in units.keys():
+				if appearances.has(id) and not units[id].get("look_built", false) \
+						and uses_new_character(str(units[id]["unit"]["spec"])):
+					_rebuild_character(id)
 	var t: int = int(v.get("draw_tick", v["tick"]))
 	if t == _last_tick:
 		return
@@ -150,15 +159,44 @@ func _entry(u: Dictionary) -> Dictionary:
 	var root: Node3D = Node3D.new()
 	root.name = "Unit%d" % int(u["id"])
 	add_child(root)
-	var asset: Dictionary = character_asset(str(u["spec"]))
-	var player: AnimationPlayer = _add_character(root, str(u["spec"]), int(u["team"]))
-	var animator: CharacterAnimator = null
-	if player != null:
-		var set_id: String = str(CharacterRig.animation_set(str(asset.get("body_build", ""))).get("id", "humanoid"))
-		animator = CharacterAnimator.create(player, int(u["id"]), int(u["team"]), set_id)
+	var look: Dictionary = appearances.get(int(u["id"]), {}) if uses_new_character(str(u["spec"])) else {}
+	var player: AnimationPlayer = _add_character(root, str(u["spec"]), int(u["team"]), look)
+	var animator: CharacterAnimator = _animator_for(player, u, look)
 	return {"root": root, "player": player, "animator": animator, "unit": u, "prev_pos": u["position"],
 		"cur_pos": u["position"], "prev_facing": float(u["facing"]), "cur_facing": float(u["facing"]),
-		"health": int(u["health"]), "team": int(u["team"])}
+		"health": int(u["health"]), "team": int(u["team"]), "look_built": not look.is_empty()}
+
+
+static func new_characters() -> bool:
+	return bool(Settings.get_value("graphics.new_characters", false))
+
+
+## The overhaul's assembled character only for classes whose default armor set exists so far
+## (the others keep their current model until G-07 and G-08).
+static func uses_new_character(spec_id: String) -> bool:
+	return new_characters() and Appearance.default_set(spec_id) != ""
+
+
+func _animator_for(player: AnimationPlayer, u: Dictionary, look: Dictionary) -> CharacterAnimator:
+	if player == null:
+		return null
+	var build: String = str(look.get("body", "")) if not look.is_empty() else str(character_asset(str(u["spec"])).get("body_build", ""))
+	var set_id: String = str(CharacterRig.animation_set(build).get("id", "humanoid"))
+	return CharacterAnimator.create(player, int(u["id"]), int(u["team"]), set_id)
+
+
+## A look arrived after the unit was first drawn: swap its model for the assembled one.
+func _rebuild_character(id: int) -> void:
+	var e: Dictionary = units[id]
+	var root: Node3D = e["root"]
+	for c: Node in root.get_children():
+		if c is Node3D and c.name != "Nameplate":
+			c.queue_free()
+	var u: Dictionary = e["unit"]
+	var look: Dictionary = appearances[id]
+	e["player"] = _add_character(root, str(u["spec"]), int(u["team"]), look)
+	e["animator"] = _animator_for(e["player"], u, look)
+	e["look_built"] = true
 
 
 ## The character asset for a spec (data/assets, kind "character"), or empty.
@@ -171,7 +209,13 @@ static func character_asset(spec_id: String) -> Dictionary:
 
 ## Adds the spec's built character under `root` (facing the game's forward like map_view does),
 ## or a capsule stand-in. Returns its AnimationPlayer, or null for a stand-in.
-func _add_character(root: Node3D, spec_id: String, team: int) -> AnimationPlayer:
+func _add_character(root: Node3D, spec_id: String, team: int, look: Dictionary = {}) -> AnimationPlayer:
+	if not look.is_empty():   # the graphics overhaul's assembled character (G-05)
+		var assembled: Node3D = CharacterAssembler.build(look, spec_id, team)
+		if assembled != null:
+			assembled.rotation.y = PI
+			root.add_child(assembled)
+			return CharacterRig.setup(CharacterAssembler.rig_asset(look, spec_id), assembled)
 	var asset: Dictionary = character_asset(spec_id)
 	var path: String = CharacterRig.res_path(asset) if not asset.is_empty() else ""
 	if path != "" and ResourceLoader.exists(path):

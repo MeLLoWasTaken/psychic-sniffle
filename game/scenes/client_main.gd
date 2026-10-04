@@ -10,6 +10,7 @@ extends Control
 ## Command line (after `--`), for automated runs and screenshots:
 ##   --spec <id>            preselect a spec           --prep <s>      preparation length
 ##   --open-settings        open the settings panel at start (screenshots)
+##   --open-character <spec> [--character-tab <tab>]  open the character creator at start (screenshots)
 ##   --no-kit --no-gi --no-hud   lighter arena art     --port-min <n>  local server port range start
 ##   --pilot                ScriptedPilot plays the player's controls (decides like a bot)
 ##   --auto <script>        ScriptedInput steps for the player's controls
@@ -37,6 +38,7 @@ var menu: MainMenu
 var match_scene: Node  ## the running NetMatch, or null
 var practice: Node  ## the running practice scene, or null
 var talent_screen: TalentScreen  ## the open talent screen, or null
+var character_screen: CharacterScreen  ## the open character creator, or null
 var practice_menu: PauseMenu
 var args: PackedStringArray
 var last_result: Dictionary = {}
@@ -85,6 +87,11 @@ func _ready() -> void:
 	add_child(practice_menu)
 	if "--open-settings" in args:  # screenshots of the settings panel
 		menu.show_settings()
+	if _arg("--open-character", "") != "":  # screenshots of the character creator
+		var cs: CharacterScreen = show_character(_arg("--open-character", ""))
+		cs.show_tab(_arg("--character-tab", "body"))
+		cs.auto_spin = false
+		cs.spin = 0.5
 	_auto_flow = _arg("--auto-flow", "")
 	if _auto_flow != "":
 		_auto_step = "menu"
@@ -134,6 +141,8 @@ func _on_action(action: String, spec: String) -> void:
 			menu.show_settings()
 		"talents":
 			show_talents(spec)
+		"character":
+			show_character(spec)
 		"quit":
 			get_tree().quit(0)
 
@@ -189,6 +198,21 @@ func show_talents(spec: String) -> TalentScreen:
 	menu.visible = false
 	add_child(talent_screen)
 	return talent_screen
+
+
+## The character creator for a spec (G-06), over the menu; closing it returns to the menu.
+func show_character(spec: String) -> CharacterScreen:
+	if character_screen != null:
+		return character_screen
+	character_screen = CharacterScreen.new(spec)
+	character_screen.closed.connect(func(_spec: String) -> void:
+		character_screen.queue_free()
+		character_screen = null
+		menu.visible = true
+		menu.focus_default())
+	menu.visible = false
+	add_child(character_screen)
+	return character_screen
 
 
 func start_practice(spec: String) -> void:

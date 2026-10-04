@@ -8,7 +8,7 @@
  "additionalProperties": false,
  "properties": {
   "id": {"type": "string", "pattern": "^[a-z][a-z0-9_]*$"},
-  "kind": {"enum": ["faces", "hair", "beards", "skin_tones", "hair_colors", "eye_colors", "markings"]},
+  "kind": {"enum": ["faces", "hair", "beards", "skin_tones", "hair_colors", "eye_colors", "markings", "dye_colors"]},
   "name": {"type": "string"},
   "description": {"type": "string"},
   "options": {

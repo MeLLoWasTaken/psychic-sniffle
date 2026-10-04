@@ -27,7 +27,8 @@
     "hands": [
       "fist",
       "fist"
-    ]
+    ],
+    "offhand": "shield_templar_kite"
   },
   "out": "game/assets/characters/char_templar_radiance.glb",
   "status": "draft",

@@ -197,15 +197,46 @@ def export_glb(path: Path, objects: list[bpy.types.Object] | None = None) -> Pat
         bpy.ops.object.select_all(action="DESELECT")
         for o in objects:
             o.select_set(True)
+    # ".gltf": the overhaul assets keep their textures as files beside the model (one copy of each
+    # in the repository, JPEG albedo); ".glb" embeds them (Godot then extracts a second copy)
+    separate = path.suffix == ".gltf"
     bpy.ops.export_scene.gltf(
         filepath=str(path),
-        export_format="GLB",
+        export_format="GLTF_SEPARATE" if separate else "GLB",
+        export_image_format="AUTO",
         use_selection=objects is not None,
         export_apply=True,
         export_yup=True,
         export_animations=True,
     )
+    if separate:
+        jpeg_normals(path)
     return path
+
+
+def jpeg_normals(gltf_path: Path, quality: int = 95) -> int:
+    """Store a glTF's PNG textures as JPEG (quality 95, no chroma subsampling) and point the file at
+    them. Normal maps of mail and cloth are fine noise that PNG cannot compress (a 4096 px one is
+    18 MB); as JPEG they are about a quarter, and the game compresses them for the GPU anyway."""
+    from PIL import Image
+    data = json.loads(gltf_path.read_text())
+    changed = 0
+    for img in data.get("images", []):
+        uri = img.get("uri", "")
+        if not uri.lower().endswith(".png"):
+            continue
+        src = gltf_path.parent / uri
+        if not src.exists():
+            continue
+        dst = src.with_suffix(".jpg")
+        Image.open(src).convert("RGB").save(dst, quality=quality, subsampling=0)
+        src.unlink()
+        img["uri"] = dst.name
+        img["mimeType"] = "image/jpeg"
+        changed += 1
+    if changed:
+        gltf_path.write_text(json.dumps(data, indent=1))
+    return changed
 
 
 # ----------------------------------------------------------------------------- previews

@@ -1,0 +1,243 @@
+{
+ "male": {
+  "covered": 8298,
+  "clips": {
+   "idle": {},
+   "combat_idle": {
+    "chest": {
+     "count": 5,
+     "depth_m": 0.0046,
+     "frame": 27,
+     "at": [
+      -0.261,
+      -0.223,
+      1.142
+     ]
+    }
+   },
+   "run": {
+    "chest": {
+     "count": 11,
+     "depth_m": 0.0058,
+     "frame": 22,
+     "at": [
+      -0.389,
+      -0.212,
+      1.292
+     ]
+    },
+    "legs": {
+     "count": 16,
+     "depth_m": 0.0088,
+     "frame": 19,
+     "at": [
+      0.003,
+      -0.0,
+      0.775
+     ]
+    }
+   },
+   "cast_loop": {
+    "hands": {
+     "count": 3,
+     "depth_m": 0.0059,
+     "frame": 21,
+     "at": [
+      0.11,
+      -0.537,
+      1.595
+     ]
+    }
+   },
+   "cast_release": {
+    "hands": {
+     "count": 2,
+     "depth_m": 0.0057,
+     "frame": 4,
+     "at": [
+      -0.121,
+      -0.635,
+      1.242
+     ]
+    }
+   },
+   "attack_1": {
+    "chest": {
+     "count": 5,
+     "depth_m": 0.0057,
+     "frame": 21,
+     "at": [
+      -0.257,
+      -0.132,
+      1.167
+     ]
+    },
+    "hands": {
+     "count": 1,
+     "depth_m": 0.0056,
+     "frame": 7,
+     "at": [
+      0.28,
+      0.308,
+      1.785
+     ]
+    },
+    "head": {
+     "count": 2,
+     "depth_m": 0.0042,
+     "frame": 10,
+     "at": [
+      -0.078,
+      0.144,
+      1.595
+     ]
+    }
+   },
+   "attack_2": {
+    "chest": {
+     "count": 8,
+     "depth_m": 0.0054,
+     "frame": 3,
+     "at": [
+      -0.205,
+      -0.327,
+      1.236
+     ]
+    }
+   },
+   "attack_3": {
+    "chest": {
+     "count": 8,
+     "depth_m": 0.0052,
+     "frame": 7,
+     "at": [
+      -0.439,
+      0.088,
+      1.278
+     ]
+    },
+    "legs": {
+     "count": 3,
+     "depth_m": 0.0056,
+     "frame": 11,
+     "at": [
+      0.063,
+      -0.274,
+      0.525
+     ]
+    },
+    "hands": {
+     "count": 2,
+     "depth_m": 0.0054,
+     "frame": 15,
+     "at": [
+      0.391,
+      -0.267,
+      1.774
+     ]
+    }
+   }
+  },
+  "failures": {}
+ },
+ "female": {
+  "covered": 8378,
+  "clips": {
+   "idle": {
+    "chest": {
+     "count": 8,
+     "depth_m": 0.0052,
+     "frame": 72,
+     "at": [
+      0.16,
+      0.032,
+      1.345
+     ]
+    }
+   },
+   "combat_idle": {},
+   "run": {
+    "legs": {
+     "count": 2,
+     "depth_m": 0.0064,
+     "frame": 6,
+     "at": [
+      -0.096,
+      0.129,
+      0.546
+     ]
+    },
+    "chest": {
+     "count": 4,
+     "depth_m": 0.0052,
+     "frame": 13,
+     "at": [
+      0.215,
+      -0.199,
+      1.152
+     ]
+    }
+   },
+   "cast_loop": {},
+   "cast_release": {
+    "chest": {
+     "count": 1,
+     "depth_m": 0.006,
+     "frame": 4,
+     "at": [
+      -0.162,
+      -0.082,
+      1.414
+     ]
+    }
+   },
+   "attack_1": {
+    "chest": {
+     "count": 10,
+     "depth_m": 0.0077,
+     "frame": 10,
+     "at": [
+      0.165,
+      0.148,
+      1.437
+     ]
+    }
+   },
+   "attack_2": {
+    "chest": {
+     "count": 13,
+     "depth_m": 0.0063,
+     "frame": 9,
+     "at": [
+      -0.079,
+      -0.195,
+      1.413
+     ]
+    },
+    "head": {
+     "count": 3,
+     "depth_m": 0.0234,
+     "frame": 9,
+     "at": [
+      0.035,
+      -0.151,
+      1.497
+     ]
+    }
+   },
+   "attack_3": {
+    "chest": {
+     "count": 4,
+     "depth_m": 0.0047,
+     "frame": 26,
+     "at": [
+      0.228,
+      -0.117,
+      1.091
+     ]
+    }
+   }
+  },
+  "failures": {}
+ }
+}

@@ -31,6 +31,9 @@ var input_source: Callable  ## returns {move, yaw, jump, tab} for this tick
 var player_name: String = "player"
 var spec_id: String = "warblade_carnage"
 var talents: String = ""  ## talent loadout in its shared text form (Talents.encode)
+var appearance: String = ""  ## this player's look (Appearance.to_text) sent with the hello; "" for the default
+var appearances: Dictionary = {}  ## unit id -> look (Dictionary) as the server sent them (G-05)
+var appearances_version: int = 0  ## bumps whenever a look arrives
 var prefs: Dictionary = {}  ## gameplay settings the server's rules use (spell queue window, auto self-cast)
 var unit_id: int = -1
 var _match_phase: int = ArenaMatch.Phase.PREP  ## from the newest snapshot
@@ -137,7 +140,7 @@ func _poll_network() -> void:
 		match ev["type"]:
 			"connect":
 				connected = true
-				transport.send(server_peer, Protocol.CH_RELIABLE, Protocol.hello(player_name, spec_id, talents, prefs), true)
+				transport.send(server_peer, Protocol.CH_RELIABLE, Protocol.hello(player_name, spec_id, talents, prefs, appearance), true)
 			"disconnect":
 				connected = false
 				if _match_ended_usec > 0:
@@ -205,6 +208,12 @@ func _on_packet(msg: Dictionary) -> void:
 			if str(msg["error"]) == "":
 				talents = str(msg["talents"])
 			talents_answered.emit(str(msg["talents"]), str(msg["error"]))
+		Protocol.Msg.APPEARANCE:
+			var parsed: Variant = JSON.parse_string(str(msg["text"]))
+			if typeof(parsed) == TYPE_DICTIONARY:
+				appearances[int(msg["unit_id"])] = parsed
+				appearances_version += 1
+				Log.info("client: look for unit %d (%s body)" % [int(msg["unit_id"]), str(parsed.get("body", "?"))])
 		Protocol.Msg.PONG:
 			_stats["rtt_ms"].append((Time.get_ticks_usec() - int(msg["t_usec"])) / 1000.0)
 		Protocol.Msg.EVENTS:
