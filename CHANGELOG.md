@@ -2,6 +2,15 @@
 
 One entry per build-loop iteration, newest first. Format: date, backlog ID, what changed, how it was checked.
 
+## 2026-10-05 — G-16 (second face pass) and G-07 (designs)
+- Faces: the face was a flat, wide mask; the cheekbones and the sides of the face now sit further back, so the face turns away from its front, and the crease from cheekbone to jaw is gone. The male jaw no longer flares wider than the cheekbones (it read as jowls). The female lower face tapers to a softer chin set back from the lips, with nostrils sized to her nose. The eyelids close slightly over the iris, the mouth line follows the lips and fades at the corners, the skull is a little shorter, and the male nose is smaller.
+- Fixed small dents, pits and sharp patches (the female temple, the hollow-cheeked presets, a groove down the female cheeks). They came from thin shapes blending over a wider area than their own thickness.
+- Faces are now checked with a quick shaded preview of the head's shape (about a minute instead of a 10-minute render).
+- Bodies, hair, beards and the crusader helm rebuilt; the crusader fit check is clean on both bodies.
+- G-07 (started): the Warblade's "Ironreaver" and the Deathsworn's "Rimebound" plate sets are designed, piece by piece, and draft-built; full builds are running. Armor can now glow (the Deathsworn's ice crown, eyes, rune and shoulder shards), and horn, bone and fur are new armor materials.
+- Still open in G-16: the faces are better but still read as stylized busts; on the game mesh the female mouth line breaks into dots.
+- Checked: asset validation, both bodies' animation clipping checks, the armor fit check, close-ups and creator sheets (`previews/g_16/rm_v20.png`, `rm_v21.png`, `head_v11c.png`, `creator_faces_zoom.png`), draft builds of four new pieces (`previews/g_07/`).
+
 ## 2026-10-05 — G-16 (first pass): faces, neck, seams and hair
 - Fixed: thin lines across the bodies' waists, chests and necks. They were a flaw in how the shape generator combined body parts (a hard part cut off at its own edge while softer neighbours blended across it), not anatomy, and the new painted shading made them obvious. The fix applies to everything built from these shapes.
 - Neck and shoulders: the neck now meets the skull behind the jaw, so the jaw reads above it; the deep grooves above the collarbones are filled softly; the chest and collarbones blend more smoothly.

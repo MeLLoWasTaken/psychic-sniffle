@@ -511,14 +511,14 @@
   {
    "bufferView": 0,
    "componentType": 5126,
-   "count": 8208,
+   "count": 8906,
    "max": [
-    0.08752501755952835,
-    1.7607054710388184,
-    0.10525399446487427
+    0.08736372739076614,
+    1.7611733675003052,
+    0.10533315688371658
    ],
    "min": [
-    -0.08756028115749359,
+    -0.08746476471424103,
     1.1258318424224854,
     -0.17173559963703156
    ],
@@ -527,25 +527,25 @@
   {
    "bufferView": 1,
    "componentType": 5126,
-   "count": 8208,
+   "count": 8906,
    "type": "VEC3"
   },
   {
    "bufferView": 2,
    "componentType": 5126,
-   "count": 8208,
+   "count": 8906,
    "type": "VEC2"
   },
   {
    "bufferView": 3,
    "componentType": 5121,
-   "count": 8208,
+   "count": 8906,
    "type": "VEC4"
   },
   {
    "bufferView": 4,
    "componentType": 5126,
-   "count": 8208,
+   "count": 8906,
    "type": "VEC4"
   },
   {
@@ -564,44 +564,44 @@
  "bufferViews": [
   {
    "buffer": 0,
-   "byteLength": 98496,
+   "byteLength": 106872,
    "byteOffset": 0,
    "target": 34962
   },
   {
    "buffer": 0,
-   "byteLength": 98496,
-   "byteOffset": 98496,
+   "byteLength": 106872,
+   "byteOffset": 106872,
    "target": 34962
   },
   {
    "buffer": 0,
-   "byteLength": 65664,
-   "byteOffset": 196992,
+   "byteLength": 71248,
+   "byteOffset": 213744,
    "target": 34962
   },
   {
    "buffer": 0,
-   "byteLength": 32832,
-   "byteOffset": 262656,
+   "byteLength": 35624,
+   "byteOffset": 284992,
    "target": 34962
   },
   {
    "buffer": 0,
-   "byteLength": 131328,
-   "byteOffset": 295488,
+   "byteLength": 142496,
+   "byteOffset": 320616,
    "target": 34962
   },
   {
    "buffer": 0,
    "byteLength": 66000,
-   "byteOffset": 426816,
+   "byteOffset": 463112,
    "target": 34963
   },
   {
    "buffer": 0,
    "byteLength": 1280,
-   "byteOffset": 492816
+   "byteOffset": 529112
   }
  ],
  "samplers": [
@@ -612,7 +612,7 @@
  ],
  "buffers": [
   {
-   "byteLength": 494096,
+   "byteLength": 530392,
    "uri": "hair_braided_female.bin"
   }
  ]

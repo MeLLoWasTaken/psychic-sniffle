@@ -12,6 +12,9 @@ uniform vec3 secondary_ratio = vec3(1.0);
 uniform vec3 metal_ratio = vec3(1.0);
 uniform bool use_dye = true;
 uniform vec3 tint_ratio = vec3(1.0);
+uniform sampler2D glow_tex : hint_default_black, filter_linear_mipmap, repeat_disable;
+uniform bool use_glow = false;  // pieces with glowing parts (G-07: the Deathsworn's ice) have a glow mask
+uniform float glow_energy = 2.5;
 uniform bool debug_dye = false;  // review: draw the dye mask itself  // hair and beards: the hair colour / the neutral bake colour
 
 void fragment() {
@@ -28,4 +31,7 @@ void fragment() {
 	ROUGHNESS = orm.g;
 	METALLIC = orm.b;
 	NORMAL_MAP = texture(normal_tex, UV).rgb;
+	if (use_glow) {
+		EMISSION = base * texture(glow_tex, UV).r * glow_energy;
+	}
 }

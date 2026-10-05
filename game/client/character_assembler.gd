@@ -152,6 +152,10 @@ static func _piece_material(mi: MeshInstance3D, asset_id: String, colours: Dicti
 		for ch: String in NEUTRAL_DYE:
 			var c: Color = Color(str(dyes.get(ch, NEUTRAL_DYE[ch])))
 			mat.set_shader_parameter("%s_ratio" % ch, _ratio(c, Color(str(NEUTRAL_DYE[ch]))))
+	var glow_path: String = "res://assets/armor/%s_glow.png" % asset_id
+	mat.set_shader_parameter("use_glow", ResourceLoader.exists(glow_path))
+	if ResourceLoader.exists(glow_path):
+		mat.set_shader_parameter("glow_tex", load(glow_path))
 	if colours.has("tint"):
 		mat.set_shader_parameter("tint_ratio", _ratio(colours["tint"], NEUTRAL_HAIR))
 	return mat

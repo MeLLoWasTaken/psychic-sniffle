@@ -59,6 +59,20 @@ def dye(obj, mask_path: Path, dyes: dict) -> None:
             nt.links.new(sep.outputs[out], mix.inputs["Factor"])
             cur = mix.outputs[2]
         nt.links.new(cur, bsdf.inputs["Base Color"])
+        glow_path = mask_path.with_name(mask_path.name.replace("_dye.png", "_glow.png"))
+        if glow_path.exists():   # glowing parts (build_piece.GLOW), as the piece shader's emission
+            g = nt.nodes.new("ShaderNodeTexImage")
+            g.image = bpy.data.images.load(str(glow_path))
+            g.image.colorspace_settings.name = "Non-Color"
+            nt.links.new(uv.outputs["UV"], g.inputs["Vector"])
+            em = nt.nodes.new("ShaderNodeMix")
+            em.data_type = "RGBA"
+            em.blend_type = "MULTIPLY"
+            em.inputs["Factor"].default_value = 1.0
+            nt.links.new(src, em.inputs[6])
+            nt.links.new(g.outputs["Color"], em.inputs[7])
+            nt.links.new(em.outputs[2], bsdf.inputs["Emission Color"])
+            bsdf.inputs["Emission Strength"].default_value = 2.5
 
 
 def assemble(body_type: str, set_id: str, spec_id: str, face: str, hair: str, skin: str, weapon_id: str | None,

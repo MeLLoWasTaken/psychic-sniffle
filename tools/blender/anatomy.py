@@ -213,7 +213,7 @@ def add_head(sh: sdf.Shape, j: dict, body_type: str, face: str | dict | None = N
     P = lambda x, y, zz: v(x * s, y * s, hz + zz * s)  # noqa: E731
     # the female face is its own design, not a scaled male one: a smaller jaw and chin, a softer
     # brow, a smaller nose, fuller lips, larger eyes, higher cheekbones
-    jaw = f["jaw"] * (0.72 if fem else 1.0)
+    jw = f["jaw"] * (0.88 if fem else 1.0)   # the jaw's width (the angle sits inside the cheekbones)
     brow = f["brow"] * (0.35 if fem else 1.0)
     nose = f["nose"] * (0.68 if fem else 1.0)
     lips = f["lips"] * (1.22 if fem else 1.0)
@@ -221,46 +221,65 @@ def add_head(sh: sdf.Shape, j: dict, body_type: str, face: str | dict | None = N
     chin = f["chin"] * (0.8 if fem else 1.0)
     face_len = 0.9 if fem else 1.0   # the female face is shorter below the eyes
     # skull: the cranium and a fuller forehead
-    sh.ellipsoid(P(0, 0.02, 0.147), (0.079 * s, 0.097 * s, 0.086 * s), k=0.0, name="cranium")
+    sh.ellipsoid(P(0, 0.014, 0.147), (0.079 * s, 0.092 * s, 0.086 * s), k=0.0, name="cranium")
     sh.ellipsoid(P(0, -0.035 - 0.004 * fem, 0.16 + 0.004 * fem), (0.064 * s, (0.062 + 0.005 * fem) * s, 0.07 * s),
                  k=0.03 * s, name="forehead")
     # mid face (upper jaw) and lower face
-    sh.round_box(P(0, -0.046, 0.079), ((0.047 - 0.005 * fem) * s, 0.044 * s, 0.033 * s), 0.03 * s, k=0.04 * s, name="midface")
+    sh.round_box(P(0, -0.046, 0.079), ((0.047 - 0.002 * fem) * s, 0.044 * s, 0.033 * s), 0.03 * s, k=0.04 * s, name="midface")
     fl = (1.0 - face_len) * 0.08   # lower-face landmarks move up on a shorter face (0 for the male)
-    sh.round_box(P(0, -0.036, 0.045 + fl * 0.5), (0.044 * jaw * s, 0.046 * s, 0.032 * s * face_len), 0.03 * s, k=0.04 * s,
-                 name="lowerface")
+    if fem:   # an oval lower face, tapering to the chin
+        sh.ellipsoid(P(0, -0.04, 0.05 + fl * 0.5), (0.041 * jw * s, 0.05 * s, 0.036 * s * face_len), k=0.04 * s,
+                     name="lowerface")
+    else:     # a squarer male lower face
+        sh.round_box(P(0, -0.036, 0.045), (0.044 * jw * s, 0.046 * s, 0.032 * s), 0.03 * s, k=0.04 * s,
+                     name="lowerface")
     # jaw: from below the ear down to its angle, then forward to the chin, crisp enough to stand
-    # off the neck
-    angle = P((0.059 - 0.007 * fem) * jaw, -0.004, 0.034 + fl * 0.6 + 0.01 * fem)   # a higher, softer angle on the female jaw
-    sh.round_cone(P(0.06, 0.004, 0.088), angle, 0.014 * s, (0.016 - 0.002 * fem) * jaw * s, k=0.024 * s, name="ramus")
-    sh.round_cone(angle, P(0.017 * chin, -0.079, 0.012 + fl), (0.016 - 0.002 * fem) * jaw * s, 0.014 * s, k=0.022 * s,
+    # off the neck. The angle sits inside the cheekbones (a wider jaw read as jowls); the female
+    # angle is higher, the line thinner towards the chin and softer.
+    angle = P((0.048 + 0.002 * fem) * jw, 0.0, 0.029 + fl * 0.6 + 0.015 * fem)
+    jr = (0.013 - 0.002 * fem) * jw * s
+    sh.round_cone(P(0.057, 0.006, 0.09), angle, 0.012 * s, jr, k=(0.02 + 0.006 * fem) * s, name="ramus")
+    sh.round_cone(angle, P(0.019 * chin, -0.079, 0.012 + fl), jr, (0.013 - 0.003 * fem) * s, k=(0.024 + 0.006 * fem) * s,
                   name="jawline")
-    sh.ellipsoid(P(0, -0.083 + 0.002 * fem, 0.016 + fl + 0.003 * fem), ((0.021 - 0.004 * fem) * chin * s, 0.016 * s,
-                 0.018 * chin * s), k=0.016 * s, name="chin")
-    # masseter and temple: fill the side of the face between the cheekbone and the ear
-    sh.ellipsoid(P(0.062, -0.03, 0.14), (0.014 * s, 0.03 * s, 0.03 * s), k=0.038 * s, name="temple")
-    # the side of the face between the cheekbone, the ear and the jaw: one broad, soft mass
-    sh.ellipsoid(P(0.05 * (0.85 + 0.15 * jaw), -0.032, 0.078 + 0.006 * fem), ((0.017 - 0.002 * fem) * s, 0.03 * s,
-                 (0.04 - 0.006 * fem) * s), k=0.04 * s, name="side_face")
-    # cheekbones and the arch back to the ear
+    if fem:
+        sh.ellipsoid(P(0, -0.077, 0.018 + fl), (0.017 * chin * s, 0.016 * s, 0.018 * chin * s), k=0.014 * s, name="chin")
+    else:   # a square chin
+        sh.round_box(P(0, -0.081, 0.017), (0.021 * chin * s, 0.015 * s, 0.017 * chin * s), 0.01 * s, k=0.022 * s,
+                     name="chin")
+    # temple: fills the side of the skull behind the brow
+    sh.ellipsoid(P(0.062, -0.025, 0.14), (0.014 * s, 0.03 * s, 0.03 * s), k=0.034 * s, name="temple")
+    # the side of the face between the cheekbone, the ear and the jaw (the masseter): broad and soft,
+    # set well back so the face turns away from its front plane
+    # (smaller and higher on the female face, so the jaw tapers)
+    sh.ellipsoid(P((0.049 - 0.007 * fem) * (0.85 + 0.15 * jw), -0.026, 0.072 + 0.014 * fem), ((0.015 + 0.001 * fem) * s,
+                 0.044 * s, (0.046 - 0.013 * fem) * s), k=0.03 * s, name="side_face")
+    # cheekbones: the prominence under the outer eye, and the arch back to the ear (the face is
+    # widest across the arches, about 3 cm in front of the ear)
     ck = f["cheek"]
-    sh.ellipsoid(P(0.05, -0.062 - 0.004 * fem, 0.102 + 0.005 * fem), ((0.024 + 0.002 * fem) * s, (0.02 + 0.003 * fem) * ck * s,
-                 0.015 * s), k=0.024 * s, name="cheekbone")
-    sh.round_cone(P(0.052, -0.05, 0.103), P(0.07, -0.002, 0.106), 0.011 * ck * s, 0.009 * s, k=0.02 * s,
+    sh.ellipsoid(P(0.045 - 0.001 * fem, -0.066 - 0.003 * fem, 0.101 + 0.005 * fem), ((0.018 + 0.002 * fem) * s, 0.017 * ck * s,
+                 0.013 * s), k=0.022 * s, name="cheekbone")
+    sh.round_cone(P(0.05, -0.056, 0.103), P(0.067, -0.004, 0.106), 0.01 * ck * s, 0.008 * s, k=0.02 * s,
                   name="zygomatic")
     # soft cheeks under the cheekbones (fuller on the female face; a gaunt preset takes them away)
-    full = max(0.0, (0.5 + 0.4 * fem) - f["hollow"])
+    full = max(0.0, (0.3 + 0.6 * fem) - f["hollow"])
     if full > 0:
-        sh.ellipsoid(P(0.045, -0.058, 0.074), (0.022 * s, 0.02 * full * s, 0.025 * s), k=0.03 * s, name="cheek_fill")
-    if f["hollow"] > 0:  # hollows under the cheekbones
-        hw = f["hollow"]
-        sh.ellipsoid(P(0.048, -0.062, 0.072), (0.02 * s, 0.0055 * hw * s, 0.022 * s), k=0.03 * s, subtract=True,
-                     name="cheek_hollow")
+        cf = 0.7 + 0.5 * full   # scaled evenly: a thin ellipsoid blends badly
+        sh.ellipsoid(P(0.038 + 0.004 * full, -0.062, 0.074 - 0.008 * fem), (0.016 * cf * s, 0.016 * cf * s, 0.02 * cf * s), k=0.026 * s,
+                     name="cheek_fill")
+    if f["hollow"] > 0:  # hollows under the cheekbones: a large sphere shaving the cheek's surface
+        hr, dpt = 0.024, 0.005 * f["hollow"]
+        n = np.array([0.78, -0.62, 0.0]) / np.linalg.norm([0.78, -0.62, 0.0])
+        hc = np.array([0.056 - 0.003 * fem, -0.061, 0.07]) + n * (hr - dpt)
+        sh.sphere(P(*hc), hr * s, k=0.018 * s, subtract=True, name="cheek_hollow")
     # cheek fat beside the mouth (the nasolabial fold's outer side)
     sh.ellipsoid(P(0.03, -0.074, 0.07), (0.015 * s, 0.01 * s, 0.018 * s), k=0.02 * s, name="cheek_pad")
-    # brow ridge
-    sh.ellipsoid(P(0.029, -0.089, 0.1395), (0.024 * s, (0.004 + 0.0055 * brow) * s, (0.004 + 0.0042 * brow) * s), k=0.03 * s,
-                 rot=sdf.frame((1.0, 0.28, 0.06)), name="brow")
+    # brow ridge: a capsule along the upper rim of the eye socket (exact distance, so it blends
+    # cleanly however thin a preset makes it)
+    br = (0.004 + 0.006 * brow) * s
+    bd = np.array([1.0, 0.28, 0.06]) / np.linalg.norm([1.0, 0.28, 0.06])
+    bh = max(0.024 * s - br, 0.004 * s)
+    bc = P(0.029, -0.0875, 0.1395)
+    sh.round_cone(bc - bd * bh, bc + bd * bh, br, br * 0.9, k=0.032 * s, name="brow")
     # eyes: a shallow socket, the eyeball, lids that open about 11 mm and wrap the ball, a crease
     # above the upper lid
     e = eyes
@@ -278,9 +297,9 @@ def add_head(sh: sdf.Shape, j: dict, body_type: str, face: str | dict | None = N
             d = np.linalg.norm(q, axis=1) - (R + 0.0021 * s)
             u = q[:, 0] / (0.0135 * e * s)
             if upper:
-                edge = (0.0042 * e * (1.0 - 0.55 * u * u) + 0.0007 * u) * s     # over the iris's top
+                edge = (0.0036 * e * (1.0 - 0.55 * u * u) + 0.0007 * u) * s     # over the iris's top
                 return np.maximum(d, edge - q[:, 2])
-            edge = (-0.0054 * e * (1.0 - 0.45 * u * u) + 0.0005 * u) * s    # just under the iris
+            edge = (-0.0051 * e * (1.0 - 0.45 * u * u) + 0.0005 * u) * s    # at the iris's bottom
             return np.maximum(d, q[:, 2] - edge)
         return fn
     for name, up in (("eyelid_upper", True), ("eyelid_lower", False)):
@@ -289,11 +308,12 @@ def add_head(sh: sdf.Shape, j: dict, body_type: str, face: str | dict | None = N
                   subtract=True, name="lid_crease")
     # nose: bridge, a narrower tip, wings and small nostrils set underneath
     b = f["bridge"]
-    sh.round_cone(P(0, -0.094, 0.128), P(0, -0.094 - 0.016 * nose, 0.088), 0.0055 * b * s, 0.0082 * nose * s,
+    npj = 0.0125 + 0.004 * fem   # how far the nose stands out (before the nose factor)
+    sh.round_cone(P(0, -0.094, 0.128), P(0, -0.094 - npj * nose, 0.088), 0.0055 * b * s, 0.0082 * nose * s,
                   k=0.011 * s, name="nose_bridge")
-    sh.sphere(P(0, -0.0955 - 0.0165 * nose, 0.0825), 0.0088 * nose * s, k=0.008 * s, name="nose_tip")
+    sh.sphere(P(0, -0.0955 - (npj + 0.0005) * nose, 0.0825), 0.0088 * nose * s, k=0.008 * s, name="nose_tip")
     sh.sphere(P(0.0105 * nose, -0.1005 - 0.004 * nose, 0.0785), 0.0068 * nose * s, k=0.007 * s, name="nose_wing")
-    sh.sphere(P(0.0056 * nose, -0.0985 - 0.005 * nose, 0.0735), 0.0017 * nose * s, k=0.002 * s, subtract=True,
+    sh.sphere(P(0.0056 * nose, -0.0985 - 0.005 * nose, 0.0825 - 0.0092 * nose), 0.0017 * nose * s, k=0.002 * s, subtract=True,
               name="nostril")
     # mouth: an upper lip in two halves meeting in a bow, a fuller lower lip, a philtrum and corners
     # set into the cheeks
@@ -304,10 +324,16 @@ def add_head(sh: sdf.Shape, j: dict, body_type: str, face: str | dict | None = N
                      k=0.007 * s, rot=sdf.frame((1.0, 0.0, -0.12 if x0 else 0.0)), name=name)
     sh.ellipsoid(P(0, -0.0905, 0.0455 + fl * 0.45), (0.0185 * s, 0.009 * lips * s, (0.007 + 0.0012 * fem) * lips * s), k=0.008 * s,
                  name="lip_lower")
-    sh.round_cone(P(-0.021, -0.0985, mz), P(0.021, -0.0985, mz), 0.0013 * s, 0.0013 * s, k=0.002 * s,
+    # the line between the lips: deepest in the middle, following the mouth's curve back to the
+    # corners and fading out there (a straight cut left pits at the corners)
+    lf = lips - 1.0   # fuller lips stand further forward: the cut follows their surface
+    sh.round_cone(P(0.0, -0.0988 - 0.012 * lf, mz), P(0.021, -0.0945 - 0.005 * lf, mz + 0.0008), 0.0013 * s, 0.0005 * s,
+                  k=0.002 * s,
                   subtract=True, name="mouth_line")
-    sh.round_cone(P(0, -0.0975, 0.0745), P(0, -0.0995, 0.065 + fl * 0.4), 0.0015 * s, 0.0019 * s, k=0.003 * s,
-                  subtract=True, name="philtrum")
+    if fem < 0.5:   # on the female face the lip's bow carries it; a groove read as a dark stroke
+        py = -0.0955
+        sh.round_cone(P(0, py, 0.0835 - 0.0105 * nose), P(0, py - 0.002, 0.065 + fl * 0.4), 0.0011 * s, 0.0015 * s, k=0.003 * s,
+                      subtract=True, name="philtrum")
     # ears: a flattened disc with a hollow, tipped back
     ear_rot = sdf.frame((0.0, 0.25, 1.0), up=(0, 1, 0))
     sh.ellipsoid(P(0.077, 0.012, 0.108), (0.03 * s, 0.008 * s, 0.019 * s), k=0.008 * s, rot=ear_rot, name="ear")

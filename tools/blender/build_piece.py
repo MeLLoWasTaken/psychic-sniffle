@@ -121,7 +121,19 @@ MATERIALS = {
     "trim": ("secondary", "#d2c4a0", dict(roughness=0.85, edge=0.15, cavity=0.5), "cloth"),
     "cloth": ("primary", "#cfc8bc", dict(roughness=0.9, edge=0.1, cavity=0.55, top_light=0.15), "cloth"),
     "leather": ("leather", "#4a3424", dict(roughness=0.75, edge=0.3, cavity=0.5), "leather"),
+    # undyed (G-07): horn and bone keep their colour, fur its brown; ice glows (GLOW below)
+    "horn": ("leather", "#c4b292", dict(roughness=0.55, edge=0.5, cavity=0.7, top_light=0.1), "leather"),
+    "bone": ("leather", "#d8ceb2", dict(roughness=0.6, edge=0.45, cavity=0.75, top_light=0.1), "leather"),
+    "fur": ("leather", "#6a533d", dict(roughness=0.95, edge=0.05, cavity=0.8, top_light=0.15), "cloth"),
+    "ice": ("leather", "#a8ecff", dict(roughness=0.2, edge=0.6, cavity=0.25), None),
 }
+# materials that glow: their texels are white in the piece's glow mask (<id>_glow.png), which the
+# piece shader turns into emission
+GLOW = {"ice"}
+# long cloth that hangs from the belt or the shoulders: weighted to the pelvis and thighs
+# (skirt_weights), not copied from the body; the cape-like ones hang behind the legs
+SKIRTS = {"surcoat", "surcoat_trim", "cape", "cloak", "robe", "robe_trim", "loincloth"}
+BEHIND = ("cape", "cloak")
 CHANNEL_RGB = {"primary": (1, 0, 0), "secondary": (0, 1, 0), "metal": (0, 0, 1), "leather": (0, 0, 0)}
 
 
@@ -276,8 +288,11 @@ def build_armor(spec: dict, previews: Path | None, draft: bool = False, only: st
         rgb = CHANNEL_RGB[chan]
         a = lo_o.data.attributes.new("dye_rgb", "FLOAT_COLOR", "CORNER")
         a.data.foreach_set("color", [c for _ in range(len(lo_o.data.loops)) for c in (*rgb, 1.0)])
+        g = 1.0 if part.material in GLOW else 0.0
+        a = lo_o.data.attributes.new("glow_rgb", "FLOAT_COLOR", "CORNER")
+        a.data.foreach_set("color", [g, g, g, 1.0] * len(lo_o.data.loops))
         lo_o["skin"] = part.skin
-        lo_o["skirt"] = part.name in ("surcoat", "surcoat_trim", "cape")
+        lo_o["skirt"] = part.name in SKIRTS
         lows.append(lo_o)
         highs.append(hi_o)
         print(f"  {part.name}: {len(faces)} dense -> {len(lo_o.data.polygons)} tris ({part.material}, {part.skin})",
@@ -299,7 +314,7 @@ def build_armor(spec: dict, previews: Path | None, draft: bool = False, only: st
         if skin == "transfer":
             transfer_weights(o, ref)
             if o["skirt"]:
-                skirt_weights(o, b.j, set(range(len(o.data.vertices))), belt_z, behind=o.name.startswith("cape"))
+                skirt_weights(o, b.j, set(range(len(o.data.vertices))), belt_z, behind=o.name.startswith(BEHIND))
         else:
             g = o.vertex_groups.new(name=skin)
             g.add(list(range(len(o.data.vertices))), 1.0, "REPLACE")
@@ -312,6 +327,13 @@ def build_armor(spec: dict, previews: Path | None, draft: bool = False, only: st
     bake.bake_asset(low, high, out_dir, spec["id"], size=size, samples=16 if size <= 2048 else 8)
     bpy.data.objects.remove(high)
     bake_dye_mask(low, [m for m in mats.values()], out_dir / f"{spec['id']}_dye.png", size // 2)
+    glow_path = out_dir / f"{spec['id']}_glow.png"
+    if any(p.material in GLOW for p in parts):
+        bake_attr_mask(low, "glow_rgb", glow_path, size // 4, gray=True)
+    elif glow_path.exists():
+        glow_path.unlink()
+    if low.data.attributes.get("glow_rgb"):
+        low.data.attributes.remove(low.data.attributes["glow_rgb"])
     rig = humanoid.build_armature(body_type, f"{spec['id']}_rig")
     low.parent = rig
     mod = low.modifiers.new("armature", "ARMATURE")
@@ -337,11 +359,18 @@ def _join(objs: list, name: str) -> bpy.types.Object:
 
 def bake_dye_mask(low: bpy.types.Object, kit_mats: list, path: Path, size: int) -> None:
     """The dye mask: R primary, G secondary, B metal, black for undyed (from each part's material,
-    which bake_asset has merged into one; the material channels are recovered from the face's
-    original material index, kept in the 'dye' face attribute)."""
+    carried in the per-corner 'dye_rgb' attribute)."""
+    bake_attr_mask(low, "dye_rgb", path, size)
+    if low.data.attributes.get("dye_rgb"):
+        low.data.attributes.remove(low.data.attributes["dye_rgb"])
+    print(f"  dye mask {path.name}", flush=True)
+
+
+def bake_attr_mask(low: bpy.types.Object, attr_name: str, path: Path, size: int, gray: bool = False) -> None:
+    """Bake a per-corner colour attribute into the low mesh's UV layout as a PNG (RGB, or one
+    grey channel)."""
     import numpy as np
     from PIL import Image
-    attr = low.data.attributes.get("dye_channel")
     img = bpy.data.images.new(path.stem, size, size, alpha=False)
     mat = bpy.data.materials.new("_dye_bake")
     mat.use_nodes = True
@@ -349,7 +378,7 @@ def bake_dye_mask(low: bpy.types.Object, kit_mats: list, path: Path, size: int) 
     out = next(n for n in nt.nodes if n.type == "OUTPUT_MATERIAL")
     col = nt.nodes.new("ShaderNodeAttribute")
     col.attribute_type = "GEOMETRY"
-    col.attribute_name = "dye_rgb"
+    col.attribute_name = attr_name
     emit = nt.nodes.new("ShaderNodeEmission")
     nt.links.new(col.outputs["Color"], emit.inputs["Color"])
     nt.links.new(emit.outputs["Emission"], out.inputs["Surface"])
@@ -376,10 +405,12 @@ def bake_dye_mask(low: bpy.types.Object, kit_mats: list, path: Path, size: int) 
     img.pixels.foreach_get(px)
     rgb = (np.clip(px.reshape(size, size, 4)[::-1, :, :3], 0, 1) * 255).astype(np.uint8)
     path.parent.mkdir(parents=True, exist_ok=True)
-    Image.fromarray(rgb, "RGB").save(path)
-    if low.data.attributes.get("dye_rgb"):
-        low.data.attributes.remove(low.data.attributes["dye_rgb"])
-    print(f"  dye mask {path.name}", flush=True)
+    if gray:
+        Image.fromarray(rgb[:, :, 0], "L").save(path)
+    else:
+        Image.fromarray(rgb, "RGB").save(path)
+    if gray:
+        print(f"  mask {path.name}", flush=True)
 
 
 def main() -> None:

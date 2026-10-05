@@ -521,14 +521,14 @@
   {
    "bufferView": 0,
    "componentType": 5126,
-   "count": 8242,
+   "count": 8221,
    "max": [
-    0.09748328477144241,
-    1.8894325494766235,
-    0.10778985917568207
+    0.09716056287288666,
+    1.889986276626587,
+    0.10799958556890488
    ],
    "min": [
-    -0.09749136865139008,
+    -0.09727020561695099,
     1.1844935417175293,
     -0.19089627265930176
    ],
@@ -537,25 +537,25 @@
   {
    "bufferView": 1,
    "componentType": 5126,
-   "count": 8242,
+   "count": 8221,
    "type": "VEC3"
   },
   {
    "bufferView": 2,
    "componentType": 5126,
-   "count": 8242,
+   "count": 8221,
    "type": "VEC2"
   },
   {
    "bufferView": 3,
    "componentType": 5121,
-   "count": 8242,
+   "count": 8221,
    "type": "VEC4"
   },
   {
    "bufferView": 4,
    "componentType": 5126,
-   "count": 8242,
+   "count": 8221,
    "type": "VEC4"
   },
   {
@@ -574,44 +574,44 @@
  "bufferViews": [
   {
    "buffer": 0,
-   "byteLength": 98904,
+   "byteLength": 98652,
    "byteOffset": 0,
    "target": 34962
   },
   {
    "buffer": 0,
-   "byteLength": 98904,
-   "byteOffset": 98904,
+   "byteLength": 98652,
+   "byteOffset": 98652,
    "target": 34962
   },
   {
    "buffer": 0,
-   "byteLength": 65936,
-   "byteOffset": 197808,
+   "byteLength": 65768,
+   "byteOffset": 197304,
    "target": 34962
   },
   {
    "buffer": 0,
-   "byteLength": 32968,
-   "byteOffset": 263744,
+   "byteLength": 32884,
+   "byteOffset": 263072,
    "target": 34962
   },
   {
    "buffer": 0,
-   "byteLength": 131872,
-   "byteOffset": 296712,
+   "byteLength": 131536,
+   "byteOffset": 295956,
    "target": 34962
   },
   {
    "buffer": 0,
    "byteLength": 66000,
-   "byteOffset": 428584,
+   "byteOffset": 427492,
    "target": 34963
   },
   {
    "buffer": 0,
    "byteLength": 1280,
-   "byteOffset": 494584
+   "byteOffset": 493492
   }
  ],
  "samplers": [
@@ -622,7 +622,7 @@
  ],
  "buffers": [
   {
-   "byteLength": 495864,
+   "byteLength": 494772,
    "uri": "hair_braided_male.bin"
   }
  ]

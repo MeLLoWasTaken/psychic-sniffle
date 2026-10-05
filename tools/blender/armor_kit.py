@@ -915,3 +915,14 @@ DESIGNS = {
     "templar_sabatons": templar_sabatons,
     "templar_cape": templar_cape,
 }
+
+
+def _register_sets() -> None:
+    """The other plate sets live in their own modules (G-07); they import this one."""
+    import armor_deathsworn
+    import armor_warblade
+    DESIGNS.update(armor_warblade.DESIGNS)
+    DESIGNS.update(armor_deathsworn.DESIGNS)
+
+
+_register_sets()
