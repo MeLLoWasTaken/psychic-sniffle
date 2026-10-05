@@ -521,47 +521,47 @@
   {
    "bufferView": 0,
    "componentType": 5126,
-   "count": 1508,
+   "count": 4421,
    "max": [
-    0.081969253718853,
-    1.876808524131775,
-    0.09578780829906464
+    0.08191977441310883,
+    1.8768128156661987,
+    0.09595353156328201
    ],
    "min": [
-    -0.08195115625858307,
-    1.6984148025512695,
-    -0.12298102676868439
+    -0.08181644231081009,
+    1.698338270187378,
+    -0.12251801043748856
    ],
    "type": "VEC3"
   },
   {
    "bufferView": 1,
    "componentType": 5126,
-   "count": 1508,
+   "count": 4421,
    "type": "VEC3"
   },
   {
    "bufferView": 2,
    "componentType": 5126,
-   "count": 1508,
+   "count": 4421,
    "type": "VEC2"
   },
   {
    "bufferView": 3,
    "componentType": 5121,
-   "count": 1508,
+   "count": 4421,
    "type": "VEC4"
   },
   {
    "bufferView": 4,
    "componentType": 5126,
-   "count": 1508,
+   "count": 4421,
    "type": "VEC4"
   },
   {
    "bufferView": 5,
    "componentType": 5123,
-   "count": 6000,
+   "count": 18000,
    "type": "SCALAR"
   },
   {
@@ -574,44 +574,44 @@
  "bufferViews": [
   {
    "buffer": 0,
-   "byteLength": 18096,
+   "byteLength": 53052,
    "byteOffset": 0,
    "target": 34962
   },
   {
    "buffer": 0,
-   "byteLength": 18096,
-   "byteOffset": 18096,
+   "byteLength": 53052,
+   "byteOffset": 53052,
    "target": 34962
   },
   {
    "buffer": 0,
-   "byteLength": 12064,
-   "byteOffset": 36192,
+   "byteLength": 35368,
+   "byteOffset": 106104,
    "target": 34962
   },
   {
    "buffer": 0,
-   "byteLength": 6032,
-   "byteOffset": 48256,
+   "byteLength": 17684,
+   "byteOffset": 141472,
    "target": 34962
   },
   {
    "buffer": 0,
-   "byteLength": 24128,
-   "byteOffset": 54288,
+   "byteLength": 70736,
+   "byteOffset": 159156,
    "target": 34962
   },
   {
    "buffer": 0,
-   "byteLength": 12000,
-   "byteOffset": 78416,
+   "byteLength": 36000,
+   "byteOffset": 229892,
    "target": 34963
   },
   {
    "buffer": 0,
    "byteLength": 1280,
-   "byteOffset": 90416
+   "byteOffset": 265892
   }
  ],
  "samplers": [
@@ -622,7 +622,7 @@
  ],
  "buffers": [
   {
-   "byteLength": 91696,
+   "byteLength": 267172,
    "uri": "hair_cropped_male.bin"
   }
  ]

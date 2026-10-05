@@ -5,17 +5,18 @@
   "seed": 1,
   "body_build": "female",
   "tri_budget": {
-    "min": 2400,
-    "max": 3300
+    "min": 7200,
+    "max": 9900
   },
-  "texture_size": 1024,
+  "texture_size": 2048,
   "palette": {
     "hair": "#b4aa9e"
   },
   "params": {
     "slot": "hair",
     "style": "swept",
-    "target_tris": 3000
+    "target_tris": 9000,
+    "voxel": 0.0015
   },
   "out": "game/assets/appearance/hair_swept_female.gltf",
   "status": "draft"

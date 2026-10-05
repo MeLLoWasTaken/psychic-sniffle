@@ -5,17 +5,18 @@
   "seed": 1,
   "body_build": "male",
   "tri_budget": {
-    "min": 480,
-    "max": 660
+    "min": 1600,
+    "max": 2200
   },
-  "texture_size": 512,
+  "texture_size": 2048,
   "palette": {
     "hair": "#b4aa9e"
   },
   "params": {
     "slot": "beard",
     "style": "moustache",
-    "target_tris": 600
+    "target_tris": 2000,
+    "voxel": 0.0015
   },
   "out": "game/assets/appearance/beard_moustache_male.gltf",
   "status": "draft"

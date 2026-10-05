@@ -225,6 +225,10 @@
       ],
       "description": "Graphics page (DESIGN.md settings suite). Missing: the game uses these defaults",
       "properties": {
+        "model_detail": {
+          "enum": ["low", "medium", "high"],
+          "description": "How soon models switch to their lower levels of detail (the viewport's LOD threshold: high 1 px, medium 2 px, low 4 px of screen error); set by the quality preset"
+        },
         "new_characters": {
           "type": "boolean",
           "description": "Graphics overhaul preview (backlog G-05): draw characters assembled from the new bodies, armor pieces and creator looks instead of the current models"

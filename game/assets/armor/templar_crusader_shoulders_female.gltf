@@ -511,47 +511,47 @@
   {
    "bufferView": 0,
    "componentType": 5126,
-   "count": 2824,
+   "count": 9463,
    "max": [
-    0.3268679678440094,
-    1.5384668111801147,
-    0.09809298813343048
+    0.3363541066646576,
+    1.5461891889572144,
+    0.10053791850805283
    ],
    "min": [
-    -0.3262159824371338,
-    1.3030614852905273,
-    -0.12148619443178177
+    -0.3361685276031494,
+    1.294721245765686,
+    -0.12089613825082779
    ],
    "type": "VEC3"
   },
   {
    "bufferView": 1,
    "componentType": 5126,
-   "count": 2824,
+   "count": 9463,
    "type": "VEC3"
   },
   {
    "bufferView": 2,
    "componentType": 5126,
-   "count": 2824,
+   "count": 9463,
    "type": "VEC2"
   },
   {
    "bufferView": 3,
    "componentType": 5121,
-   "count": 2824,
+   "count": 9463,
    "type": "VEC4"
   },
   {
    "bufferView": 4,
    "componentType": 5126,
-   "count": 2824,
+   "count": 9463,
    "type": "VEC4"
   },
   {
    "bufferView": 5,
    "componentType": 5123,
-   "count": 8988,
+   "count": 29988,
    "type": "SCALAR"
   },
   {
@@ -564,44 +564,44 @@
  "bufferViews": [
   {
    "buffer": 0,
-   "byteLength": 33888,
+   "byteLength": 113556,
    "byteOffset": 0,
    "target": 34962
   },
   {
    "buffer": 0,
-   "byteLength": 33888,
-   "byteOffset": 33888,
+   "byteLength": 113556,
+   "byteOffset": 113556,
    "target": 34962
   },
   {
    "buffer": 0,
-   "byteLength": 22592,
-   "byteOffset": 67776,
+   "byteLength": 75704,
+   "byteOffset": 227112,
    "target": 34962
   },
   {
    "buffer": 0,
-   "byteLength": 11296,
-   "byteOffset": 90368,
+   "byteLength": 37852,
+   "byteOffset": 302816,
    "target": 34962
   },
   {
    "buffer": 0,
-   "byteLength": 45184,
-   "byteOffset": 101664,
+   "byteLength": 151408,
+   "byteOffset": 340668,
    "target": 34962
   },
   {
    "buffer": 0,
-   "byteLength": 17976,
-   "byteOffset": 146848,
+   "byteLength": 59976,
+   "byteOffset": 492076,
    "target": 34963
   },
   {
    "buffer": 0,
    "byteLength": 1280,
-   "byteOffset": 164824
+   "byteOffset": 552052
   }
  ],
  "samplers": [
@@ -612,7 +612,7 @@
  ],
  "buffers": [
   {
-   "byteLength": 166104,
+   "byteLength": 553332,
    "uri": "templar_crusader_shoulders_female.bin"
   }
  ]

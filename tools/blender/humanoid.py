@@ -13,6 +13,8 @@ import math
 import bpy
 from mathutils import Vector
 
+import common
+
 # Standard bone names. The asset validator requires these on every character.
 BONES = [
     # name, head joint, tail joint, parent
@@ -356,8 +358,25 @@ def bind(body: bpy.types.Object, rig: bpy.types.Object) -> None:
     bpy.ops.object.parent_set(type="ARMATURE_AUTO")
 
 
+def _reduce_weighted(o, target_tris: int, n_faces: int, factor: float) -> None:
+    bpy.ops.object.select_all(action="DESELECT")
+    o.select_set(True)
+    bpy.context.view_layer.objects.active = o
+    dec = o.modifiers.new("decimate", "DECIMATE")
+    dec.ratio = min(1.0, target_tris / max(n_faces, 1))
+    dec.vertex_group = "detail"
+    dec.vertex_group_factor = factor
+    dec.use_symmetry = False
+    smooth = o.modifiers.new("smooth", "CORRECTIVE_SMOOTH")
+    smooth.iterations = 2
+    smooth.use_only_smooth = True
+    for m in list(o.modifiers):
+        bpy.ops.object.modifier_apply(modifier=m.name)
+
+
 def build_body_anatomy(body_type: str, name: str = "body", target_tris: int = 14000, voxel: float = 0.003,
-                       hands: tuple[str, str] = ("relaxed", "fist")) -> tuple[bpy.types.Object, bpy.types.Object]:
+                       hands: tuple[str, str] = ("relaxed", "fist"),
+                       head_share: float = 0.0) -> tuple[bpy.types.Object, bpy.types.Object]:
     """Overhaul body (G-01): the anatomy.py field extracted densely (`high`, the normal-bake
     source) and a game mesh reduced from it to `target_tris` (`low`). The head and hands keep
     proportionally more triangles (a weighted reduction), since faces and fingers are seen close."""
@@ -367,37 +386,50 @@ def build_body_anatomy(body_type: str, name: str = "body", target_tris: int = 14
     jv = joints(build)
     j = {k: np.array(v) for k, v in jv.items()}
     verts, faces = anatomy.body_mesh(j, body_type, voxel, hands)
-    objs = []
-    for label in ("high", "low"):
-        mesh = bpy.data.meshes.new(f"{name}_{label}")
-        mesh.from_pydata(verts.tolist(), [], faces.tolist())
-        mesh.validate()
-        o = bpy.data.objects.new(f"{name}_{label}" if label == "high" else name, mesh)
-        bpy.context.scene.collection.objects.link(o)
-        objs.append(o)
-    high, low = objs
-    detail = low.vertex_groups.new(name="detail")
+    high = bpy.data.objects.new(f"{name}_high", common.mesh_from_arrays(f"{name}_high", verts, faces))
+    bpy.context.scene.collection.objects.link(high)
     neck_z = float(jv["neck"].z)
-    hand_c = [(jv[f"wrist_{s}"] + jv[f"hand_end_{s}"]) / 2 for s in ("l", "r")]
+    hand_c = np.array([list((jv[f"wrist_{s}"] + jv[f"hand_end_{s}"]) / 2) for s in ("l", "r")])
     # the group's weight is how freely a vertex may be removed (Blender's reduction reads it that way)
-    for vtx in low.data.vertices:
-        w = 0.5 if vtx.co.z > neck_z else 1.0
-        if min((vtx.co - c).length for c in hand_c) < 0.11:
-            w = 0.7
-        detail.add([vtx.index], w, "REPLACE")
-    bpy.ops.object.select_all(action="DESELECT")
-    low.select_set(True)
-    bpy.context.view_layer.objects.active = low
-    dec = low.modifiers.new("decimate", "DECIMATE")
-    dec.ratio = min(1.0, target_tris / max(len(faces), 1))
-    dec.vertex_group = "detail"
-    dec.vertex_group_factor = 0.003  # very sensitive: 0.003 gives the head about a quarter of the triangles
-    dec.use_symmetry = False
-    smooth = low.modifiers.new("smooth", "CORRECTIVE_SMOOTH")
-    smooth.iterations = 2
-    smooth.use_only_smooth = True
-    for m in list(low.modifiers):
-        bpy.ops.object.modifier_apply(modifier=m.name)
+    w = np.where(verts[:, 2] > neck_z, 0.5, 1.0)
+    near_hand = np.min(np.linalg.norm(verts[:, None, :] - hand_c[None], axis=2), axis=1) < 0.11
+    w = np.where(near_hand, 0.7, w)
+    n_faces = len(faces)
+    del verts, faces
+
+    def weighted_copy():
+        o = high.copy()
+        o.data = high.data.copy()
+        bpy.context.scene.collection.objects.link(o)
+        g = o.vertex_groups.new(name="detail")
+        for value in np.unique(w):
+            g.add(np.nonzero(w == value)[0].tolist(), float(value), "REPLACE")
+        return o
+    # The weighted reduction is very sensitive to the group factor and the right factor depends on
+    # the mesh density, so search it for the head's share of the triangles (log-scale bisection).
+    lo_f, hi_f = 0.0003, 0.03
+    best = None
+    for _ in range(6 if head_share > 0 else 1):
+        factor = (lo_f * hi_f) ** 0.5 if head_share > 0 else 0.003
+        trial = weighted_copy()
+        _reduce_weighted(trial, target_tris, n_faces, factor)
+        n = len(trial.data.polygons)
+        share = sum(1 for p in trial.data.polygons if p.center.z > neck_z) / max(n, 1)
+        print(f"  reduction factor {factor:.5f}: head share {share:.3f}", flush=True)
+        if best is None or abs(share - head_share) < abs(best[1] - head_share):
+            if best is not None:
+                bpy.data.objects.remove(best[0])
+            best = (trial, share)
+        else:
+            bpy.data.objects.remove(trial)
+        if head_share <= 0 or abs(share - head_share) < 0.01:
+            break
+        if share < head_share:
+            lo_f = factor
+        else:
+            hi_f = factor
+    low = best[0]
+    low.name = name
     low.vertex_groups.remove(low.vertex_groups["detail"])
     head_tris = sum(1 for p in low.data.polygons if p.center.z > neck_z)
     print(f"BODY {name}: {len(low.data.polygons)} triangles, {head_tris} on the head", flush=True)

@@ -122,7 +122,8 @@ func test_dressed_arena_stays_under_the_triangle_budget() -> void:
 	assert_bool(builder.has_kit()).is_true()
 	var tris: int = builder.visible_triangles()
 	print("arena visible triangles: %d" % tris)
-	assert_int(tris).override_failure_message("%d visible triangles" % tris).is_less(1_500_000)
+	# DESIGN.md Budgets: under 6 million visible triangles (raised 2026-10-04 by the human from 1.5 million)
+	assert_int(tris).override_failure_message("%d visible triangles" % tris).is_less(6_000_000)
 	assert_int(tris).is_greater(100_000)  # the kit really is there
 
 

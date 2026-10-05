@@ -6,7 +6,9 @@
 For each body type, imports the body and every piece of the set on one skeleton. At rest, a body
 vertex counts as covered when an armor surface lies over it within 4 cm along its normal. In
 sampled frames of each clip, a covered vertex pokes through when no armor surface lies over it any
-more along its normal; the depth is its distance to the piece it was under. The report lists
+more along its normal and armor does not surround it (a vertex folded into a bent joint can have
+its normal along the limb, out of a sleeve's open end); the depth is its distance to the piece it
+was under. The report lists
 pokes per clip and piece; any poke deeper than FAIL_M in a gated clip fails the check.
 """
 from __future__ import annotations
@@ -42,6 +44,22 @@ def evaluated_world(o):
     polys = [tuple(p.vertices) for p in me.polygons]
     ev.to_mesh_clear()
     return verts, normals, polys
+
+
+AXES = [Vector(a) for a in ((1, 0, 0), (-1, 0, 0), (0, 1, 0), (0, -1, 0), (0, 0, 1), (0, 0, -1))]
+
+
+def enclosed(trees: dict, pos) -> bool:
+    """Whether armor surrounds a point (rays along five of the six axes meet armor within 30 cm).
+    A body vertex folded into a bent elbow or knee can have its normal along the limb, so its
+    normal ray runs out of the open end of a sleeve; enclosed, it can not be seen from outside."""
+    hits = 0
+    for a in AXES:
+        for tree in trees.values():
+            if tree.ray_cast(pos + a * 0.0005, a, 0.3)[0] is not None:
+                hits += 1
+                break
+    return hits >= 5
 
 
 def check(body_type: str, set_id: str, clips: list[str], frames_per_clip: int = 8) -> dict:
@@ -97,7 +115,7 @@ def check(body_type: str, set_id: str, clips: list[str], frames_per_clip: int = 
                     if loc is not None:            # under an armor surface, or inside a plate
                         hidden = True
                         break
-                if hidden:
+                if hidden or enclosed(trees, bv[i]):
                     continue
                 tree = trees[slot]
                 near = tree.find_nearest(bv[i], 0.1)

@@ -5,15 +5,16 @@
   "seed": 1,
   "body_build": "male",
   "tri_budget": {
-    "min": 2400,
-    "max": 3300
+    "min": 8000,
+    "max": 11000
   },
   "texture_size": 2048,
   "params": {
     "slot": "shoulders",
     "design": "templar_spaulders",
     "set": "templar_crusader",
-    "armor_type": "plate"
+    "armor_type": "plate",
+    "tris": 10000
   },
   "out": "game/assets/armor/templar_crusader_shoulders_male.gltf",
   "status": "draft"

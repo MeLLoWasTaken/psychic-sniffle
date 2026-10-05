@@ -16,10 +16,12 @@ const AUDIO_BUSES: Dictionary = {"audio.master_db": "Master", "audio.effects_db"
 
 ## Quality presets: the graphics settings each one sets.
 const PRESETS: Dictionary = {
-	"low": {"graphics.shadows": "off", "graphics.particle_density": 0.4, "graphics.glow": false, "graphics.ssao": false, "graphics.fog": false, "graphics.render_scale": 0.75},
-	"medium": {"graphics.shadows": "low", "graphics.particle_density": 0.7, "graphics.glow": true, "graphics.ssao": false, "graphics.fog": true, "graphics.render_scale": 1.0},
-	"high": {"graphics.shadows": "high", "graphics.particle_density": 1.0, "graphics.glow": true, "graphics.ssao": true, "graphics.fog": true, "graphics.render_scale": 1.0},
+	"low": {"graphics.shadows": "off", "graphics.particle_density": 0.4, "graphics.glow": false, "graphics.ssao": false, "graphics.fog": false, "graphics.render_scale": 0.75, "graphics.model_detail": "low"},
+	"medium": {"graphics.shadows": "low", "graphics.particle_density": 0.7, "graphics.glow": true, "graphics.ssao": false, "graphics.fog": true, "graphics.render_scale": 1.0, "graphics.model_detail": "medium"},
+	"high": {"graphics.shadows": "high", "graphics.particle_density": 1.0, "graphics.glow": true, "graphics.ssao": true, "graphics.fog": true, "graphics.render_scale": 1.0, "graphics.model_detail": "high"},
 }
+## Model detail: the viewport's LOD threshold in pixels of screen error (higher drops detail sooner).
+const LOD_THRESHOLD: Dictionary = {"high": 1.0, "medium": 2.0, "low": 4.0}
 
 
 class Bus:
@@ -166,7 +168,8 @@ static func delete_profile(profile_name: String) -> void:
 
 ## Apply every engine-owned setting (startup, profile switch).
 static func apply_all() -> void:
-	for p: String in ["graphics.window_mode", "graphics.vsync", "graphics.max_fps", "audio.output_device"] + AUDIO_BUSES.keys():
+	for p: String in ["graphics.window_mode", "graphics.vsync", "graphics.max_fps", "graphics.model_detail",
+			"audio.output_device"] + AUDIO_BUSES.keys():
 		_apply(p, get_value(p))
 
 
@@ -186,6 +189,10 @@ static func _apply(p: String, v: Variant) -> void:
 				AudioServer.output_device = str(v)
 		"graphics.max_fps":
 			Engine.max_fps = int(v)
+		"graphics.model_detail":
+			var tree: SceneTree = Engine.get_main_loop() as SceneTree
+			if tree != null and tree.root != null:
+				tree.root.mesh_lod_threshold = float(LOD_THRESHOLD.get(str(v), 1.0))
 		"graphics.vsync":
 			if DisplayServer.get_name() != "headless":
 				DisplayServer.window_set_vsync_mode(DisplayServer.VSYNC_ENABLED if bool(v) else DisplayServer.VSYNC_DISABLED)

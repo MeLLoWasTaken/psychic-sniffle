@@ -26,7 +26,8 @@ def specs() -> dict[str, dict]:
                     "id": sid, "kind": "piece", "builder": "build_piece.py", "seed": 1, "body_build": t,
                     "tri_budget": {"min": int(piece["tris"] * 0.8), "max": int(piece["tris"] * 1.1)},
                     "texture_size": int(piece.get("texture_size", 2048)),
-                    "params": {"slot": slot, "design": piece["design"], "set": st["id"], "armor_type": st["armor_type"]},
+                    "params": {"slot": slot, "design": piece["design"], "set": st["id"], "armor_type": st["armor_type"],
+                               "tris": int(piece["tris"])},
                     "out": f"game/assets/armor/{sid}.gltf", "status": "draft",
                 }
     return out

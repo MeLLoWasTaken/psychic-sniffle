@@ -51,6 +51,14 @@ func test_quality_presets_set_their_graphics_and_a_change_makes_them_custom() ->
 	assert_str(str(Settings.get_value("graphics.preset"))).is_equal("custom")
 
 
+func test_model_detail_sets_the_lod_threshold() -> void:
+	Settings.set_value("graphics.preset", "low")
+	assert_str(str(Settings.get_value("graphics.model_detail"))).is_equal("low")
+	assert_float(get_tree().root.mesh_lod_threshold).is_equal_approx(4.0, 0.001)
+	Settings.set_value("graphics.preset", "high")
+	assert_float(get_tree().root.mesh_lod_threshold).is_equal_approx(1.0, 0.001)
+
+
 func test_engine_settings_apply_at_once_and_resolution_waits() -> void:
 	Settings.set_value("graphics.max_fps", 60)
 	assert_int(Engine.max_fps).is_equal(60)

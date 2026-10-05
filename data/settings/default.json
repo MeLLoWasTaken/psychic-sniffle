@@ -62,6 +62,7 @@
     "glow": true,
     "ssao": true,
     "fog": true,
+    "model_detail": "high",
     "new_characters": false
   },
   "gameplay": {

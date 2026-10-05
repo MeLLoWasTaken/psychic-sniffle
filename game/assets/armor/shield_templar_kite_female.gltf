@@ -511,47 +511,47 @@
   {
    "bufferView": 0,
    "componentType": 5126,
-   "count": 2202,
+   "count": 6022,
    "max": [
-    0.8069941997528076,
-    1.5611822605133057,
-    0.16600899398326874
+    0.8061816096305847,
+    1.560388207435608,
+    0.16527189314365387
    ],
    "min": [
-    0.07506691664457321,
-    0.7742883563041687,
-    -0.2016724795103073
+    0.07541200518608093,
+    0.7748836874961853,
+    -0.2015780806541443
    ],
    "type": "VEC3"
   },
   {
    "bufferView": 1,
    "componentType": 5126,
-   "count": 2202,
+   "count": 6022,
    "type": "VEC3"
   },
   {
    "bufferView": 2,
    "componentType": 5126,
-   "count": 2202,
+   "count": 6022,
    "type": "VEC2"
   },
   {
    "bufferView": 3,
    "componentType": 5121,
-   "count": 2202,
+   "count": 6022,
    "type": "VEC4"
   },
   {
    "bufferView": 4,
    "componentType": 5126,
-   "count": 2202,
+   "count": 6022,
    "type": "VEC4"
   },
   {
    "bufferView": 5,
    "componentType": 5123,
-   "count": 6594,
+   "count": 18000,
    "type": "SCALAR"
   },
   {
@@ -564,44 +564,44 @@
  "bufferViews": [
   {
    "buffer": 0,
-   "byteLength": 26424,
+   "byteLength": 72264,
    "byteOffset": 0,
    "target": 34962
   },
   {
    "buffer": 0,
-   "byteLength": 26424,
-   "byteOffset": 26424,
+   "byteLength": 72264,
+   "byteOffset": 72264,
    "target": 34962
   },
   {
    "buffer": 0,
-   "byteLength": 17616,
-   "byteOffset": 52848,
+   "byteLength": 48176,
+   "byteOffset": 144528,
    "target": 34962
   },
   {
    "buffer": 0,
-   "byteLength": 8808,
-   "byteOffset": 70464,
+   "byteLength": 24088,
+   "byteOffset": 192704,
    "target": 34962
   },
   {
    "buffer": 0,
-   "byteLength": 35232,
-   "byteOffset": 79272,
+   "byteLength": 96352,
+   "byteOffset": 216792,
    "target": 34962
   },
   {
    "buffer": 0,
-   "byteLength": 13188,
-   "byteOffset": 114504,
+   "byteLength": 36000,
+   "byteOffset": 313144,
    "target": 34963
   },
   {
    "buffer": 0,
    "byteLength": 1280,
-   "byteOffset": 127692
+   "byteOffset": 349144
   }
  ],
  "samplers": [
@@ -612,7 +612,7 @@
  ],
  "buffers": [
   {
-   "byteLength": 128972,
+   "byteLength": 350424,
    "uri": "shield_templar_kite_female.bin"
   }
  ]

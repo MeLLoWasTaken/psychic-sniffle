@@ -86,6 +86,7 @@ static func _attach(sk: Skeleton3D, asset_id: String, colours: Dictionary, look:
 	for mi: MeshInstance3D in scene.find_children("*", "MeshInstance3D", true, false):
 		var xf: Transform3D = mi.transform
 		mi.get_parent().remove_child(mi)
+		mi.owner = null   # it leaves the piece's scene, which is freed below
 		mi.name = asset_id
 		sk.add_child(mi)
 		mi.transform = xf

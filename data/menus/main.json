@@ -975,6 +975,21 @@
             "type": "toggle"
           },
           {
+            "path": "graphics.model_detail",
+            "label": "Model detail",
+            "type": "choice",
+            "choices": [
+              "low",
+              "medium",
+              "high"
+            ],
+            "labels": [
+              "Low",
+              "Medium",
+              "High"
+            ]
+          },
+          {
             "path": "graphics.new_characters",
             "label": "New character models (preview)",
             "type": "toggle"

@@ -16,13 +16,15 @@ Acceptance criteria are written before work starts. Refine them during step 2 of
 
 ---
 
-## Next up (set 2026-10-03 after the human's graphics overhaul request)
+## Next up (set 2026-10-04 after the human raised the budgets)
 
 Items further down keep their history; this list is the order to take them in. Review 6: `docs/reports/review_06/review_06.md`. The human chose to run the Monday playtest on the current art while the overhaul is built (DECISIONS.md, 2026-10-03).
 
-1. M3-13 The five balanced specs in the main menu, before the Monday playtest.
-2. G-01 to G-10, the graphics overhaul, in order.
-3. Wave 1 continues: Deathsworn Plague (minions; `summon` needs its engine work).
+1. G-11 to G-16: the higher budgets (asked by the human 2026-10-04: raise the triangle budgets for characters and environments so budget and fidelity approach a current top-tier stylized MMO). Bodies, the crusader set and hair rebuilt at the new budget first, so G-07 to G-09 are built at it from the start.
+2. E-01 to E-05: environments at the new budget, alternating with the G items while long bakes run.
+3. G-07 to G-10, the rest of the graphics overhaul.
+4. Review pass 7 (due: more than 10 items since review 6).
+5. Wave 1 continues: Deathsworn Plague (minions; `summon` needs its engine work).
 
 Done from review 6's list: M3-04 Templar balance (nightly at 952db81, every spec inside 40-60% in every bracket); Frostgrave balance (nightly at cac5431); F-08's Oracle mirrors reaching the time limit (solved by duel dampening: 83 of 83 Oracle duels in the nightly at 952db81 ended in a kill).
 
@@ -70,14 +72,47 @@ Goals and rules: DESIGN.md "Art direction", "Appearance and armor customization"
 - [x] Keyboard and mouse only; every option reachable with "<" and ">" buttons; `test/ui/test_character_screen.gd` walks every tab, steps every row and saves.
 - Done 2026-10-04. Screenshot: `previews/g_06/creator_armor.png` (`--open-character <spec> --character-tab <tab>` opens it at start). Follow-up: the preview's light is darker than the arenas'.
 
+### G-11 Higher budgets recorded and wired into the data `[done]`
+- [x] DESIGN.md Budgets carry the human's new numbers (characters 100,000 to 150,000 triangles assembled, per-slot shares, 4096 px sets for body, chest, legs and head; environment pieces 5,000 to 25,000, props 2,000 to 20,000, hero pieces 30,000 to 80,000, arenas under 6 million visible triangles); DECISIONS.md has the row.
+- [x] A piece's triangle target comes from its armor set's per-slot `tris` alone: `build_piece.py` scales the design's part shares to it, so a budget change is a data change. The asset specs' `tri_budget` follow (`tools/gen_piece_specs.py`, checked by `--check`).
+- [x] The crusader set's slot shares, the bodies' and hair specs' targets and texture sizes raised to the new numbers.
+- [x] A Model detail graphics setting (high, medium, low; part of the quality presets) sets the viewport's LOD threshold (1, 2, 4 px). (Changed while building, not loosened: Godot's automatic LODs have no "never use LOD0" switch and no runtime texture downsizing, so DESIGN.md now says the setting raises the switching threshold, and half-size textures for Low wait for a texture-memory measurement on the minimum PC.)
+- Done 2026-10-04. Also from this item: dense fields are evaluated in slabs and meshes built from arrays, so 2 mm bodies and 2 mm surcoats fit in the workspace's memory (`sdf.eval_grid` chunks, `armor_kit.eval_part`, `common.mesh_from_arrays`, mesh islands found from vertex adjacency).
+
+### G-12 Bodies and heads at the new budget `[done]`
+- [x] `body_male` and `body_female` at 28,000 to 32,000 triangles with the head and hands densest (the head at least 7,000), extracted at 2 mm or finer, 4096 px textures; face presets, masks and markings rebuilt; the animation sets still pass the clipping report.
+- [x] Head close-up sheets of every face preset on both bodies next to the G-02 versions.
+- Done 2026-10-04. 30,000 triangles each (7,249 on the male head, 7,372 on the female), extracted at 2 mm (about 2.6 million triangles) and reduced with a search for the head's share (`humanoid.build_body_anatomy`, `params.head_share` 0.25); 4096 px textures, the face's islands at 2.5 times the texel density. Creator masks are now computed on the head's texels only (a 4096 px layout as whole float arrays ran out of memory). Clipping report: no failures on either body (`previews/g_12/anims/`). Faces: `previews/g_14/compare_faces_g02_g14.png`. The faces themselves are no better than G-02's: the denser mesh only shows their crude forms more clearly, and the neck still meets the collarbones in deep creases. That is now G-16.
+
+### G-13 The crusader set at the new budget, with modelled detail `[done]`
+- [x] Every piece at its new share with detail that reads at play distance: the helm with a riveted brow band, a ridge down the face, flared slit lips and a rolled rim; spaulders and poleyns with rolled edges and stepped lames; gauntlets with knuckle plates and finger scales; the belt with a buckle, studs and a hanging end; the surcoat with deeper folds and a quilted collar; the cape with a heavier hem and folds; rivets modelled, not only baked.
+- [x] The assembled character (male, every slot, shield) between 100,000 and 150,000 triangles; the fit check stays clean on both bodies; reference sheets compared with the G-04 sheets.
+- Done 2026-10-04. Helm: plates lapped at the brow and down both sides of the face plate with rows of modelled rivets, a keel down the face, flanged eye slits, cross-pattern breaths, a rolled lower rim, a riveted crown, a gilt cross pattee and a dark padded lining. Spaulders: a ridged cop with a gilt rolled edge and three lames with rolled edges and rivets. Gauntlets: flared cuffs with rolled edges and rivets, wrist lames, a plate over the back of the hand with knuckle bosses, overlapping finger scales. Surcoat: bloused over the belt, deep uneven folds, a torn hem, a raised lozenge border on the gold hem band, a raised embroidered sun; the mail sleeves padded (a gambeson under the mail) and roomier at the elbows. Legs: quilted cuisses over the mail, poleyns with a ridge, rolled edges, lames and a fluted wing. Sabatons: stepped lames, a rolled edge and gilt prick spurs. Belt: studs, a gilt buckle with its prong, a hanging end with a chape. Cape: deeper folds, a doubled hem. Shield: a riveted rim and a sun in relief. (Changed while building, not loosened: no quilted collar on the surcoat, since the helm's mail aventail covers the neck; the padding shows at the sleeves and thighs instead.) Male Vanguard with shield: 119,702 triangles. Every bake paints the dense surface's curvature into the base colour (DECISIONS.md), which is what makes mail, rivets and the lozenge border read in game (`previews/g_13/looks.png`). Fit check clean on both bodies (`previews/g_13/fit_templar_crusader.json`); it now treats a body vertex surrounded by armor as hidden (a vertex folded into a bent elbow had its normal along the forearm, out of the sleeve's open end; a close-up render of that frame showed no body through the sleeve). Sheets: `previews/g_13/templar_crusader_<spec>_<body>.png`, side by side with G-04 in `previews/g_13/compare_vanguard_g04_g13.png`; 30 m check `previews/g_13/silhouettes_30m.png`.
+- Follow-ups: the weapons are still the old models (G-09); the mail's rings are random (Voronoi), not rows.
+
+### G-14 Hair and beards at the new budget `[done]`
+- [x] Hair 6,000 to 16,000 triangles and beards 2,000 to 6,000, 2048 px textures, extracted finer so locks and grooves keep their shape; creator sheets compared with G-02's.
+- Done 2026-10-04. Cropped 6,000, ridge 6,600, topknot 8,500, swept 9,000, braided 11,000, long 16,000; beards 2,000 to 6,000. Extracted at 1.5 mm (long hair at 2 mm: 1.5 mm ran out of memory). Comparison: `previews/g_14/compare_hair_g02_g14.png`. The shapes are the G-02 designs, smoother; their design problems (bowl-cut fringe, the long hair's solid curtain) move to G-16.
+
+### G-15 Performance at the new budget `[done]`
+- [x] `rig_view.tscn --mode perf --looks --count 20` recorded at the new budget (triangles at full detail and with LODs at battleground distances, CPU animation time); a Model detail setting in the graphics presets (high, medium, low) sets the viewport's LOD threshold; GPU numbers and texture memory on the minimum PC stay pending (KNOWN_ISSUES).
+- Done 2026-10-04. 20 assembled characters: 2,363,537 triangles at full detail (118,176 each, against 22,559 for today's characters); animation and rig CPU time 2.29 ms a frame (today's: 1.92 ms). Triangles after LOD selection depend on the GPU renderer and were not measurable in the headless run. The Model detail setting: `graphics.model_detail`, applied to the root viewport's `mesh_lod_threshold` (1, 2, 4 px), set by the Low, Medium and High presets; test `test_model_detail_sets_the_lod_threshold`. The assembler no longer leaves moved meshes owned by the freed piece scene (an engine warning per piece).
+
+### G-16 Faces, neck and shoulders quality pass `[todo]`
+- [ ] The neck meets the collarbones and trapezius without the deep creases visible on both bodies (smooth, readable sternocleidomastoid and clavicle forms instead of grooves); judged in head and torso close-ups with the cavity paint on. The cavity paint also shows thin creases where body primitives meet with a small blend (across the waist, down the midline, over the shoulders): blend them wider or reshape them so bare skin carries no seam-like lines.
+- [ ] Faces read as finished stylized heroes, not crude busts: larger, more open eyes with lids that wrap the eyeball, a defined but softer mouth, nose and cheek planes the painted shading can pick out; the female face designed as its own (not a softened male one).
+- [ ] The cropped hair ends in a broken fringe instead of a bowl edge; long hair in separate locks.
+- [ ] Creator sheets of every face and hair style on both bodies, compared side by side with G-14's.
+
 ### G-07 Plate sets for the Warblade and Deathsworn `[todo]`
-- [ ] Each class's default set rebuilt as modular pieces at the new fidelity, keeping its class marks (Warblade horns, Deathsworn ice crown).
+- [ ] Each class's default set rebuilt as modular pieces at the new fidelity and the budgets of 2026-10-04 (per-slot shares in DESIGN.md), keeping its class marks (Warblade horns, Deathsworn ice crown).
 
 ### G-08 Cloth sets for the Arcanist and Oracle `[todo]`
 - [ ] Each class's default set rebuilt as modular pieces (robes as chest plus legs, hoods as head pieces); cloth hangs heavy with torn hems.
 
 ### G-09 Weapons at the new fidelity `[todo]`
-- [ ] Every weapon rebuilt to 10-25% oversize, 3,000 to 6,000 triangles, normal-mapped detail.
+- [ ] Every weapon rebuilt to 10-25% oversize, 8,000 to 20,000 triangles, 2048 px textures, normal-mapped detail. (Raised 2026-10-04 by the human, from 3,000 to 6,000.)
+- [ ] The Zealot's two-handed sword.
 
 ### G-10 Overhaul gate `[todo]`
 - [ ] Lineup and in-arena screenshots of all specs; a side-by-side with the old art; performance numbers; old characters removed; the human reviews the result.
@@ -91,6 +126,29 @@ Goals and rules: DESIGN.md "Art direction", "Appearance and armor customization"
 
 - Done 2026-10-02: release `playtest-20261002-3090183` (GitHub pre-release, Windows and Linux zips, about 130 MB each). Both packages passed a smoke test on CI: a headless server and two bots from the packaged executable, the Windows one on a Windows runner. Found on the way: the Windows template needed `accesskit=no winrt=no d3d12=no` (SDKs the runner lacks; the game renders with Vulkan), a release build buffers its console output (the smoke test reads the game's log file), and the console version of the executable needs its own template file (follow-up above). An earlier release, `playtest-20261002-623135c`, holds the same game without the Windows check; the session token cannot edit or delete releases.
 ---
+
+## Environments at the new budget (E track, asked by the human 2026-10-04)
+
+Goals: DESIGN.md Budgets (2026-10-04). Each item ends with in-game screenshots compared side by side with the current arena.
+
+### E-01 High-detail environment pipeline `[doing]`
+- [ ] Kit pieces built from a dense modelled version (individual stones or bricks with chipped, bevelled edges and recessed mortar; planks with grain and split ends; forged iron with hammered faces and rivets) reduced to the piece's budget, with normal, roughness and ambient occlusion maps baked from the dense version at 2048 px, or 4096 px for hero pieces.
+- [ ] Tiling materials at 2048 px per surface type; dirt, moss and soot by vertex color or mask; the validator's budgets per kind follow DESIGN.md.
+- [ ] Gallows kit walls, pillars and floor tiles rebuilt with it; a screenshot of the gallows arena beside the current one.
+
+- Progress 2026-10-04: the sculpting step exists (`tools/blender/hd_kit.py`, `params.detail: "sculpted"` in a kit piece's spec): every part is remeshed at about 1 cm, sculpted by material (stone: chipped edges, worn corners, a lumpy face, pitting; timber: grain and end splits; iron: dents), reduced by surface area to the piece's budget and baked high to low at 2048 px. Rebuilt with it: `gallows_wall` (18,000 triangles from about 920,000 sculpted), `gallows_pillar` (22,800) and `gallows_floor_tile` (12,000). In the arena (`previews/e_01/gallows_player.png`, `gallows_lineup.png`) the pillars and the rebuilt floor tiles show chipped, worn stone next to the old smooth worn tiles. The gallows arena is now about 2.17 million visible triangles from the test's view (`test_map.gd`, its limit moved from 1.5 to 6 million with DESIGN.md). Left: tiling materials per surface type, the validator's budgets per kind, the other gallows walls; and the stones' hidden backs take triangles (to cull).
+
+### E-02 Gallows courtyard at the new budget `[todo]`
+- [ ] Every gallows kit piece and prop rebuilt; hero pieces (gatehouse, gallows) 30,000 to 80,000 triangles; the arena under 6 million visible triangles; screenshots at the three resolutions.
+
+### E-03 Flooded crypt at the new budget `[todo]`
+- [ ] As E-02 for the crypt kit and props.
+
+### E-04 Burning foundry at the new budget `[todo]`
+- [ ] As E-02 for the foundry kit and props.
+
+### E-05 Environment performance gate `[todo]`
+- [ ] Visible triangles per arena measured from the three standard cameras with LODs and occlusion culling; load time from menu to arena under 10 s; frame time on the software renderer recorded relative to today's; GPU numbers pending.
 
 ## M0 — Foundations
 

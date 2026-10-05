@@ -5,17 +5,18 @@
   "seed": 1,
   "body_build": "female",
   "tri_budget": {
-    "min": 2240,
-    "max": 3080
+    "min": 6800,
+    "max": 9350
   },
-  "texture_size": 1024,
+  "texture_size": 2048,
   "palette": {
     "hair": "#b4aa9e"
   },
   "params": {
     "slot": "hair",
     "style": "topknot",
-    "target_tris": 2800
+    "target_tris": 8500,
+    "voxel": 0.0015
   },
   "out": "game/assets/appearance/hair_topknot_female.gltf",
   "status": "draft"

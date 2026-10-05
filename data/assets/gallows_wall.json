@@ -4,10 +4,10 @@
   "builder": "build_kit_gallows.py",
   "seed": 11,
   "tri_budget": {
-    "min": 1500,
-    "max": 7000
+    "min": 14000,
+    "max": 25000
   },
-  "texture_size": 1024,
+  "texture_size": 2048,
   "palette": {
     "stone": "#6d6961",
     "flag": "#5b5852",
@@ -21,7 +21,9 @@
   "params": {
     "width_m": 4.0,
     "height_m": 6.0,
-    "piece": "wall"
+    "piece": "wall",
+    "detail": "sculpted",
+    "target_tris": 18000
   },
   "out": "game/assets/kits/gallows/gallows_wall.glb",
   "status": "draft",

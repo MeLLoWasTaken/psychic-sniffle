@@ -147,6 +147,160 @@ def tame_normals(image: bpy.types.Image, min_z: float = 0.45) -> int:
     return int(bad.sum())
 
 
+def _emit_bake(target: bpy.types.Object, image: bpy.types.Image, surface_of, source: bpy.types.Object | None = None,
+               extrusion: float = 0.012, max_ray: float = 0.03) -> None:
+    """Bake an emission into `image` on `target`'s UVs: each material of the emitting object (the
+    target itself, or `source` baked selected-to-active) temporarily emits `surface_of(mat, nt)`,
+    a colour socket."""
+    scene = bpy.context.scene
+    scene.render.engine = "CYCLES"
+    prev = scene.cycles.samples
+    scene.cycles.samples = 1
+    bake = scene.render.bake
+    bake.use_selected_to_active = source is not None
+    bake.cage_extrusion = extrusion
+    bake.max_ray_distance = max_ray
+    bake.margin = 4
+    bake.use_clear = True
+    emitter = source or target
+    saved, added = [], []
+    for mat in {m for m in emitter.data.materials if m}:
+        nt = mat.node_tree
+        out = next(nd for nd in nt.nodes if nd.type == "OUTPUT_MATERIAL")
+        prev_link = out.inputs["Surface"].links[0].from_socket if out.inputs["Surface"].links else None
+        emit = nt.nodes.new("ShaderNodeEmission")
+        nt.links.new(surface_of(mat, nt), emit.inputs["Color"])
+        nt.links.new(emit.outputs["Emission"], out.inputs["Surface"])
+        saved.append((mat, out, prev_link, emit))
+    for mat in [m for m in target.data.materials if m]:
+        node = mat.node_tree.nodes.new("ShaderNodeTexImage")
+        node.image = image
+        mat.node_tree.nodes.active = node
+        added.append((mat, node))
+    bpy.ops.object.select_all(action="DESELECT")
+    if source is not None:
+        source.select_set(True)
+    target.select_set(True)
+    bpy.context.view_layer.objects.active = target
+    bpy.ops.object.bake(type="EMIT")
+    bake.use_selected_to_active = False
+    scene.cycles.samples = prev
+    for mat, out, prev_link, emit in saved:
+        if prev_link is not None:
+            mat.node_tree.links.new(prev_link, out.inputs["Surface"])
+        mat.node_tree.nodes.remove(emit)
+    for mat, node in added:
+        mat.node_tree.nodes.remove(node)
+
+
+def _pixels(image: bpy.types.Image):
+    import numpy as np
+    w, h = image.size
+    px = np.empty(w * h * 4, dtype=np.float32)
+    image.pixels.foreach_get(px)
+    return px.reshape(h, w, 4)[::-1]          # rows top-down, like the saved files
+
+
+def curvature_map(low: bpy.types.Object, high: bpy.types.Object, size: int):
+    """Mean curvature (1/m; positive on ridges) of the dense surface, in `low`'s UV layout, from its
+    world-space shading normals (with the mail's rings) and positions. Unlike the
+    tangent-space normal map, these carry no lines along the game mesh's edges or seams."""
+    import numpy as np
+    from scipy.ndimage import gaussian_filter
+
+    def normal_socket(mat, nt):
+        # bump detail counts only for mail: its rings are the form to paint, while leather grain,
+        # cloth unevenness and hammer marks would come out as fine noise (DESIGN.md)
+        bump = next((nd for nd in nt.nodes if nd.type == "BUMP"), None) if "_mail" in mat.name else None
+        if bump is not None:
+            src = bump.outputs["Normal"]
+        else:
+            src = nt.nodes.new("ShaderNodeNewGeometry").outputs["Normal"]
+        m = nt.nodes.new("ShaderNodeVectorMath")
+        m.operation = "MULTIPLY_ADD"
+        m.inputs[1].default_value = (0.5, 0.5, 0.5)
+        m.inputs[2].default_value = (0.5, 0.5, 0.5)
+        nt.links.new(src, m.inputs[0])
+        return m.outputs["Vector"]
+
+    def position_socket(mat, nt):
+        m = nt.nodes.new("ShaderNodeVectorMath")
+        m.operation = "ADD"
+        m.inputs[1].default_value = (10.0, 10.0, 10.0)     # positive everywhere: 0 means no texel
+        nt.links.new(nt.nodes.new("ShaderNodeNewGeometry").outputs["Position"], m.inputs[0])
+        return m.outputs["Vector"]
+
+    if not high.data.materials:
+        high.data.materials.append(bpy.data.materials.new("_plain"))
+        high.data.materials[0].use_nodes = True
+    cs = min(size, 2048)      # half size for 4096 px sets: the paint's forms do not need more, memory does
+    out = {}
+    for label, sock in (("n", normal_socket), ("p", position_socket)):
+        img = bpy.data.images.new(f"_curv_{label}", cs, cs, alpha=True, float_buffer=True)
+        img.colorspace_settings.name = "Non-Color"
+        _emit_bake(low, img, sock, source=high)
+        out[label] = np.ascontiguousarray(_pixels(img))
+        bpy.data.images.remove(img)
+    covered = out["p"][..., 0] > 1.0
+    N = out.pop("n")[..., :3] * 2.0 - 1.0
+    P = out.pop("p")[..., :3] - 10.0
+    k = np.zeros(covered.shape, dtype=np.float32)
+    ok = covered.copy()
+    for axis in (1, 0):
+        dot = np.zeros(covered.shape, dtype=np.float32)
+        l2 = np.zeros(covered.shape, dtype=np.float32)
+        for ch in range(3):          # channel by channel: whole (h, w, 3) gradients double the memory
+            dp = np.gradient(P[..., ch], axis=axis)
+            dot += np.gradient(N[..., ch], axis=axis) * dp
+            l2 += dp * dp
+        k += np.where(l2 > 1e-12, dot / np.maximum(l2, 1e-12), 0.0)
+        t = np.median(np.sqrt(l2[covered])) if covered.any() else 1e-3
+        ok &= np.sqrt(l2) < 4 * t     # neighbours on another island or the background: not the same surface
+        ok &= np.roll(covered, 1, axis=axis) & np.roll(covered, -1, axis=axis)
+    del N, P
+    k = np.where(ok, k, 0.0)
+    return gaussian_filter(k, 0.8), covered
+
+
+def material_mask(low: bpy.types.Object, size: int, pick) -> "np.ndarray":
+    """1 on texels of `low` whose material satisfies `pick(mat)` (cloth, for the cavity paint)."""
+    def sock(mat, nt):
+        rgb = nt.nodes.new("ShaderNodeRGB")
+        v = 1.0 if pick(mat) else 0.0
+        rgb.outputs[0].default_value = (v, v, v, 1.0)
+        return rgb.outputs[0]
+    size = min(size, 2048)
+    img = bpy.data.images.new("_matmask", size, size, alpha=False, float_buffer=False)
+    _emit_bake(low, img, sock)
+    m = _pixels(img)[..., 0]
+    bpy.data.images.remove(img)
+    return m
+
+
+CAVITY_LIFT, CAVITY_DARK, CAVITY_K, CAVITY_CLOTH = 0.22, 0.45, 110.0, 0.2
+
+
+def paint_cavity(albedo: Path, curv, cloth=None) -> None:
+    """Hollows darker and ridges lighter in the base colour (DESIGN.md: painted look), from the dense
+    surface's curvature; cloth texels get CAVITY_CLOTH of the strength (their unevenness would read
+    as grain)."""
+    import numpy as np
+    from PIL import Image
+    a = np.asarray(Image.open(albedo).convert("RGB"), dtype=np.float32)
+    c = curv if curv.shape[0] == a.shape[0] else np.asarray(
+        Image.fromarray(curv.astype(np.float32)).resize((a.shape[1], a.shape[0]), Image.BILINEAR))
+    base = CAVITY_LIFT * np.clip(c / CAVITY_K, 0, 1) - CAVITY_DARK * np.clip(-c / CAVITY_K, 0, 1)
+    if cloth is not None and cloth.shape[0] != a.shape[0]:
+        cloth = np.asarray(Image.fromarray(cloth.astype(np.float32)).resize((a.shape[1], a.shape[0]), Image.BILINEAR))
+    strength = 1.0 if cloth is None else 1.0 - (1.0 - CAVITY_CLOTH) * cloth
+    a = np.clip(a * (1.0 + strength * base)[..., None], 0, 255).astype(np.uint8)
+    img = Image.fromarray(a, "RGB")
+    if albedo.suffix.lower() in (".jpg", ".jpeg"):
+        img.save(albedo, quality=92, subsampling=0)
+    else:
+        img.save(albedo)
+
+
 def bake_asset(low: bpy.types.Object, high: bpy.types.Object | None, out_dir: Path, name: str,
                size: int = 2048, samples: int = 24, detail=None) -> bpy.types.Material:
     """Unwrap `low`, bake albedo and roughness from its painted materials (kit.bake_piece) and,
@@ -158,6 +312,8 @@ def bake_asset(low: bpy.types.Object, high: bpy.types.Object | None, out_dir: Pa
         normal = bpy.data.images.new(f"{name}_normal", size, size, alpha=False)
         normal.colorspace_settings.name = "Non-Color"
         bake_normal(low, high, normal)
+        curv, _cov = curvature_map(low, high, size)
+        cloth = material_mask(low, size, lambda m: m.get("dye_channel") == "primary")
         normal.filepath_raw = str(out_dir / f"{normal.name}.png")
         normal.file_format = "PNG"
         normal.save()
@@ -172,6 +328,8 @@ def bake_asset(low: bpy.types.Object, high: bpy.types.Object | None, out_dir: Pa
         jpg = png.with_suffix(".jpg")
         Image.open(png).convert("RGB").save(jpg, quality=92, subsampling=0)
         png.unlink()
+        if suffix == "albedo" and normal is not None:
+            paint_cavity(jpg, curv, cloth if cloth.any() else None)
         img.filepath = str(jpg)
         img.source = "FILE"
         img.reload()

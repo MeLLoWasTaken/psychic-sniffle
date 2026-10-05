@@ -719,5 +719,36 @@ def build_spec(spec: dict, previews: Path | None, pieces: dict, back_on_y0: set,
     for o in parts + glow:
         for v in o.data.vertices:
             v.co -= off
+    if params.get("detail") == "sculpted":
+        finish_piece_hd(parts, spec, previews, glow, preset=preset, rng=rng)
+        return
     finish_piece(parts, spec["id"], spec, previews, glow, center=False, preset=preset,
                  drop_to_floor=piece not in keep_origin)
+
+
+def finish_piece_hd(parts: list[bpy.types.Object], spec: dict, previews: Path | None,
+                    emissive_parts: list[bpy.types.Object] | None = None, preset: str = "dusk_grim",
+                    rng=None) -> list[bpy.types.Object]:
+    """finish_piece for the 2026-10-04 budgets (E-01): sculpt every part densely, reduce it to the
+    piece's budget, bake normal, colour and roughness maps from the dense version, export."""
+    import bake
+    import hd_kit
+    name = spec["id"]
+    low, high = hd_kit.build_hd(parts, spec, rng)
+    shade_smooth_by_angle(low, 50.0)
+    tex_dir = common.REPO / "previews" / "kit_textures"
+    size = int(spec.get("texture_size", 2048))
+    bake.bake_asset(low, high, tex_dir, name, size=size, samples=16 if size <= 2048 else 8)
+    bpy.data.objects.remove(high)
+    objs = [low]
+    if emissive_parts:
+        glow = common.join_objects(emissive_parts, f"{name}_glow")
+        glow.location = (0, 0, 0)
+        objs.append(glow)
+    tris = common.triangle_count(objs)
+    common.export_glb(Path(spec["out"]), objs)
+    print(f"  {name}: {tris} triangles -> {spec['out']}")
+    if previews:
+        common.render_contact_sheet(objs, previews / f"{name}_sheet.png", title=f"{name} {tris} tris", cell=384,
+                                    preset=preset)
+    return objs

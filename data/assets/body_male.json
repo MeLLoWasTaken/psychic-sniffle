@@ -5,18 +5,19 @@
   "seed": 1,
   "body_build": "male",
   "tri_budget": {
-    "min": 12000,
-    "max": 16000
+    "min": 28000,
+    "max": 32000
   },
-  "texture_size": 2048,
+  "texture_size": 4096,
   "palette": {
     "skin": "#b08a70"
   },
   "out": "game/assets/characters/body_male.gltf",
   "status": "draft",
   "params": {
-    "target_tris": 14000,
-    "voxel": 0.003
+    "target_tris": 30000,
+    "voxel": 0.002,
+    "head_share": 0.25
   },
   "pivot": "axis"
 }

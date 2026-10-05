@@ -5,17 +5,18 @@
   "seed": 1,
   "body_build": "male",
   "tri_budget": {
-    "min": 2400,
-    "max": 3300
+    "min": 4800,
+    "max": 6600
   },
-  "texture_size": 512,
+  "texture_size": 2048,
   "palette": {
     "hair": "#b4aa9e"
   },
   "params": {
     "slot": "beard",
     "style": "long",
-    "target_tris": 3000
+    "target_tris": 6000,
+    "voxel": 0.0015
   },
   "out": "game/assets/appearance/beard_long_male.gltf",
   "status": "draft"

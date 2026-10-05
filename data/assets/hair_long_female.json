@@ -5,17 +5,18 @@
   "seed": 1,
   "body_build": "female",
   "tri_budget": {
-    "min": 4000,
-    "max": 5500
+    "min": 12800,
+    "max": 17600
   },
-  "texture_size": 1024,
+  "texture_size": 2048,
   "palette": {
     "hair": "#b4aa9e"
   },
   "params": {
     "slot": "hair",
     "style": "long",
-    "target_tris": 5000
+    "target_tris": 16000,
+    "voxel": 0.002
   },
   "out": "game/assets/appearance/hair_long_female.gltf",
   "status": "draft"

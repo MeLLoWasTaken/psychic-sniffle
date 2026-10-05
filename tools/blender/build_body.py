@@ -66,7 +66,8 @@ def main() -> None:
     high = None
     if build in anatomy.TYPES:  # overhaul body (G-01): dense source for a baked normal map
         body, high = humanoid.build_body_anatomy(build, spec["id"], target_tris=int(params.get("target_tris", 14000)),
-                                                 voxel=float(params.get("voxel", 0.003)))
+                                                 voxel=float(params.get("voxel", 0.003)),
+                                                 head_share=float(params.get("head_share", 0.0)))
     else:
         body = humanoid.build_body_sdf(build, spec["id"], target_tris=int(params.get("target_tris", 9000)))
     body.data.materials.append(common.painted_material("skin", spec["palette"]["skin"], roughness=0.7,

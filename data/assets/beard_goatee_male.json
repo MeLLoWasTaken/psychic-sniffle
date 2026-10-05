@@ -5,17 +5,18 @@
   "seed": 1,
   "body_build": "male",
   "tri_budget": {
-    "min": 800,
-    "max": 1100
+    "min": 2000,
+    "max": 2750
   },
-  "texture_size": 512,
+  "texture_size": 2048,
   "palette": {
     "hair": "#b4aa9e"
   },
   "params": {
     "slot": "beard",
     "style": "goatee",
-    "target_tris": 1000
+    "target_tris": 2500,
+    "voxel": 0.0015
   },
   "out": "game/assets/appearance/beard_goatee_male.gltf",
   "status": "draft"

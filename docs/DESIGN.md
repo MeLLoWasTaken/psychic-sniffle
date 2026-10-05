@@ -354,11 +354,17 @@ Stylized, hand-painted fantasy with heroic, slightly exaggerated proportions and
 | Fel and demonic | Acid green | Jagged flames |
 | Time | Bronze, teal | Clock-like rings, afterimages |
 
-**Budgets**
+**Budgets** (changed 2026-10-04 by the human: "the budget and graphical fidelity should approach" a current top-tier stylized MMO; this replaced 40,000 to 60,000 triangles per character, props of 500 to 5,000 triangles and arenas under 1.5 million visible triangles)
 
-- Characters: 40,000 to 60,000 triangles at LOD0 for an assembled character (body, head, hair and every armor piece), with lower LODs at 50%, 25% and 10%. Texture sets (base color, normal map, roughness and dye masks) add up to about one 4096 px set per character: 4096 px for the chest piece, 2048 px for the body and head and for the other armor pieces. (Changed 2026-10-03 by the human, from 15,000 to 25,000 triangles and one 2048 px set.)
-- Environment props: 500 to 5,000 triangles, sharing texture atlases.
-- An arena map should stay under 1.5 million visible triangles.
+The extra triangles are for modelled detail that reads in play (rolled and bevelled plate edges, overlapping lames, rivets and buckles, straps, cloth folds, individual stones and chipped edges), not for smoothing flat surfaces.
+
+- Characters: 100,000 to 150,000 triangles at LOD0 for an assembled character wearing every slot (body, head, hair and every armor piece), weapons not counted. Shares: body with head about 30,000 (the head and hands kept densest); hair 6,000 to 16,000; beards 2,000 to 6,000; chest 24,000; head 12,000; legs 12,000; shoulders 10,000; hands 8,000; back 8,000; feet 6,000; waist 3,000; an off-hand shield about 6,000.
+- Weapons: 8,000 to 20,000 triangles.
+- Character textures: 4096 px sets (base color, normal map, roughness and the dye mask at half size) for the body with head, the chest, legs and head pieces; 2048 px for the other pieces, hair and weapons. Pieces of one set share their textures across every character wearing them; dyes and skin tones are shader parameters, not texture copies.
+- LODs at 50%, 25% and 10%, switched by screen size. A Model detail setting (in the graphics presets) raises the switching threshold so Low and Medium drop to lower LODs sooner. Texture memory is checked on the minimum PC once a GPU machine is available; if it does not fit, Low gets half-size texture imports.
+- Environment kit pieces (walls, floors, pillars, stairs, gates): 5,000 to 25,000 triangles. Props: 2,000 to 20,000. Hero pieces (a gatehouse, the gallows, a furnace, a tomb): 30,000 to 80,000.
+- Environment textures: tiling materials at 2048 px per surface type (stone, wood, iron, plaster) with normal and roughness maps, plus 4096 px unique bakes for hero pieces; dirt, moss and soot blended by vertex color or a mask.
+- An arena map: under 6 million visible triangles at full detail, with automatic LODs and occlusion culling. A battleground map: under 10 million.
 
 **Appearance and armor customization** (added 2026-10-03 by the human)
 
@@ -392,12 +398,13 @@ In the cloud workspace, Blender is installed as the `bpy` Python module (Blender
 2. *Armor and weapons*: kitbashed from primitives with bevel, solidify, array, boolean and Geometry Nodes for spikes, rivets and trims. Armor is built as separate pieces per slot and per body type, each its own exported mesh, so the game assembles any mix (see Appearance and armor customization). Each class has its own default set; each spec varies color, trim and weapon.
 3. *Rig*: one standard skeleton with fixed bone names for every humanoid. Body skin uses automatic weights; armor pieces are rigidly parented to single bones to avoid stretching.
 4. *Animation*: keyframed by script from pose data, shared across all humanoids. Required set: idle, combat idle, run, strafe left and right, backpedal, jump, cast start, cast loop, cast release (per school), channel, 3 melee attacks, ranged shot, hit reaction, stunned, feared run, death, victory.
-5. *Textures*: procedural materials baked into base color maps (sizes under Budgets) with light from above, darkened crevices and highlighted edges, which gives the hand-painted look. Also bake a normal map carrying fine modelled detail from a higher-resolution version (engraving, mail, stitching, dents), a roughness map, and dye masks.
+5. *Textures*: procedural materials baked into base color maps (sizes under Budgets) with light from above, darkened crevices and highlighted edges, which gives the hand-painted look. Also bake a normal map carrying fine modelled detail from a higher-resolution version (engraving, mail, stitching, dents), a roughness map, and dye masks. The higher-resolution version's curvature is painted into the base color too (hollows darker, ridges lighter), so modelled detail reads under flat or distant light.
 6. *LODs*: three lower-detail versions at 50%, 25% and 10% of the triangles.
 
 **Environments**
 
 - A modular kit per arena theme: walls, pillars, floors, stairs, gates, braziers, banners, debris.
+- Each kit piece is built from a dense, sculpted version (stones chipped at the edges and worn at the corners, timber grained and split, iron dented) reduced to its budget, with normal, roughness and color maps baked from the dense version (added 2026-10-04 with the new budgets).
 - Maps are assembled in Godot scenes from kit pieces, with line-of-sight blockers on their own collision layer.
 
 **Icons**

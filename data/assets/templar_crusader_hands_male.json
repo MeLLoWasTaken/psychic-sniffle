@@ -5,15 +5,16 @@
   "seed": 1,
   "body_build": "male",
   "tri_budget": {
-    "min": 2560,
-    "max": 3520
+    "min": 6400,
+    "max": 8800
   },
   "texture_size": 2048,
   "params": {
     "slot": "hands",
     "design": "templar_gauntlets",
     "set": "templar_crusader",
-    "armor_type": "plate"
+    "armor_type": "plate",
+    "tris": 8000
   },
   "out": "game/assets/armor/templar_crusader_hands_male.gltf",
   "status": "draft"

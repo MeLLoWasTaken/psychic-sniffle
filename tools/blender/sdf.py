@@ -152,6 +152,25 @@ class Shape:
         return lo, hi
 
 
+_CHUNK = 2_000_000   # samples per primitive evaluation: keeps fine grids (2 mm bodies) in memory
+
+
+def _apply_prim(f, p, lo, i0, i1, voxel: float) -> None:
+    """Combine one primitive into the field block i0..i1, a few x-slices at a time."""
+    ny, nz = i1[1] - i0[1], i1[2] - i0[2]
+    step = max(1, _CHUNK // max(ny * nz, 1))
+    ay = lo[1] + voxel * np.arange(i0[1], i1[1])
+    az = lo[2] + voxel * np.arange(i0[2], i1[2])
+    for x0 in range(i0[0], i1[0], step):
+        x1 = min(x0 + step, i1[0])
+        ax = lo[0] + voxel * np.arange(x0, x1)
+        gx, gy, gz = np.meshgrid(ax, ay, az, indexing="ij")
+        P = np.stack([gx.ravel(), gy.ravel(), gz.ravel()], axis=1)
+        d = p.fn(P).reshape(gx.shape).astype(np.float32)
+        block = f[x0:x1, i0[1]:i1[1], i0[2]:i1[2]]
+        block[...] = smax(block, -d, p.k) if p.subtract else smin(block, d, p.k)
+
+
 def evaluate(shape: Shape, voxel: float, floor_z: float | None = 0.0):
     """Sample the field on a grid. Returns (field[x, y, z], origin)."""
     lo, hi = shape.bounds()
@@ -163,15 +182,7 @@ def evaluate(shape: Shape, voxel: float, floor_z: float | None = 0.0):
         margin = 2.0 * p.k + 3 * voxel
         i0 = np.clip(np.floor((p.lo - margin - lo) / voxel).astype(int), 0, n - 1)
         i1 = np.clip(np.ceil((p.hi + margin - lo) / voxel).astype(int) + 1, 1, n)
-        axes = [lo[d] + voxel * np.arange(i0[d], i1[d]) for d in range(3)]
-        gx, gy, gz = np.meshgrid(*axes, indexing="ij")
-        P = np.stack([gx.ravel(), gy.ravel(), gz.ravel()], axis=1)
-        d = p.fn(P).reshape(gx.shape).astype(np.float32)
-        block = f[i0[0]:i1[0], i0[1]:i1[1], i0[2]:i1[2]]
-        if p.subtract:
-            block[...] = smax(block, -d, p.k)
-        else:
-            block[...] = smin(block, d, p.k)
+        _apply_prim(f, p, lo, i0, i1, voxel)
     if floor_z is not None:  # flat soles: nothing below the floor
         zs = lo[2] + voxel * np.arange(n[2])
         f = np.maximum(f, (floor_z - zs)[None, None, :].astype(np.float32))
@@ -190,12 +201,7 @@ def eval_grid(shape: Shape, lo, n, voxel: float, fill: float = 10.0) -> np.ndarr
         i1 = np.clip(np.ceil((p.hi + margin - lo) / voxel).astype(int) + 1, 0, n)
         if np.any(i1 <= i0):
             continue
-        axes = [lo[d] + voxel * np.arange(i0[d], i1[d]) for d in range(3)]
-        gx, gy, gz = np.meshgrid(*axes, indexing="ij")
-        P = np.stack([gx.ravel(), gy.ravel(), gz.ravel()], axis=1)
-        d = p.fn(P).reshape(gx.shape).astype(np.float32)
-        block = f[i0[0]:i1[0], i0[1]:i1[1], i0[2]:i1[2]]
-        block[...] = smax(block, -d, p.k) if p.subtract else smin(block, d, p.k)
+        _apply_prim(f, p, lo, i0, i1, voxel)
     return f
 
 
@@ -223,21 +229,28 @@ def surface(f: np.ndarray, voxel: float, min_island_voxels: float = 3.0):
     where a thin feature grazes a grid point; the triangle reduction would flatten each into a
     pair of back-to-back triangles, so they are dropped."""
     tau = np.float32(0.01 * voxel)
-    f = np.where(np.abs(f) < tau, np.where(f < 0, -tau, tau), f).astype(np.float32)
+    f = np.asarray(f, dtype=np.float32)
+    near = np.abs(f) < tau            # in place: a 2 mm body's field is about a gigabyte
+    f[near & (f < 0)] = -tau
+    f[near & (f >= 0)] = tau
+    del near
     verts, faces, _normals, _vals = measure.marching_cubes(f, level=0.0, spacing=(voxel, voxel, voxel))
     if len(faces) == 0:
         return verts, faces
     from scipy.sparse import coo_matrix
     from scipy.sparse.csgraph import connected_components
-    rows = np.repeat(np.arange(len(faces)), 3)
-    graph = coo_matrix((np.ones(len(rows)), (rows, faces.ravel())), shape=(len(faces), len(verts)))
-    _count, label = connected_components((graph @ graph.T).tocsr(), directed=False)
-    keep = np.zeros(len(faces), bool)
-    for island in np.unique(label):
-        members = label == island
-        pts = verts[faces[members].ravel()]
-        if (pts.max(axis=0) - pts.min(axis=0)).max() >= min_island_voxels * voxel:
-            keep |= members
+    # islands from vertex adjacency (a face-to-face product needs gigabytes on a 2 mm body)
+    a = faces[:, [0, 1, 2]].ravel()
+    b = faces[:, [1, 2, 0]].ravel()
+    graph = coo_matrix((np.ones(len(a), dtype=np.int8), (a, b)), shape=(len(verts), len(verts))).tocsr()
+    count, vlabel = connected_components(graph, directed=False)
+    del graph, a, b
+    lo = np.full((count, 3), np.inf)
+    hi = np.full((count, 3), -np.inf)
+    np.minimum.at(lo, vlabel, verts)
+    np.maximum.at(hi, vlabel, verts)
+    big = (hi - lo).max(axis=1) >= min_island_voxels * voxel
+    keep = big[vlabel[faces[:, 0]]]
     used, faces = np.unique(faces[keep], return_inverse=True)
     return verts[used], faces.reshape(-1, 3)
 

@@ -1,0 +1,30 @@
+{
+ "body_female": {
+  "rest": {},
+  "clips": {
+   "idle": {},
+   "combat_idle": {},
+   "run": {},
+   "strafe_left": {},
+   "strafe_right": {},
+   "backpedal": {},
+   "jump": {},
+   "cast_start": {},
+   "cast_loop": {},
+   "cast_release": {},
+   "channel": {},
+   "attack_1": {},
+   "attack_2": {},
+   "attack_3": {},
+   "hit": {},
+   "stunned": {},
+   "feared_run": {},
+   "death": {},
+   "victory": {},
+   "ranged_shot": {},
+   "cast_release_frost": {},
+   "cast_release_holy": {}
+  },
+  "gated_failures": {}
+ }
+}

@@ -24,6 +24,24 @@ REPO = Path(__file__).resolve().parents[2]
 
 # ----------------------------------------------------------------------------- arguments
 
+def mesh_from_arrays(name: str, verts, faces):
+    """A triangle mesh from numpy arrays without Python lists (millions of dense-mesh triangles)."""
+    import numpy as np
+    verts = np.asarray(verts, dtype=np.float32)
+    faces = np.asarray(faces, dtype=np.int32)
+    me = bpy.data.meshes.new(name)
+    me.vertices.add(len(verts))
+    me.vertices.foreach_set("co", verts.ravel())
+    me.loops.add(faces.size)
+    me.loops.foreach_set("vertex_index", faces.ravel())
+    me.polygons.add(len(faces))
+    me.polygons.foreach_set("loop_start", np.arange(0, faces.size, 3, dtype=np.int32))
+    me.polygons.foreach_set("loop_total", np.full(len(faces), 3, dtype=np.int32))
+    me.update(calc_edges=True)
+    me.validate()
+    return me
+
+
 def parse_args(description: str, extra: callable | None = None) -> argparse.Namespace:
     """Parse arguments after '--' (Blender binary) or all arguments (bpy module)."""
     argv = sys.argv[sys.argv.index("--") + 1:] if "--" in sys.argv else sys.argv[1:]

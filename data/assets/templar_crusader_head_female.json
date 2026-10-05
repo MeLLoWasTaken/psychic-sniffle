@@ -5,15 +5,16 @@
   "seed": 1,
   "body_build": "female",
   "tri_budget": {
-    "min": 4240,
-    "max": 5830
+    "min": 9600,
+    "max": 13200
   },
-  "texture_size": 2048,
+  "texture_size": 4096,
   "params": {
     "slot": "head",
     "design": "templar_great_helm",
     "set": "templar_crusader",
-    "armor_type": "plate"
+    "armor_type": "plate",
+    "tris": 12000
   },
   "out": "game/assets/armor/templar_crusader_head_female.gltf",
   "status": "draft"

@@ -118,31 +118,41 @@ def write_masks(obj: bpy.types.Object, j: dict, body_type: str, out_dir: Path, n
     from PIL import Image
     pos, covered = bake_positions(obj, size)
     hz, s = anatomy.head_frame(j, body_type)
-    L = np.stack([pos[..., 0] / s, pos[..., 1] / s, (pos[..., 2] - hz) / s], axis=-1)
-    on_head = covered & (L[..., 2] > -0.02)
-    eye_l = np.stack([np.abs(L[..., 0]), L[..., 1], L[..., 2]], axis=-1)
+    # Only head texels can be anything but plain skin, so the masks are computed on those alone
+    # (a 4096 px layout as whole float arrays needs gigabytes).
+    head_idx = np.nonzero(covered & ((pos[..., 2] - hz) / s > -0.02))
+    L = np.stack([pos[head_idx][:, 0] / s, pos[head_idx][:, 1] / s, (pos[head_idx][:, 2] - hz) / s], axis=-1)
+    del pos
+    eye_l = np.stack([np.abs(L[:, 0]), L[:, 1], L[:, 2]], axis=-1)
     d_eye = np.linalg.norm(eye_l - EYE, axis=-1)
-    on_eye = on_head & (d_eye < EYE_R + 0.0015)
-    axis_d = np.linalg.norm((eye_l - EYE)[..., [0, 2]], axis=-1)
-    iris = on_eye & (eye_l[..., 1] < EYE[1] - EYE_R * 0.6)
+    on_eye = d_eye < EYE_R + 0.0015
+    axis_d = np.linalg.norm((eye_l - EYE)[:, [0, 2]], axis=-1)
+    iris = on_eye & (eye_l[:, 1] < EYE[1] - EYE_R * 0.6)
     iris_m = iris * (1.0 - _smooth(IRIS_R - 0.0006, IRIS_R + 0.0006, axis_d))
-    skin = np.where(on_eye, 0.0, 1.0) * covered
-    lips = on_head * (1.0 - _smooth(0.0, 0.004, np.linalg.norm((L - np.array([0.0, -0.096, 0.052])) / np.array([1.0, 0.6, 0.62]),
-                                                                axis=-1) - 0.022))
-    paths = []
-    rgb = np.stack([iris_m, skin, lips], axis=-1)
+    lips = 1.0 - _smooth(0.0, 0.004, np.linalg.norm((L - np.array([0.0, -0.096, 0.052])) / np.array([1.0, 0.6, 0.62]),
+                                                      axis=-1) - 0.022)
     marks = markings(L)
     ids = list(marks)
-    layers = [rgb, np.stack([marks[i] * on_head for i in ids[0:3]], axis=-1),
-              np.stack([marks[i] * on_head for i in ids[3:6]], axis=-1)]
+
+    def full(cols):
+        img = np.zeros((size, size, 3), dtype=np.uint8)
+        img[head_idx] = (np.clip(np.stack(cols, axis=-1), 0, 1) * 255).astype(np.uint8)
+        return img
+    mask = full([iris_m, np.where(on_eye, 0.0, 1.0), lips])
+    skin = covered.copy()
+    skin[head_idx] = ~on_eye
+    mask[..., 1] = skin.astype(np.uint8) * 255      # skin everywhere but the eyes
+    layers = [mask, full([marks[i] for i in ids[0:3]]), full([marks[i] for i in ids[3:6]])]
+    paths = []
     out_dir.mkdir(parents=True, exist_ok=True)
     for suffix, arr in zip(("mask", "marks_a", "marks_b"), layers):
-        img = Image.fromarray((np.clip(arr, 0, 1)[::-1] * 255).astype(np.uint8), "RGB")   # Blender rows run bottom-up
+        img = Image.fromarray(arr[::-1], "RGB")   # Blender rows run bottom-up
         if mask_size != size:
             img = img.resize((mask_size, mask_size), Image.LANCZOS)
         p = out_dir / f"{name}_{suffix}.png"
         img.save(p)
         paths.append(p)
+    del layers, mask
     if albedo is not None:
         px = np.empty(size * size * 4, dtype=np.float32)
         albedo.pixels.foreach_get(px)
@@ -151,10 +161,10 @@ def write_masks(obj: bpy.types.Object, j: dict, body_type: str, out_dir: Path, n
         iris_col = np.array([0.22, 0.22, 0.22])
         rim = _smooth(IRIS_R - 0.0014, IRIS_R, axis_d)                   # darker ring at the iris edge
         pupil = 1.0 - _smooth(0.0019, 0.0024, axis_d)
-        eye_col = white[None, None, :] * (1 - iris_m[..., None]) + (iris_col * (1 - 0.5 * rim[..., None])) * iris_m[..., None]
-        eye_col = eye_col * (1 - (pupil * iris)[..., None]) + 0.01 * (pupil * iris)[..., None]
-        sel = on_eye
-        px[sel, :3] = eye_col[sel]
+        eye_col = white[None, :] * (1 - iris_m[:, None]) + (iris_col * (1 - 0.5 * rim[:, None])) * iris_m[:, None]
+        eye_col = eye_col * (1 - (pupil * iris)[:, None]) + 0.01 * (pupil * iris)[:, None]
+        rows, cols = head_idx[0][on_eye], head_idx[1][on_eye]
+        px[rows, cols, :3] = eye_col[on_eye]
         albedo.pixels.foreach_set(px.ravel())
         albedo.update()
         albedo.save()

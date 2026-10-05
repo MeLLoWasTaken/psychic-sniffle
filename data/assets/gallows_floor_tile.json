@@ -4,10 +4,10 @@
   "builder": "build_kit_gallows.py",
   "seed": 10,
   "tri_budget": {
-    "min": 1000,
-    "max": 4000
+    "min": 9000,
+    "max": 15000
   },
-  "texture_size": 1024,
+  "texture_size": 2048,
   "palette": {
     "stone": "#6d6961",
     "flag": "#5b5852",
@@ -19,7 +19,9 @@
     "emblem": "#d8ccb0"
   },
   "params": {
-    "piece": "floor_tile"
+    "piece": "floor_tile",
+    "detail": "sculpted",
+    "target_tris": 12000
   },
   "out": "game/assets/kits/gallows/gallows_floor_tile.glb",
   "status": "draft"

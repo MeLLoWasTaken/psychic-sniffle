@@ -3,21 +3,84 @@
  "name": "Crusader's Vow",
  "description": "The Templar's default look (G-04): a flat-topped great helm over a mail coif, a mail hauberk under a long sleeveless surcoat with the order's sun, rounded spaulders, plate gauntlets, mail chausses with plate knee cops, plate sabatons, a sword belt and a long cape.",
  "armor_type": "plate",
- "default_for": ["templar"],
+ "default_for": [
+  "templar"
+ ],
  "pieces": {
-  "head": {"design": "templar_great_helm", "name": "Vowkeeper's Great Helm", "tris": 5300, "hides": ["hair", "beard", "face"]},
-  "shoulders": {"design": "templar_spaulders", "name": "Vowkeeper's Spaulders", "tris": 3000},
-  "chest": {"design": "templar_surcoat", "name": "Vowkeeper's Surcoat and Hauberk", "tris": 10900, "texture_size": 4096},
-  "hands": {"design": "templar_gauntlets", "name": "Vowkeeper's Gauntlets", "tris": 3200},
-  "waist": {"design": "templar_belt", "name": "Vowkeeper's Sword Belt", "tris": 900, "texture_size": 1024},
-  "legs": {"design": "templar_chausses", "name": "Vowkeeper's Chausses", "tris": 4600},
-  "feet": {"design": "templar_sabatons", "name": "Vowkeeper's Sabatons", "tris": 2200},
-  "back": {"design": "templar_cape", "name": "Vowkeeper's Cape", "tris": 2800}
+  "head": {
+   "design": "templar_great_helm",
+   "name": "Vowkeeper's Great Helm",
+   "tris": 12000,
+   "hides": [
+    "hair",
+    "beard",
+    "face"
+   ],
+   "texture_size": 4096
+  },
+  "shoulders": {
+   "design": "templar_spaulders",
+   "name": "Vowkeeper's Spaulders",
+   "tris": 10000,
+   "texture_size": 2048
+  },
+  "chest": {
+   "design": "templar_surcoat",
+   "name": "Vowkeeper's Surcoat and Hauberk",
+   "tris": 24000,
+   "texture_size": 4096
+  },
+  "hands": {
+   "design": "templar_gauntlets",
+   "name": "Vowkeeper's Gauntlets",
+   "tris": 8000,
+   "texture_size": 2048
+  },
+  "waist": {
+   "design": "templar_belt",
+   "name": "Vowkeeper's Sword Belt",
+   "tris": 3000,
+   "texture_size": 2048
+  },
+  "legs": {
+   "design": "templar_chausses",
+   "name": "Vowkeeper's Chausses",
+   "tris": 12000,
+   "texture_size": 4096
+  },
+  "feet": {
+   "design": "templar_sabatons",
+   "name": "Vowkeeper's Sabatons",
+   "tris": 6000,
+   "texture_size": 2048
+  },
+  "back": {
+   "design": "templar_cape",
+   "name": "Vowkeeper's Cape",
+   "tris": 8000,
+   "texture_size": 2048
+  }
  },
  "dyes": {
-  "templar_radiance": {"primary": "#ece5d6", "secondary": "#c9a050", "metal": "#c3c7cc"},
-  "templar_vanguard": {"primary": "#2c4a82", "secondary": "#c9cfd6", "metal": "#a8adb4"},
-  "templar_zealot": {"primary": "#8e1f1f", "secondary": "#1d1b1e", "metal": "#7c8088"},
-  "default": {"primary": "#ece5d6", "secondary": "#c9a050", "metal": "#c3c7cc"}
+  "templar_radiance": {
+   "primary": "#ece5d6",
+   "secondary": "#c9a050",
+   "metal": "#c3c7cc"
+  },
+  "templar_vanguard": {
+   "primary": "#2c4a82",
+   "secondary": "#c9cfd6",
+   "metal": "#a8adb4"
+  },
+  "templar_zealot": {
+   "primary": "#8e1f1f",
+   "secondary": "#1d1b1e",
+   "metal": "#7c8088"
+  },
+  "default": {
+   "primary": "#ece5d6",
+   "secondary": "#c9a050",
+   "metal": "#c3c7cc"
+  }
  }
 }

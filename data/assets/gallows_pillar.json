@@ -4,10 +4,10 @@
   "builder": "build_kit_gallows.py",
   "seed": 13,
   "tri_budget": {
-    "min": 800,
-    "max": 5000
+    "min": 17000,
+    "max": 25000
   },
-  "texture_size": 1024,
+  "texture_size": 2048,
   "palette": {
     "stone": "#6d6961",
     "flag": "#5b5852",
@@ -21,7 +21,9 @@
   "params": {
     "radius_m": 1.2,
     "height_m": 6.0,
-    "piece": "pillar"
+    "piece": "pillar",
+    "detail": "sculpted",
+    "target_tris": 22000
   },
   "out": "game/assets/kits/gallows/gallows_pillar.glb",
   "status": "draft",

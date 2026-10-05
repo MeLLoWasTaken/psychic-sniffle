@@ -60,9 +60,7 @@ def hair_material(name: str, hex_color: str) -> bpy.types.Material:
 
 
 def mesh_obj(name: str, verts, faces) -> bpy.types.Object:
-    me = bpy.data.meshes.new(name)
-    me.from_pydata(verts.tolist(), [], faces.tolist())
-    me.validate()
+    me = common.mesh_from_arrays(name, verts, faces)
     o = bpy.data.objects.new(name, me)
     bpy.context.scene.collection.objects.link(o)
     return o
@@ -145,13 +143,15 @@ def detail_material(name: str, kind: str | None) -> bpy.types.Material:
         bump.inputs["Strength"].default_value = 0.8
         bump.inputs["Distance"].default_value = 0.0015
     elif kind == "cloth":
-        tex = nt.nodes.new("ShaderNodeTexWave")
-        tex.inputs["Scale"].default_value = 300.0
-        tex.inputs["Distortion"].default_value = 2.0
+        # soft unevenness of heavy wool, not a weave: a fine weave becomes grain-like noise once
+        # the cavity paint picks it up (DESIGN.md: no fine noise)
+        tex = nt.nodes.new("ShaderNodeTexNoise")
+        tex.inputs["Scale"].default_value = 25.0
+        tex.inputs["Detail"].default_value = 2.0
         nt.links.new(tc.outputs["Object"], tex.inputs["Vector"])
         nt.links.new(tex.outputs["Fac"], bump.inputs["Height"])
-        bump.inputs["Strength"].default_value = 0.25
-        bump.inputs["Distance"].default_value = 0.0006
+        bump.inputs["Strength"].default_value = 0.12
+        bump.inputs["Distance"].default_value = 0.002
     elif kind == "leather":
         tex = nt.nodes.new("ShaderNodeTexNoise")
         tex.inputs["Scale"].default_value = 180.0
@@ -223,24 +223,33 @@ def skirt_weights(o: bpy.types.Object, j: dict, names: set[str], z_top: float, b
         groups["thigh_r"].add([v.index], t * leg * (1 - side), "ADD")
 
 
-def build_armor(spec: dict, previews: Path | None) -> None:
+def build_armor(spec: dict, previews: Path | None, draft: bool = False, only: str = "") -> None:
     body_type = spec["body_build"]
     params = spec["params"]
     b = armor_kit.Body(body_type)
     parts = armor_kit.DESIGNS[params["design"]](b)
+    # the design's part triangles are shares; the set's per-slot budget (params.tris) is the total
+    target = int(params.get("tris", 0))
+    if target > 0:
+        total = sum(p.tris for p in parts)
+        for p in parts:
+            p.tris = max(60, int(round(p.tris * target / total)))
+    if only:
+        parts = [p for p in parts if p.name in only.split(",")]
     lows, highs, part_verts = [], [], {}
     mats: dict[str, bpy.types.Material] = {}
     dmats: dict[str, bpy.types.Material] = {}
     for part in parts:
-        G = armor_kit.Grid(part.lo, part.hi, part.voxel, b.shape)
-        f = part.fn(G).astype(np.float32)
-        f = np.maximum(f, -(G.Z + 0.0 * G.X + 0.0 * G.Y))            # nothing below the floor
+        f, glo = armor_kit.eval_part(part, b.shape)
+        zs = (glo[2] + part.voxel * np.arange(f.shape[2])).astype(np.float32)
+        np.maximum(f, -zs[None, None, :], out=f)                     # nothing below the floor
         f[0], f[-1], f[:, 0], f[:, -1], f[:, :, 0], f[:, :, -1] = 1.0, 1.0, 1.0, 1.0, 1.0, 1.0
         verts, faces = sdf.surface(f, part.voxel)
+        del f
         if len(faces) == 0:
             print(f"  WARNING {part.name}: empty", flush=True)
             continue
-        verts = verts + G.lo
+        verts = verts + glo
         hi_o = mesh_obj(f"{part.name}_high", verts, faces)
         lo_o = mesh_obj(part.name, verts, faces)
         reduce_to(lo_o, part.tris)
@@ -268,6 +277,15 @@ def build_armor(spec: dict, previews: Path | None) -> None:
         highs.append(hi_o)
         print(f"  {part.name}: {len(faces)} dense -> {len(lo_o.data.polygons)} tris ({part.material}, {part.skin})",
               flush=True)
+    if draft:   # a quick look at the shapes: flat material colours, no weights, bakes or export
+        for h in highs:
+            bpy.data.objects.remove(h)
+        low = _join(lows, spec["id"])
+        tris = common.triangle_count([low])
+        print(f"DRAFT {spec['id']} tris={tris}", flush=True)
+        out = (previews or common.REPO / "previews" / "draft") / f"{spec['id']}_draft.png"
+        common.render_contact_sheet([low], out, cell=720 if only else 480, title=f"{spec['id']} draft {tris} tris")
+        return
     # weights per part before joining (rigid parts on one bone, the rest copied from a body)
     ref, ref_rig = reference_body(body_type)
     belt_z = b.z("pelvis") + 0.06
@@ -360,7 +378,10 @@ def bake_dye_mask(low: bpy.types.Object, kit_mats: list, path: Path, size: int) 
 
 
 def main() -> None:
-    args = common.parse_args("Build a wearable piece")
+    def extra(p):
+        p.add_argument("--draft", action="store_true", help="armor only: render the reduced shapes, no bakes or export")
+        p.add_argument("--parts", default="", help="with --draft: only these parts (comma-separated names)")
+    args = common.parse_args("Build a wearable piece", extra)
     spec = common.load_spec(args.spec)
     common.reset_scene()
     body_type = spec["body_build"]
@@ -368,7 +389,7 @@ def main() -> None:
     slot, style = params["slot"], params.get("style", "")
     j = {k: np.array(v) for k, v in humanoid.joints(humanoid.BUILDS[body_type]).items()}
     if slot not in ("hair", "beard"):
-        build_armor(spec, args.previews)
+        build_armor(spec, args.previews, draft=args.draft, only=args.parts)
         return
     verts, faces = hair.build_mesh(j, body_type, style, beard=slot == "beard", voxel=float(params.get("voxel", 0.002)))
     high = mesh_obj(f"{spec['id']}_high", verts, faces)
@@ -376,7 +397,7 @@ def main() -> None:
     reduce_to(low, int(params.get("target_tris", 3000)))
     low.data.materials.append(hair_material(f"{spec['id']}_hair", spec["palette"]["hair"]))
     size = int(spec.get("texture_size", 1024))
-    bake.bake_asset(low, high, (common.REPO / spec["out"]).parent, spec["id"], size=size)
+    bake.bake_asset(low, high, (common.REPO / spec["out"]).parent, spec["id"], size=size, samples=12)
     bpy.data.objects.remove(high)
     hang = (slot == "hair" and style in ("long", "braided")) or (slot == "beard" and style == "long")
     rig = humanoid.build_armature(body_type, f"{spec['id']}_rig")
