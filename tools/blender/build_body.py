@@ -77,7 +77,7 @@ def main() -> None:
         neck_z = humanoid.joints(humanoid.BUILDS[build])["neck"].z
         # the face is seen close: its islands get 2.5 times the texels their area would give
         bake.bake_asset(body, high, (common.REPO / spec["out"]).parent, spec["id"], size=size,
-                        detail=lambda c: 2.5 if c.z > neck_z else 1.0)
+                        detail=lambda c: 2.5 if c.z > neck_z else 1.0, cavity=float(params.get("cavity", 1.0)))
         bpy.data.objects.remove(high)
         j = {k: np.array(v) for k, v in humanoid.joints(humanoid.BUILDS[build]).items()}
         appearance_bake.write_masks(body, j, build, (common.REPO / spec["out"]).parent, spec["id"], size=size,

@@ -521,15 +521,15 @@
   {
    "bufferView": 0,
    "componentType": 5126,
-   "count": 10397,
+   "count": 10519,
    "max": [
-    0.1984657645225525,
-    0.9363715648651123,
-    0.11669735610485077
+    0.19800950586795807,
+    0.9363699555397034,
+    0.11675272136926651
    ],
    "min": [
     -0.19908343255519867,
-    0.06962541490793228,
+    0.06960140913724899,
     -0.1509888619184494
    ],
    "type": "VEC3"
@@ -537,25 +537,25 @@
   {
    "bufferView": 1,
    "componentType": 5126,
-   "count": 10397,
+   "count": 10519,
    "type": "VEC3"
   },
   {
    "bufferView": 2,
    "componentType": 5126,
-   "count": 10397,
+   "count": 10519,
    "type": "VEC2"
   },
   {
    "bufferView": 3,
    "componentType": 5121,
-   "count": 10397,
+   "count": 10519,
    "type": "VEC4"
   },
   {
    "bufferView": 4,
    "componentType": 5126,
-   "count": 10397,
+   "count": 10519,
    "type": "VEC4"
   },
   {
@@ -574,44 +574,44 @@
  "bufferViews": [
   {
    "buffer": 0,
-   "byteLength": 124764,
+   "byteLength": 126228,
    "byteOffset": 0,
    "target": 34962
   },
   {
    "buffer": 0,
-   "byteLength": 124764,
-   "byteOffset": 124764,
+   "byteLength": 126228,
+   "byteOffset": 126228,
    "target": 34962
   },
   {
    "buffer": 0,
-   "byteLength": 83176,
-   "byteOffset": 249528,
+   "byteLength": 84152,
+   "byteOffset": 252456,
    "target": 34962
   },
   {
    "buffer": 0,
-   "byteLength": 41588,
-   "byteOffset": 332704,
+   "byteLength": 42076,
+   "byteOffset": 336608,
    "target": 34962
   },
   {
    "buffer": 0,
-   "byteLength": 166352,
-   "byteOffset": 374292,
+   "byteLength": 168304,
+   "byteOffset": 378684,
    "target": 34962
   },
   {
    "buffer": 0,
    "byteLength": 72000,
-   "byteOffset": 540644,
+   "byteOffset": 546988,
    "target": 34963
   },
   {
    "buffer": 0,
    "byteLength": 1280,
-   "byteOffset": 612644
+   "byteOffset": 618988
   }
  ],
  "samplers": [
@@ -622,7 +622,7 @@
  ],
  "buffers": [
   {
-   "byteLength": 613924,
+   "byteLength": 620268,
    "uri": "templar_crusader_legs_male.bin"
   }
  ]

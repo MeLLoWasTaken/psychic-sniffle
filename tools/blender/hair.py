@@ -163,13 +163,15 @@ def _mane(L, s):
     r = np.sqrt((x / rx) ** 2 + (y / ry) ** 2)
     outer = (r - 1.0) * 0.09
     inner = (0.8 - r) * 0.09                      # a thick shell, hollow inside (the head and neck sit there)
-    hem = -0.16 + 0.025 * np.sin(np.radians(ang) * 9.0) - 0.04 * (ang > 120)
+    hem = (-0.16 + 0.025 * np.sin(np.radians(ang) * 9.0) - 0.04 * (ang > 120)
+           - 0.03 * (np.abs((ang / 13.85) % 1.0 - 0.5) * 2.0) ** 3)   # each lock ends in a point
     bottom = hem - z
     top = z - 0.17
     face = (60.0 - ang) * 0.002                    # open in front: the mane starts beside the face
     a = np.radians(ang)
-    grooves = (0.005 * (0.5 + 0.5 * np.sin(a * 13.0 + np.sin(z * 18.0) * 1.5))     # locks
-               + 0.0012 * (0.5 + 0.5 * np.sin(a * 80.0 + np.sin(z * 30.0) * 2.0)))  # strands
+    # locks (deep enough to read as separate locks, not grooves in a curtain) and strands
+    grooves = (0.011 * (0.5 + 0.5 * np.sin(a * 13.0 + np.sin(z * 18.0) * 1.5)) ** 2
+               + 0.0015 * (0.5 + 0.5 * np.sin(a * 80.0 + np.sin(z * 30.0) * 2.0)))
     d = np.maximum.reduce([outer + grooves, inner, bottom, top, face])
     return d * s
 
@@ -213,6 +215,14 @@ def build_field(j: dict, body_type: str, style: str, beard: bool = False, voxel:
         t = _thickness(style, L) * s * 0.35
         ang = _angle(L)
         hairline = np.interp(ang, [a for a, _z in HAIRLINE], [z for _a, z in HAIRLINE])
+        # a broken fringe: the hairline comes down in pointed locks over the forehead and temples
+        # (a straight cut read as a bowl), and in finer points around the ears and nape
+        warp = ang + 4.0 * np.sin(np.radians(ang) * 7.3)                    # uneven spacing
+        tri = np.abs((warp / 14.0) % 1.0 - 0.5) * 2.0                       # 0 at a point, 1 between
+        vary = 0.55 + 0.45 * np.sin(np.floor(warp / 14.0) * 2.4) ** 2       # each lock its own length
+        tips = (0.016 if style == "cropped" else 0.011) * vary * (1.0 - tri) ** 1.5
+        front = np.clip((85.0 - ang) / 30.0, 0.0, 1.0)
+        hairline = hairline - tips * (0.35 + 0.65 * front) - 0.004 * np.sin(np.radians(ang) * 23.0) * front
         below = (hairline - L[..., 2]) * s          # positive below the hairline
         ear_d = np.minimum(np.linalg.norm(L - EAR, axis=-1), np.linalg.norm(L - EAR * np.array([-1, 1, 1]), axis=-1))
         ear_cut = (0.032 - ear_d) * s               # positive near the ears

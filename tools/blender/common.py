@@ -42,6 +42,45 @@ def mesh_from_arrays(name: str, verts, faces):
     return me
 
 
+def close_mesh(o) -> int:
+    """Remove the slivers a heavy reduction leaves (zero-area triangles, which the glTF exporter
+    drops, tearing small holes) and fill any hole, so the exported piece stays closed. Returns
+    how many boundary edges were left."""
+    import bmesh
+    bm = bmesh.new()
+    bm.from_mesh(o.data)
+    bmesh.ops.remove_doubles(bm, verts=bm.verts, dist=1e-6)
+    bmesh.ops.dissolve_degenerate(bm, edges=bm.edges, dist=2e-5)
+    # stray islands of a few faces (a rivet head the reduction cut down to one triangle)
+    seen, small = set(), []
+    for f0 in bm.faces:
+        if f0 in seen:
+            continue
+        stack, island = [f0], []
+        seen.add(f0)
+        while stack:
+            f = stack.pop()
+            island.append(f)
+            for e in f.edges:
+                for g in e.link_faces:
+                    if g not in seen:
+                        seen.add(g)
+                        stack.append(g)
+        if len(island) < 12:
+            small.extend(island)
+    if small:
+        bmesh.ops.delete(bm, geom=small, context="FACES")
+    holes = [e for e in bm.edges if e.is_boundary]
+    if holes:
+        bmesh.ops.holes_fill(bm, edges=holes, sides=12)
+        bmesh.ops.triangulate(bm, faces=[f for f in bm.faces if len(f.verts) > 3])
+    left = sum(1 for e in bm.edges if e.is_boundary)
+    bm.to_mesh(o.data)
+    bm.free()
+    o.data.update()
+    return left
+
+
 def parse_args(description: str, extra: callable | None = None) -> argparse.Namespace:
     """Parse arguments after '--' (Blender binary) or all arguments (bpy module)."""
     argv = sys.argv[sys.argv.index("--") + 1:] if "--" in sys.argv else sys.argv[1:]

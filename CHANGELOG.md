@@ -2,6 +2,15 @@
 
 One entry per build-loop iteration, newest first. Format: date, backlog ID, what changed, how it was checked.
 
+## 2026-10-05 — G-16 (first pass): faces, neck, seams and hair
+- Fixed: thin lines across the bodies' waists, chests and necks. They were a flaw in how the shape generator combined body parts (a hard part cut off at its own edge while softer neighbours blended across it), not anatomy, and the new painted shading made them obvious. The fix applies to everything built from these shapes.
+- Neck and shoulders: the neck now meets the skull behind the jaw, so the jaw reads above it; the deep grooves above the collarbones are filled softly; the chest and collarbones blend more smoothly.
+- Faces: the eyes are open and visible (the cheek area used to cover them), with lids that wrap the eyeball and sit over the top of the iris; a softer brow ridge; a shorter nose; lips set into the face; fuller sides of the face; the female face designed with its own jaw, chin, eyes, nose and lips.
+- Hair: fringes end in uneven pointed locks instead of a straight bowl cut; long hair hangs in separate locks.
+- Bare skin gets a softer version of the painted shading; the crusader set and hair were rebuilt on the new bodies, and the armor fit check is clean on both.
+- Still open in G-16: faces read as stylized busts rather than finished heroes, and the presets that hollow the cheeks shade unevenly.
+- Checked: asset validation, both bodies' animation clipping checks, the armor fit check, close-up and creator sheets, a screenshot of the characters in the game engine.
+
 ## 2026-10-04 — G-11 to G-15 and E-01 (started): budgets raised toward a top-tier MMO's
 - The human asked for higher triangle budgets for characters and environments, approaching the fidelity of a current top-tier stylized MMO. New budgets in DESIGN.md: 100,000 to 150,000 triangles per assembled character (about 30,000 for the body and head), 4096 px textures for the body, chest, legs and helm; environment pieces 5,000 to 25,000, props 2,000 to 20,000, hero pieces 30,000 to 80,000, arenas under 6 million visible triangles. A piece's budget is now a single number in its armor set's data.
 - Both bodies rebuilt at 30,000 triangles with denser heads (about 7,300 triangles each) and 4096 px textures. Hair and beards at about three times their triangles.

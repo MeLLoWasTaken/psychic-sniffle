@@ -511,41 +511,41 @@
   {
    "bufferView": 0,
    "componentType": 5126,
-   "count": 4178,
+   "count": 4197,
    "max": [
-    0.024613531306385994,
+    0.024669894948601723,
     1.7921260595321655,
-    0.10112494975328445
+    0.10505790263414383
    ],
    "min": [
-    -0.024613531306385994,
-    1.5873675346374512,
-    -0.11443843692541122
+    -0.024653621017932892,
+    1.5858430862426758,
+    -0.11722351610660553
    ],
    "type": "VEC3"
   },
   {
    "bufferView": 1,
    "componentType": 5126,
-   "count": 4178,
+   "count": 4197,
    "type": "VEC3"
   },
   {
    "bufferView": 2,
    "componentType": 5126,
-   "count": 4178,
+   "count": 4197,
    "type": "VEC2"
   },
   {
    "bufferView": 3,
    "componentType": 5121,
-   "count": 4178,
+   "count": 4197,
    "type": "VEC4"
   },
   {
    "bufferView": 4,
    "componentType": 5126,
-   "count": 4178,
+   "count": 4197,
    "type": "VEC4"
   },
   {
@@ -564,44 +564,44 @@
  "bufferViews": [
   {
    "buffer": 0,
-   "byteLength": 50136,
+   "byteLength": 50364,
    "byteOffset": 0,
    "target": 34962
   },
   {
    "buffer": 0,
-   "byteLength": 50136,
-   "byteOffset": 50136,
+   "byteLength": 50364,
+   "byteOffset": 50364,
    "target": 34962
   },
   {
    "buffer": 0,
-   "byteLength": 33424,
-   "byteOffset": 100272,
+   "byteLength": 33576,
+   "byteOffset": 100728,
    "target": 34962
   },
   {
    "buffer": 0,
-   "byteLength": 16712,
-   "byteOffset": 133696,
+   "byteLength": 16788,
+   "byteOffset": 134304,
    "target": 34962
   },
   {
    "buffer": 0,
-   "byteLength": 66848,
-   "byteOffset": 150408,
+   "byteLength": 67152,
+   "byteOffset": 151092,
    "target": 34962
   },
   {
    "buffer": 0,
    "byteLength": 39600,
-   "byteOffset": 217256,
+   "byteOffset": 218244,
    "target": 34963
   },
   {
    "buffer": 0,
    "byteLength": 1280,
-   "byteOffset": 256856
+   "byteOffset": 257844
   }
  ],
  "samplers": [
@@ -612,7 +612,7 @@
  ],
  "buffers": [
   {
-   "byteLength": 258136,
+   "byteLength": 259124,
    "uri": "hair_ridge_female.bin"
   }
  ]

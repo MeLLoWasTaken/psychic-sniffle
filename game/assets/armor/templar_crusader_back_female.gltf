@@ -511,15 +511,15 @@
   {
    "bufferView": 0,
    "componentType": 5126,
-   "count": 5755,
+   "count": 5735,
    "max": [
-    0.3170247972011566,
-    1.4391162395477295,
-    -0.05235644057393074
+    0.31702539324760437,
+    1.4391177892684937,
+    -0.051419638097286224
    ],
    "min": [
     -0.31683963537216187,
-    0.31013330817222595,
+    0.31035709381103516,
     -0.2963494658470154
    ],
    "type": "VEC3"
@@ -527,25 +527,25 @@
   {
    "bufferView": 1,
    "componentType": 5126,
-   "count": 5755,
+   "count": 5735,
    "type": "VEC3"
   },
   {
    "bufferView": 2,
    "componentType": 5126,
-   "count": 5755,
+   "count": 5735,
    "type": "VEC2"
   },
   {
    "bufferView": 3,
    "componentType": 5121,
-   "count": 5755,
+   "count": 5735,
    "type": "VEC4"
   },
   {
    "bufferView": 4,
    "componentType": 5126,
-   "count": 5755,
+   "count": 5735,
    "type": "VEC4"
   },
   {
@@ -564,44 +564,44 @@
  "bufferViews": [
   {
    "buffer": 0,
-   "byteLength": 69060,
+   "byteLength": 68820,
    "byteOffset": 0,
    "target": 34962
   },
   {
    "buffer": 0,
-   "byteLength": 69060,
-   "byteOffset": 69060,
+   "byteLength": 68820,
+   "byteOffset": 68820,
    "target": 34962
   },
   {
    "buffer": 0,
-   "byteLength": 46040,
-   "byteOffset": 138120,
+   "byteLength": 45880,
+   "byteOffset": 137640,
    "target": 34962
   },
   {
    "buffer": 0,
-   "byteLength": 23020,
-   "byteOffset": 184160,
+   "byteLength": 22940,
+   "byteOffset": 183520,
    "target": 34962
   },
   {
    "buffer": 0,
-   "byteLength": 92080,
-   "byteOffset": 207180,
+   "byteLength": 91760,
+   "byteOffset": 206460,
    "target": 34962
   },
   {
    "buffer": 0,
    "byteLength": 48000,
-   "byteOffset": 299260,
+   "byteOffset": 298220,
    "target": 34963
   },
   {
    "buffer": 0,
    "byteLength": 1280,
-   "byteOffset": 347260
+   "byteOffset": 346220
   }
  ],
  "samplers": [
@@ -612,7 +612,7 @@
  ],
  "buffers": [
   {
-   "byteLength": 348540,
+   "byteLength": 347500,
    "uri": "templar_crusader_back_female.bin"
   }
  ]

@@ -1,21 +1,10 @@
 {
  "male": {
-  "covered": 16731,
+  "covered": 15999,
   "clips": {
    "idle": {},
    "combat_idle": {},
-   "run": {
-    "legs": {
-     "count": 1,
-     "depth_m": 0.005,
-     "frame": 13,
-     "at": [
-      0.018,
-      0.013,
-      0.88
-     ]
-    }
-   },
+   "run": {},
    "cast_loop": {},
    "cast_release": {},
    "attack_1": {},
@@ -25,7 +14,7 @@
   "failures": {}
  },
  "female": {
-  "covered": 16961,
+  "covered": 16361,
   "clips": {
    "idle": {},
    "combat_idle": {},

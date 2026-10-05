@@ -521,41 +521,41 @@
   {
    "bufferView": 0,
    "componentType": 5126,
-   "count": 4120,
+   "count": 4534,
    "max": [
-    0.027522707358002663,
-    1.9260118007659912,
-    0.10503897815942764
+    0.02753238007426262,
+    1.925994873046875,
+    0.10737282037734985
    ],
    "min": [
-    -0.027560194954276085,
-    1.6980600357055664,
-    -0.12729419767856598
+    -0.027532909065485,
+    1.696553111076355,
+    -0.1304606795310974
    ],
    "type": "VEC3"
   },
   {
    "bufferView": 1,
    "componentType": 5126,
-   "count": 4120,
+   "count": 4534,
    "type": "VEC3"
   },
   {
    "bufferView": 2,
    "componentType": 5126,
-   "count": 4120,
+   "count": 4534,
    "type": "VEC2"
   },
   {
    "bufferView": 3,
    "componentType": 5121,
-   "count": 4120,
+   "count": 4534,
    "type": "VEC4"
   },
   {
    "bufferView": 4,
    "componentType": 5126,
-   "count": 4120,
+   "count": 4534,
    "type": "VEC4"
   },
   {
@@ -574,44 +574,44 @@
  "bufferViews": [
   {
    "buffer": 0,
-   "byteLength": 49440,
+   "byteLength": 54408,
    "byteOffset": 0,
    "target": 34962
   },
   {
    "buffer": 0,
-   "byteLength": 49440,
-   "byteOffset": 49440,
+   "byteLength": 54408,
+   "byteOffset": 54408,
    "target": 34962
   },
   {
    "buffer": 0,
-   "byteLength": 32960,
-   "byteOffset": 98880,
+   "byteLength": 36272,
+   "byteOffset": 108816,
    "target": 34962
   },
   {
    "buffer": 0,
-   "byteLength": 16480,
-   "byteOffset": 131840,
+   "byteLength": 18136,
+   "byteOffset": 145088,
    "target": 34962
   },
   {
    "buffer": 0,
-   "byteLength": 65920,
-   "byteOffset": 148320,
+   "byteLength": 72544,
+   "byteOffset": 163224,
    "target": 34962
   },
   {
    "buffer": 0,
    "byteLength": 39600,
-   "byteOffset": 214240,
+   "byteOffset": 235768,
    "target": 34963
   },
   {
    "buffer": 0,
    "byteLength": 1280,
-   "byteOffset": 253840
+   "byteOffset": 275368
   }
  ],
  "samplers": [
@@ -622,7 +622,7 @@
  ],
  "buffers": [
   {
-   "byteLength": 255120,
+   "byteLength": 276648,
    "uri": "hair_ridge_male.bin"
   }
  ]

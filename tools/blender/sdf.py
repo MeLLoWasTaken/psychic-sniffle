@@ -152,6 +152,22 @@ class Shape:
         return lo, hi
 
 
+def _margins(shape: "Shape", voxel: float) -> list[float]:
+    """How far beyond its box each primitive must be evaluated. Its value matters wherever a later
+    primitive overlapping it can blend with it, so the margin covers the largest blend radius
+    among those, not only its own: a sharp primitive cut off at its own box left creases where
+    blended neighbours crossed the box's edge."""
+    prims = shape.prims
+    out = []
+    for i, p in enumerate(prims):
+        k = p.k
+        for q in prims[i + 1:]:
+            if q.k > k and np.all(q.lo - 2 * q.k <= p.hi + 2 * q.k) and np.all(q.hi + 2 * q.k >= p.lo - 2 * q.k):
+                k = q.k
+        out.append(2.0 * k + 3 * voxel)
+    return out
+
+
 _CHUNK = 2_000_000   # samples per primitive evaluation: keeps fine grids (2 mm bodies) in memory
 
 
@@ -178,8 +194,7 @@ def evaluate(shape: Shape, voxel: float, floor_z: float | None = 0.0):
         lo[2] = min(lo[2], floor_z - 2 * voxel)
     n = np.ceil((hi - lo) / voxel).astype(int) + 1
     f = np.full(tuple(n), 10.0, dtype=np.float32)
-    for p in shape.prims:
-        margin = 2.0 * p.k + 3 * voxel
+    for p, margin in zip(shape.prims, _margins(shape, voxel)):
         i0 = np.clip(np.floor((p.lo - margin - lo) / voxel).astype(int), 0, n - 1)
         i1 = np.clip(np.ceil((p.hi + margin - lo) / voxel).astype(int) + 1, 1, n)
         _apply_prim(f, p, lo, i0, i1, voxel)
@@ -195,8 +210,7 @@ def eval_grid(shape: Shape, lo, n, voxel: float, fill: float = 10.0) -> np.ndarr
     lo = np.asarray(lo, float)
     n = np.asarray(n, int)
     f = np.full(tuple(n), fill, dtype=np.float32)
-    for p in shape.prims:
-        margin = 2.0 * p.k + 3 * voxel
+    for p, margin in zip(shape.prims, _margins(shape, voxel)):
         i0 = np.clip(np.floor((p.lo - margin - lo) / voxel).astype(int), 0, n)
         i1 = np.clip(np.ceil((p.hi + margin - lo) / voxel).astype(int) + 1, 0, n)
         if np.any(i1 <= i0):
@@ -277,9 +291,13 @@ def extract_field(fn, lo, hi, voxel: float = 0.006):
     lo, hi = np.asarray(lo, float), np.asarray(hi, float)
     n = np.ceil((hi - lo) / voxel).astype(int) + 1
     axes = [lo[d] + voxel * np.arange(n[d]) for d in range(3)]
-    gx, gy, gz = np.meshgrid(*axes, indexing="ij")
-    P = np.stack([gx.ravel(), gy.ravel(), gz.ravel()], axis=1)
-    f = fn(P).reshape(gx.shape).astype(np.float32)
+    f = np.empty(tuple(n), dtype=np.float32)
+    step = max(1, 1_000_000 // int(n[1] * n[2]))      # a few x-slices at a time: bounded memory
+    for x0 in range(0, n[0], step):
+        x1 = min(x0 + step, n[0])
+        gx, gy, gz = np.meshgrid(axes[0][x0:x1], axes[1], axes[2], indexing="ij")
+        P = np.stack([gx.ravel(), gy.ravel(), gz.ravel()], axis=1)
+        f[x0:x1] = fn(P).reshape(gx.shape)
     f[0, :, :] = f[-1, :, :] = f[:, 0, :] = f[:, -1, :] = f[:, :, 0] = f[:, :, -1] = 1.0
     verts, faces = surface(f, voxel)
     return verts + lo, faces

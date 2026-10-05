@@ -302,7 +302,7 @@ def paint_cavity(albedo: Path, curv, cloth=None) -> None:
 
 
 def bake_asset(low: bpy.types.Object, high: bpy.types.Object | None, out_dir: Path, name: str,
-               size: int = 2048, samples: int = 24, detail=None) -> bpy.types.Material:
+               size: int = 2048, samples: int = 24, detail=None, cavity: float = 1.0) -> bpy.types.Material:
     """Unwrap `low`, bake albedo and roughness from its painted materials (kit.bake_piece) and,
     when `high` is given, a normal map from it; the low mesh ends with one plain material."""
     out_dir.mkdir(parents=True, exist_ok=True)
@@ -329,7 +329,7 @@ def bake_asset(low: bpy.types.Object, high: bpy.types.Object | None, out_dir: Pa
         Image.open(png).convert("RGB").save(jpg, quality=92, subsampling=0)
         png.unlink()
         if suffix == "albedo" and normal is not None:
-            paint_cavity(jpg, curv, cloth if cloth.any() else None)
+            paint_cavity(jpg, curv * cavity, cloth if cloth.any() else None)
         img.filepath = str(jpg)
         img.source = "FILE"
         img.reload()

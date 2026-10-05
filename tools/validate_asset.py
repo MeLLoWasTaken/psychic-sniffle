@@ -108,7 +108,7 @@ def check(spec: dict) -> list[str]:
     # a ladder, a hanging cage) may move the bounding box a little off it
     tol = 0.15 if spec.get("pivot", "centre") == "axis" else 0.05
     if piece:
-        tol = 0.4
+        tol = 0.75   # sits where worn: an off-hand shield hangs half a metre out on the forearm
     if abs(cx) > tol or (abs(cy) > tol and not face_pivot):
         errors.append(f"not centred: bounding-box centre at x={cx:.3f}, y={cy:.3f}")
     if face_pivot and not (min(ys) <= 0.15 and max(ys) >= -0.15):

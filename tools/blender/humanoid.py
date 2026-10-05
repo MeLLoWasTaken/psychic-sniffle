@@ -430,6 +430,7 @@ def build_body_anatomy(body_type: str, name: str = "body", target_tris: int = 14
             hi_f = factor
     low = best[0]
     low.name = name
+    common.close_mesh(low)     # the reduction can leave a stray triangle or a sliver hole
     low.vertex_groups.remove(low.vertex_groups["detail"])
     head_tris = sum(1 for p in low.data.polygons if p.center.z > neck_z)
     print(f"BODY {name}: {len(low.data.polygons)} triangles, {head_tris} on the head", flush=True)

@@ -41,6 +41,32 @@ def head_mesh(body_type: str, face: str, voxel: float):
     return sdf.extract_field(fn, lo, hi, voxel), j
 
 
+EYE_C = np.array([0.031, -0.082, 0.12])     # head-local eyeball centre and radius (anatomy.add_head)
+EYE_R = 0.0122
+
+
+def paint_eyes(o, j, body_type) -> None:
+    """Whites, a dark iris and a pupil on the eyeballs, as the game's albedo has them (the eyes
+    otherwise look shut in skin colour)."""
+    hz, s = anatomy.head_frame(j, body_type)
+    white = bpy.data.materials.new("eye_white")
+    white.diffuse_color = (0.8, 0.78, 0.74, 1)
+    white.use_nodes = True
+    white.node_tree.nodes["Principled BSDF"].inputs["Base Color"].default_value = (0.8, 0.77, 0.72, 1)
+    iris = bpy.data.materials.new("eye_iris")
+    iris.use_nodes = True
+    iris.node_tree.nodes["Principled BSDF"].inputs["Base Color"].default_value = (0.08, 0.05, 0.03, 1)
+    o.data.materials.append(white)
+    o.data.materials.append(iris)
+    for poly in o.data.polygons:
+        c = np.array(poly.center[:])
+        L = np.array([abs(c[0]) / s, c[1] / s, (c[2] - hz) / s])
+        d = np.linalg.norm(L - EYE_C)
+        if d < EYE_R + 0.0009:
+            q = L - EYE_C
+            poly.material_index = 2 if (q[1] < -EYE_R * 0.6 and np.hypot(q[0], q[2]) < 0.0063) else 1
+
+
 def mesh_obj(name, verts, faces, tris):
     me = bpy.data.meshes.new(name)
     me.from_pydata(verts.tolist(), [], faces.tolist())
@@ -72,6 +98,8 @@ def main() -> None:
     ap.add_argument("--tris", type=int, default=2400)
     ap.add_argument("--cell", type=int, default=360)
     ap.add_argument("--samples", type=int, default=24)
+    ap.add_argument("--dist", type=float, default=1.15, help="camera distance (smaller: closer)")
+    ap.add_argument("--dense-only", action="store_true", help="only the dense surface's three views")
     args = ap.parse_args(argv)
     common.reset_scene()
     scene = bpy.context.scene
@@ -99,7 +127,10 @@ def main() -> None:
             combos = [(combos[0][0], h) for h in args.hair.split(",") if h]
         for face, style in combos:
             (verts, faces), j = head_mesh(t, face, args.voxel)
-            objs = [mesh_obj(f"{t}_{face}_{style}_hi", verts, faces, 0), mesh_obj(f"{t}_{face}_{style}_lo", verts, faces, args.tris)]
+            objs = [mesh_obj(f"{t}_{face}_{style}_hi", verts, faces, 0)]
+            paint_eyes(objs[0], j, t)
+            if not args.dense_only:
+                objs.append(mesh_obj(f"{t}_{face}_{style}_lo", verts, faces, args.tris))
             extras = []
             for kind, sty in (("hair", style), ("beard", args.beard if t == "male" else "")):
                 if not sty or sty == "none":
@@ -119,18 +150,19 @@ def main() -> None:
                 for yaw in (0, 35, 90):
                     a = math.radians(yaw)
                     d = Vector((math.sin(a), -math.cos(a), 0.05)).normalized()
-                    cam.location = centre + d * 1.15
+                    cam.location = centre + d * args.dist
                     cam.rotation_euler = (centre - cam.location).to_track_quat("-Z", "Y").to_euler()
                     tmp = args.out.with_name(f"_{args.out.stem}_{o.name}_{yaw}.png")
                     tmp.parent.mkdir(parents=True, exist_ok=True)
                     scene.render.filepath = str(tmp)
                     bpy.ops.render.render(write_still=True)
                     tiles.append(tmp)
-            rows.append((f"{t} {face} {style}: dense {len(faces)} tris | game {len(objs[1].data.polygons)} tris", tiles))
+            game = f" | game {len(objs[1].data.polygons)} tris" if len(objs) > 1 else ""
+            rows.append((f"{t} {face} {style}: dense {len(faces)} tris{game}", tiles))
             for o in objs + extras:
                 bpy.data.objects.remove(o, do_unlink=True)
     c = args.cell
-    sheet = Image.new("RGB", (c * 6, (c + 22) * len(rows)), (18, 18, 20))
+    sheet = Image.new("RGB", (c * max(len(r[1]) for r in rows), (c + 22) * len(rows)), (18, 18, 20))
     draw = ImageDraw.Draw(sheet)
     for r, (label, tiles) in enumerate(rows):
         draw.text((6, r * (c + 22) + 5), label, fill=(220, 220, 220))

@@ -521,15 +521,15 @@
   {
    "bufferView": 0,
    "componentType": 5126,
-   "count": 5750,
+   "count": 5748,
    "max": [
-    0.34011340141296387,
-    1.5366195440292358,
-    -0.09242181479930878
+    0.34011030197143555,
+    1.5365819931030273,
+    -0.09255525469779968
    ],
    "min": [
     -0.3400997221469879,
-    0.34332364797592163,
+    0.34330230951309204,
     -0.3142335116863251
    ],
    "type": "VEC3"
@@ -537,25 +537,25 @@
   {
    "bufferView": 1,
    "componentType": 5126,
-   "count": 5750,
+   "count": 5748,
    "type": "VEC3"
   },
   {
    "bufferView": 2,
    "componentType": 5126,
-   "count": 5750,
+   "count": 5748,
    "type": "VEC2"
   },
   {
    "bufferView": 3,
    "componentType": 5121,
-   "count": 5750,
+   "count": 5748,
    "type": "VEC4"
   },
   {
    "bufferView": 4,
    "componentType": 5126,
-   "count": 5750,
+   "count": 5748,
    "type": "VEC4"
   },
   {
@@ -574,44 +574,44 @@
  "bufferViews": [
   {
    "buffer": 0,
-   "byteLength": 69000,
+   "byteLength": 68976,
    "byteOffset": 0,
    "target": 34962
   },
   {
    "buffer": 0,
-   "byteLength": 69000,
-   "byteOffset": 69000,
+   "byteLength": 68976,
+   "byteOffset": 68976,
    "target": 34962
   },
   {
    "buffer": 0,
-   "byteLength": 46000,
-   "byteOffset": 138000,
+   "byteLength": 45984,
+   "byteOffset": 137952,
    "target": 34962
   },
   {
    "buffer": 0,
-   "byteLength": 23000,
-   "byteOffset": 184000,
+   "byteLength": 22992,
+   "byteOffset": 183936,
    "target": 34962
   },
   {
    "buffer": 0,
-   "byteLength": 92000,
-   "byteOffset": 207000,
+   "byteLength": 91968,
+   "byteOffset": 206928,
    "target": 34962
   },
   {
    "buffer": 0,
    "byteLength": 48000,
-   "byteOffset": 299000,
+   "byteOffset": 298896,
    "target": 34963
   },
   {
    "buffer": 0,
    "byteLength": 1280,
-   "byteOffset": 347000
+   "byteOffset": 346896
   }
  ],
  "samplers": [
@@ -622,7 +622,7 @@
  ],
  "buffers": [
   {
-   "byteLength": 348280,
+   "byteLength": 348176,
    "uri": "templar_crusader_back_male.bin"
   }
  ]

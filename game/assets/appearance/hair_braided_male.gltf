@@ -521,15 +521,15 @@
   {
    "bufferView": 0,
    "componentType": 5126,
-   "count": 7875,
+   "count": 8242,
    "max": [
-    0.09347470849752426,
-    1.8846991062164307,
-    0.10504958778619766
+    0.09748328477144241,
+    1.8894325494766235,
+    0.10778985917568207
    ],
    "min": [
-    -0.09363925457000732,
-    1.184492588043213,
+    -0.09749136865139008,
+    1.1844935417175293,
     -0.19089627265930176
    ],
    "type": "VEC3"
@@ -537,25 +537,25 @@
   {
    "bufferView": 1,
    "componentType": 5126,
-   "count": 7875,
+   "count": 8242,
    "type": "VEC3"
   },
   {
    "bufferView": 2,
    "componentType": 5126,
-   "count": 7875,
+   "count": 8242,
    "type": "VEC2"
   },
   {
    "bufferView": 3,
    "componentType": 5121,
-   "count": 7875,
+   "count": 8242,
    "type": "VEC4"
   },
   {
    "bufferView": 4,
    "componentType": 5126,
-   "count": 7875,
+   "count": 8242,
    "type": "VEC4"
   },
   {
@@ -574,44 +574,44 @@
  "bufferViews": [
   {
    "buffer": 0,
-   "byteLength": 94500,
+   "byteLength": 98904,
    "byteOffset": 0,
    "target": 34962
   },
   {
    "buffer": 0,
-   "byteLength": 94500,
-   "byteOffset": 94500,
+   "byteLength": 98904,
+   "byteOffset": 98904,
    "target": 34962
   },
   {
    "buffer": 0,
-   "byteLength": 63000,
-   "byteOffset": 189000,
+   "byteLength": 65936,
+   "byteOffset": 197808,
    "target": 34962
   },
   {
    "buffer": 0,
-   "byteLength": 31500,
-   "byteOffset": 252000,
+   "byteLength": 32968,
+   "byteOffset": 263744,
    "target": 34962
   },
   {
    "buffer": 0,
-   "byteLength": 126000,
-   "byteOffset": 283500,
+   "byteLength": 131872,
+   "byteOffset": 296712,
    "target": 34962
   },
   {
    "buffer": 0,
    "byteLength": 66000,
-   "byteOffset": 409500,
+   "byteOffset": 428584,
    "target": 34963
   },
   {
    "buffer": 0,
    "byteLength": 1280,
-   "byteOffset": 475500
+   "byteOffset": 494584
   }
  ],
  "samplers": [
@@ -622,7 +622,7 @@
  ],
  "buffers": [
   {
-   "byteLength": 476780,
+   "byteLength": 495864,
    "uri": "hair_braided_male.bin"
   }
  ]

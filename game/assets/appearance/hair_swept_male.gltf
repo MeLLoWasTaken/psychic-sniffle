@@ -521,41 +521,41 @@
   {
    "bufferView": 0,
    "componentType": 5126,
-   "count": 6511,
+   "count": 6503,
    "max": [
-    0.10230246931314468,
-    1.9015902280807495,
-    0.11724898219108582
+    0.10715456306934357,
+    1.9115383625030518,
+    0.11850482225418091
    ],
    "min": [
-    -0.10229403525590897,
-    1.698323130607605,
-    -0.12280269712209702
+    -0.10713522136211395,
+    1.696824312210083,
+    -0.1494034230709076
    ],
    "type": "VEC3"
   },
   {
    "bufferView": 1,
    "componentType": 5126,
-   "count": 6511,
+   "count": 6503,
    "type": "VEC3"
   },
   {
    "bufferView": 2,
    "componentType": 5126,
-   "count": 6511,
+   "count": 6503,
    "type": "VEC2"
   },
   {
    "bufferView": 3,
    "componentType": 5121,
-   "count": 6511,
+   "count": 6503,
    "type": "VEC4"
   },
   {
    "bufferView": 4,
    "componentType": 5126,
-   "count": 6511,
+   "count": 6503,
    "type": "VEC4"
   },
   {
@@ -574,44 +574,44 @@
  "bufferViews": [
   {
    "buffer": 0,
-   "byteLength": 78132,
+   "byteLength": 78036,
    "byteOffset": 0,
    "target": 34962
   },
   {
    "buffer": 0,
-   "byteLength": 78132,
-   "byteOffset": 78132,
+   "byteLength": 78036,
+   "byteOffset": 78036,
    "target": 34962
   },
   {
    "buffer": 0,
-   "byteLength": 52088,
-   "byteOffset": 156264,
+   "byteLength": 52024,
+   "byteOffset": 156072,
    "target": 34962
   },
   {
    "buffer": 0,
-   "byteLength": 26044,
-   "byteOffset": 208352,
+   "byteLength": 26012,
+   "byteOffset": 208096,
    "target": 34962
   },
   {
    "buffer": 0,
-   "byteLength": 104176,
-   "byteOffset": 234396,
+   "byteLength": 104048,
+   "byteOffset": 234108,
    "target": 34962
   },
   {
    "buffer": 0,
    "byteLength": 54000,
-   "byteOffset": 338572,
+   "byteOffset": 338156,
    "target": 34963
   },
   {
    "buffer": 0,
    "byteLength": 1280,
-   "byteOffset": 392572
+   "byteOffset": 392156
   }
  ],
  "samplers": [
@@ -622,7 +622,7 @@
  ],
  "buffers": [
   {
-   "byteLength": 393852,
+   "byteLength": 393436,
    "uri": "hair_swept_male.bin"
   }
  ]

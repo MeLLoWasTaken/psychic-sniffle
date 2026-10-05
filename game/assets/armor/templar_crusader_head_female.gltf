@@ -511,41 +511,41 @@
   {
    "bufferView": 0,
    "componentType": 5126,
-   "count": 11351,
+   "count": 11318,
    "max": [
-    0.29753348231315613,
+    0.29755133390426636,
     1.7906811237335205,
-    0.14236868917942047
+    0.1427711397409439
    ],
    "min": [
-    -0.2975287437438965,
-    1.3360880613327026,
-    -0.14513389766216278
+    -0.2975413501262665,
+    1.3360130786895752,
+    -0.14513392746448517
    ],
    "type": "VEC3"
   },
   {
    "bufferView": 1,
    "componentType": 5126,
-   "count": 11351,
+   "count": 11318,
    "type": "VEC3"
   },
   {
    "bufferView": 2,
    "componentType": 5126,
-   "count": 11351,
+   "count": 11318,
    "type": "VEC2"
   },
   {
    "bufferView": 3,
    "componentType": 5121,
-   "count": 11351,
+   "count": 11318,
    "type": "VEC4"
   },
   {
    "bufferView": 4,
    "componentType": 5126,
-   "count": 11351,
+   "count": 11318,
    "type": "VEC4"
   },
   {
@@ -564,44 +564,44 @@
  "bufferViews": [
   {
    "buffer": 0,
-   "byteLength": 136212,
+   "byteLength": 135816,
    "byteOffset": 0,
    "target": 34962
   },
   {
    "buffer": 0,
-   "byteLength": 136212,
-   "byteOffset": 136212,
+   "byteLength": 135816,
+   "byteOffset": 135816,
    "target": 34962
   },
   {
    "buffer": 0,
-   "byteLength": 90808,
-   "byteOffset": 272424,
+   "byteLength": 90544,
+   "byteOffset": 271632,
    "target": 34962
   },
   {
    "buffer": 0,
-   "byteLength": 45404,
-   "byteOffset": 363232,
+   "byteLength": 45272,
+   "byteOffset": 362176,
    "target": 34962
   },
   {
    "buffer": 0,
-   "byteLength": 181616,
-   "byteOffset": 408636,
+   "byteLength": 181088,
+   "byteOffset": 407448,
    "target": 34962
   },
   {
    "buffer": 0,
    "byteLength": 71964,
-   "byteOffset": 590252,
+   "byteOffset": 588536,
    "target": 34963
   },
   {
    "buffer": 0,
    "byteLength": 1280,
-   "byteOffset": 662216
+   "byteOffset": 660500
   }
  ],
  "samplers": [
@@ -612,7 +612,7 @@
  ],
  "buffers": [
   {
-   "byteLength": 663496,
+   "byteLength": 661780,
    "uri": "templar_crusader_head_female.bin"
   }
  ]

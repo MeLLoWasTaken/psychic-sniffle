@@ -73,7 +73,12 @@ def reduce_to(o: bpy.types.Object, tris: int) -> None:
     d = o.modifiers.new("d", "DECIMATE")
     d.ratio = min(1.0, tris / max(len(o.data.polygons), 1))
     bpy.ops.object.modifier_apply(modifier="d")
+    close_mesh(o)
     bpy.ops.object.shade_smooth()
+
+
+def close_mesh(o: bpy.types.Object) -> int:
+    return common.close_mesh(o)
 
 
 def skin_to_head(o: bpy.types.Object, j: dict, body_type: str, hang: bool) -> None:

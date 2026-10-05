@@ -511,7 +511,7 @@
   {
    "bufferView": 0,
    "componentType": 5126,
-   "count": 6022,
+   "count": 6020,
    "max": [
     0.8061816096305847,
     1.560388207435608,
@@ -527,25 +527,25 @@
   {
    "bufferView": 1,
    "componentType": 5126,
-   "count": 6022,
+   "count": 6020,
    "type": "VEC3"
   },
   {
    "bufferView": 2,
    "componentType": 5126,
-   "count": 6022,
+   "count": 6020,
    "type": "VEC2"
   },
   {
    "bufferView": 3,
    "componentType": 5121,
-   "count": 6022,
+   "count": 6020,
    "type": "VEC4"
   },
   {
    "bufferView": 4,
    "componentType": 5126,
-   "count": 6022,
+   "count": 6020,
    "type": "VEC4"
   },
   {
@@ -564,44 +564,44 @@
  "bufferViews": [
   {
    "buffer": 0,
-   "byteLength": 72264,
+   "byteLength": 72240,
    "byteOffset": 0,
    "target": 34962
   },
   {
    "buffer": 0,
-   "byteLength": 72264,
-   "byteOffset": 72264,
+   "byteLength": 72240,
+   "byteOffset": 72240,
    "target": 34962
   },
   {
    "buffer": 0,
-   "byteLength": 48176,
-   "byteOffset": 144528,
+   "byteLength": 48160,
+   "byteOffset": 144480,
    "target": 34962
   },
   {
    "buffer": 0,
-   "byteLength": 24088,
-   "byteOffset": 192704,
+   "byteLength": 24080,
+   "byteOffset": 192640,
    "target": 34962
   },
   {
    "buffer": 0,
-   "byteLength": 96352,
-   "byteOffset": 216792,
+   "byteLength": 96320,
+   "byteOffset": 216720,
    "target": 34962
   },
   {
    "buffer": 0,
    "byteLength": 36000,
-   "byteOffset": 313144,
+   "byteOffset": 313040,
    "target": 34963
   },
   {
    "buffer": 0,
    "byteLength": 1280,
-   "byteOffset": 349144
+   "byteOffset": 349040
   }
  ],
  "samplers": [
@@ -612,7 +612,7 @@
  ],
  "buffers": [
   {
-   "byteLength": 350424,
+   "byteLength": 350320,
    "uri": "shield_templar_kite_female.bin"
   }
  ]

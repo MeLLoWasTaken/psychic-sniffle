@@ -511,41 +511,41 @@
   {
    "bufferView": 0,
    "componentType": 5126,
-   "count": 6403,
+   "count": 6316,
    "max": [
-    0.07746918499469757,
+    0.08117872476577759,
     1.7877130508422852,
-    0.09570188820362091
+    0.09961728751659393
    ],
    "min": [
-    -0.07739895582199097,
-    1.587216854095459,
-    -0.1106184795498848
+    -0.08118349313735962,
+    1.5858244895935059,
+    -0.11342886835336685
    ],
    "type": "VEC3"
   },
   {
    "bufferView": 1,
    "componentType": 5126,
-   "count": 6403,
+   "count": 6316,
    "type": "VEC3"
   },
   {
    "bufferView": 2,
    "componentType": 5126,
-   "count": 6403,
+   "count": 6316,
    "type": "VEC2"
   },
   {
    "bufferView": 3,
    "componentType": 5121,
-   "count": 6403,
+   "count": 6316,
    "type": "VEC4"
   },
   {
    "bufferView": 4,
    "componentType": 5126,
-   "count": 6403,
+   "count": 6316,
    "type": "VEC4"
   },
   {
@@ -564,44 +564,44 @@
  "bufferViews": [
   {
    "buffer": 0,
-   "byteLength": 76836,
+   "byteLength": 75792,
    "byteOffset": 0,
    "target": 34962
   },
   {
    "buffer": 0,
-   "byteLength": 76836,
-   "byteOffset": 76836,
+   "byteLength": 75792,
+   "byteOffset": 75792,
    "target": 34962
   },
   {
    "buffer": 0,
-   "byteLength": 51224,
-   "byteOffset": 153672,
+   "byteLength": 50528,
+   "byteOffset": 151584,
    "target": 34962
   },
   {
    "buffer": 0,
-   "byteLength": 25612,
-   "byteOffset": 204896,
+   "byteLength": 25264,
+   "byteOffset": 202112,
    "target": 34962
   },
   {
    "buffer": 0,
-   "byteLength": 102448,
-   "byteOffset": 230508,
+   "byteLength": 101056,
+   "byteOffset": 227376,
    "target": 34962
   },
   {
    "buffer": 0,
    "byteLength": 51000,
-   "byteOffset": 332956,
+   "byteOffset": 328432,
    "target": 34963
   },
   {
    "buffer": 0,
    "byteLength": 1280,
-   "byteOffset": 383956
+   "byteOffset": 379432
   }
  ],
  "samplers": [
@@ -612,7 +612,7 @@
  ],
  "buffers": [
   {
-   "byteLength": 385236,
+   "byteLength": 380712,
    "uri": "hair_topknot_female.bin"
   }
  ]

@@ -521,7 +521,7 @@
   {
    "bufferView": 0,
    "componentType": 5126,
-   "count": 2645,
+   "count": 2560,
    "max": [
     0.19510887563228607,
     1.087385654449463,
@@ -530,32 +530,32 @@
    "min": [
     -0.19514551758766174,
     0.877424418926239,
-    -0.16120712459087372
+    -0.16107557713985443
    ],
    "type": "VEC3"
   },
   {
    "bufferView": 1,
    "componentType": 5126,
-   "count": 2645,
+   "count": 2560,
    "type": "VEC3"
   },
   {
    "bufferView": 2,
    "componentType": 5126,
-   "count": 2645,
+   "count": 2560,
    "type": "VEC2"
   },
   {
    "bufferView": 3,
    "componentType": 5121,
-   "count": 2645,
+   "count": 2560,
    "type": "VEC4"
   },
   {
    "bufferView": 4,
    "componentType": 5126,
-   "count": 2645,
+   "count": 2560,
    "type": "VEC4"
   },
   {
@@ -574,44 +574,44 @@
  "bufferViews": [
   {
    "buffer": 0,
-   "byteLength": 31740,
+   "byteLength": 30720,
    "byteOffset": 0,
    "target": 34962
   },
   {
    "buffer": 0,
-   "byteLength": 31740,
-   "byteOffset": 31740,
+   "byteLength": 30720,
+   "byteOffset": 30720,
    "target": 34962
   },
   {
    "buffer": 0,
-   "byteLength": 21160,
-   "byteOffset": 63480,
+   "byteLength": 20480,
+   "byteOffset": 61440,
    "target": 34962
   },
   {
    "buffer": 0,
-   "byteLength": 10580,
-   "byteOffset": 84640,
+   "byteLength": 10240,
+   "byteOffset": 81920,
    "target": 34962
   },
   {
    "buffer": 0,
-   "byteLength": 42320,
-   "byteOffset": 95220,
+   "byteLength": 40960,
+   "byteOffset": 92160,
    "target": 34962
   },
   {
    "buffer": 0,
    "byteLength": 18000,
-   "byteOffset": 137540,
+   "byteOffset": 133120,
    "target": 34963
   },
   {
    "buffer": 0,
    "byteLength": 1280,
-   "byteOffset": 155540
+   "byteOffset": 151120
   }
  ],
  "samplers": [
@@ -622,7 +622,7 @@
  ],
  "buffers": [
   {
-   "byteLength": 156820,
+   "byteLength": 152400,
    "uri": "templar_crusader_waist_male.bin"
   }
  ]

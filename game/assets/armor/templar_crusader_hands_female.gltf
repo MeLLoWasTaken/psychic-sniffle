@@ -511,9 +511,9 @@
   {
    "bufferView": 0,
    "componentType": 5126,
-   "count": 8279,
+   "count": 8153,
    "max": [
-    0.6417405605316162,
+    0.641740620136261,
     1.1057062149047852,
     0.08169806003570557
    ],
@@ -527,31 +527,31 @@
   {
    "bufferView": 1,
    "componentType": 5126,
-   "count": 8279,
+   "count": 8153,
    "type": "VEC3"
   },
   {
    "bufferView": 2,
    "componentType": 5126,
-   "count": 8279,
+   "count": 8153,
    "type": "VEC2"
   },
   {
    "bufferView": 3,
    "componentType": 5121,
-   "count": 8279,
+   "count": 8153,
    "type": "VEC4"
   },
   {
    "bufferView": 4,
    "componentType": 5126,
-   "count": 8279,
+   "count": 8153,
    "type": "VEC4"
   },
   {
    "bufferView": 5,
    "componentType": 5123,
-   "count": 23991,
+   "count": 23982,
    "type": "SCALAR"
   },
   {
@@ -564,44 +564,44 @@
  "bufferViews": [
   {
    "buffer": 0,
-   "byteLength": 99348,
+   "byteLength": 97836,
    "byteOffset": 0,
    "target": 34962
   },
   {
    "buffer": 0,
-   "byteLength": 99348,
-   "byteOffset": 99348,
+   "byteLength": 97836,
+   "byteOffset": 97836,
    "target": 34962
   },
   {
    "buffer": 0,
-   "byteLength": 66232,
-   "byteOffset": 198696,
+   "byteLength": 65224,
+   "byteOffset": 195672,
    "target": 34962
   },
   {
    "buffer": 0,
-   "byteLength": 33116,
-   "byteOffset": 264928,
+   "byteLength": 32612,
+   "byteOffset": 260896,
    "target": 34962
   },
   {
    "buffer": 0,
-   "byteLength": 132464,
-   "byteOffset": 298044,
+   "byteLength": 130448,
+   "byteOffset": 293508,
    "target": 34962
   },
   {
    "buffer": 0,
-   "byteLength": 47982,
-   "byteOffset": 430508,
+   "byteLength": 47964,
+   "byteOffset": 423956,
    "target": 34963
   },
   {
    "buffer": 0,
    "byteLength": 1280,
-   "byteOffset": 478492
+   "byteOffset": 471920
   }
  ],
  "samplers": [
@@ -612,7 +612,7 @@
  ],
  "buffers": [
   {
-   "byteLength": 479772,
+   "byteLength": 473200,
    "uri": "templar_crusader_hands_female.bin"
   }
  ]

@@ -511,41 +511,41 @@
   {
    "bufferView": 0,
    "componentType": 5126,
-   "count": 12595,
+   "count": 13312,
    "max": [
     0.09916576743125916,
-    1.7608815431594849,
-    0.10511265695095062
+    1.7657793760299683,
+    0.10902316123247147
    ],
    "min": [
     -0.09922564774751663,
-    1.3492584228515625,
-    -0.13291513919830322
+    1.3228604793548584,
+    -0.1351037472486496
    ],
    "type": "VEC3"
   },
   {
    "bufferView": 1,
    "componentType": 5126,
-   "count": 12595,
+   "count": 13312,
    "type": "VEC3"
   },
   {
    "bufferView": 2,
    "componentType": 5126,
-   "count": 12595,
+   "count": 13312,
    "type": "VEC2"
   },
   {
    "bufferView": 3,
    "componentType": 5121,
-   "count": 12595,
+   "count": 13312,
    "type": "VEC4"
   },
   {
    "bufferView": 4,
    "componentType": 5126,
-   "count": 12595,
+   "count": 13312,
    "type": "VEC4"
   },
   {
@@ -564,44 +564,44 @@
  "bufferViews": [
   {
    "buffer": 0,
-   "byteLength": 151140,
+   "byteLength": 159744,
    "byteOffset": 0,
    "target": 34962
   },
   {
    "buffer": 0,
-   "byteLength": 151140,
-   "byteOffset": 151140,
+   "byteLength": 159744,
+   "byteOffset": 159744,
    "target": 34962
   },
   {
    "buffer": 0,
-   "byteLength": 100760,
-   "byteOffset": 302280,
+   "byteLength": 106496,
+   "byteOffset": 319488,
    "target": 34962
   },
   {
    "buffer": 0,
-   "byteLength": 50380,
-   "byteOffset": 403040,
+   "byteLength": 53248,
+   "byteOffset": 425984,
    "target": 34962
   },
   {
    "buffer": 0,
-   "byteLength": 201520,
-   "byteOffset": 453420,
+   "byteLength": 212992,
+   "byteOffset": 479232,
    "target": 34962
   },
   {
    "buffer": 0,
    "byteLength": 96000,
-   "byteOffset": 654940,
+   "byteOffset": 692224,
    "target": 34963
   },
   {
    "buffer": 0,
    "byteLength": 1280,
-   "byteOffset": 750940
+   "byteOffset": 788224
   }
  ],
  "samplers": [
@@ -612,7 +612,7 @@
  ],
  "buffers": [
   {
-   "byteLength": 752220,
+   "byteLength": 789504,
    "uri": "hair_long_female.bin"
   }
  ]

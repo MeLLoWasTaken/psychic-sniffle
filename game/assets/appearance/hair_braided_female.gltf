@@ -511,14 +511,14 @@
   {
    "bufferView": 0,
    "componentType": 5126,
-   "count": 8075,
+   "count": 8208,
    "max": [
-    0.08385871350765228,
-    1.756577491760254,
-    0.10124094039201736
+    0.08752501755952835,
+    1.7607054710388184,
+    0.10525399446487427
    ],
    "min": [
-    -0.08397720009088516,
+    -0.08756028115749359,
     1.1258318424224854,
     -0.17173559963703156
    ],
@@ -527,25 +527,25 @@
   {
    "bufferView": 1,
    "componentType": 5126,
-   "count": 8075,
+   "count": 8208,
    "type": "VEC3"
   },
   {
    "bufferView": 2,
    "componentType": 5126,
-   "count": 8075,
+   "count": 8208,
    "type": "VEC2"
   },
   {
    "bufferView": 3,
    "componentType": 5121,
-   "count": 8075,
+   "count": 8208,
    "type": "VEC4"
   },
   {
    "bufferView": 4,
    "componentType": 5126,
-   "count": 8075,
+   "count": 8208,
    "type": "VEC4"
   },
   {
@@ -564,44 +564,44 @@
  "bufferViews": [
   {
    "buffer": 0,
-   "byteLength": 96900,
+   "byteLength": 98496,
    "byteOffset": 0,
    "target": 34962
   },
   {
    "buffer": 0,
-   "byteLength": 96900,
-   "byteOffset": 96900,
+   "byteLength": 98496,
+   "byteOffset": 98496,
    "target": 34962
   },
   {
    "buffer": 0,
-   "byteLength": 64600,
-   "byteOffset": 193800,
+   "byteLength": 65664,
+   "byteOffset": 196992,
    "target": 34962
   },
   {
    "buffer": 0,
-   "byteLength": 32300,
-   "byteOffset": 258400,
+   "byteLength": 32832,
+   "byteOffset": 262656,
    "target": 34962
   },
   {
    "buffer": 0,
-   "byteLength": 129200,
-   "byteOffset": 290700,
+   "byteLength": 131328,
+   "byteOffset": 295488,
    "target": 34962
   },
   {
    "buffer": 0,
    "byteLength": 66000,
-   "byteOffset": 419900,
+   "byteOffset": 426816,
    "target": 34963
   },
   {
    "buffer": 0,
    "byteLength": 1280,
-   "byteOffset": 485900
+   "byteOffset": 492816
   }
  ],
  "samplers": [
@@ -612,7 +612,7 @@
  ],
  "buffers": [
   {
-   "byteLength": 487180,
+   "byteLength": 494096,
    "uri": "hair_braided_female.bin"
   }
  ]

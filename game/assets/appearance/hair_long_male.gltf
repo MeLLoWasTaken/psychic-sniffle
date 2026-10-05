@@ -521,41 +521,41 @@
   {
    "bufferView": 0,
    "componentType": 5126,
-   "count": 12530,
+   "count": 12867,
    "max": [
     0.11044108122587204,
-    1.891402006149292,
-    0.10939992964267731
+    1.8949379920959473,
+    0.11173167079687119
    ],
    "min": [
     -0.11036960780620575,
-    1.4316062927246094,
-    -0.14813709259033203
+    1.4037240743637085,
+    -0.15061955153942108
    ],
    "type": "VEC3"
   },
   {
    "bufferView": 1,
    "componentType": 5126,
-   "count": 12530,
+   "count": 12867,
    "type": "VEC3"
   },
   {
    "bufferView": 2,
    "componentType": 5126,
-   "count": 12530,
+   "count": 12867,
    "type": "VEC2"
   },
   {
    "bufferView": 3,
    "componentType": 5121,
-   "count": 12530,
+   "count": 12867,
    "type": "VEC4"
   },
   {
    "bufferView": 4,
    "componentType": 5126,
-   "count": 12530,
+   "count": 12867,
    "type": "VEC4"
   },
   {
@@ -574,44 +574,44 @@
  "bufferViews": [
   {
    "buffer": 0,
-   "byteLength": 150360,
+   "byteLength": 154404,
    "byteOffset": 0,
    "target": 34962
   },
   {
    "buffer": 0,
-   "byteLength": 150360,
-   "byteOffset": 150360,
+   "byteLength": 154404,
+   "byteOffset": 154404,
    "target": 34962
   },
   {
    "buffer": 0,
-   "byteLength": 100240,
-   "byteOffset": 300720,
+   "byteLength": 102936,
+   "byteOffset": 308808,
    "target": 34962
   },
   {
    "buffer": 0,
-   "byteLength": 50120,
-   "byteOffset": 400960,
+   "byteLength": 51468,
+   "byteOffset": 411744,
    "target": 34962
   },
   {
    "buffer": 0,
-   "byteLength": 200480,
-   "byteOffset": 451080,
+   "byteLength": 205872,
+   "byteOffset": 463212,
    "target": 34962
   },
   {
    "buffer": 0,
    "byteLength": 96000,
-   "byteOffset": 651560,
+   "byteOffset": 669084,
    "target": 34963
   },
   {
    "buffer": 0,
    "byteLength": 1280,
-   "byteOffset": 747560
+   "byteOffset": 765084
   }
  ],
  "samplers": [
@@ -622,7 +622,7 @@
  ],
  "buffers": [
   {
-   "byteLength": 748840,
+   "byteLength": 766364,
    "uri": "hair_long_male.bin"
   }
  ]

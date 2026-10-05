@@ -521,7 +521,7 @@
   {
    "bufferView": 0,
    "componentType": 5126,
-   "count": 11062,
+   "count": 10972,
    "max": [
     0.2975687086582184,
     1.924902081489563,
@@ -529,7 +529,7 @@
    ],
    "min": [
     -0.2975471019744873,
-    1.433903694152832,
+    1.4340938329696655,
     -0.15448591113090515
    ],
    "type": "VEC3"
@@ -537,31 +537,31 @@
   {
    "bufferView": 1,
    "componentType": 5126,
-   "count": 11062,
+   "count": 10972,
    "type": "VEC3"
   },
   {
    "bufferView": 2,
    "componentType": 5126,
-   "count": 11062,
+   "count": 10972,
    "type": "VEC2"
   },
   {
    "bufferView": 3,
    "componentType": 5121,
-   "count": 11062,
+   "count": 10972,
    "type": "VEC4"
   },
   {
    "bufferView": 4,
    "componentType": 5126,
-   "count": 11062,
+   "count": 10972,
    "type": "VEC4"
   },
   {
    "bufferView": 5,
    "componentType": 5123,
-   "count": 35985,
+   "count": 35988,
    "type": "SCALAR"
   },
   {
@@ -574,44 +574,44 @@
  "bufferViews": [
   {
    "buffer": 0,
-   "byteLength": 132744,
+   "byteLength": 131664,
    "byteOffset": 0,
    "target": 34962
   },
   {
    "buffer": 0,
-   "byteLength": 132744,
-   "byteOffset": 132744,
+   "byteLength": 131664,
+   "byteOffset": 131664,
    "target": 34962
   },
   {
    "buffer": 0,
-   "byteLength": 88496,
-   "byteOffset": 265488,
+   "byteLength": 87776,
+   "byteOffset": 263328,
    "target": 34962
   },
   {
    "buffer": 0,
-   "byteLength": 44248,
-   "byteOffset": 353984,
+   "byteLength": 43888,
+   "byteOffset": 351104,
    "target": 34962
   },
   {
    "buffer": 0,
-   "byteLength": 176992,
-   "byteOffset": 398232,
+   "byteLength": 175552,
+   "byteOffset": 394992,
    "target": 34962
   },
   {
    "buffer": 0,
-   "byteLength": 71970,
-   "byteOffset": 575224,
+   "byteLength": 71976,
+   "byteOffset": 570544,
    "target": 34963
   },
   {
    "buffer": 0,
    "byteLength": 1280,
-   "byteOffset": 647196
+   "byteOffset": 642520
   }
  ],
  "samplers": [
@@ -622,7 +622,7 @@
  ],
  "buffers": [
   {
-   "byteLength": 648476,
+   "byteLength": 643800,
    "uri": "templar_crusader_head_male.bin"
   }
  ]
