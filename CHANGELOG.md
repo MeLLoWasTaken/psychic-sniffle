@@ -2,6 +2,13 @@
 
 One entry per build-loop iteration, newest first. Format: date, backlog ID, what changed, how it was checked.
 
+## 2026-10-06 — G-07: Warblade and Deathsworn plate sets
+- The Warblade's default look, Ironreaver: massive blackened plate with brass trim; a close helm with a T-shaped opening and two wide ribbed horns; spiked angular pauldrons; plated arms with spiked elbows and knuckles; a keeled breastplate and stepped belly plates over mail; spiked knee guards; pointed boots; a war cloak torn into strips under a fur collar.
+- The Deathsworn's default look, Rimebound: dark iron with bone trim; a skull-faced helm with glowing eyes and a crown of five glowing ice crystals; pauldrons with bone edges and glowing ice shards; a breastplate shaped like a rib cage with a glowing rune; clawed gauntlets; a torn under-robe and loincloth; a long cape torn into strips.
+- Both are full modular sets for both body types, about 113,600 triangles per character with the body, and mix freely with other plate pieces in the character creator.
+- Fixed while building: the new sets' mail shirt was open down the front; it now opens only below the hips so the legs can move.
+- Checked: the armor fit check is clean for both sets on both bodies; 155 assets validate; reference sheets for each spec; the 30 m grayscale check tells the three plate classes apart; a screenshot in the game engine shows the glow and the spec colours.
+
 ## 2026-10-05 — G-16 (second face pass) and G-07 (designs)
 - Faces: the face was a flat, wide mask; the cheekbones and the sides of the face now sit further back, so the face turns away from its front, and the crease from cheekbone to jaw is gone. The male jaw no longer flares wider than the cheekbones (it read as jowls). The female lower face tapers to a softer chin set back from the lips, with nostrils sized to her nose. The eyelids close slightly over the iris, the mouth line follows the lips and fades at the corners, the skull is a little shorter, and the male nose is smaller.
 - Fixed small dents, pits and sharp patches (the female temple, the hollow-cheeked presets, a groove down the female cheeks). They came from thin shapes blending over a wider area than their own thickness.

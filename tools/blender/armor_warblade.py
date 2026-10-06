@@ -106,7 +106,7 @@ def mail_shirt(b: Body, skirt_z: float, neck_z: float):
             along = (G.X - el[0]) * ax[0] + (G.Y - el[1]) * ax[1] + (G.Z - el[2]) * ax[2]
             d = np.where((G.X * sx > 0.16), np.maximum(d, along - (np.linalg.norm(wr - el) - 0.04)), d)
         d = np.maximum(d, skirt_z - G.Z)
-        split = np.maximum(np.abs(G.X) - 0.012, z("pelvis") - 0.08 - G.Z)
+        split = np.maximum(np.abs(G.X) - 0.012, G.Z - (z("pelvis") - 0.08))   # below the hips only
         return np.maximum(d, -split)
     return fn
 
@@ -264,11 +264,11 @@ def warblade_horned_helm(b: Body) -> list[Part]:
     parts = [Part("helm", "plate", helm, lo, hi, 4600, skin="head", voxel=0.0015, facet_deg=40),
              Part("helm_liner", "leather", liner, lo, hi, 300, skin="head", voxel=0.003)]
     for side, sx in (("l", 1.0), ("r", -1.0)):
-        ctrl = [(0.096, 0.008, 0.162), (0.155, -0.002, 0.19), (0.212, -0.022, 0.244), (0.246, -0.058, 0.318),
-                (0.252, -0.098, 0.38)]
+        ctrl = [(0.096, 0.008, 0.162), (0.17, -0.002, 0.192), (0.245, -0.024, 0.255), (0.288, -0.064, 0.345),
+                (0.296, -0.112, 0.43)]
         pts = curve([np.array([sx * x * s, cy + y * s, hz + zz * s]) for x, y, zz in ctrl], n=8)
         t = np.linspace(0, 1, len(pts))
-        radii = (0.031 * (1 - t) ** 0.85 + 0.0028) * s
+        radii = (0.035 * (1 - t) ** 0.85 + 0.003) * s
         hlo = pts.min(0) - 0.04
         hhi = pts.max(0) + 0.04
 

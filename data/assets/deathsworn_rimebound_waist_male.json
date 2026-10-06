@@ -1,0 +1,21 @@
+{
+  "id": "deathsworn_rimebound_waist_male",
+  "kind": "piece",
+  "builder": "build_piece.py",
+  "seed": 1,
+  "body_build": "male",
+  "tri_budget": {
+    "min": 2400,
+    "max": 3300
+  },
+  "texture_size": 2048,
+  "params": {
+    "slot": "waist",
+    "design": "deathsworn_loincloth",
+    "set": "deathsworn_rimebound",
+    "armor_type": "plate",
+    "tris": 3000
+  },
+  "out": "game/assets/armor/deathsworn_rimebound_waist_male.gltf",
+  "status": "draft"
+}

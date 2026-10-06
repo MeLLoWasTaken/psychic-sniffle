@@ -1,0 +1,21 @@
+{
+  "id": "warblade_ironreaver_legs_male",
+  "kind": "piece",
+  "builder": "build_piece.py",
+  "seed": 1,
+  "body_build": "male",
+  "tri_budget": {
+    "min": 9600,
+    "max": 13200
+  },
+  "texture_size": 4096,
+  "params": {
+    "slot": "legs",
+    "design": "warblade_legplates",
+    "set": "warblade_ironreaver",
+    "armor_type": "plate",
+    "tris": 12000
+  },
+  "out": "game/assets/armor/warblade_ironreaver_legs_male.gltf",
+  "status": "draft"
+}

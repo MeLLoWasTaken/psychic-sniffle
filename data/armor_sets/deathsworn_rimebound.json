@@ -1,0 +1,81 @@
+{
+ "id": "deathsworn_rimebound",
+ "name": "Rimebound",
+ "description": "The Deathsworn's default look (G-07): grave-cold dark iron with bone trim and frost. A narrow skull-faced helm with glowing eyes and a crown of five glowing ice crystals over a mail coif, angular pauldrons with bone edges and ice shards, a breastplate shaped like a rib cage with a glowing rune over mail and a torn under-robe, clawed gauntlets, a belt with a bone plaque and a torn loincloth, plate legs, long pointed sabatons and a long cape torn into strips that flares behind the legs.",
+ "armor_type": "plate",
+ "default_for": [
+  "deathsworn"
+ ],
+ "pieces": {
+  "head": {
+   "design": "deathsworn_skull_helm",
+   "name": "Rimebound Skull Helm",
+   "tris": 12000,
+   "texture_size": 4096,
+   "hides": [
+    "hair",
+    "beard",
+    "face"
+   ]
+  },
+  "shoulders": {
+   "design": "deathsworn_pauldrons",
+   "name": "Rimebound Pauldrons",
+   "tris": 10000,
+   "texture_size": 2048
+  },
+  "chest": {
+   "design": "deathsworn_ribplate",
+   "name": "Rimebound Ribplate",
+   "tris": 24000,
+   "texture_size": 4096
+  },
+  "hands": {
+   "design": "deathsworn_claws",
+   "name": "Rimebound Claws",
+   "tris": 8000,
+   "texture_size": 2048
+  },
+  "waist": {
+   "design": "deathsworn_loincloth",
+   "name": "Rimebound Girdle",
+   "tris": 3000,
+   "texture_size": 2048
+  },
+  "legs": {
+   "design": "deathsworn_legplates",
+   "name": "Rimebound Legplates",
+   "tris": 12000,
+   "texture_size": 4096
+  },
+  "feet": {
+   "design": "deathsworn_sabatons",
+   "name": "Rimebound Sabatons",
+   "tris": 6000,
+   "texture_size": 2048
+  },
+  "back": {
+   "design": "deathsworn_grave_cape",
+   "name": "Rimebound Grave Cape",
+   "tris": 8000,
+   "texture_size": 2048
+  }
+ },
+ "dyes": {
+  "deathsworn_frostgrave": {
+   "primary": "#2c3a4e",
+   "secondary": "#a3adb8",
+   "metal": "#50565f"
+  },
+  "deathsworn_bloodbound": {
+   "primary": "#4a1519",
+   "secondary": "#8c7c6a",
+   "metal": "#4a4d54"
+  },
+  "default": {
+   "primary": "#2c3a4e",
+   "secondary": "#a3adb8",
+   "metal": "#50565f"
+  }
+ }
+}

@@ -1,0 +1,21 @@
+{
+  "id": "deathsworn_rimebound_feet_male",
+  "kind": "piece",
+  "builder": "build_piece.py",
+  "seed": 1,
+  "body_build": "male",
+  "tri_budget": {
+    "min": 4800,
+    "max": 6600
+  },
+  "texture_size": 2048,
+  "params": {
+    "slot": "feet",
+    "design": "deathsworn_sabatons",
+    "set": "deathsworn_rimebound",
+    "armor_type": "plate",
+    "tris": 6000
+  },
+  "out": "game/assets/armor/deathsworn_rimebound_feet_male.gltf",
+  "status": "draft"
+}

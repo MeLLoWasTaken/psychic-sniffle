@@ -1,0 +1,21 @@
+{
+  "id": "deathsworn_rimebound_back_male",
+  "kind": "piece",
+  "builder": "build_piece.py",
+  "seed": 1,
+  "body_build": "male",
+  "tri_budget": {
+    "min": 6400,
+    "max": 8800
+  },
+  "texture_size": 2048,
+  "params": {
+    "slot": "back",
+    "design": "deathsworn_grave_cape",
+    "set": "deathsworn_rimebound",
+    "armor_type": "plate",
+    "tris": 8000
+  },
+  "out": "game/assets/armor/deathsworn_rimebound_back_male.gltf",
+  "status": "draft"
+}

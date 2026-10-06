@@ -1,0 +1,30 @@
+{
+ "male": {
+  "covered": 16418,
+  "clips": {
+   "idle": {},
+   "combat_idle": {},
+   "run": {},
+   "cast_loop": {},
+   "cast_release": {},
+   "attack_1": {},
+   "attack_2": {},
+   "attack_3": {}
+  },
+  "failures": {}
+ },
+ "female": {
+  "covered": 16938,
+  "clips": {
+   "idle": {},
+   "combat_idle": {},
+   "run": {},
+   "cast_loop": {},
+   "cast_release": {},
+   "attack_1": {},
+   "attack_2": {},
+   "attack_3": {}
+  },
+  "failures": {}
+ }
+}

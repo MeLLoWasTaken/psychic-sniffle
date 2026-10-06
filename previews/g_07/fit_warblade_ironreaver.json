@@ -1,0 +1,52 @@
+{
+ "male": {
+  "covered": 16891,
+  "clips": {
+   "idle": {
+    "back": {
+     "count": 1,
+     "depth_m": 0.0172,
+     "frame": 31,
+     "at": [
+      -0.264,
+      0.029,
+      1.55
+     ]
+    }
+   },
+   "combat_idle": {},
+   "run": {},
+   "cast_loop": {},
+   "cast_release": {},
+   "attack_1": {
+    "back": {
+     "count": 3,
+     "depth_m": 0.0183,
+     "frame": 17,
+     "at": [
+      -0.262,
+      -0.085,
+      1.471
+     ]
+    }
+   },
+   "attack_2": {},
+   "attack_3": {}
+  },
+  "failures": {}
+ },
+ "female": {
+  "covered": 17216,
+  "clips": {
+   "idle": {},
+   "combat_idle": {},
+   "run": {},
+   "cast_loop": {},
+   "cast_release": {},
+   "attack_1": {},
+   "attack_2": {},
+   "attack_3": {}
+  },
+  "failures": {}
+ }
+}
