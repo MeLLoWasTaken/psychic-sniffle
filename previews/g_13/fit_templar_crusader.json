@@ -1,6 +1,6 @@
 {
  "male": {
-  "covered": 16059,
+  "covered": 16062,
   "clips": {
    "idle": {},
    "combat_idle": {},
@@ -14,7 +14,7 @@
   "failures": {}
  },
  "female": {
-  "covered": 16770,
+  "covered": 16295,
   "clips": {
    "idle": {},
    "combat_idle": {},

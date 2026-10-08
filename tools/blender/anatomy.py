@@ -176,6 +176,33 @@ def body_shape(j: dict, body_type: str, hands: tuple[str, str] = ("relaxed", "fi
 
 FACE_KEYS = ("brow", "jaw", "cheek", "nose", "bridge", "chin", "lips", "hollow", "eyes")
 
+EYE_C = np.array([0.031, -0.082, 0.12])   # eyeball centre and radius, head-local (fixed: masks, hair, helms)
+EYE_R = 0.0122
+EYE_HALF_W = 0.0142                      # half the eye opening's width at eyes = 1
+
+
+def lid_edges(u, e):
+    """Heights (head-local, above the eyeball's centre) of the upper and lower lid edges at
+    u = x offset / opening half width: an almond, pointed at both corners (|u| = 1, where the lids
+    meet and close beyond), the outer corner (u > 0) a little higher than the inner."""
+    w = np.clip(1.0 - u * u, 0.0, None)
+    tilt = 0.0011 * np.clip(u, -1.0, 1.0)
+    return 0.0043 * e * w ** 0.6 + tilt, -0.0045 * e * w ** 0.8 + tilt
+
+
+def eye_width(e):
+    """The opening's half width: grows more slowly than its height with the eyes factor."""
+    return EYE_HALF_W * (1.0 + 0.4 * (e - 1.0))
+
+
+def face_layout(body_type: str) -> dict:
+    """The neutral face's paint landmarks (head-local), shared by add_head and the creator masks
+    (appearance_bake): eye factor, mouth height, lip fullness, the female factor."""
+    fem = TYPES[body_type]["fem"]
+    fl = (1.0 - (0.9 if fem else 1.0)) * 0.08
+    return {"fem": fem, "eyes": 1.2 if fem else 1.0, "lips": 1.22 if fem else 1.0, "fl": fl,
+            "mouth_z": 0.0515 + fl * 0.42}
+
 
 def face_params(face: str | dict | None) -> dict:
     """A face preset's feature factors (data/appearance/faces.json), or the factors themselves."""
@@ -295,12 +322,10 @@ def add_head(sh: sdf.Shape, j: dict, body_type: str, face: str | dict | None = N
         def fn(Q):
             q = Q - ec
             d = np.linalg.norm(q, axis=1) - (R + 0.0021 * s)
-            u = q[:, 0] / (0.0135 * e * s)
-            if upper:
-                edge = (0.0036 * e * (1.0 - 0.55 * u * u) + 0.0007 * u) * s     # over the iris's top
-                return np.maximum(d, edge - q[:, 2])
-            edge = (-0.0051 * e * (1.0 - 0.45 * u * u) + 0.0005 * u) * s    # at the iris's bottom
-            return np.maximum(d, q[:, 2] - edge)
+            up, low = lid_edges(q[:, 0] / (eye_width(e) * s), e)
+            if upper:     # over the iris's top
+                return np.maximum(d, up * s - q[:, 2])
+            return np.maximum(d, q[:, 2] - low * s)      # at the iris's bottom
         return fn
     for name, up in (("eyelid_upper", True), ("eyelid_lower", False)):
         sh.prims.append(sdf.Prim(lid(up), ec - R * 1.4, ec + R * 1.4, 0.0016 * s, False, name))
@@ -313,9 +338,10 @@ def add_head(sh: sdf.Shape, j: dict, body_type: str, face: str | dict | None = N
                   k=0.011 * s, name="nose_bridge")
     sh.sphere(P(0, -0.0955 - (npj + 0.0005) * nose, 0.0825), 0.0088 * nose * s, k=0.008 * s, name="nose_tip")
     sh.sphere(P(0.0105 * nose, -0.1005 - 0.004 * nose, 0.0785), 0.0068 * nose * s, k=0.007 * s, name="nose_wing")
-    sh.sphere(P(0.0056 * nose, -0.0985 - 0.005 * nose, 0.0825 - 0.0092 * nose), 0.0017 * nose * s, k=0.002 * s, subtract=True,
+    sh.sphere(P(0.0056 * nose, -0.0985 - 0.005 * nose, 0.0825 - 0.0092 * nose), max(0.0017 * nose, 0.0023) * s, k=0.002 * s,
+              subtract=True,
               name="nostril")
-    # mouth: an upper lip in two halves meeting in a bow, a fuller lower lip, a philtrum and corners
+    # mouth: an upper lip in two halves meeting in a bow, a fuller lower lip and corners
     # set into the cheeks
     mz = 0.0515 + fl * 0.42
     for name, x0 in (("lip_upper", 0.0085), ("lip_upper_c", 0.0)):
@@ -327,13 +353,11 @@ def add_head(sh: sdf.Shape, j: dict, body_type: str, face: str | dict | None = N
     # the line between the lips: deepest in the middle, following the mouth's curve back to the
     # corners and fading out there (a straight cut left pits at the corners)
     lf = lips - 1.0   # fuller lips stand further forward: the cut follows their surface
-    sh.round_cone(P(0.0, -0.0988 - 0.012 * lf, mz), P(0.021, -0.0945 - 0.005 * lf, mz + 0.0008), 0.0013 * s, 0.0005 * s,
+    sh.round_cone(P(0.0, -0.0999 - 0.012 * lf, mz), P(0.021, -0.0952 - 0.005 * lf, mz + 0.0008), 0.0024 * s, 0.0012 * s,
                   k=0.002 * s,
                   subtract=True, name="mouth_line")
-    if fem < 0.5:   # on the female face the lip's bow carries it; a groove read as a dark stroke
-        py = -0.0955
-        sh.round_cone(P(0, py, 0.0835 - 0.0105 * nose), P(0, py - 0.002, 0.065 + fl * 0.4), 0.0011 * s, 0.0015 * s, k=0.003 * s,
-                      subtract=True, name="philtrum")
+    # no philtrum groove: on the 2 mm body its rounded top end left a dark pit under the nose;
+    # the upper lip's bow carries the shape
     # ears: a flattened disc with a hollow, tipped back
     ear_rot = sdf.frame((0.0, 0.25, 1.0), up=(0, 1, 0))
     sh.ellipsoid(P(0.077, 0.012, 0.108), (0.03 * s, 0.008 * s, 0.019 * s), k=0.008 * s, rot=ear_rot, name="ear")

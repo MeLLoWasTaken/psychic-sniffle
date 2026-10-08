@@ -2,6 +2,12 @@
 
 One entry per build-loop iteration, newest first. Format: date, backlog ID, what changed, how it was checked.
 
+## 2026-10-08 — G-16 (done): painted faces
+- Eyes: the openings are now almond-shaped with lids meeting at the corners, so the eyes no longer stare; the pale ring around them is gone, the iris shows its colour, and the upper lid shades the eye.
+- Painted face: eyebrows that take a darker shade of the character's hair colour (heavier on men, thinner and arched on women), lip colour, a lash line, a line between the lips, warmer cheeks, nose and ears, and soft shading around the eyes.
+- The female mouth line no longer breaks into dots, and the dark pit under the male nose is gone.
+- Checked: close-ups of the baked faces before and after (`previews/g_16/compare_faces_pass2_pass3.png`), the faces in the game engine (`previews/g_16/looks_faces.png`), creator sheets, the armor fit check, both bodies' animation clipping checks, asset validation.
+
 ## 2026-10-06 — G-07: Warblade and Deathsworn plate sets
 - The Warblade's default look, Ironreaver: massive blackened plate with brass trim; a close helm with a T-shaped opening and two wide ribbed horns; spiked angular pauldrons; plated arms with spiked elbows and knuckles; a keeled breastplate and stepped belly plates over mail; spiked knee guards; pointed boots; a war cloak torn into strips under a fur collar.
 - The Deathsworn's default look, Rimebound: dark iron with bone trim; a skull-faced helm with glowing eyes and a crown of five glowing ice crystals; pauldrons with bone edges and glowing ice shards; a breastplate shaped like a rib cage with a glowing rune; clawed gauntlets; a torn under-robe and loincloth; a long cape torn into strips.

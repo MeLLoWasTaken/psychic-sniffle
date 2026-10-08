@@ -320,6 +320,7 @@ func _frame(args: PackedStringArray, focus: Vector3, yaw_deg: float, dist: float
 	var yaw: float = deg_to_rad(float(_arg(args, "--cam-yaw", str(yaw_deg))))
 	var pitch: float = deg_to_rad(float(_arg(args, "--cam-pitch", str(pitch_deg))))
 	var d: float = float(_arg(args, "--cam-dist", str(dist)))
+	focus = Vector3(float(_arg(args, "--cam-focus-x", str(focus.x))), float(_arg(args, "--cam-focus-y", str(focus.y))), focus.z)
 	var offset: Vector3 = Vector3(sin(yaw) * cos(pitch), sin(pitch), cos(yaw) * cos(pitch)) * d
 	cam.position = focus + offset
 	cam.look_at(focus, Vector3.UP)

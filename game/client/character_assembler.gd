@@ -40,6 +40,8 @@ static func build(look: Dictionary, spec_id: String, team: int = -1) -> Node3D:
 	var body_mesh: MeshInstance3D = _first_mesh(sk)
 	if body_mesh:
 		body_mesh.material_override = _skin_material(body_mesh, look, body_type)
+		var hair_col: Color = Color(str(Appearance.option("hair_colors", str(look.get("hair_color", ""))).get("color", "#5e3d26")))
+		(body_mesh.material_override as ShaderMaterial).set_shader_parameter("brow_color", hair_col.darkened(0.45))
 		_set_face(body_mesh, str(look.get("face", "neutral")))
 	var hidden: Array[String] = Appearance.hidden(look)
 	var hair_tint: Color = Color(str(Appearance.option("hair_colors", str(look.get("hair_color", ""))).get("color", "#5e3d26")))
@@ -110,7 +112,7 @@ static func _skin_material(mi: MeshInstance3D, look: Dictionary, body_type: Stri
 	mat.set_shader_parameter("albedo_tex", t.get("albedo"))
 	mat.set_shader_parameter("normal_tex", t.get("normal"))
 	mat.set_shader_parameter("orm_tex", t.get("orm"))
-	for pair: Array in [["mask_tex", "mask"], ["marks_a_tex", "marks_a"], ["marks_b_tex", "marks_b"]]:
+	for pair: Array in [["mask_tex", "mask"], ["marks_a_tex", "marks_a"], ["marks_b_tex", "marks_b"], ["face_tex", "face"]]:
 		var path: String = "res://assets/characters/body_%s_%s.png" % [body_type, pair[1]]
 		if ResourceLoader.exists(path):
 			mat.set_shader_parameter(pair[0], load(path))

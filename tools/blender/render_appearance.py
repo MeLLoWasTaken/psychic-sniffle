@@ -74,12 +74,43 @@ class Body:
         nt.links.new(albedo, skin.inputs[6])
         nt.links.new(self.tone.outputs[0], skin.inputs[7])
         nt.links.new(sep.outputs["Green"], skin.inputs["Factor"])
+        # lips (mask B) and eyebrows (face R), as the skin shader paints them
+        lip = nt.nodes.new("ShaderNodeMix")
+        lip.data_type = "RGBA"
+        lip.blend_type = "MULTIPLY"
+        lip.inputs[7].default_value = (0.86, 0.6, 0.6, 1.0)
+        lipf = nt.nodes.new("ShaderNodeMath")
+        lipf.operation = "MULTIPLY"
+        lipf.inputs[1].default_value = 0.7
+        nt.links.new(sep.outputs["Blue"], lipf.inputs[0])
+        nt.links.new(skin.outputs[2], lip.inputs[6])
+        nt.links.new(lipf.outputs[0], lip.inputs["Factor"])
+        face = nt.nodes.new("ShaderNodeTexImage")
+        face_path = REPO / "game" / "assets" / "characters" / f"body_{self.type}_face.png"
+        if face_path.exists():
+            face.image = bpy.data.images.load(str(face_path))
+            face.image.colorspace_settings.name = "Non-Color"
+        nt.links.new(uv.outputs["UV"], face.inputs["Vector"])
+        fsep = nt.nodes.new("ShaderNodeSeparateColor")
+        nt.links.new(face.outputs["Color"], fsep.inputs["Color"])
+        browf = nt.nodes.new("ShaderNodeMath")
+        browf.operation = "MULTIPLY"
+        browf.use_clamp = True
+        browf.inputs[1].default_value = 1.15
+        nt.links.new(fsep.outputs["Red"], browf.inputs[0])
+        self.brow = nt.nodes.new("ShaderNodeRGB")
+        brow = nt.nodes.new("ShaderNodeMix")
+        brow.data_type = "RGBA"
+        nt.links.new(lip.outputs[2], brow.inputs[6])
+        nt.links.new(self.brow.outputs[0], brow.inputs[7])
+        nt.links.new(browf.outputs[0], brow.inputs["Factor"])
+        self.brow.outputs[0].default_value = (0.16, 0.1, 0.06, 1.0)
         # iris
         self.iris = nt.nodes.new("ShaderNodeRGB")
         iris = nt.nodes.new("ShaderNodeMix")
         iris.data_type = "RGBA"
         iris.blend_type = "MULTIPLY"
-        nt.links.new(skin.outputs[2], iris.inputs[6])
+        nt.links.new(brow.outputs[2], iris.inputs[6])
         nt.links.new(self.iris.outputs[0], iris.inputs[7])
         nt.links.new(sep.outputs["Red"], iris.inputs["Factor"])
         # markings: one channel of marks_a or marks_b, picked by two weight vectors, in a paint colour
@@ -143,6 +174,9 @@ class Body:
                     kb.value = 1.0 if kb.name == f"face_{face}" else 0.0
 
     def wear(self, slot: str, piece_id: str | None, color_hex: str = "#5e3d26"):
+        if slot == "hair":   # eyebrows: a darker shade of the hair colour (character_assembler)
+            c = hex_rgb(color_hex)
+            self.brow.outputs[0].default_value = (c[0] * 0.27, c[1] * 0.27, c[2] * 0.27, 1.0)   # 0.55 in sRGB
         for o in self.pieces.pop(slot, []):
             bpy.data.objects.remove(o, do_unlink=True)
         if not piece_id:
@@ -274,6 +308,18 @@ def main():
             b.set_face("neutral")
             rows.append((t, tiles))
         grid(rows, args.cell, out / "creator_faces.png", "Face presets (cropped hair)")
+    if "closeup" in sheets:   # faces large enough to judge the painted detail (G-16)
+        rows = []
+        for t, b in bodies.items():
+            only(b)
+            b.wear("hair", f"hair_cropped_{t}")
+            for face in ("neutral", "stern" if t == "male" else "sharp"):
+                b.set_face(face)
+                tiles = [(f"{face} {yaw}", shoot(scene, cam, b, yaw, tmp / f"c_{t}_{face}_{yaw}.png", dist=0.55))
+                         for yaw in (0, 30, 75)]
+                rows.append((f"{t} {face}", tiles))
+            b.set_face("neutral")
+        grid(rows, args.cell, out / "creator_closeup.png", "Face close-ups (baked textures)")
     if "hair" in sheets:
         rows = []
         for t, b in bodies.items():
