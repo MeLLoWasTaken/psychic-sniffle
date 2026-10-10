@@ -5,10 +5,10 @@
   "seed": 31,
   "pivot": "grip",
   "tri_budget": {
-    "min": 800,
-    "max": 5000
+    "min": 8000,
+    "max": 20000
   },
-  "texture_size": 1024,
+  "texture_size": 2048,
   "palette": {
     "steel": "#8d9299",
     "dark": "#3a3c40",
@@ -16,12 +16,13 @@
     "leather": "#3f2a1d"
   },
   "params": {
-    "type": "greatsword",
+    "design": "warblade_greatsword",
+    "tris": 16000,
     "blade_m": 1.22,
     "grip_m": 0.34,
     "blade_width_m": 0.085,
     "hold": "two_handed"
   },
-  "out": "game/assets/weapons/weapon_greatsword.glb",
+  "out": "game/assets/weapons/weapon_greatsword.gltf",
   "status": "draft"
 }

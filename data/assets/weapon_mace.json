@@ -5,20 +5,21 @@
   "seed": 33,
   "pivot": "grip",
   "tri_budget": {
-    "min": 300,
-    "max": 4000
+    "min": 8000,
+    "max": 20000
   },
-  "texture_size": 1024,
+  "texture_size": 2048,
   "palette": {
     "iron": "#50535a",
     "gold": "#b08a3e",
     "leather": "#4a3325"
   },
   "params": {
-    "type": "mace",
+    "design": "oracle_mace",
+    "tris": 12000,
     "grip_m": 0.2,
     "shaft_m": 0.42
   },
-  "out": "game/assets/weapons/weapon_mace.glb",
+  "out": "game/assets/weapons/weapon_mace.gltf",
   "status": "draft"
 }

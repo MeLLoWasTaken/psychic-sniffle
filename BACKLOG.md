@@ -16,15 +16,17 @@ Acceptance criteria are written before work starts. Refine them during step 2 of
 
 ---
 
-## Next up (set 2026-10-04 after the human raised the budgets)
+## Next up (set 2026-10-10 by review pass 7)
 
-Items further down keep their history; this list is the order to take them in. Review 6: `docs/reports/review_06/review_06.md`. The human chose to run the Monday playtest on the current art while the overhaul is built (DECISIONS.md, 2026-10-03).
+Items further down keep their history; this list is the order to take them in. Review 7: `docs/reports/review_07/review_07.md` (the human asked 2026-10-10 to keep adding detail to every asset toward a AAA visual standard; the review ranks the gaps).
 
-1. G-11 to G-16: the higher budgets (asked by the human 2026-10-04: raise the triangle budgets for characters and environments so budget and fidelity approach a current top-tier stylized MMO). Bodies, the crusader set and hair rebuilt at the new budget first, so G-07 to G-09 are built at it from the start.
-2. E-01 to E-05: environments at the new budget, alternating with the G items while long bakes run.
-3. G-07 to G-10, the rest of the graphics overhaul.
-4. Review pass 7 (due: more than 10 items since review 6).
+1. G-09 weapons at the new fidelity (the weakest assets on screen). Done 2026-10-10.
+2. E-06 arena lighting and atmosphere (two of three arenas too dark to show their detail; flat skies).
+3. E-01 remainder, then E-02 to E-04, alternating with G-17 (character polish) and G-08b (Oracle fit) while long bakes run.
+4. G-10 overhaul gate (the human reviews; the new characters become the default), then E-05.
 5. Wave 1 continues: Deathsworn Plague (minions; `summon` needs its engine work).
+
+Done from review 7's list: review pass 7 itself (balance unchanged since the nightly at 952db81: no gameplay data changed).
 
 Done from review 6's list: M3-04 Templar balance (nightly at 952db81, every spec inside 40-60% in every bracket); Frostgrave balance (nightly at cac5431); F-08's Oracle mirrors reaching the time limit (solved by duel dampening: 83 of 83 Oracle duels in the nightly at 952db81 ended in a kill).
 
@@ -124,9 +126,17 @@ Goals and rules: DESIGN.md "Art direction", "Appearance and armor customization"
 ### G-08b Oracle Dawnveil fit in motion `[todo]`
 - [ ] The armor fit check clean for `oracle_dawnveil` on both bodies. Open after three attempts in G-08 (KNOWN_ISSUES 2026-10-10): the neck shows under the veil's head-fixed edges when the head turns or bows, and a spot on the male upper arm near the armpit leaves the robe. Next: a veil band that follows the neck (weighted from the body, like the aventails) or a veil draped over the shoulders; find what covers the arm spot at rest.
 
-### G-09 Weapons at the new fidelity `[todo]`
-- [ ] Every weapon rebuilt to 10-25% oversize, 8,000 to 20,000 triangles, 2048 px textures, normal-mapped detail. (Raised 2026-10-04 by the human, from 3,000 to 6,000.)
-- [ ] The Zealot's two-handed sword.
+### G-09 Weapons at the new fidelity `[done]`
+- [x] Every weapon rebuilt to 10-25% oversize, 8,000 to 20,000 triangles, 2048 px textures, normal-mapped detail. (Raised 2026-10-04 by the human, from 3,000 to 6,000.) Sharpened 2026-10-10: built like the armor (dense distance fields per part, `tools/blender/weapon_kit.py`, reduced and baked by `tools/blender/build_weapon.py`); glowing parts (frost, holy) baked into an emission texture; sizes and grips unchanged, so `test_weapons_hold_at_the_grip` still passes.
+- [x] The Zealot's two-handed sword (`weapon_sunbrand`; the Zealot spec is already a two-handed sword user).
+- [x] A weapon sheet per weapon (flat and edge views at full length, close views of both ends) read and compared with the old weapon; all eight specs in the Godot lineup with their new weapons.
+- Done 2026-10-10. Seven weapons at 12,000 to 16,000 triangles with 2048 px albedo, roughness, normal and (for frost and holy parts) emission textures, as glTF with external textures: greatsword, runeblade, frost staff, mace, warhammer, sun glaive (no longer carried by any spec) and the Zealot's new two-handed sunbrand. The mace and warhammer heads were first built at about two thirds of the old weapons' size; they were rescaled to the old proportions plus about 10%, and the runeblade and staff heads enlarged to match the old silhouettes. Sheets: `previews/g_09/weapon_<id>_sheet.jpg`; lineups `previews/g_09/lineup_a.jpg`, `lineup_b.jpg`. 7 weapons validate; `test_characters.gd` passes.
+- Follow-ups: the polishing-mark detail runs along the weapon's long axis, so it shows as fine rings on the warhammer's back spike (it should follow each part); the staff's grain is too regular (it reads a little like bundled reeds); faint dark scratch lines on the mace's flanges from the bake; the two-handed swords show their edge to the camera in the idle hold (the hold's animation, unchanged since the old weapons).
+
+### G-17 Character polish from review 7 `[todo]`
+- [ ] The Arcanist robe's large plain areas broken up (panels, embroidered bands, layered hems) and its trims reading as edging rather than stripes; the Templar spaulders shaped (lames or a flared rim) instead of plain domes; the Deathsworn fur ruff reading as fur, not bark; the torn cape strips wider than narrow cuts; the male cranium rounder.
+- [ ] Long hair and the braids as locks with gaps and tapered ends rather than a solid curtain with grooves.
+- [ ] Each change checked side by side with the current sheet and in the Godot lineup; fit checks still clean.
 
 ### G-10 Overhaul gate `[todo]`
 - [ ] Lineup and in-arena screenshots of all specs; a side-by-side with the old art; performance numbers; old characters removed; the human reviews the result.
@@ -160,6 +170,11 @@ Goals: DESIGN.md Budgets (2026-10-04). Each item ends with in-game screenshots c
 
 ### E-04 Burning foundry at the new budget `[todo]`
 - [ ] As E-02 for the foundry kit and props.
+
+### E-06 Arena lighting and atmosphere `[todo]`
+- [ ] Each arena gets a painted sky with structure (clouds, a moon, smoke from the foundry's stacks) and its exposure, fog and fill lights adjusted so the play area reads at night, keeping each arena's mood (cold crypt, hot foundry, dusk courtyard).
+- [ ] Measured on the player-camera screenshot (`map_view.tscn --view player`): the lower two thirds' mean luminance between 0.18 and 0.40 and its 5th to 95th percentile spread at least 0.25; the top fifth's luminance standard deviation at least 0.03. At review 7: courtyard 0.224, 0.28, 0.044 (passes); crypt 0.176, 0.27, 0.012; foundry 0.105, 0.20, 0.017.
+- [ ] Side by side with review 7's screenshots (`docs/reports/review_07/arena_*.png`).
 
 ### E-05 Environment performance gate `[todo]`
 - [ ] Visible triangles per arena measured from the three standard cameras with LODs and occlusion culling; load time from menu to arena under 10 s; frame time on the software renderer recorded relative to today's; GPU numbers pending.

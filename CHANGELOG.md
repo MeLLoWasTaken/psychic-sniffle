@@ -2,6 +2,14 @@
 
 One entry per build-loop iteration, newest first. Format: date, backlog ID, what changed, how it was checked.
 
+## 2026-10-10 — Review pass 7 and G-09: weapons at the new fidelity
+- Review pass 7 (`docs/reports/review_07/review_07.md`): balance unchanged since the last nightly (no gameplay data changed); lineups of all eight specs and the three arenas in the game engine; 20 new characters cost 2.34 million triangles and 3.0 ms of animation time a frame. It ranks what still separates the art from a retail standard: weapons first, then arena lighting and skies, the arena kits, switching matches to the new characters, and polish on the new sets. New backlog items: E-06 (arena lighting and atmosphere, with measurable brightness targets) and G-17 (character polish).
+- All seven weapons rebuilt the way the armor is: each part modelled densely, reduced to 12,000 to 16,000 triangles and baked at 2048 px. The greatsword has a langet, parrying lugs, a ground edge bevel, edge chips and a spiral leather grip. The runeblade has hooked back teeth, glowing runes and a crystal held in an iron cage pommel. The frost staff has a grained, knotted shaft and iron prongs round a cluster of glowing crystals. The Oracle's mace has gold-edged flanges, a crown of rays and a glowing gem. The warhammer has a toothed, flared face, a back spike, langets and gold suns. The glaive has a curved blade on a gold sun disc.
+- New: the Zealot's two-handed flame-bladed sword (its spec has always been a two-handed sword user); the glaive stays built.
+- A weapon preview sheet (full-length flat and edge views, close views of both ends), because the standard sheet showed a sword a few pixels wide.
+- Fixed along the way: a NaN in the mace's flange field that deleted its head (the builder now stops on NaN fields); the first mace and warhammer heads were about two thirds of the old weapons' size and were rescaled to the old proportions plus about 10%.
+- Checked: 7 weapons validate; the grip, budget and level-of-detail tests pass; lineups of all eight specs in the game engine (`previews/g_09/lineup_a.jpg`, `lineup_b.jpg`).
+
 ## 2026-10-10 — G-08: Arcanist and Oracle cloth sets
 - The Arcanist's default look, Hoarfrost Regalia: a deep pointed hood shadowing the face, capelets with a collar of glowing ice crystals, a wrap-front robe with drooping bell sleeves and torn hems, a knotted sash with an ice pendant, wrapped gloves, a torn ankle-length underskirt, soft boots, and a long cape hung with icicles.
 - The Oracle's default look, Dawnveil Vestments: a veil with a dark blindfold and a gold circlet with a glowing gem, padded shoulder caps with gold suns, a cream robe with wide sleeves and a gold-edged sun tabard, a gold cord with tassels, slippers, and a glowing gold halo behind the shoulders.

@@ -5,21 +5,22 @@
   "seed": 32,
   "pivot": "grip",
   "tri_budget": {
-    "min": 500,
-    "max": 5000
+    "min": 8000,
+    "max": 20000
   },
-  "texture_size": 1024,
+  "texture_size": 2048,
   "palette": {
     "wood": "#5a3f2a",
     "iron": "#45474d",
     "frost": "#9fe6ff"
   },
   "params": {
-    "type": "staff",
+    "design": "arcanist_frost_staff",
+    "tris": 14000,
     "below_m": 0.7,
     "above_m": 1.05,
     "hold": "upright"
   },
-  "out": "game/assets/weapons/weapon_frost_staff.glb",
+  "out": "game/assets/weapons/weapon_frost_staff.gltf",
   "status": "draft"
 }

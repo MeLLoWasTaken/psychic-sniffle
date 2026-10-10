@@ -5,10 +5,10 @@
   "seed": 47,
   "pivot": "grip",
   "tri_budget": {
-    "min": 800,
-    "max": 5000
+    "min": 8000,
+    "max": 20000
   },
-  "texture_size": 1024,
+  "texture_size": 2048,
   "palette": {
     "steel": "#7f8a96",
     "dark": "#2b3038",
@@ -18,12 +18,13 @@
     "frost": "#8fdcff"
   },
   "params": {
-    "type": "runeblade",
+    "design": "deathsworn_runeblade",
+    "tris": 16000,
     "blade_m": 1.2,
     "grip_m": 0.36,
     "blade_width_m": 0.06,
     "hold": "two_handed"
   },
-  "out": "game/assets/weapons/weapon_runeblade.glb",
+  "out": "game/assets/weapons/weapon_runeblade.gltf",
   "status": "draft"
 }

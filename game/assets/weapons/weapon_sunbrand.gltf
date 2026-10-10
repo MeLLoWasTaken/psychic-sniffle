@@ -1,0 +1,183 @@
+{
+ "asset": {
+  "generator": "Khronos glTF Blender I/O v4.5.49",
+  "version": "2.0"
+ },
+ "extensionsUsed": [
+  "KHR_materials_emissive_strength"
+ ],
+ "scene": 0,
+ "scenes": [
+  {
+   "name": "Scene",
+   "nodes": [
+    0
+   ]
+  }
+ ],
+ "nodes": [
+  {
+   "mesh": 0,
+   "name": "weapon_sunbrand"
+  }
+ ],
+ "materials": [
+  {
+   "emissiveFactor": [
+    1,
+    1,
+    1
+   ],
+   "emissiveTexture": {
+    "index": 0
+   },
+   "extensions": {
+    "KHR_materials_emissive_strength": {
+     "emissiveStrength": 1.7999999523162842
+    }
+   },
+   "name": "weapon_sunbrand_baked",
+   "normalTexture": {
+    "index": 1
+   },
+   "pbrMetallicRoughness": {
+    "baseColorTexture": {
+     "index": 2
+    },
+    "metallicRoughnessTexture": {
+     "index": 3
+    }
+   }
+  }
+ ],
+ "meshes": [
+  {
+   "name": "blade",
+   "primitives": [
+    {
+     "attributes": {
+      "POSITION": 0,
+      "NORMAL": 1,
+      "TEXCOORD_0": 2
+     },
+     "indices": 3,
+     "material": 0
+    }
+   ]
+  }
+ ],
+ "textures": [
+  {
+   "sampler": 0,
+   "source": 0
+  },
+  {
+   "sampler": 0,
+   "source": 1
+  },
+  {
+   "sampler": 0,
+   "source": 2
+  },
+  {
+   "sampler": 0,
+   "source": 3
+  }
+ ],
+ "images": [
+  {
+   "mimeType": "image/jpeg",
+   "name": "weapon_sunbrand_emit",
+   "uri": "weapon_sunbrand_emit.jpg"
+  },
+  {
+   "mimeType": "image/jpeg",
+   "name": "weapon_sunbrand_normal",
+   "uri": "weapon_sunbrand_normal.jpg"
+  },
+  {
+   "mimeType": "image/jpeg",
+   "name": "weapon_sunbrand_albedo",
+   "uri": "weapon_sunbrand_albedo.jpg"
+  },
+  {
+   "mimeType": "image/jpeg",
+   "name": "weapon_sunbrand_orm",
+   "uri": "weapon_sunbrand_orm.jpg"
+  }
+ ],
+ "accessors": [
+  {
+   "bufferView": 0,
+   "componentType": 5126,
+   "count": 13471,
+   "max": [
+    0.16231542825698853,
+    1.4098641872406006,
+    0.027043504640460014
+   ],
+   "min": [
+    -0.1623179167509079,
+    -0.30000001192092896,
+    -0.027023185044527054
+   ],
+   "type": "VEC3"
+  },
+  {
+   "bufferView": 1,
+   "componentType": 5126,
+   "count": 13471,
+   "type": "VEC3"
+  },
+  {
+   "bufferView": 2,
+   "componentType": 5126,
+   "count": 13471,
+   "type": "VEC2"
+  },
+  {
+   "bufferView": 3,
+   "componentType": 5123,
+   "count": 44994,
+   "type": "SCALAR"
+  }
+ ],
+ "bufferViews": [
+  {
+   "buffer": 0,
+   "byteLength": 161652,
+   "byteOffset": 0,
+   "target": 34962
+  },
+  {
+   "buffer": 0,
+   "byteLength": 161652,
+   "byteOffset": 161652,
+   "target": 34962
+  },
+  {
+   "buffer": 0,
+   "byteLength": 107768,
+   "byteOffset": 323304,
+   "target": 34962
+  },
+  {
+   "buffer": 0,
+   "byteLength": 89988,
+   "byteOffset": 431072,
+   "target": 34963
+  }
+ ],
+ "samplers": [
+  {
+   "magFilter": 9729,
+   "minFilter": 9987
+  }
+ ],
+ "buffers": [
+  {
+   "byteLength": 521060,
+   "uri": "weapon_sunbrand.bin"
+  }
+ ]
+}

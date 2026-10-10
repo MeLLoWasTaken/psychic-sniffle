@@ -23,7 +23,7 @@
   "params": {
     "armor": "templar_plate_unshielded",
     "body_tris": 4000,
-    "weapon": "weapon_sun_glaive",
+    "weapon": "weapon_sunbrand",
     "hands": [
       "fist",
       "fist"

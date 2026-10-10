@@ -11,9 +11,9 @@ const CHARACTERS: Array[String] = [
 	"res://assets/characters/char_oracle_grace.glb",
 ]
 const WEAPONS: Array[String] = [
-	"res://assets/weapons/weapon_greatsword.glb",
-	"res://assets/weapons/weapon_frost_staff.glb",
-	"res://assets/weapons/weapon_mace.glb",
+	"res://assets/weapons/weapon_greatsword.gltf",
+	"res://assets/weapons/weapon_frost_staff.gltf",
+	"res://assets/weapons/weapon_mace.gltf",
 ]
 
 
@@ -43,7 +43,7 @@ func test_characters_have_the_standard_skeleton_and_budget() -> void:
 
 func test_characters_get_levels_of_detail() -> void:
 	# the backlog asks characters for two lower LODs; Godot's importer generates them
-	# (DECISIONS.md). Weapons are about 1,200 triangles and need none.
+	# (DECISIONS.md). Weapons get theirs from the importer too.
 	for path: String in CHARACTERS:
 		var root: Node = auto_free((load(path) as PackedScene).instantiate())
 		for n: Node in root.find_children("*", "MeshInstance3D", true, false):

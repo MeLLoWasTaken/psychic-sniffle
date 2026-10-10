@@ -1,0 +1,27 @@
+{
+  "id": "weapon_sunbrand",
+  "kind": "weapon",
+  "builder": "build_weapon.py",
+  "seed": 44,
+  "pivot": "grip",
+  "tri_budget": {
+    "min": 8000,
+    "max": 20000
+  },
+  "texture_size": 2048,
+  "palette": {
+    "steel": "#a4aab2",
+    "gold": "#c49a45",
+    "leather": "#6b2420"
+  },
+  "params": {
+    "design": "zealot_sunbrand",
+    "tris": 15000,
+    "blade_m": 1.15,
+    "grip_m": 0.36,
+    "blade_width_m": 0.07,
+    "hold": "two_handed"
+  },
+  "out": "game/assets/weapons/weapon_sunbrand.gltf",
+  "status": "draft"
+}

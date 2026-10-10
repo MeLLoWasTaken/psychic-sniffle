@@ -1,0 +1,158 @@
+{
+ "asset": {
+  "generator": "Khronos glTF Blender I/O v4.5.49",
+  "version": "2.0"
+ },
+ "scene": 0,
+ "scenes": [
+  {
+   "name": "Scene",
+   "nodes": [
+    0
+   ]
+  }
+ ],
+ "nodes": [
+  {
+   "mesh": 0,
+   "name": "weapon_greatsword"
+  }
+ ],
+ "materials": [
+  {
+   "name": "weapon_greatsword_baked",
+   "normalTexture": {
+    "index": 0
+   },
+   "pbrMetallicRoughness": {
+    "baseColorTexture": {
+     "index": 1
+    },
+    "metallicRoughnessTexture": {
+     "index": 2
+    }
+   }
+  }
+ ],
+ "meshes": [
+  {
+   "name": "blade",
+   "primitives": [
+    {
+     "attributes": {
+      "POSITION": 0,
+      "NORMAL": 1,
+      "TEXCOORD_0": 2
+     },
+     "indices": 3,
+     "material": 0
+    }
+   ]
+  }
+ ],
+ "textures": [
+  {
+   "sampler": 0,
+   "source": 0
+  },
+  {
+   "sampler": 0,
+   "source": 1
+  },
+  {
+   "sampler": 0,
+   "source": 2
+  }
+ ],
+ "images": [
+  {
+   "mimeType": "image/jpeg",
+   "name": "weapon_greatsword_normal",
+   "uri": "weapon_greatsword_normal.jpg"
+  },
+  {
+   "mimeType": "image/jpeg",
+   "name": "weapon_greatsword_albedo",
+   "uri": "weapon_greatsword_albedo.jpg"
+  },
+  {
+   "mimeType": "image/jpeg",
+   "name": "weapon_greatsword_orm",
+   "uri": "weapon_greatsword_orm.jpg"
+  }
+ ],
+ "accessors": [
+  {
+   "bufferView": 0,
+   "componentType": 5126,
+   "count": 13049,
+   "max": [
+    0.1779857575893402,
+    1.4599839448928833,
+    0.04600000008940697
+   ],
+   "min": [
+    -0.17798739671707153,
+    -0.32910457253456116,
+    -0.04599973186850548
+   ],
+   "type": "VEC3"
+  },
+  {
+   "bufferView": 1,
+   "componentType": 5126,
+   "count": 13049,
+   "type": "VEC3"
+  },
+  {
+   "bufferView": 2,
+   "componentType": 5126,
+   "count": 13049,
+   "type": "VEC2"
+  },
+  {
+   "bufferView": 3,
+   "componentType": 5123,
+   "count": 48000,
+   "type": "SCALAR"
+  }
+ ],
+ "bufferViews": [
+  {
+   "buffer": 0,
+   "byteLength": 156588,
+   "byteOffset": 0,
+   "target": 34962
+  },
+  {
+   "buffer": 0,
+   "byteLength": 156588,
+   "byteOffset": 156588,
+   "target": 34962
+  },
+  {
+   "buffer": 0,
+   "byteLength": 104392,
+   "byteOffset": 313176,
+   "target": 34962
+  },
+  {
+   "buffer": 0,
+   "byteLength": 96000,
+   "byteOffset": 417568,
+   "target": 34963
+  }
+ ],
+ "samplers": [
+  {
+   "magFilter": 9729,
+   "minFilter": 9987
+  }
+ ],
+ "buffers": [
+  {
+   "byteLength": 513568,
+   "uri": "weapon_greatsword.bin"
+  }
+ ]
+}

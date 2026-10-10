@@ -1,410 +1,239 @@
-"""Weapons (backlog M1-18..M1-20): oversized, chunky, battle-worn.
+"""Build one weapon (backlog G-09: weapons at the new fidelity).
 
-  python3 tools/blender/build_weapon.py --spec data/assets/weapon_greatsword.json --previews previews/weapons
+    python3 tools/blender/build_weapon.py --spec data/assets/weapon_greatsword.json [--previews previews/g_09] [--draft]
 
-Pivot: the point the hand grips is the origin; the blade or head points up (+Z). In game the
-weapon is attached to the hand bone at that point.
+The design (params.design, a function in weapon_kit.py) is a list of parts, each a distance field
+in weapon space (the grip at the origin, the blade or head up +Z). Each part is extracted densely
+(the normal map's source) and reduced to its share of params.tris, the same way armor is built
+(build_piece.build_armor). Outputs: the .gltf with its baked textures beside it (albedo, orm,
+normal, and an emission texture when a part glows) and a preview sheet.
 """
 from __future__ import annotations
 
-import math
 import sys
 from pathlib import Path
 
 sys.path.insert(0, str(Path(__file__).resolve().parent))
 import bpy  # noqa: E402  (must come before bmesh)
-import bmesh  # noqa: E402
+import numpy as np  # noqa: E402
 
+import armor_kit  # noqa: E402
+import bake  # noqa: E402
+import build_piece  # noqa: E402
 import common  # noqa: E402
 import kit  # noqa: E402
-from kit import block, cylinder, random_tint  # noqa: E402
+import sdf  # noqa: E402
+import weapon_kit  # noqa: E402
+
+# material -> (neutral colour, kit_material settings, surface detail for the normal map)
+MATERIALS = {
+    "steel": ("#a3a8ae", dict(roughness=0.28, metallic=0.35, edge=0.7, cavity=0.55, top_light=0.12, mottle=0.06), "brushed"),
+    "dark": ("#3a3d43", dict(roughness=0.45, metallic=0.3, edge=0.45, cavity=0.6, top_light=0.1, mottle=0.08), "hammered"),
+    "iron": ("#4a4c52", dict(roughness=0.5, metallic=0.3, edge=0.6, cavity=0.65, top_light=0.1, mottle=0.1), "hammered"),
+    "gold": ("#c49a45", dict(roughness=0.32, metallic=0.35, edge=0.65, cavity=0.6), None),
+    "leather": ("#4a3325", dict(roughness=0.8, edge=0.25, cavity=0.6), "leather"),
+    "cloth": ("#e8e0cc", dict(roughness=0.9, edge=0.1, cavity=0.55, top_light=0.12), "cloth"),
+    "wood": ("#6a4d34", dict(roughness=0.75, edge=0.3, cavity=0.6, mottle=0.18, mottle_scale=4.0), "grain"),
+    "bone": ("#d8ceb2", dict(roughness=0.6, edge=0.45, cavity=0.75, top_light=0.1), "leather"),
+    "frost": ("#9fe6ff", dict(roughness=0.15, edge=0.55, cavity=0.2, emission=1.6), None),
+    "holy": ("#ffe2a0", dict(roughness=0.25, edge=0.4, cavity=0.2, emission=1.8), None),
+}
 
 
-def loft(name: str, stations: list[tuple[float, float, float]], mat, tint=(1, 1, 1)) -> bpy.types.Object:
-    """A blade from diamond cross-sections: stations are (z, half width, half thickness); the
-    last station closes to a point."""
-    me = bpy.data.meshes.new(name)
-    bm = bmesh.new()
-    rings = []
-    for z, w, t in stations:
-        if w <= 1e-4:
-            rings.append([bm.verts.new((0, 0, z))])
-        else:
-            rings.append([bm.verts.new(p) for p in ((w, 0, z), (0, -t, z), (-w, 0, z), (0, t, z))])
-    for a, b in zip(rings, rings[1:]):
-        if len(b) == 1:
-            for i in range(4):
-                bm.faces.new((a[i], a[(i + 1) % 4], b[0]))
-        else:
-            for i in range(4):
-                bm.faces.new((a[i], a[(i + 1) % 4], b[(i + 1) % 4], b[i]))
-    bm.faces.new(list(reversed(rings[0])))
-    bm.normal_update()
-    bmesh.ops.recalc_face_normals(bm, faces=bm.faces)
-    bm.to_mesh(me)
-    bm.free()
-    o = bpy.data.objects.new(name, me)
-    bpy.context.scene.collection.objects.link(o)
-    o.data.materials.append(mat)
-    kit.set_tint(o, tint)
-    return o
+def detail_material(name: str, kind: str | None) -> bpy.types.Material:
+    """Surface detail for the dense mesh (baked into the normal map): the armor kinds, plus long
+    polishing marks along a blade and grain along a wooden haft."""
+    if kind not in ("brushed", "grain"):
+        return build_piece.detail_material(name, kind)
+    mat = bpy.data.materials.new(name)
+    mat.use_nodes = True
+    nt = mat.node_tree
+    bsdf = nt.nodes["Principled BSDF"]
+    tc = nt.nodes.new("ShaderNodeTexCoord")
+    mp = nt.nodes.new("ShaderNodeMapping")
+    mp.inputs["Scale"].default_value = (1.0, 1.0, 0.04) if kind == "brushed" else (1.0, 1.0, 0.08)
+    nt.links.new(tc.outputs["Object"], mp.inputs["Vector"])
+    tex = nt.nodes.new("ShaderNodeTexNoise")
+    tex.inputs["Scale"].default_value = 260.0 if kind == "brushed" else 90.0
+    tex.inputs["Detail"].default_value = 3.0
+    nt.links.new(mp.outputs["Vector"], tex.inputs["Vector"])
+    bump = nt.nodes.new("ShaderNodeBump")
+    bump.inputs["Strength"].default_value = 0.06 if kind == "brushed" else 0.35
+    bump.inputs["Distance"].default_value = 0.0006 if kind == "brushed" else 0.0012
+    nt.links.new(tex.outputs["Fac"], bump.inputs["Height"])
+    nt.links.new(bump.outputs["Normal"], bsdf.inputs["Normal"])
+    return mat
 
 
-def greatsword(p: dict, m: dict, rng) -> list:
-    """Two-handed sword, about 1.75 m: broad chipped blade, spiked crossguard, wrapped grip."""
-    blade_len = p.get("blade_m", 1.22)
-    grip = p.get("grip_m", 0.34)
-    base_w = p.get("blade_width_m", 0.075)
-    parts = []
-    # blade: ricasso, a long gently tapering body with chips in both edges, then the point
-    z0 = grip / 2 + 0.06
-    stations = [(z0, base_w * 0.8, 0.018), (z0 + 0.08, base_w * 0.8, 0.018), (z0 + 0.1, base_w, 0.016)]
-    n = 22
-    for i in range(1, n):
-        t = i / n
-        z = z0 + 0.1 + t * (blade_len - 0.28)
-        w = base_w * (1.0 - 0.28 * t)
-        if rng.random() < 0.25:
-            w *= rng.uniform(0.84, 0.93)  # a chip knocked out of the edge
-        stations.append((z, w, 0.016 * (1 - 0.3 * t)))
-    stations += [(z0 + blade_len - 0.1, base_w * 0.62, 0.011), (z0 + blade_len, 0.0, 0.0)]
-    parts.append(loft("blade", stations, m["steel"], random_tint(rng, 0.04)))
-    # fuller: a dark groove down the first two thirds, standing just proud of both faces
-    for sy in (-1, 1):
-        f = block("fuller", (0.022, 0.004, blade_len * 0.6), (0, sy * 0.012, z0 + 0.1 + blade_len * 0.3), bevel=0.001,
-                  mat=m["dark"])
-        parts.append(f)
-    # crossguard: a heavy bar whose ends turn down into spikes
-    cg_z = grip / 2 + 0.02
-    parts.append(block("guard", (0.36, 0.06, 0.06), (0, 0, cg_z), bevel=0.012, segments=2, mat=m["iron"],
-                       tint=random_tint(rng, 0.05)))
-    for sx in (-1, 1):  # short, down-turned tips at the ends of the bar
-        parts.append(kit.strut("guard_end", (sx * 0.17, 0, cg_z), (sx * 0.215, 0, cg_z - 0.05), 0.03, sides=6,
-                               mat=m["iron"]))
-        parts.append(cylinder("guard_tip", 0.03, 0.06, (sx * 0.228, 0, cg_z - 0.08), rot=(0, -sx * 0.4, 0),
-                              sides=6, radius_top=0.004, mat=m["iron"]))
-    parts.append(block("guard_boss", (0.1, 0.075, 0.09), (0, 0, cg_z), bevel=0.015, segments=2, mat=m["iron"]))
-    # grip: leather wrap with raised bands
-    parts.append(cylinder("grip", 0.022, grip, (0, 0, 0), sides=10, mat=m["leather"], tint=random_tint(rng, 0.06)))
-    for i in range(7):
-        z = -grip / 2 + grip * (i + 0.5) / 7
-        bpy.ops.mesh.primitive_torus_add(major_radius=0.023, minor_radius=0.006, major_segments=10, minor_segments=4,
-                                         location=(0, 0, z))
-        band = bpy.context.active_object
-        kit.clear_uvs(band)
-        band.data.materials.append(m["leather"])
-        kit.set_tint(band, (0.85, 0.85, 0.85))
-        parts.append(band)
-    # pommel: a heavy faceted weight with a short spike
-    pz = -grip / 2 - 0.05
-    bpy.ops.mesh.primitive_ico_sphere_add(subdivisions=1, radius=0.055, location=(0, 0, pz))
-    pom = bpy.context.active_object
-    kit.clear_uvs(pom)
-    pom.scale = (1, 0.7, 1)
-    pom.data.materials.append(m["iron"])
-    kit.set_tint(pom, (1, 1, 1))
-    parts.append(pom)
-    parts.append(cylinder("pommel_spike", 0.022, 0.07, (0, 0, pz - 0.07), rot=(math.pi, 0, 0), sides=6,
-                          radius_top=0.0, mat=m["iron"]))
-    return parts
+def tight_bounds(part: armor_kit.Part, shape: sdf.Shape, coarse: float = 0.004) -> tuple[np.ndarray, np.ndarray] | None:
+    """The part's box shrunk to where its surface actually is: the field sampled at 4 mm, every
+    sample within two coarse cells of the surface kept, plus a margin. A design can then give
+    all its parts the weapon's whole box without the fine grid spanning it (a greatsword's box
+    at 1 mm is 90 million samples; its blade's own box is 12 million)."""
+    probe = armor_kit.Part(part.name, part.material, part.fn, part.lo, part.hi, part.tris, voxel=coarse)
+    f, glo = armor_kit.eval_part(probe, shape)
+    if np.isnan(f).any():
+        raise ValueError(f"{part.name}: the field has NaN samples (a fractional power of a negative number?)")
+    idx = np.argwhere(f < 2.0 * coarse)
+    if len(idx) == 0:
+        return None
+    lo = glo + idx.min(axis=0) * coarse - 3 * coarse
+    hi = glo + idx.max(axis=0) * coarse + 3 * coarse
+    return np.maximum(lo, part.lo), np.minimum(hi, part.hi)
 
 
-def staff(p: dict, m: dict, rng) -> list:
-    """Frost staff, about 1.9 m: a slightly crooked wooden shaft with iron bands, three iron
-    claws gripping a glowing ice crystal cluster. The grip (origin) is a third of the way down."""
-    below, above = p.get("below_m", 0.95), p.get("above_m", 0.8)
-    parts = []
-    # shaft in segments with small kinks, thinning towards the top
-    pts = [(rng.uniform(-0.01, 0.01), rng.uniform(-0.01, 0.01), z) for z in
-           [-below + (below + above) * t for t in (0, 0.2, 0.42, 0.63, 0.82, 1.0)]]
-    for i, (a, b) in enumerate(zip(pts, pts[1:])):
-        r = 0.026 - 0.004 * i / len(pts)
-        parts.append(kit.strut("shaft", a, b, r, sides=8, mat=m["wood"], tint=random_tint(rng, 0.08)))
-        bpy.ops.mesh.primitive_uv_sphere_add(segments=8, ring_count=5, radius=r * 1.05, location=b)
-        knot = bpy.context.active_object  # rounds each kink
-        kit.clear_uvs(knot)
-        knot.data.materials.append(m["wood"])
-        kit.set_tint(knot, (1, 1, 1))
-        parts.append(knot)
-    for z in (-below + 0.03, -0.25, 0.25, above - 0.12):  # iron bands and ferrule
-        parts.append(cylinder("band", 0.031, 0.05 if z > -below + 0.1 else 0.09, (0, 0, z), sides=8, mat=m["iron"]))
-    parts.append(cylinder("ferrule_tip", 0.03, 0.08, (0, 0, -below - 0.03), rot=(math.pi, 0, 0), sides=8,
-                          radius_top=0.006, mat=m["iron"]))
-    # claws
-    top = above
-    for k in range(3):
-        a = k * math.tau / 3
-        base = (math.cos(a) * 0.02, math.sin(a) * 0.02, top - 0.1)
-        mid = (math.cos(a) * 0.16, math.sin(a) * 0.16, top + 0.1)
-        tip = (math.cos(a) * 0.08, math.sin(a) * 0.08, top + 0.36)
-        parts.append(kit.strut("claw", base, mid, 0.018, sides=6, mat=m["iron"]))
-        parts.append(kit.strut("claw_tip", mid, tip, 0.016, sides=6, mat=m["iron"]))
-    # crystal cluster: a tall main shard and smaller ones, glowing
-    for (dx, dy, h, r, tilt) in ((0.0, 0.0, 0.58, 0.095, 0.0), (0.08, 0.03, 0.32, 0.055, 0.35),
-                                 (-0.065, 0.06, 0.29, 0.05, -0.3), (0.015, -0.08, 0.26, 0.045, 0.3)):
-        c = (dx, dy, top + 0.12 + h * 0.2)
-        bpy.ops.mesh.primitive_cone_add(vertices=6, radius1=r, radius2=0.0, depth=h * 0.6,
-                                        location=(c[0], c[1], c[2] + h * 0.3), rotation=(tilt, tilt * 0.5, 0))
-        upper = bpy.context.active_object
-        bpy.ops.mesh.primitive_cone_add(vertices=6, radius1=r, radius2=0.0, depth=h * 0.35,
-                                        location=(c[0], c[1], c[2] - h * 0.175 + 0.0), rotation=(math.pi + tilt, -tilt * 0.5, 0))
-        lower = bpy.context.active_object
-        for o in (upper, lower):
-            kit.clear_uvs(o)
-            o.data.materials.append(m["frost"])
-            kit.set_tint(o, random_tint(rng, 0.05))
-            parts.append(o)
-    return parts
+def weapon_sheet(obj: bpy.types.Object, out_png: Path, title: str) -> Path:
+    """A preview made for long, thin weapons (the standard four-view sheet shows a greatsword a
+    few pixels wide): the weapon laid horizontally, flat face and edge on, in orthographic views
+    framed to its length; below, close three-quarter views of the grip end and of the head end."""
+    import math
+
+    from mathutils import Matrix, Vector
+    from PIL import Image, ImageDraw
+    out_png = out_png if out_png.is_absolute() else common.REPO / out_png
+    out_png.parent.mkdir(parents=True, exist_ok=True)
+    scene = bpy.context.scene
+    common.setup_lighting("dusk_grim")
+    scene.render.engine = "CYCLES"
+    scene.cycles.device = "CPU"
+    scene.cycles.samples = 24
+    scene.cycles.use_denoising = True
+    scene.render.film_transparent = False
+    scene.view_settings.view_transform = "AgX"
+    co = np.array([v.co[:] for v in obj.data.vertices])
+    lo, hi = co.min(axis=0), co.max(axis=0)
+    length = float(hi[2] - lo[2])
+    cam_data = bpy.data.cameras.new("_wcam")
+    cam = bpy.data.objects.new("_wcam", cam_data)
+    scene.collection.objects.link(cam)
+    scene.camera = cam
+    W = 2048
+
+    def shot(name, w, h):
+        scene.render.resolution_x, scene.render.resolution_y = w, h
+        tmp = out_png.with_name(f"_{out_png.stem}_{name}.png")
+        scene.render.filepath = str(tmp)
+        bpy.ops.render.render(write_still=True)
+        img = Image.open(tmp).convert("RGB")
+        tmp.unlink()
+        return img
+
+    c = Vector(((lo[0] + hi[0]) / 2, (lo[1] + hi[1]) / 2, (lo[2] + hi[2]) / 2))
+    cam_data.type = "ORTHO"
+    cam_data.ortho_scale = length * 1.06
+    tiles = []
+    # flat face: image right = +Z, looking along +Y
+    cam.matrix_world = Matrix.Translation(c - Vector((0, 3.0, 0))) @ Matrix(
+        ((0, -1, 0, 0), (0, 0, -1, 0), (1, 0, 0, 0), (0, 0, 0, 1)))
+    hx = max(float(hi[0] - lo[0]), 0.1)
+    tiles.append(("flat", shot("flat", W, int(W * min(0.5, hx * 1.25 / (length * 1.06)) + 40))))
+    # edge on: image right = +Z, looking along +X
+    cam.matrix_world = Matrix.Translation(c - Vector((3.0, 0, 0))) @ Matrix(
+        ((0, 0, -1, 0), (0, 1, 0, 0), (1, 0, 0, 0), (0, 0, 0, 1)))
+    hy = max(float(hi[1] - lo[1]), 0.1)
+    tiles.append(("edge", shot("edge", W, int(W * min(0.5, hy * 1.25 / (length * 1.06)) + 40))))
+    cam_data.type = "PERSP"
+    cam_data.lens = 50
+    close = []
+    for name, zc in (("grip end", 0.0), ("head end", float(hi[2]) - 0.22)):
+        size = 0.48
+        a = math.radians(35)
+        d = Vector((math.sin(a), -math.cos(a), 0.3)).normalized()
+        target = Vector((c.x, c.y, zc))
+        cam.location = target + d * size * 1.7
+        cam.rotation_euler = (target - cam.location).to_track_quat("-Z", "Y").to_euler()
+        close.append((name, shot(name.replace(" ", "_"), W // 2, W // 2)))
+    bpy.data.objects.remove(cam)
+    rows = [img for _, img in tiles]
+    height = sum(i.height + 24 for i in rows) + W // 2 + 24 + 28
+    sheet = Image.new("RGB", (W, height), (18, 18, 20))
+    draw = ImageDraw.Draw(sheet)
+    draw.text((8, 8), title, fill=(200, 200, 200))
+    y = 28
+    for label, img in tiles:
+        draw.text((8, y + 4), label, fill=(170, 170, 170))
+        sheet.paste(img, (0, y + 24))
+        y += img.height + 24
+    for k, (label, img) in enumerate(close):
+        draw.text((k * W // 2 + 8, y + 4), label, fill=(170, 170, 170))
+        sheet.paste(img, (k * W // 2, y + 24))
+    sheet.save(out_png)
+    return out_png
 
 
-def mace(p: dict, m: dict, rng) -> list:
-    """One-handed flanged mace, about 0.8 m: wrapped grip, iron shaft, a head of six flanges
-    around a gold-banded core with a short top spike."""
-    grip = p.get("grip_m", 0.2)
-    shaft = p.get("shaft_m", 0.42)
-    parts = [cylinder("grip", 0.021, grip, (0, 0, 0), sides=8, mat=m["leather"], tint=random_tint(rng, 0.05))]
-    parts.append(cylinder("pommel", 0.035, 0.05, (0, 0, -grip / 2 - 0.02), sides=8, radius_top=0.024, mat=m["gold"]))
-    parts.append(cylinder("shaft", 0.019, shaft, (0, 0, grip / 2 + shaft / 2), sides=8, mat=m["iron"]))
-    hz = grip / 2 + shaft + 0.07
-    parts.append(cylinder("core", 0.045, 0.2, (0, 0, hz), sides=8, mat=m["iron"]))
-    for z in (hz - 0.1, hz + 0.1):
-        parts.append(cylinder("ring", 0.052, 0.025, (0, 0, z), sides=8, mat=m["gold"]))
-    for k in range(6):
-        a = k * math.tau / 6
-        f = block("flange", (0.095, 0.018, 0.22), (math.cos(a) * 0.085, math.sin(a) * 0.085, hz), rot=(0, 0, a),
-                  bevel=0.006, mat=m["iron"], tint=random_tint(rng, 0.05))
-        for v in f.data.vertices:  # the outer edge comes to a point at mid-height (a leaf shape)
-            radial = v.co.x * math.cos(a) + v.co.y * math.sin(a)
-            if radial > 0.09:
-                rel = abs(v.co.z - hz) / 0.11
-                pull = 0.075 * rel ** 1.5
-                v.co.x -= math.cos(a) * pull
-                v.co.y -= math.sin(a) * pull
-        parts.append(f)
-    parts.append(cylinder("spike", 0.03, 0.1, (0, 0, hz + 0.16), sides=8, radius_top=0.003, mat=m["gold"]))
-    return parts
-
-
-def warhammer(p: dict, m: dict, rng) -> list:
-    """One-handed warhammer, about 0.85 m (M3-02, the Templar's): wrapped grip, a gold-banded iron
-    haft with langets, a heavy squared head: a broad striking face on +X (the swing direction,
-    like a sword's edge), a curved back spike on -X, a short top spike and a sun disc inlaid on
-    each cheek."""
-    grip = p.get("grip_m", 0.22)
-    haft = p.get("shaft_m", 0.45)
-    parts = [cylinder("grip", 0.022, grip, (0, 0, 0), sides=8, mat=m["leather"], tint=random_tint(rng, 0.05))]
-    for i in range(5):  # raised wrap bands
-        z = -grip / 2 + grip * (i + 0.5) / 5
-        bpy.ops.mesh.primitive_torus_add(major_radius=0.023, minor_radius=0.005, major_segments=8, minor_segments=4,
-                                         location=(0, 0, z))
-        band = bpy.context.active_object
-        kit.clear_uvs(band)
-        band.data.materials.append(m["leather"])
-        kit.set_tint(band, (0.85, 0.85, 0.85))
-        parts.append(band)
-    parts.append(cylinder("pommel", 0.036, 0.055, (0, 0, -grip / 2 - 0.025), sides=8, radius_top=0.026, mat=m["gold"]))
-    parts.append(cylinder("haft", 0.02, haft, (0, 0, grip / 2 + haft / 2), sides=8, mat=m["iron"]))
-    for z in (grip / 2 + 0.02, grip / 2 + haft * 0.55):
-        parts.append(cylinder("haft_ring", 0.027, 0.03, (0, 0, z), sides=8, mat=m["gold"]))
-    hz = grip / 2 + haft + 0.06
-    for sy in (-1, 1):  # langets: iron straps running down the haft from the head
-        parts.append(block("langet", (0.03, 0.008, 0.2), (0, sy * 0.022, hz - 0.13), bevel=0.003, mat=m["iron"]))
-    # the head: a block with chamfered corners, a wider striking face, a back spike
-    head = block("head", (0.22, 0.11, 0.14), (0, 0, hz), bevel=0.015, segments=2, mat=m["iron"], tint=random_tint(rng, 0.05))
-    parts.append(head)
-    face = block("face", (0.055, 0.15, 0.17), (0.13, 0, hz), bevel=0.012, segments=2, mat=m["steel"],
-                 tint=random_tint(rng, 0.04))
-    for v in face.data.vertices:  # a slightly domed striking face, scored with a cross
-        if v.co.x > 0.14:
-            v.co.x += 0.008 * (1 - min(1.0, (v.co.y ** 2 + (v.co.z - hz) ** 2) / 0.008))
-    parts.append(face)
-    for (y, z, w, h) in ((0.0, hz, 0.012, 0.17), (0.0, hz, 0.15, 0.012)):
-        parts.append(block("score", (0.006, w, h), (0.16, y, z), bevel=0.0, mat=m["dark"]))
-    # back spike, curving down: a thick root in the head, then a tapering point
-    parts.append(kit.strut("beak_root", (-0.08, 0, hz + 0.01), (-0.17, 0, hz - 0.005), 0.03, sides=6, mat=m["iron"]))
-    tip = cylinder("beak_tip", 0.03, 0.1, (0, 0, 0.05), sides=6, radius_top=0.003, mat=m["iron"])
-    tip.rotation_euler = (0, -math.radians(115), 0)  # +Z turned toward -X and a little down
-    tip.location = (-0.17, 0, hz - 0.005)
-    parts.append(tip)
-    parts.append(cylinder("top_spike", 0.028, 0.09, (0, 0, hz + 0.11), sides=8, radius_top=0.003, mat=m["gold"]))
-    for sy in (-1, 1):  # a gold sun disc on each cheek
-        parts.append(cylinder("sun_disc", 0.034, 0.01, (0.0, sy * 0.059, hz), rot=(math.pi / 2, 0, 0), sides=12,
-                              mat=m["gold"]))
-        for k in range(8):  # its rays
-            ang = k * math.tau / 8
-            parts.append(block("ray", (0.012, 0.006, 0.026), (math.cos(ang) * 0.048, sy * 0.059, hz + math.sin(ang) * 0.048),
-                               rot=(0, -ang + math.pi / 2, 0), bevel=0.0, mat=m["gold"]))
-    return parts
-
-
-def glaive(p: dict, m: dict, rng) -> list:
-    """Sun glaive, about 2.4 m (M3-07, the Zealot's), held upright like the Arcanist's staff so
-    the long blade stands above the helm: an iron haft with leather wraps and gold rings, a
-    butt spike, a gold sun ring with eight rays where the blade meets the haft, a back hook and
-    a broad blade that sweeps forward (+X, the edge) as it rises. The grip (origin) is a third
-    of the way up."""
-    below, above = p.get("below_m", 0.75), p.get("above_m", 0.95)
-    blade_m = p.get("blade_m", 0.7)
-    parts = [cylinder("haft", 0.029, below + above, (0, 0, (above - below) / 2), sides=8, mat=m["iron"],
-                      tint=random_tint(rng, 0.05))]
-    for z0, length in ((-0.14, 0.28), (above - 0.42, 0.22)):  # leather wraps where the hands go
-        parts.append(cylinder("wrap", 0.033, length, (0, 0, z0 + length / 2), sides=8, mat=m["leather"],
-                              tint=random_tint(rng, 0.05)))
-    for z in (-below + 0.06, -0.17, 0.17, above - 0.45, above - 0.17):
-        parts.append(cylinder("ring", 0.038, 0.035, (0, 0, z), sides=8, mat=m["gold"]))
-    parts.append(cylinder("butt_spike", 0.032, 0.14, (0, 0, -below - 0.07), rot=(math.pi, 0, 0), sides=8,
-                          radius_top=0.004, mat=m["iron"]))
-    # socket and the sun ring around it
-    parts.append(cylinder("socket", 0.04, 0.14, (0, 0, above + 0.02), sides=8, radius_top=0.032, mat=m["gold"]))
-    sz = above + 0.06
-    bpy.ops.mesh.primitive_torus_add(major_radius=0.11, minor_radius=0.018, major_segments=16, minor_segments=5,
-                                     location=(0, 0, sz), rotation=(math.pi / 2, 0, 0))
-    ring = bpy.context.active_object
-    kit.clear_uvs(ring)
-    ring.data.materials.append(m["gold"])
-    kit.set_tint(ring, (1, 1, 1))
-    parts.append(ring)
-    for k in range(8):  # rays pointing out from the ring, in the blade's plane
-        ang = k * math.tau / 8 + math.tau / 16
-        r0, r1 = 0.12, 0.19 if k % 2 == 0 else 0.165
-        parts.append(kit.strut("ray", (math.cos(ang) * r0, 0, sz + math.sin(ang) * r0),
-                               (math.cos(ang) * r1, 0, sz + math.sin(ang) * r1), 0.015, sides=4, mat=m["gold"]))
-    for sx in (-1, 1):  # spokes holding the ring to the socket
-        parts.append(kit.strut("spoke", (0, 0, sz), (sx * 0.1, 0, sz), 0.012, sides=4, mat=m["gold"]))
-    # back hook on -X, just above the ring
-    hz = sz + 0.13
-    parts.append(kit.strut("hook_root", (-0.02, 0, hz), (-0.13, 0, hz + 0.03), 0.018, sides=6, mat=m["iron"]))
-    parts.append(kit.strut("hook_tip", (-0.13, 0, hz + 0.03), (-0.17, 0, hz + 0.12), 0.014, sides=6, mat=m["iron"]))
-    # the blade: a broad leaf, curving forward toward the tip
-    z0 = above + 0.08
-    stations = [(z0, 0.04, 0.016), (z0 + 0.08, 0.1, 0.018), (z0 + blade_m * 0.35, 0.125, 0.017),
-                (z0 + blade_m * 0.65, 0.11, 0.014), (z0 + blade_m * 0.88, 0.065, 0.01), (z0 + blade_m, 0.0, 0.0)]
-    blade = loft("blade", stations, m["steel"], tint=random_tint(rng, 0.04))
-    for v in blade.data.vertices:
-        t = max(0.0, (v.co.z - z0) / blade_m)
-        v.co.x += 0.12 * t * t
-        if v.co.x < 0.12 * t * t - 0.02:  # a straighter spine on the back edge
-            v.co.x += 0.02 * t
-    parts.append(blade)
-    # a gold fuller line up the blade's middle on both faces
-    for sy in (-1, 1):
-        fuller = block("fuller", (0.015, 0.004, blade_m * 0.5), (0.014, sy * 0.016, z0 + blade_m * 0.33), bevel=0.0,
-                       mat=m["gold"])
-        for v in fuller.data.vertices:
-            t = max(0.0, (v.co.z - z0) / blade_m)
-            v.co.x += 0.12 * t * t
-        parts.append(fuller)
-    return parts
-
-
-def runeblade(p: dict, m: dict, rng) -> list:
-    """Deathsworn runeblade, about 1.8 m (M3-10): a two-handed blade that widens toward a clipped,
-    forward-leaning tip, saw teeth along its back (-X), glowing frost runes down both faces, a
-    guard of two prongs curving down round a skull-like boss, and a ring pommel."""
-    blade_len = p.get("blade_m", 1.2)
-    grip = p.get("grip_m", 0.36)
-    base_w = p.get("blade_width_m", 0.06)
-    parts = []
-    z0 = grip / 2 + 0.07
-    stations = [(z0, base_w * 0.85, 0.018), (z0 + 0.08, base_w, 0.017)]
-    n = 14
-    for i in range(1, n + 1):
-        t = i / n
-        stations.append((z0 + 0.08 + t * (blade_len - 0.24), base_w * (1.0 + 0.75 * t), 0.017 * (1 - 0.25 * t)))
-    stations += [(z0 + blade_len - 0.06, base_w * 1.5, 0.012), (z0 + blade_len, 0.0, 0.0)]
-    blade = loft("blade", stations, m["steel"], random_tint(rng, 0.04))
-    for v in blade.data.vertices:  # clip the tip: the last stretch leans toward the edge (+X)
-        t = max(0.0, (v.co.z - (z0 + blade_len - 0.22)) / 0.22)
-        v.co.x += 0.07 * t * t
-    parts.append(blade)
-    # saw teeth along the back edge
-    for k in range(6):
-        tz = z0 + 0.25 + k * (blade_len - 0.45) / 5
-        w = base_w * (1.0 + 0.75 * min(1.0, (tz - z0 - 0.08) / (blade_len - 0.24)))
-        parts.append(cylinder("tooth", 0.016, 0.055, (-w - 0.018, 0, tz), rot=(0, -math.radians(115), 0), sides=4,
-                              radius_top=0.002, mat=m["steel"]))
-    # glowing runes down the middle of both faces: short bars and hooks
-    for sy in (-1, 1):
-        for k in range(5):
-            rz = z0 + 0.16 + k * 0.17
-            parts.append(block("rune", (0.012, 0.004, 0.06), (0, sy * 0.016, rz), bevel=0.0, mat=m["frost"]))
-            parts.append(block("rune_branch", (0.03, 0.004, 0.01), (0.012 * (1 if k % 2 else -1), sy * 0.016, rz + 0.015),
-                               bevel=0.0, mat=m["frost"]))
-    # guard: a skull-like boss with two prongs curving down
-    cg_z = grip / 2 + 0.03
-    bpy.ops.mesh.primitive_ico_sphere_add(subdivisions=2, radius=0.06, location=(0, 0, cg_z + 0.01))
-    boss = bpy.context.active_object
-    kit.clear_uvs(boss)
-    boss.scale = (1.0, 0.75, 0.9)
-    boss.data.materials.append(m["bone"])
-    kit.set_tint(boss, (1, 1, 1))
-    parts.append(boss)
-    for sx in (-1, 1):
-        parts.append(kit.strut("prong", (sx * 0.04, 0, cg_z), (sx * 0.16, 0, cg_z + 0.03), 0.026, sides=6, mat=m["bone"]))
-        parts.append(kit.strut("prong_bend", (sx * 0.16, 0, cg_z + 0.03), (sx * 0.22, 0, cg_z - 0.04), 0.02, sides=6, mat=m["bone"]))
-        parts.append(cylinder("prong_tip", 0.02, 0.07, (sx * 0.235, 0, cg_z - 0.08), rot=(0, -sx * 0.3, 0), sides=6,
-                              radius_top=0.003, mat=m["bone"]))
-    for sx in (-1, 1):  # eye sockets on the boss, glowing
-        parts.append(block("socket", (0.016, 0.006, 0.012), (sx * 0.022, -0.045, cg_z + 0.02), bevel=0.0, mat=m["frost"]))
-    # grip and ring pommel
-    parts.append(cylinder("grip", 0.022, grip, (0, 0, 0), sides=10, mat=m["leather"], tint=random_tint(rng, 0.06)))
-    for i in range(6):
-        z = -grip / 2 + grip * (i + 0.5) / 6
-        bpy.ops.mesh.primitive_torus_add(major_radius=0.023, minor_radius=0.006, major_segments=10, minor_segments=4,
-                                         location=(0, 0, z))
-        band = bpy.context.active_object
-        kit.clear_uvs(band)
-        band.data.materials.append(m["leather"])
-        kit.set_tint(band, (0.85, 0.85, 0.85))
-        parts.append(band)
-    bpy.ops.mesh.primitive_torus_add(major_radius=0.045, minor_radius=0.013, major_segments=12, minor_segments=5,
-                                     location=(0, 0, -grip / 2 - 0.05), rotation=(math.pi / 2, 0, 0))
-    ring = bpy.context.active_object
-    kit.clear_uvs(ring)
-    ring.data.materials.append(m["iron"])
-    kit.set_tint(ring, (1, 1, 1))
-    parts.append(ring)
-    parts.append(cylinder("pommel_neck", 0.02, 0.03, (0, 0, -grip / 2 - 0.01), sides=8, mat=m["iron"]))
-    return parts
-
-
-WEAPONS = {"greatsword": greatsword, "staff": staff, "mace": mace, "warhammer": warhammer, "glaive": glaive,
-           "runeblade": runeblade}
+def build(spec: dict, previews: Path | None, draft: bool = False) -> None:
+    params = spec["params"]
+    parts = weapon_kit.DESIGNS[params["design"]](params)
+    target = int(params.get("tris", 0))
+    if target > 0:      # the parts' triangles are shares of the weapon's budget
+        total = sum(p.tris for p in parts)
+        for p in parts:
+            p.tris = max(60, int(round(p.tris * target / total)))
+    pal = spec.get("palette", {})
+    shape = sdf.Shape([])
+    lows, highs = [], []
+    mats: dict[str, bpy.types.Material] = {}
+    dmats: dict[str, bpy.types.Material] = {}
+    for part in parts:
+        box = tight_bounds(part, shape)
+        if box is None:
+            print(f"  WARNING {part.name}: empty", flush=True)
+            continue
+        part.lo, part.hi = box
+        cells = np.prod(np.ceil((part.hi - part.lo) / part.voxel) + 1)
+        f, glo = armor_kit.eval_part(part, shape)
+        f[0], f[-1], f[:, 0], f[:, -1], f[:, :, 0], f[:, :, -1] = 1.0, 1.0, 1.0, 1.0, 1.0, 1.0
+        verts, faces = sdf.surface(f, part.voxel)
+        del f
+        if len(faces) == 0:
+            print(f"  WARNING {part.name}: empty", flush=True)
+            continue
+        verts = verts + glo
+        hi_o = build_piece.mesh_obj(f"{part.name}_high", verts, faces)
+        lo_o = build_piece.mesh_obj(part.name, verts, faces)
+        build_piece.reduce_to(lo_o, part.tris)
+        if part.facet_deg > 0:
+            kit.shade_smooth_by_angle(lo_o, part.facet_deg)
+        neutral, kw, detail = MATERIALS[part.material]
+        if part.material not in mats:
+            mats[part.material] = kit.kit_material(f"{spec['id']}_{part.material}", pal.get(part.material, neutral), **kw)
+            dmats[part.material] = detail_material(f"{spec['id']}_{part.material}_detail", detail)
+        lo_o.data.materials.append(mats[part.material])
+        hi_o.data.materials.append(dmats[part.material])
+        kit.set_tint(lo_o, (1.0, 1.0, 1.0))
+        lows.append(lo_o)
+        highs.append(hi_o)
+        print(f"  {part.name}: {cells / 1e6:.1f}M samples, {len(faces)} dense -> {len(lo_o.data.polygons)} tris "
+              f"({part.material})", flush=True)
+    low = build_piece._join(lows, spec["id"])
+    common.close_mesh(low)
+    tris = common.triangle_count([low])
+    if draft:
+        for h in highs:
+            bpy.data.objects.remove(h)
+        out = (previews or common.REPO / "previews" / "draft") / f"{spec['id']}_draft.png"
+        weapon_sheet(low, out, f"{spec['id']} draft {tris} tris")
+        print(f"DRAFT {spec['id']} tris={tris}", flush=True)
+        return
+    high = build_piece._join(highs, f"{spec['id']}_high")
+    size = int(spec.get("texture_size", 2048))
+    out_dir = (common.REPO / spec["out"]).parent
+    bake.bake_asset(low, high, out_dir, spec["id"], size=size, samples=16)
+    bpy.data.objects.remove(high)
+    tris = common.triangle_count([low])
+    if previews:
+        weapon_sheet(low, previews / f"{spec['id']}_sheet.png", f"{spec['id']} {tris} tris")
+    out = common.export_glb(Path(spec["out"]), [low])
+    print(f"BUILT {spec['id']} tris={tris} -> {out}", flush=True)
 
 
 def main() -> None:
-    args = common.parse_args("Build a weapon")
+    def extra(p):
+        p.add_argument("--draft", action="store_true", help="render the reduced shapes only: no bakes or export")
+    args = common.parse_args("Build a weapon", extra)
     spec = common.load_spec(args.spec)
     common.reset_scene()
-    rng = common.seeded_random(spec["seed"])
-    pal = spec.get("palette", {})
-    m = {
-        "steel": kit.kit_material("steel", pal.get("steel", "#8d9299"), roughness=0.35, metallic=0.3, edge=0.55,
-                                  cavity=0.4, top_light=0.1, mottle=0.12, mottle_scale=3.0),
-        "dark": kit.kit_material("dark", pal.get("dark", "#3a3c40"), roughness=0.5, metallic=0.3, edge=0.2),
-        "iron": kit.kit_material("iron", pal.get("iron", "#45474d"), roughness=0.5, metallic=0.3, edge=0.6),
-        "leather": kit.kit_material("leather", pal.get("leather", "#3f2a1d"), roughness=0.85, edge=0.25),
-        "wood": kit.kit_material("wood", pal.get("wood", "#5a3f2a"), roughness=0.8, edge=0.3, mottle=0.2,
-                                 mottle_scale=4.0),
-        "frost": kit.kit_material("frost", pal.get("frost", "#9fe6ff"), roughness=0.15, edge=0.5, cavity=0.2,
-                                  emission=1.5),
-        "gold": kit.kit_material("gold", pal.get("gold", "#b08a3e"), roughness=0.4, metallic=0.3, edge=0.6),
-        "bone": kit.kit_material("bone", pal.get("bone", "#cfc6b0"), roughness=0.65, edge=0.4, cavity=0.5),
-    }
-    parts = WEAPONS[spec["params"]["type"]](spec["params"], m, rng)
-    kit.apply_transforms(parts)
-    obj = common.join_objects(parts, spec["id"])
-    fused = kit.fuse_touching_parts(obj)
-    if fused:
-        print(f"  fused touching parts: removed {fused} coincident faces")
-    kit.shade_smooth_by_angle(obj, 30)
-    kit.bake_piece(obj, common.REPO / "previews" / "kit_textures", spec["id"], size=int(spec.get("texture_size", 1024)),
-                   samples=32, bevel_normal=0.004)
-    tris = common.triangle_count([obj])
-    if args.previews:
-        common.render_contact_sheet([obj], args.previews / f"{spec['id']}_sheet.png", cell=512, title=f"{spec['id']} {tris} tris")
-    common.export_glb(Path(spec["out"]), [obj])
-    print(f"BUILT {spec['id']} tris={tris}")
+    build(spec, args.previews, draft=args.draft)
 
 
 if __name__ == "__main__":
