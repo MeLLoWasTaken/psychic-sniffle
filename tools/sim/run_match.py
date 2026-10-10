@@ -34,7 +34,9 @@ from pathlib import Path
 REPO = Path(__file__).resolve().parents[2]
 # Round trip on the local machine with no simulated lag, from polling at up to 240 frames per
 # second on both ends (measured 8 to 10 ms). The simulator adds its delay on top of this.
-BASE_RTT_MS = 10.0
+BASE_RTT_MS = 18.0   # measured without simulated lag (17-18 ms, 2026-10-10): an input waits for the
+                     # next 60 Hz server tick and its reply for the next client frame; 10 ms was an
+                     # older estimate, and runs at 150 ms then sat on the edge of the 10% tolerance
 HARMLESS = [
     re.compile(r"Remote Debugger"),
     re.compile(r"_try_connect"),
