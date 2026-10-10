@@ -1,0 +1,117 @@
+{
+ "male": {
+  "covered": 14587,
+  "clips": {
+   "idle": {},
+   "combat_idle": {
+    "shoulders": {
+     "count": 16,
+     "depth_m": 0.0071,
+     "frame": 48,
+     "at": [
+      0.032,
+      -0.183,
+      1.544
+     ]
+    }
+   },
+   "run": {
+    "shoulders": {
+     "count": 24,
+     "depth_m": 0.0069,
+     "frame": 19,
+     "at": [
+      -0.006,
+      -0.27,
+      1.56
+     ]
+    }
+   },
+   "cast_loop": {
+    "chest": {
+     "count": 8,
+     "depth_m": 0.0063,
+     "frame": 17,
+     "at": [
+      -0.29,
+      -0.251,
+      1.49
+     ]
+    }
+   },
+   "cast_release": {},
+   "attack_1": {
+    "chest": {
+     "count": 1,
+     "depth_m": 0.006,
+     "frame": 10,
+     "at": [
+      0.101,
+      0.055,
+      1.678
+     ]
+    },
+    "shoulders": {
+     "count": 4,
+     "depth_m": 0.0071,
+     "frame": 14,
+     "at": [
+      0.01,
+      -0.353,
+      1.448
+     ]
+    }
+   },
+   "attack_2": {},
+   "attack_3": {}
+  },
+  "failures": {}
+ },
+ "female": {
+  "covered": 14768,
+  "clips": {
+   "idle": {},
+   "combat_idle": {
+    "shoulders": {
+     "count": 8,
+     "depth_m": 0.0042,
+     "frame": 48,
+     "at": [
+      0.029,
+      -0.164,
+      1.457
+     ]
+    }
+   },
+   "run": {
+    "shoulders": {
+     "count": 5,
+     "depth_m": 0.0051,
+     "frame": 19,
+     "at": [
+      -0.032,
+      -0.245,
+      1.47
+     ]
+    }
+   },
+   "cast_loop": {},
+   "cast_release": {},
+   "attack_1": {
+    "shoulders": {
+     "count": 1,
+     "depth_m": 0.0041,
+     "frame": 14,
+     "at": [
+      0.011,
+      -0.33,
+      1.367
+     ]
+    }
+   },
+   "attack_2": {},
+   "attack_3": {}
+  },
+  "failures": {}
+ }
+}

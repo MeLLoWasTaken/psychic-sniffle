@@ -1,0 +1,21 @@
+{
+  "id": "oracle_dawnveil_feet_female",
+  "kind": "piece",
+  "builder": "build_piece.py",
+  "seed": 1,
+  "body_build": "female",
+  "tri_budget": {
+    "min": 4800,
+    "max": 6600
+  },
+  "texture_size": 2048,
+  "params": {
+    "slot": "feet",
+    "design": "oracle_slippers",
+    "set": "oracle_dawnveil",
+    "armor_type": "cloth",
+    "tris": 6000
+  },
+  "out": "game/assets/armor/oracle_dawnveil_feet_female.gltf",
+  "status": "draft"
+}

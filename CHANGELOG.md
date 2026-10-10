@@ -2,6 +2,15 @@
 
 One entry per build-loop iteration, newest first. Format: date, backlog ID, what changed, how it was checked.
 
+## 2026-10-10 — G-08: Arcanist and Oracle cloth sets
+- The Arcanist's default look, Hoarfrost Regalia: a deep pointed hood shadowing the face, capelets with a collar of glowing ice crystals, a wrap-front robe with drooping bell sleeves and torn hems, a knotted sash with an ice pendant, wrapped gloves, a torn ankle-length underskirt, soft boots, and a long cape hung with icicles.
+- The Oracle's default look, Dawnveil Vestments: a veil with a dark blindfold and a gold circlet with a glowing gem, padded shoulder caps with gold suns, a cream robe with wide sleeves and a gold-edged sun tabard, a gold cord with tassels, slippers, and a glowing gold halo behind the shoulders.
+- Robes are split into a chest piece (body, sleeves, knee-length skirt) and a legs piece (ankle-length underskirt), so they mix with other cloth pieces. Both sets are about 113,600 triangles per character with the body.
+- All five classes' default sets can now be told apart at 30 m in grayscale.
+- Also: restored the backlog sections an earlier edit had dropped (G-08 onward, and every later track).
+- Still open (G-08b): the Oracle's veil lets the neck show when the head turns, and one spot on the male upper arm leaves the robe in some poses. Logged in KNOWN_ISSUES after three attempts.
+- Checked: the Arcanist's armor fit check is clean on both bodies; 187 assets validate; reference sheets per spec; the 30 m silhouette check; a screenshot in the game engine.
+
 ## 2026-10-08 — G-16 (done): painted faces
 - Eyes: the openings are now almond-shaped with lids meeting at the corners, so the eyes no longer stare; the pale ring around them is gone, the iris shows its colour, and the upper lid shades the eye.
 - Painted face: eyebrows that take a darker shade of the character's hair colour (heavier on men, thinner and arched on women), lip colour, a lash line, a line between the lips, warmer cheeks, nose and ears, and soft shading around the eyes.

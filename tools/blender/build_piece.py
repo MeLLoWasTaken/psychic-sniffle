@@ -126,13 +126,15 @@ MATERIALS = {
     "bone": ("leather", "#d8ceb2", dict(roughness=0.6, edge=0.45, cavity=0.75, top_light=0.1), "leather"),
     "fur": ("leather", "#6a533d", dict(roughness=0.95, edge=0.05, cavity=0.8, top_light=0.15), "cloth"),
     "ice": ("leather", "#a8ecff", dict(roughness=0.2, edge=0.6, cavity=0.25), None),
+    "holy": ("leather", "#ffe2a0", dict(roughness=0.3, edge=0.4, cavity=0.2), None),     # G-08: the Oracle's halo
 }
 # materials that glow: their texels are white in the piece's glow mask (<id>_glow.png), which the
 # piece shader turns into emission
-GLOW = {"ice"}
+GLOW = {"ice", "holy"}
 # long cloth that hangs from the belt or the shoulders: weighted to the pelvis and thighs
 # (skirt_weights), not copied from the body; the cape-like ones hang behind the legs
-SKIRTS = {"surcoat", "surcoat_trim", "cape", "cloak", "robe", "robe_trim", "loincloth"}
+SKIRTS = {"surcoat", "surcoat_trim", "cape", "cloak", "robe", "robe_trim", "loincloth", "cape_frost", "underskirt",
+          "underskirt_trim", "underskirt_gold", "tabard", "tabard_gold", "sash_tails"}
 BEHIND = ("cape", "cloak")
 CHANNEL_RGB = {"primary": (1, 0, 0), "secondary": (0, 1, 0), "metal": (0, 0, 1), "leather": (0, 0, 0)}
 

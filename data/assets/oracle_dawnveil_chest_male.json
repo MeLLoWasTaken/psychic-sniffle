@@ -1,0 +1,21 @@
+{
+  "id": "oracle_dawnveil_chest_male",
+  "kind": "piece",
+  "builder": "build_piece.py",
+  "seed": 1,
+  "body_build": "male",
+  "tri_budget": {
+    "min": 19200,
+    "max": 26400
+  },
+  "texture_size": 4096,
+  "params": {
+    "slot": "chest",
+    "design": "oracle_robe",
+    "set": "oracle_dawnveil",
+    "armor_type": "cloth",
+    "tris": 24000
+  },
+  "out": "game/assets/armor/oracle_dawnveil_chest_male.gltf",
+  "status": "draft"
+}

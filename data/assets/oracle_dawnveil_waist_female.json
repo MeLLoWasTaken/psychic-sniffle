@@ -1,0 +1,21 @@
+{
+  "id": "oracle_dawnveil_waist_female",
+  "kind": "piece",
+  "builder": "build_piece.py",
+  "seed": 1,
+  "body_build": "female",
+  "tri_budget": {
+    "min": 2400,
+    "max": 3300
+  },
+  "texture_size": 2048,
+  "params": {
+    "slot": "waist",
+    "design": "oracle_cord",
+    "set": "oracle_dawnveil",
+    "armor_type": "cloth",
+    "tris": 3000
+  },
+  "out": "game/assets/armor/oracle_dawnveil_waist_female.gltf",
+  "status": "draft"
+}

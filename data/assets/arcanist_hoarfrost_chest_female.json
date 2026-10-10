@@ -1,0 +1,21 @@
+{
+  "id": "arcanist_hoarfrost_chest_female",
+  "kind": "piece",
+  "builder": "build_piece.py",
+  "seed": 1,
+  "body_build": "female",
+  "tri_budget": {
+    "min": 19200,
+    "max": 26400
+  },
+  "texture_size": 4096,
+  "params": {
+    "slot": "chest",
+    "design": "arcanist_robe",
+    "set": "arcanist_hoarfrost",
+    "armor_type": "cloth",
+    "tris": 24000
+  },
+  "out": "game/assets/armor/arcanist_hoarfrost_chest_female.gltf",
+  "status": "draft"
+}

@@ -918,11 +918,13 @@ DESIGNS = {
 
 
 def _register_sets() -> None:
-    """The other plate sets live in their own modules (G-07); they import this one."""
+    """The other sets live in their own modules (G-07, G-08); they import this one."""
+    import armor_cloth
     import armor_deathsworn
     import armor_warblade
     DESIGNS.update(armor_warblade.DESIGNS)
     DESIGNS.update(armor_deathsworn.DESIGNS)
+    DESIGNS.update(armor_cloth.DESIGNS)
 
 
 _register_sets()

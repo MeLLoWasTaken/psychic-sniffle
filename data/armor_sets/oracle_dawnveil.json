@@ -1,0 +1,74 @@
+{
+ "id": "oracle_dawnveil",
+ "name": "Dawnveil Vestments",
+ "description": "The Oracle's default look (G-08): a close veil hanging down the back with a dark blindfold and a gold circlet of rays set with a glowing gem, padded shoulder caps with gold suns, a robe with a high collar, wide sleeves and a sun tabard edged in gold, a twisted gold cord with tassels, gloves with gold cuffs, a neat ankle-length underskirt with a gold hem, slippers with anklets, and a glowing gold halo behind the shoulders.",
+ "armor_type": "cloth",
+ "default_for": [
+  "oracle"
+ ],
+ "pieces": {
+  "head": {
+   "design": "oracle_veil",
+   "name": "Dawnveil",
+   "tris": 12000,
+   "texture_size": 4096,
+   "hides": [
+    "hair"
+   ]
+  },
+  "shoulders": {
+   "design": "oracle_shoulder_caps",
+   "name": "Dawnveil Mantle Caps",
+   "tris": 10000,
+   "texture_size": 2048
+  },
+  "chest": {
+   "design": "oracle_robe",
+   "name": "Dawnveil Robe",
+   "tris": 24000,
+   "texture_size": 4096
+  },
+  "hands": {
+   "design": "oracle_gloves",
+   "name": "Dawnveil Gloves",
+   "tris": 8000,
+   "texture_size": 2048
+  },
+  "waist": {
+   "design": "oracle_cord",
+   "name": "Dawnveil Cord",
+   "tris": 3000,
+   "texture_size": 2048
+  },
+  "legs": {
+   "design": "oracle_underskirt",
+   "name": "Dawnveil Underskirt",
+   "tris": 12000,
+   "texture_size": 4096
+  },
+  "feet": {
+   "design": "oracle_slippers",
+   "name": "Dawnveil Slippers",
+   "tris": 6000,
+   "texture_size": 2048
+  },
+  "back": {
+   "design": "oracle_halo",
+   "name": "Dawnveil Halo",
+   "tris": 8000,
+   "texture_size": 2048
+  }
+ },
+ "dyes": {
+  "oracle_grace": {
+   "primary": "#d9cfb6",
+   "secondary": "#f2ede1",
+   "metal": "#c9a050"
+  },
+  "default": {
+   "primary": "#d9cfb6",
+   "secondary": "#f2ede1",
+   "metal": "#c9a050"
+  }
+ }
+}

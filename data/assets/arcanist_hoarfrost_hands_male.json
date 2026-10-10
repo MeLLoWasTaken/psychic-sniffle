@@ -1,0 +1,21 @@
+{
+  "id": "arcanist_hoarfrost_hands_male",
+  "kind": "piece",
+  "builder": "build_piece.py",
+  "seed": 1,
+  "body_build": "male",
+  "tri_budget": {
+    "min": 6400,
+    "max": 8800
+  },
+  "texture_size": 2048,
+  "params": {
+    "slot": "hands",
+    "design": "arcanist_wraps",
+    "set": "arcanist_hoarfrost",
+    "armor_type": "cloth",
+    "tris": 8000
+  },
+  "out": "game/assets/armor/arcanist_hoarfrost_hands_male.gltf",
+  "status": "draft"
+}

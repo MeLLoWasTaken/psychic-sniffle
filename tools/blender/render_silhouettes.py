@@ -32,6 +32,9 @@ def main() -> None:
     argv = sys.argv[sys.argv.index("--") + 1:] if "--" in sys.argv else sys.argv[1:]
     ap = argparse.ArgumentParser()
     ap.add_argument("--out", type=Path, default=REPO / "previews" / "g_04" / "silhouettes_30m.png")
+    ap.add_argument("--types", default="plate", help="armor types of the default sets to show (e.g. cloth,plate)")
+    ap.add_argument("--current", default="char_warblade_carnage,char_deathsworn_frostgrave,char_templar_vanguard",
+                    help="today's character models to show beside them, or 'none'")
     args = ap.parse_args(argv)
     out = args.out if args.out.is_absolute() else REPO / args.out
     common.reset_scene()
@@ -51,7 +54,7 @@ def main() -> None:
     # overhaul default sets
     for path in sorted((REPO / "data" / "armor_sets").glob("*.json")):
         st = json.loads(path.read_text())
-        if st.get("armor_type") != "plate" or not st.get("default_for"):
+        if st.get("armor_type") not in args.types.split(",") or not st.get("default_for"):
             continue
         spec = next((s for s in st["dyes"] if s != "default"), "default")
         char = json.loads((REPO / "data" / "assets" / f"char_{spec}.json").read_text()) if spec != "default" else {}
@@ -63,7 +66,7 @@ def main() -> None:
                            animation.wrist_rule(anim, hold, "combat_idle", "male") if hold else None)
         entries.append((f"{st['name']} (new)", objs, body.rig))
     # current plate characters of the other classes
-    for cid in ("char_warblade_carnage", "char_deathsworn_frostgrave", "char_templar_vanguard"):
+    for cid in ([] if args.current == "none" else args.current.split(",")):
         spec = json.loads((REPO / "data" / "assets" / f"{cid}.json").read_text())
         objs = ra.import_glb(REPO / spec["out"])
         rig = next((o for o in objs if o.type == "ARMATURE"), None)

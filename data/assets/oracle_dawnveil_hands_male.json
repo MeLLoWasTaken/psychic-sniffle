@@ -1,0 +1,21 @@
+{
+  "id": "oracle_dawnveil_hands_male",
+  "kind": "piece",
+  "builder": "build_piece.py",
+  "seed": 1,
+  "body_build": "male",
+  "tri_budget": {
+    "min": 6400,
+    "max": 8800
+  },
+  "texture_size": 2048,
+  "params": {
+    "slot": "hands",
+    "design": "oracle_gloves",
+    "set": "oracle_dawnveil",
+    "armor_type": "cloth",
+    "tris": 8000
+  },
+  "out": "game/assets/armor/oracle_dawnveil_hands_male.gltf",
+  "status": "draft"
+}
